@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>cz_t_analysis</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Simple Czech Tectogrammatical Parser</title>
+  <version>1.0</version>
+  <copyright year="2008">Zdeněk Žabokrtský, Petr Pajas</copyright>
+  <require>
+    <tred min_version="1.3587"/>
+    <extension name="pml" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pml"/>
+    <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/tectomt"/>
+  </require>
+  <description>Provides a simple TectoMT-based Czech analyzer that produces
+  tectogrammatical, analytical and morphological layers
+  for a given Czech sentence.
+  </description>
+</tred_extension>
