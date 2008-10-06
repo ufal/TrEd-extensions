@@ -1,10 +1,6 @@
 #ifndef transf
 #define transf
 
-# Pre-requisities:
-
-#include <contrib/pdt10_t/contrib.mac>
-
 # Provides:
 
 

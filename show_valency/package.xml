@@ -8,10 +8,10 @@
   <title>Highlight Valency in PDT Trees</title>
   <version>1.0</version>
   <copyright year="2008">Petr Pajas</copyright>
-  <require>
-    <extension name="pdt20_pml" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20_pml.xml"/>
-  </require>
   <description>PDT 2.0-specific mode derived from PML_T_View. It
   highlights obligatory nodes according to assigned valency frames.
   </description>
+  <require>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
+  </require>
 </tred_extension>

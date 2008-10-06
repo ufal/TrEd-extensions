@@ -3,7 +3,7 @@
 #ifndef PML_T
 #define PML_T
 
-#include "PML.mak"
+#include <contrib/pml/PML.mak>
 
 #include <contrib/vallex/contrib.mac>
 

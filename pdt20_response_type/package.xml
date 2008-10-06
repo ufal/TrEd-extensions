@@ -7,6 +7,9 @@
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Annotation of Response Type over PDT 2.0 T-Layer</title>
   <version>1.0</version>
-  <copyright year="2008">Petr Pajas</copyright>
+  <copyright year="2008">Josef Toman</copyright>
   <description>Provides a mode for annotation of response type over tectogrammatical layer of PDT 2.0.</description>
+  <require>
+    <extension name="pedt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pedt"/>
+  </require>
 </tred_extension>

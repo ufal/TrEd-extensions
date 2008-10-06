@@ -3,7 +3,7 @@
 #ifndef PML_M
 #define PML_M
 
-#include "PML.mak"
+#include <contrib/pml/PML.mak>
 
 package PML_M;
 

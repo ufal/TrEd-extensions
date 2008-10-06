@@ -98,7 +98,7 @@ my $lReturn;			# used as type "list"
 my $_pDummy;			# used as type "pointer"
 # =======================================================
 
-#include <contrib/auto_afun/AutoAfun.mak>
+#ifinclude <contrib/auto_afun/AutoAfun.mak>
 
 sub cycle_combined {
   my $suff=shift;

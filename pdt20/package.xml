@@ -12,4 +12,7 @@
     and editing annotations of PDT 2.0 or similar data
     (analytical and tectogrammatical layer).
   </description>
+  <require>
+    <extension name="pml_vallex" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pml_vallex"/>
+  </require>
 </tred_extension>
