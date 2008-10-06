@@ -13,6 +13,6 @@
     (analytical and tectogrammatical layer).
   </description>
   <require>
-    <extension name="pml_vallex" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pml_vallex"/>
+    <extension name="pdt_vallex" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_vallex"/>
   </require>
 </tred_extension>
