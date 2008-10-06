@@ -3,18 +3,19 @@
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
-  <pkgname>cz_t_analysis</pkgname>
+  <pkgname>tectomt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
-  <title>Simple Czech Tectogrammatical Parser</title>
+  <title>TectoMT base for TrEd applications</title>
   <version>1.0</version>
-  <copyright year="2008">Zdeněk Žabokrtský, Petr Pajas</copyright>
+  <copyright year="2008">Zdeněk Žabokrtský</copyright>
   <require>
     <tred min_version="1.3587"/>
-    <extension name="pml" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pml"/>
-    <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/tectomt"/>
+    <perl_module name="Class::Std">
+      <ppm perl_version="5.8" name="Class-Std" href="http://theoryx5.uwinnipeg.ca/ppms/Class-Std.ppd"/>
+      <ppm perl_version="5.10" name="XML-LibXML" href="http://cpan.uwinnipeg.ca/PPMPackages/10xx/Class-Std.ppd"/>
+      <other href="http://search.cpan.org/dist/Class-Std/"/>
+    </perl_module>
   </require>
-  <description>Provides a simple TectoMT-based Czech analyzer that produces
-  tectogrammatical, analytical and morphological layers
-  for a given Czech sentence.
+  <description>Provides basic libraries for TectoMT-based applications for the TrEd environment.
   </description>
 </tred_extension>
