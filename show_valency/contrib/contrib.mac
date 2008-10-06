@@ -1,0 +1,9 @@
+#ifndef show_valency
+#define show_valency
+
+#include <contrib/pml/contrib.mac>
+
+#binding-context PML_T_Show_Valency
+#include "PML_T_Show_Valency.mak"
+
+#endif show_valency
