@@ -1,0 +1,16 @@
+# -*- cperl -*-
+
+#ifndef pdt_vallex
+#define pdt_vallex
+
+{
+use lib CallerDir();
+package ValLex::GUI; # so that it can get deleted
+BEGIN {
+  require ValLex::GUI;
+}
+}
+
+#include "non_gui.mak"
+
+#endif pdt_vallex

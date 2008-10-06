@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>draw</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Drawing ad-hoc trees</title>
+  <version>1.0</version>
+  <copyright year="2008">Petr Pajas</copyright>
+  <description>Provides a simple context in which node visualization can be
+  freely manipulated by setting attributes of the nodes.
+  </description>
+</tred_extension>

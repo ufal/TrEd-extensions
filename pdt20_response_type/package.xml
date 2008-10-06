@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>response_type</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Annotation of Response Type over PDT 2.0 T-Layer</title>
+  <version>1.0</version>
+  <copyright year="2008">Petr Pajas</copyright>
+  <description>Provides a mode for annotation of response type over tectogrammatical layer of PDT 2.0.</description>
+</tred_extension>

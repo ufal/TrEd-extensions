@@ -1,0 +1,7 @@
+#ifndef response
+#define response
+
+#binding-context Response_Type
+#include "response_type.mak"
+
+#endif response

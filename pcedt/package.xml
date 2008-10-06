@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>pcedt</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Prague Czech-English Dependency Treebank</title>
+  <version></version>
+  <copyright year="2006-2008">Josef Toman</copyright>
+  <description>Provides main annotation mode for the Prague Czech-English Dependency Treebank.</description>
+</tred_extension>
