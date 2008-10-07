@@ -1,8 +1,4 @@
-#ifndef pml
-#define pml
-
-#include <contrib/pml/PML.mak>
-
+#ifndef pdt20
 #ifdef TRED
 
 package PML;
@@ -111,4 +107,4 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
 #binding-context PML_T_FV
 #include "PML_T_FV.mak"
 
-#endif pml
+#endif pdt20
