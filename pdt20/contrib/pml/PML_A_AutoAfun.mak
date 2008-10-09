@@ -2,7 +2,7 @@
 ## author: Petr Pajas, Zdenek Zabokrtsky
 ## Time-stamp: <2008-10-02 00:20:04 pajas>
 
-use lib FindMacroDir("auto_afun/AutoAfun");
+use lib eval { FindMacroDir("auto_afun/AutoAfun") };
 
 {
 my %LcAfuns = map { lc($_)=>$_ }
