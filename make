@@ -1,6 +1,7 @@
 #!/bin/sh
 
 if [ -z "$1" ]; then
+   cd `dirname $0`
    dirs=(*/)
 else
    dirs=("$@")
