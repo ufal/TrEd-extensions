@@ -143,9 +143,8 @@ sub node_style_hook {
 sub BelongsToValencyFrame {
  shift if defined($_[0]) and !ref($_[0]);
  my $node=$_[0]||$this;
- my @F= 
-   uniq map AltV($_->{'val_frame.rf'}),
-     grep $_->attr('gram/sempos') eq 'v', PML_T::GetEParents($node);
+ my @F = uniq(map AltV($_->{'val_frame.rf'}),
+	      grep $_->attr('gram/sempos') eq 'v', PML_T::GetEParents($node));
  my $functor = $node->{functor};
  my $ret;
  if (@F) {
