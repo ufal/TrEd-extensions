@@ -5,7 +5,7 @@
 # Frame validation code #
 #########################
 
-=comment
+=begin comment
 
 Known issues:
 
@@ -46,6 +46,8 @@ member of the OPER has a different case than expected.
 ADDR(.1), etc)
 
 - preposition+&Idph; - we should igore case tests in these cases
+
+=end
 
 =cut
 

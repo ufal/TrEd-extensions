@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>sdt</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Slovene Dependency Treebank Annotation</title>
+  <version>1.1</version>
+  <copyright year="2003">Zdeněk Žabokrtský</copyright>
+  <description>Provides an annotation mode for syntactical dependency annotaiton 
+  of Slovene corpus in the style of PDT 1.0. The package contains also
+  a simple rule-based Slovene parser.
+  </description>
+  <require>
+    <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt10"/>
+  </require>
+</tred_extension>

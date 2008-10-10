@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>pedt</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Prague English Treebank Annotation</title>
+  <version>1.1</version>
+  <copyright year="2005-2008">Josef Toman</copyright>
+  <description>Provides annotation mode for the Prague English Treebank and GUI for
+     the PEDT valency lexicon.
+  </description>
+  <require>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
+  </require>
+</tred_extension>
