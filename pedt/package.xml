@@ -12,6 +12,7 @@
      the PEDT valency lexicon.
   </description>
   <require>
-    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
+    <extension name="pdt20"/>
+    <extension name="pdt_vallex"/>
   </require>
 </tred_extension>
