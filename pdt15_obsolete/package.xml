@@ -14,6 +14,6 @@
   </description>
   <require>
     <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt10"/>
-    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
+    <extension name="pdt_vallex" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_vallex"/>
   </require>
 </tred_extension>
