@@ -6,7 +6,7 @@
   <pkgname>pdt20</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Dependency Treebank 2.0 Annotation</title>
-  <version>1.2</version>
+  <version>1.3</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>Provides complete support for viewing
     and editing annotations of PDT 2.0 or similar data
