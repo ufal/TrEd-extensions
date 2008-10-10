@@ -4,7 +4,6 @@
 #define PML_T
 
 #include <contrib/pml/PML.mak>
-
 #include <contrib/vallex/contrib.mac>
 
 package PML_T;
