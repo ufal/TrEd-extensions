@@ -2,6 +2,8 @@
 #encoding iso-8859-2
 
 package PML_T_FV;
+use vars qw($V_verbose $V_backend $V_module $ExD_tolerant);
+
 BEGIN { import TredMacro };
 
 #binding-context PML_T_FV 

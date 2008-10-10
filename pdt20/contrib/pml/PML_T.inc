@@ -381,7 +381,7 @@ sub DrawCorefArrows {
     print STDERR "ref-arrows: Exophora\n" if $main::macroDebug;
     push @edges, {
       -fill   => CustomColor('arrow_exoph'),
-      -deltax => 10*($rotate_dfr_snt++),
+      -deltax => 10*($rotate_dfr_doc++),
       -deltay => -25,
       -tag => 'exoph',
     };
