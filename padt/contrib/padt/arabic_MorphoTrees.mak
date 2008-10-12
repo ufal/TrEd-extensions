@@ -9,6 +9,7 @@ package TredMacro;
 sub file_opened_hook {
 
     SwitchContext('MorphoTrees');
+    SetCurrentStyleSheet('MorphoTrees');
 }
 
 #include "arabic_common.mak"

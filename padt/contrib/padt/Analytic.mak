@@ -114,13 +114,13 @@ sub assign_arabfa {
 #bind assign_arabspec to key 4 menu Arabic: Suffix ArabSpec
 sub assign_arabspec {
   $this->{arabspec}||='';
-  EditAttribute($this,'arabspec');
+  EditAttribute($this,'coref');
 }
 
 #bind assign_arabclause to key 5 menu Arabic: Suffix ArabClause
 sub assign_arabclause {
   $this->{arabclause}||='';
-  EditAttribute($this,'arabclause');
+  EditAttribute($this,'clause');
 }
 
 # ##################################################################################################
@@ -488,10 +488,10 @@ sub get_value_line_hook {
 
     $views->{$_->{'ord'}} = $_ foreach GetVisibleNodes($root);
 
-    $words = [ [ $nodes->[0]->{'origf'} . " " . $nodes->[0]->{'tag'}, $nodes->[0], '-foreground => darkmagenta' ],
+    $words = [ [ $nodes->[0]->{'m'}{'input'} . " " . $nodes->[0]->{'m'}{'tag'}, $nodes->[0], '-foreground => darkmagenta' ],
                map {
 
-                   show_value_line_node($views, $_, 'origf', not $_->{'tag'})
+                   show_value_line_node($views, $_, 'm/input', not $_->{'m'}{'tag'})
 
                } @{$nodes}[1 .. $#{$nodes}] ];
 
@@ -506,11 +506,11 @@ sub show_value_line_node {
 
     if (HiddenVisible()) {
 
-        return  unless defined $node->{'origf'} and $node->{'origf'} ne '';
+        return  unless defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
 
         return  [ " " ],
-                [ $node->{$text}, $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
-                                                                                : '-foreground => gray' ];
+                [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+                                                                                    : '-foreground => gray' ];
     }
     else {
 
@@ -518,10 +518,10 @@ sub show_value_line_node {
                 [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ]
                                 if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
-        return  unless exists $view->{$node->{'ord'}} and defined $node->{'origf'} and $node->{'origf'} ne '';
+        return  unless exists $view->{$node->{'ord'}} and defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
 
         return  [ " " ],
-                [ $node->{$text}, $node, $warn ? '-foreground => red' : () ];
+                [ $node->attr($text), $node, $warn ? '-foreground => red' : () ];
     }
 }
 
@@ -529,7 +529,7 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 'ord') until !$node or defined $node->{'origf'} and $node->{'origf'} ne '';
+    $node = PrevNodeLinear($node, 'ord') until !$node or defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
 
     return $node;
 }
@@ -585,7 +585,7 @@ sub node_style_hook {
 
     my ($node, $styles) = @_;
 
-    if ($node->{'arabspec'} eq 'Ref') {
+    if ($node->{'coref'} eq 'Ref') {
 
         my $T = << 'TARGET';
 [!
@@ -647,8 +647,8 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{arabclause} ne "" || $this->{tag} =~ /^V/ && $this->{afun} !~ /^Aux/
-                                     || $this->{afun} =~ /^Pred[ECMP]?$/;
+    return $this->{'clause'} ne "" || $this->{'m'}{'tag'} =~ /^V/ && $this->{'afun'} !~ /^Aux/
+                                   || $this->{'afun'} =~ /^Pred[ECMP]?$/;
 }
 
 sub theClauseHead ($;&) {
@@ -799,7 +799,7 @@ sub referring_Msd {
 
 sub enable_attr_hook {
 
-    return 'stop' unless $_[0] =~ /^(?:afun|parallel|paren|arabclause|arabfa|arabspec|comment|err1|err2)$/;
+    return 'stop' unless $_[0] =~ /^(?:afun|parallel|paren|arabfa|coref|clause|comment|err1|err2)$/;
 }
 
 #bind edit_comment to exclam menu Annotate: Edit annotator's comment
@@ -840,9 +840,9 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
 
-    my $code = q {<? '#{custom6}${x_comment} << ' if $this->{afun} ne 'AuxS' and $this->{x_comment} ne '' ?>};
+    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -1209,23 +1209,26 @@ sub inter_with_level ($) {
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.syntax.fs');
+    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.syntax.xml');
     (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'syntax', $name . '.syntax.fs';
-    $file[1] = path $path . "$level", $name . ".$level.fs";
+    $file[0] = path $path . 'syntax', $name . '.syntax.xml';
+    $file[1] = path $path . "$level", $name . ".$level.xml";
 
-    $file[2] = $level eq 'morpho' ? ( path $path . "$level", $name . '.syntax.fs')
-                                  : ( path $path . 'syntax', $name . ".$level.fs");
+    $file[2] = $level eq 'morpho' ? ( path $path . "$level", $name . '.syntax.xml' )
+                                  : ( path $path . 'syntax', $name . ".$level.xml" );
 
-    $file[3] = path $path . 'syntax', $name . '.syntax.fs.anno.fs';
+    $file[3] = path $path . 'syntax', $name . '.syntax.xml.anno.xml';
+
+    $file[4] = $level eq 'morpho' ? ( path $path . "$level", $name . '.syntax.fs' )
+                                  : ( undef );
 
     unless ($file[0] eq $thisfile) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'syntax', $name . '.syntax.fs' ) . ".$fill",
+                        "Relocate it to " . ( path '..', 'syntax', $name . '.syntax.xml' ) . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1248,6 +1251,10 @@ sub synchronize_file {
 
     return unless $reply eq 'Yes';
 
+    print "Synchronizing currently disabled!\n";
+
+    return;
+
     print "Synchronizing ...\n";
 
     my ($level, $name, $path, @file) = inter_with_level 'morpho';
@@ -1258,7 +1265,7 @@ sub synchronize_file {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file.$fill\n" .
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
                         "Make sure you are working with complete data!$fill",
             -title => 'Error',
             -type => 'OK',
@@ -1271,8 +1278,8 @@ sub synchronize_file {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.fs' ) . "!$fill\n" .
-                        "Please remove " . ( path '..', "$level", $name . '.syntax.fs' ) . ".$fill",
+            -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!$fill\n" .
+                        "Please remove " . ( path '..', "$level", $name . '.syntax.xml' ) . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1302,6 +1309,9 @@ sub synchronize_file {
     system 'perl -X ' . ( escape CallerDir('exec').'/SyntaxFS.pl' ) .
                   ' ' . ( expace $file[1] );
 
+    system 'btred -QI ' . ( escape CallerDir('exec').'/syntax_pretty.ntred' ) .
+                    ' -s fs -a xml ' . ( espace $file[4] );
+
     move $file[2], $file[0];
 
     system 'btred -QI ' . ( escape CallerDir('exec').'/migrate_annotation_syntax.btred' ) .
@@ -1329,7 +1339,7 @@ sub open_level_first {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1339,11 +1349,11 @@ sub open_level_first {
 
     my ($tree, $node);
 
-    ($tree) = $root->{'x_id_ord'} =~ /^\#[0-9]+\_([0-9]+)$/;
+    ($tree) = $root->{'m'}{'ref'} =~ /^\#[0-9]+\_([0-9]+)$/;
 
     unless ($this == $root) {
 
-        ($node) = $this->{'x_id_ord'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
+        ($node) = $this->{'m'}{'ref'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
     }
     else {
 
@@ -1380,7 +1390,7 @@ sub open_level_third {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file.$fill" .
+                        "\nThere is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -1392,8 +1402,8 @@ sub open_level_third {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.fs" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'syntax', $name . ".$level.fs" ) . ".$fill",
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'syntax', $name . ".$level.xml" ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
@@ -1421,7 +1431,7 @@ sub open_level_third {
         move $file[2], $file[1];
     }
 
-    my ($tree, $node) = $this->{'x_id_ord'} =~ /^\#([0-9]+)\/([0-9]+)(:?\_[0-9]+)?$/;
+    my ($tree, $node) = $this->{'m'}{'ref'} =~ /^\#([0-9]+)\/([0-9]+)(:?\_[0-9]+)?$/;
 
     if (Open($file[1])) {
 
@@ -1497,7 +1507,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2007 by Otakar Smrz
+Copyright 2004-2008 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

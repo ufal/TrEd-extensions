@@ -22,12 +22,12 @@ sub autostart {
 
     my $anno = FSFile->create('encoding' => "utf8");
 
-    $anno->readFile(FileName() . ".anno.fs");
+    $anno->readFile(FileName() . ".anno.xml");
 
     $entities = [ [], [] ];
 
-    @{$entities->[0]} = grep { $_->{'type'} eq 'entity' } $grp->{FSFile}->trees();
-    @{$entities->[1]} = grep { $_->{'type'} eq 'entity' } $anno->trees();
+    @{$entities->[0]} = grep { $_->{'#name'} eq 'Entity' } $grp->{FSFile}->trees();
+    @{$entities->[1]} = grep { $_->{'#name'} eq 'Entity' } $anno->trees();
 
     Algorithm::Diff::traverse_sequences(@{$entities}, { 'MATCH' => \&entity_annotation }, \&entity_ident);
 
@@ -37,7 +37,7 @@ sub autostart {
 
 sub entity_annotation {
 
-    return if $entities->[0][$_[0]]->{'apply_m'} > 0;
+    return if $entities->[0][$_[0]]->{'apply'} > 0;
 
     $nodes = [ [ $entities->[0][$_[0]] ], [ $entities->[1][$_[1]] ] ];
 
@@ -60,9 +60,9 @@ sub migrate_annotation {
 
         MorphoTrees::restrict_hide($nodes->[1][$_[1]]->{'restrict'}, $nodes->[1][$_[1]]->{'inherit'} eq '' && $nodes->[1][$_[1]]->{'type'} ne 'entity' ? 'remove inherited' : () );
     }
-    elsif ($nodes->[1][$_[1]]->{'type'} eq 'token_node' and $nodes->[1][$_[1]]->{'apply_m'} > 0) {
+    elsif ($nodes->[1][$_[1]]->{'type'} eq 'token_node' and $nodes->[1][$_[1]]->{'apply'} > 0) {
 
-        MorphoTrees::annotate_morphology('click') unless $nodes->[0][$_[0]]->{'apply_m'} > 0;
+        MorphoTrees::annotate_morphology('click') unless $nodes->[0][$_[0]]->{'apply'} > 0;
     }
 
     $nodes->[0][$_[0]]->{'comment'} = $nodes->[1][$_[1]]->{'comment'} if $nodes->[0][$_[0]]->{'comment'} eq '';
@@ -75,5 +75,5 @@ sub migrate_annotation {
 
 sub node_ident {
 
-    return join '|', @{$_[0]}{'form', 'tag', $_[0]->{'type'} eq 'entity' ? () : ( 'type', 'id' ) };
+    return join '|', @{$_[0]}{'form', 'tag', $_[0]->{'#name'} eq 'Entity' ? () : ( '#name', 'idx' ) };
 }

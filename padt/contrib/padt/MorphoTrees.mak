@@ -10,6 +10,9 @@ use 5.008;
 
 use strict;
 
+use File::Spec;
+use File::Copy;
+
 our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 # ##################################################################################################
@@ -34,7 +37,7 @@ our ($dims, $fill) = (10, ' ' x 4);
 
 sub node_release_hook {
 
-    return 'stop' if defined $_[0]->{'type'};
+    return 'stop' if defined $_[0]->{'#name'};
 }
 
 sub get_nodelist_hook {
@@ -44,7 +47,7 @@ sub get_nodelist_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'type'} eq 'paragraph') {
+    if ($tree->{'#name'} eq 'Paragraph') {
 
         $tree->{'hide'} = '' unless defined $tree->{'hide'};
 
@@ -57,7 +60,7 @@ sub get_nodelist_hook {
 
                 while ($current = $current->following()) {
 
-                    $current->{'hide'} = $current->{'apply_m'} > 0 ? 'hide' : '';
+                    $current->{'hide'} = $current->{'apply'} > 0 ? 'hide' : '';
                 }
             }
             else {
@@ -109,26 +112,26 @@ sub get_value_line_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'type'} eq 'paragraph') {
+    if ($tree->{'#name'} eq 'Paragraph') {
 
         ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
-        $words = [ [ $tree->{'id'} . " " . $tree->{'input'}, $tree, '-foreground => darkmagenta' ],
+        $words = [ [ $tree->{'idx'} . " " . $tree->{'input'}, $tree, '-foreground => darkmagenta' ],
                    map {
                             [ " " ],
                             [ $_->{'input'}, (
 
                                 $paragraph_hide_mode eq 'hidden'
 
-                                      ? ( $_->{'apply_m'} > 0
+                                      ? ( $_->{'apply'} > 0
                                             ? ( $fsfile->tree($_->{'ref'} - 1), '-foreground => gray' )
                                             : ( $_, '-foreground => black' ) )
-                                      : ( $_->{'apply_m'} > 0
+                                      : ( $_->{'apply'} > 0
                                             ? ( $_, '-foreground => red' )
                                             : ( $_, '-foreground => black' ) )
                                 ) ]
 
-                        } grep { $_->{'type'} eq 'word_node' } @{$nodes} ];
+                        } grep { $_->{'#name'} eq 'Word' } @{$nodes} ];
     }
     else {
 
@@ -139,12 +142,12 @@ sub get_value_line_hook {
 
         $nodes = [ map { $fsfile->tree($_) } $tree->{'ref'} .. ( $tree->{'ref'} == $last ? $grp->{FSFile}->lastTreeNo : $last - 2 ) ];
 
-        $words = [ [ $para->{'id'} . " " . $para->{'input'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
+        $words = [ [ $para->{'idx'} . " " . $para->{'input'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
                    map {
                             [ " " ],
                             [ $_->{'input'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
 
-                        } grep { $_->{'type'} eq 'entity' } @{$nodes} ];
+                        } grep { $_->{'#name'} eq 'Entity' } @{$nodes} ];
     }
 
     @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
@@ -154,18 +157,18 @@ sub get_value_line_hook {
 
 sub highlight_value_line_tag_hook {
 
-    return $grp->{root} if $grp->{root}->{'type'} eq 'entity';
+    return $grp->{root} if $grp->{root}->{'#name'} eq 'Entity';
 
     my $node = $grp->{currentNode};
 
-    $node = $node->parent() until !$node or $node->{'type'} eq 'word_node' or $node->{'type'} eq 'paragraph';
+    $node = $node->parent() until !$node or $node->{'#name'} eq 'Word' or $node->{'#name'} eq 'Paragraph';
 
     return $node;
 }
 
 sub value_line_doubleclick_hook {
 
-    return if $grp->{root}->{'type'} eq 'paragraph';
+    return if $grp->{root}->{'#name'} eq 'Paragraph';
 
     my ($index) = map { $_ =~ /^#([0-9]+)/ ? $1 : () } @_;
 
@@ -224,13 +227,13 @@ sub switch_either_context {
     my $quick = $_[0];
     my @refs;
 
-    if ($root->{'type'} eq 'paragraph') {
+    if ($root->{'#name'} eq 'Paragraph') {
 
-        if ($this->{'type'} eq 'paragraph') {
+        if ($this->{'#name'} eq 'Paragraph') {
 
             GotoTree((split /[^0-9]+/, $root->{'par'})[0]);
         }
-        elsif ($this->{'type'} eq 'word_node') {
+        elsif ($this->{'#name'} eq 'Word') {
 
             GotoTree($this->{'ref'});
         }
@@ -238,7 +241,7 @@ sub switch_either_context {
 
             $refs[0] = $this->{'ref'};
 
-            if ($this->{'type'} eq 'lemma_id') {
+            if ($this->{'#name'} eq 'Lexeme') {
 
                 GotoTree($this->parent()->{'ref'});
             }
@@ -252,7 +255,7 @@ sub switch_either_context {
     }
     else {
 
-        ($refs[0]) = $root->{'id'} =~ /([0-9]+)$/;
+        ($refs[0]) = $root->{'idx'} =~ /([0-9]+)$/;
 
         $refs[1] = $this->{'ord'} unless $quick eq 'quick';
 
@@ -275,7 +278,7 @@ sub switch_either_context {
 #bind move_to_prev_paragraph Shift+Prior menu Move to Prev Paragraph
 sub move_to_prev_paragraph {
 
-    unless ($root->{'type'} eq 'paragraph') {
+    unless ($root->{'#name'} eq 'Paragraph') {
 
         GotoTree($root->{'ref'});
     }
@@ -289,7 +292,7 @@ sub move_to_prev_paragraph {
 #bind move_to_next_paragraph Shift+Next menu Move to Next Paragraph
 sub move_to_next_paragraph {
 
-    unless ($root->{'type'} eq 'paragraph') {
+    unless ($root->{'#name'} eq 'Paragraph') {
 
         GotoTree($root->{'ref'});
     }
@@ -303,7 +306,7 @@ sub move_to_next_paragraph {
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
 
-    if ($root->{'type'} eq 'paragraph') {
+    if ($root->{'#name'} eq 'Paragraph') {
 
         $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[0];
 
@@ -324,7 +327,7 @@ sub move_word_home {
 #bind move_word_end End menu Move to Last Word
 sub move_word_end {
 
-    if ($root->{'type'} eq 'paragraph') {
+    if ($root->{'#name'} eq 'Paragraph') {
 
         $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[-1];
 
@@ -423,7 +426,7 @@ sub move_par_end {
 #bind tree_hide_mode Ctrl+equal menu Toggle Tree Hide Mode
 sub tree_hide_mode {
 
-    if ($root->{'type'} eq 'paragraph') {
+    if ($root->{'#name'} eq 'Paragraph') {
 
         $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
     }
@@ -489,8 +492,8 @@ sub move_to_fork {
     ChangingFile(0);
 }
 
-#bind follow_apply_m_up Ctrl+Up menu Follow Annotation Up
-sub follow_apply_m_up {
+#bind follow_apply_up Ctrl+Up menu Follow Annotation Up
+sub follow_apply_up {
 
     $Redraw = 'none';
     ChangingFile(0);
@@ -499,7 +502,7 @@ sub follow_apply_m_up {
 
     return unless $node;
 
-    if ($node->{'apply_m'} > 0) {
+    if ($node->{'apply'} > 0) {
 
         $this = $node;
 
@@ -517,7 +520,7 @@ sub follow_apply_m_up {
 
         if ($node) {
 
-            if ($node->{'apply_m'} > 0) {
+            if ($node->{'apply'} > 0) {
 
                 $this = $node;
                 last;
@@ -528,7 +531,7 @@ sub follow_apply_m_up {
 
         if ($done) {
 
-            if ($done->{'apply_m'} > 0) {
+            if ($done->{'apply'} > 0) {
 
                 $this = $done;
                 last;
@@ -540,15 +543,15 @@ sub follow_apply_m_up {
     while $node or $done; }
 }
 
-#bind follow_apply_m_down Ctrl+Down menu Follow Annotation Down
-sub follow_apply_m_down {
+#bind follow_apply_down Ctrl+Down menu Follow Annotation Down
+sub follow_apply_down {
 
     my $node = $this;
     my (@children);
 
     while (@children = $node->children()) {
 
-        @children = grep { $_->{'hide'} ne 'hide' and $_->{'apply_m'} > 0 } @children;
+        @children = grep { $_->{'hide'} ne 'hide' and $_->{'apply'} > 0 } @children;
 
         last unless @children == 1;
 
@@ -563,8 +566,8 @@ sub follow_apply_m_down {
     ChangingFile(0);
 }
 
-#bind follow_apply_m_right Ctrl+Right menu Follow Annotation Right
-sub follow_apply_m_right {
+#bind follow_apply_right Ctrl+Right menu Follow Annotation Right
+sub follow_apply_right {
 
     $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode() ?
         ctrl_currentLeftWholeLevel() :
@@ -574,8 +577,8 @@ sub follow_apply_m_right {
     ChangingFile(0);
 }
 
-#bind follow_apply_m_left Ctrl+Left menu Follow Annotation Left
-sub follow_apply_m_left {
+#bind follow_apply_left Ctrl+Left menu Follow Annotation Left
+sub follow_apply_left {
 
     $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode() ?
         ctrl_currentRightWholeLevel() :
@@ -594,7 +597,7 @@ sub ctrl_currentRightWholeLevel {    # modified copy of main::currentRightWholeL
 
         $node = NextVisibleNode($node);
     }
-    until not $node or $level == $node->level() and $node->{'apply_m'} > 0;
+    until not $node or $level == $node->level() and $node->{'apply'} > 0;
 
     $this = $node if $node;
 
@@ -610,7 +613,7 @@ sub ctrl_currentLeftWholeLevel {     # modified copy of main::currentLeftWholeLe
 
         $node = PrevVisibleNode($node);
     }
-    until not $node or $level == $node->level() and $node->{'apply_m'} > 0;
+    until not $node or $level == $node->level() and $node->{'apply'} > 0;
 
     $this = $node if $node;
 
@@ -659,9 +662,9 @@ sub edit_comment {
         return;
     }
 
-    my $switch = $this->{'type'} eq 'token_node' || $this->{'type'} eq 'lemma_id';
+    my $switch = $this->{'#name'} eq 'Form' || $this->{'#name'} eq 'Lexeme';
 
-    if ($switch and not $this->{'apply_m'} > 0) {
+    if ($switch and not $this->{'apply'} > 0) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
@@ -704,9 +707,9 @@ sub annotate_morphology {
 
     # indicated below when the file or the redraw mode actually change
 
-    if ($root->{'type'} eq 'paragraph') {
+    if ($root->{'#name'} eq 'Paragraph') {
 
-        if ($this->{'type'} eq 'paragraph') {
+        if ($this->{'#name'} eq 'Paragraph') {
 
             GotoTree((split /[^0-9]+/, $this->{'par'})[1]);
         }
@@ -736,13 +739,13 @@ sub annotate_morphology {
 
     unless (@children) {
 
-        if ($node->{'type'} eq 'token_node') {
+        if ($node->{'#name'} eq 'Form') {
 
-            $diff = $node->{'apply_m'} == 0 ? 1 : $node == $this ? -1 : 0;
+            $diff = $node->{'apply'} == 0 ? 1 : $node == $this ? -1 : 0;
 
             unless ($diff == 0) {
 
-                $node->{'apply_m'} += $diff;
+                $node->{'apply'} += $diff;
 
                 $reflect = reflect_choice($node, $diff);
 
@@ -754,36 +757,36 @@ sub annotate_morphology {
 
                 while ($node = $node->parent()) {
 
-                    if ($node->{'type'} eq 'partition') {
+                    if ($node->{'#name'} eq 'Partition') {
 
-                        @children = grep { $_->{'apply_m'} < 1 } $node->children();
+                        @children = grep { $_->{'apply'} < 1 } $node->children();
 
-                        last unless @children and $node->{'apply_m'} > 0;
+                        last unless @children and $node->{'apply'} > 0;
                     }
 
-                    $node->{'apply_m'}--;
+                    $node->{'apply'}--;
                 }
 
                 unless ($node) {    # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
 
-                    $reflect->{'apply_m'} = $root->{'apply_m'};
-                    $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply_m'} > 0 ? 'hide' : '';
+                    $reflect->{'apply'} = $root->{'apply'};
+                    $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply'} > 0 ? 'hide' : '';
                 }
             }
             else {
 
-                $node->{'apply_m'} = 1;
+                $node->{'apply'} = 1;
 
                 while ($node = $node->parent()) {
 
-                    if ($node->{'type'} eq 'partition') {
+                    if ($node->{'#name'} eq 'Partition') {
 
-                        @children = grep { $_->{'apply_m'} < 1 } $node->children();
+                        @children = grep { $_->{'apply'} < 1 } $node->children();
 
-                        last if @children or $node->{'apply_m'} == 1 or $diff == 0;
+                        last if @children or $node->{'apply'} == 1 or $diff == 0;
                     }
 
-                    $node->{'apply_m'} += $diff;
+                    $node->{'apply'} += $diff;
                 }
 
                 if (@children) {
@@ -805,8 +808,8 @@ sub annotate_morphology {
 
                     unless ($node or $diff == 0) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
 
-                        $reflect->{'apply_m'} = $root->{'apply_m'};
-                        $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply_m'} > 0 ? 'hide' : '';
+                        $reflect->{'apply'} = $root->{'apply'};
+                        $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply'} > 0 ? 'hide' : '';
                     }
 
                     unless (defined $quick and $quick eq 'click') {
@@ -825,8 +828,8 @@ sub annotate_morphology {
 
             $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
                         ? $tips[0]
-                        : $children[0]->{'type'} eq 'lemma_id' ||
-                          $children[0]->{'type'} eq 'partition' && @children > 1
+                        : $children[0]->{'#name'} eq 'Lexeme' ||
+                          $children[0]->{'#name'} eq 'Partition' && @children > 1
                             ? $node
                             : $children[0];
         }
@@ -834,7 +837,7 @@ sub annotate_morphology {
 
             $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
                         ? $tips[0]
-                        : $children[0]->{'type'} eq 'lemma_id'
+                        : $children[0]->{'#name'} eq 'Lexeme'
                             ? $node
                             : $children[0];
         }
@@ -883,18 +886,22 @@ sub reflect_choice {
 
         unless ($node->{'ref'} eq $twig->{'ord'}) {
 
-            $node->{$_} = $twig->{$_} for qw 'form id type comment';
+            $node->{$_} = $twig->{$_} for qw 'form comment score idx';
             $node->{'ref'} = $twig->{'ord'};
-            $node->{'apply_m'} = 1;
+            $node->{'apply'} = 1;
+
+            $node->{'id'} = $node->parent()->{'id'} . 'l' . $node->{'ref'};
         }
 
         $node = get_the_node($node, $leaf->{'ord'});
 
         unless ($node->{'ref'} eq $leaf->{'ord'}) {
 
-            $node->{$_} = $leaf->{$_} for qw 'form id type comment gloss apply_t tag';
+            $node->{$_} = $leaf->{$_} for qw 'form comment score tag gloss';
             $node->{'ref'} = $leaf->{'ord'};
-            $node->{'apply_m'} = 1;
+            $node->{'apply'} = 1;
+
+            $node->{'id'} = $node->parent()->{'id'} . 'f' . $node->{'ref'};
         }
     }
 
@@ -930,6 +937,7 @@ sub get_the_node {
 
             $node = CutNode(NewLBrother($find));
             PasteNode($node, $parent);
+            DetermineNodeType($node);
         }
         elsif ($children[$i]->{'ref'} == $id) {
 
@@ -946,11 +954,13 @@ sub get_the_node {
 
             $node = CutNode(NewRBrother($find));
             PasteNode($node, $parent);
+            DetermineNodeType($node);
         }
     }
     else {
 
         $node = NewSon($parent);
+        DetermineNodeType($node);
     }
 
     return $node;
@@ -970,14 +980,14 @@ sub restrict_hide {
 
     ChangingFile(0);
 
-    return unless $root->{'type'} eq 'entity';
+    return unless $root->{'#name'} eq 'Entity';
 
     $Redraw = 'tree';   # be careful in annotate_morphology()
     ChangingFile(1);
 
     my ($restrict, $context) = @_;
 
-    my $node = $this->{'type'} eq 'token_node' ? $this->parent() : $this;
+    my $node = $this->{'#name'} eq 'Form' ? $this->parent() : $this;
     my $roof = $node;
 
     my (@tips, %tips, $orig, $diff);
@@ -1026,7 +1036,7 @@ sub restrict_hide {
             $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
         }
 
-        if ($node->{'type'} eq 'token_node') {
+        if ($node->{'#name'} eq 'Form') {
 
             if (restrict($node->{'inherit'}, $node->{'tag'}) ne $node->{'tag'}) {
 
@@ -1275,9 +1285,6 @@ sub restrict_feminine {
 #
 # ##################################################################################################
 
-use File::Spec;
-use File::Copy;
-
 sub path (@) {
 
     return File::Spec->join(@_);
@@ -1314,23 +1321,23 @@ sub inter_with_level ($) {
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.morpho.fs');
+    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.morpho.xml');
     (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'morpho', $name . '.morpho.fs';
-    $file[1] = path $path . "$level", $name . ".$level.fs";
+    $file[0] = path $path . 'morpho', $name . '.morpho.xml';
+    $file[1] = path $path . "$level", $name . ".$level.xml";
 
-    $file[2] = $level eq 'corpus' ? ( path $path . "$level", $name . '.morpho.fs')
-                                  : ( path $path . 'morpho', $name . ".$level.fs");
+    $file[2] = $level eq 'corpus' ? ( path $path . "$level", $name . '.morpho.xml' )
+                                  : ( path $path . 'morpho', $name . ".$level.xml" );
 
-    $file[3] = path $path . 'morpho', $name . '.morpho.fs.anno.fs';
+    $file[3] = path $path . 'morpho', $name . '.morpho.xml.anno.xml';
 
     unless ($file[0] eq $thisfile) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'morpho', $name . '.morpho.fs' ) . ".$fill",
+                        "Relocate it to " . ( path '..', 'morpho', $name . '.morpho.xml' ) . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1347,7 +1354,7 @@ sub synchronize_file {
     ChangingFile(0);
 
     open_level_second();
-    
+
     Analytic::synchronize_file();
 }
 
@@ -1369,7 +1376,7 @@ sub open_level_second {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file.$fill" .
+                        "\nThere is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -1381,8 +1388,8 @@ sub open_level_second {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.fs" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'morpho', $name . ".$level.fs" ) . ".$fill",
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'morpho', $name . ".$level.xml" ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
@@ -1426,7 +1433,7 @@ sub open_level_third {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1443,14 +1450,14 @@ sub switch_the_levels {
 
     my ($tree, $node, @child, $hits);
 
-    switch_either_context() unless $root->{'type'} eq 'paragraph';
+    switch_either_context() unless $root->{'#name'} eq 'Paragraph';
 
-    $tree = substr $root->{'id'}, 1;
+    $tree = substr $root->{'idx'}, 1;
     $node = 0;
 
     unless ($this == $root) {
 
-        $this = $this->parent() until $this->{'type'} eq 'word_node';
+        $this = $this->parent() until $this->{'#name'} eq 'Word';
 
         @child = $root->children();
 
@@ -1480,7 +1487,7 @@ sub switch_the_levels {
 
                 $this = $this->following();
 
-                ($hits) = $this->{'x_id_ord'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
+                ($hits) = $this->{'m'}{'ref'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
             }
             until $hits == $node;
         }
@@ -1544,6 +1551,9 @@ Paragraph annotation trees look like L<http://ufal.mff.cuni.cz/padt/docs/morpho_
 
 For further reference, see the list of MorphoTrees macros and key-bindings in the User-defined menu item in TrEd.
 
+MorphoTrees are closely related to the ElixirFM project, cf. <http://sf.net/projects/elixir-fm/> and
+<http://ufal.mff.cuni.cz/~smrz/elixir-thesis.pdf>.
+
 
 =head1 SEE ALSO
 
@@ -1563,7 +1573,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2007 by Otakar Smrz
+Copyright 2004-2008 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

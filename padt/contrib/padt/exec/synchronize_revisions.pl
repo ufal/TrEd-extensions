@@ -2,9 +2,9 @@
 #
 # synchronize_revisions.pl ############################################################## 2006/02/12
 
-# $Id: synchronize_revisions.pl 481 2008-01-24 16:34:52Z smrz $
+# $Id: synchronize_revisions.pl 487 2008-02-01 12:39:27Z smrz $
 
-our $VERSION = do { q $Revision: 481 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 487 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
 BEGIN {
@@ -16,7 +16,11 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-$dirsep = '\\';
+$dirsep = $^O eq 'MSWin32' ? '\\' : '/';
+
+$copy = $^O eq 'MSWin32' ? 'copy' : 'cp -p';
+
+$execDir = join $dirsep, $libDir, qw 'contrib padt exec', '';
 
 @ARGV = glob join " ", @ARGV;
 
@@ -61,15 +65,11 @@ foreach $file (@ARGV) {
           next;
     }
 
-    system 'perl -pi.unlines.fs ' . $libdir . 'lines_fs.pl ' . $file[0];
+    system $copy . ' ' . $file[3] . ' ' . $file[2];
 
-    system 'copy ' . $file[3] . ' ' . $file[2];
+    system 'perl -X ' . $execDir . 'SyntaxFS.pl ' . $file[0];
 
-    system 'perl -X ' . $libdir . 'SyntaxFS.pl ' . $file[0];
+    system $copy . ' ' . $file[1] . ' ' . $file[3];
 
-    system 'copy ' . $file[1] . ' ' . $file[3];
-
-    system 'btred -QI ' . $libdir . 'migrate_annotation_syntax.btred ' . $file[3];
-
-    system 'perl -pi.unlines.fs ' . $libdir . 'lines_fs.pl ' . $file[3];
+    system 'btred -QI ' . $execDir . 'migrate_annotation_syntax.btred ' . $file[3];
 }

@@ -1,15 +1,12 @@
 #!/usr/bin/perl -w ###################################################################### 2004/04/15
-
-eval 'exec /usr/bin/perl -w ###################################################################### 2004/04/15 -S $0 ${1+"$@"}'
-    if 0; # not running under some shell
 #
 # SyntaxFS.pl ########################################################################## Otakar Smrz
 
-# $Id: SyntaxFS.pl 480 2008-01-24 16:26:56Z smrz $
+# $Id: SyntaxFS.pl 670 2008-08-12 19:51:05Z smrz $
 
 use strict;
 
-our $VERSION = do { q $Revision: 480 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 670 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 BEGIN {
 
@@ -21,6 +18,8 @@ BEGIN {
 }
 
 use Fslib 1.6;
+
+use PMLInstance;
 
 
 our $decode = "utf8";
@@ -45,13 +44,14 @@ foreach $file (@ARGV) {
 
     $target = FSFile->create(define_target_format());
 
-    $source = FSFile->create('encoding' => $decode);
+    # $source = FSFile->create('encoding' => $decode);
+    # $source->readFile($file);
 
-    $source->readFile($file);
-
+    $source = PMLInstance->load({ 'filename' => $file });
+    
     process_source();
 
-    $file =~ s/(?:\.morpho)?\.fs$//;
+    $file =~ s/(?:\.morpho)?\.(?:fs|xml)$//;
 
     $target->writeFile($file . '.syntax.fs');
 }
@@ -64,11 +64,13 @@ sub process_source {
     my ($ord, $ent, $ref);
 
 
-    foreach my $tree ($source->trees()) {
+    foreach my $tree ($source->get_trees()) {
 
-        $tree_id++;
+        print $tree_id++;
 
-        next unless $tree->{'type'} eq 'paragraph';
+        next;
+        
+        next unless $tree->{'#name'} eq 'Paragraph';
 
         my $para = $tree;
 
@@ -91,7 +93,7 @@ sub process_source {
 
         foreach my $entity ($para->children()) {
 
-            if (defined $entity->{'apply_m'} and $entity->{'apply_m'} > 0) {
+            if (defined $entity->{'apply'} and $entity->{'apply'} > 0) {
 
                 $ent = 0;
 
@@ -258,7 +260,7 @@ SyntaxFS - Generating Analytic given a list of input MorphoTrees documents
 
 =head1 REVISION
 
-    $Revision: 480 $       $Date: 2008-01-24 17:26:56 +0100 (Thu, 24 Jan 2008) $
+    $Revision: 670 $       $Date: 2008-08-12 21:51:05 +0200 (Tue, 12 Aug 2008) $
 
 
 =head1 DESCRIPTION

@@ -1,0 +1,489 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>MorphoTrees - Context for Annotation of Morphology in the TrEd Environment</title>
+<link rel="stylesheet" href="../../blue.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;MorphoTrees - Context for Annotation of Morphology in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#revision">REVISION</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#bindings">BINDINGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright_and_license">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>MorphoTrees - Context for Annotation of Morphology in the TrEd Environment</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="revision">REVISION</a></h1>
+<pre>
+    $Revision: 707 $       $Date: 2008-09-15 08:31:59 +0200 (Mon, 15 Sep 2008) $</pre>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>MorphoTrees were first introduced in <a href="http://ufal.mff.cuni.cz/padt/docs/2004-nemlar-tred.pdf">http://ufal.mff.cuni.cz/padt/docs/2004-nemlar-tred.pdf</a>.
+They have re-appeared in various papers and talks, esp. in the video-recorded lecture on the Prague
+Arabic Dependency Treebank, <a href="http://ufal.mff.cuni.cz/padt/online/2007/01/prague-treebanking-for-everyone-video.html">http://ufal.mff.cuni.cz/padt/online/2007/01/prague-treebanking-for-everyone-video.html</a>.</p>
+<p>Examples of MorphoTrees include <a href="http://ufal.mff.cuni.cz/padt/docs/morpho_fhm.gif">http://ufal.mff.cuni.cz/padt/docs/morpho_fhm.gif</a>,
+<a href="http://ufal.mff.cuni.cz/padt/docs/morpho_AfrAd.gif">http://ufal.mff.cuni.cz/padt/docs/morpho_AfrAd.gif</a>, or
+<a href="http://ufal.mff.cuni.cz/padt/docs/morpho_AmA.gif">http://ufal.mff.cuni.cz/padt/docs/morpho_AmA.gif</a>.</p>
+<p>Paragraph annotation trees look like <a href="http://ufal.mff.cuni.cz/padt/docs/morpho_view.gif">http://ufal.mff.cuni.cz/padt/docs/morpho_view.gif</a>.</p>
+<p>For further reference, see the list of MorphoTrees macros and key-bindings in the User-defined menu item in TrEd.</p>
+<p>MorphoTrees are closely related to the ElixirFM project, cf. &lt;http://sf.net/projects/elixir-fm/&gt; and
+&lt;http://ufal.mff.cuni.cz/~smrz/elixir-thesis.pdf&gt;.</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="bindings">BINDINGS</a></h1>
+<dl>
+<dt><strong><a name="1" class="item">'1'</a></strong>
+
+<dd>
+<p>Restrict Case Nominative <code>restrict_case_nom</code></p>
+</dd>
+</li>
+<dt><strong><a name="2" class="item">'2'</a></strong>
+
+<dd>
+<p>Restrict Case Genitive <code>restrict_case_gen</code></p>
+</dd>
+</li>
+<dt><strong><a name="3" class="item">'3'</a></strong>
+
+<dd>
+<p>Restrict Person Third ;) <code>restrict_third</code></p>
+</dd>
+</li>
+<dt><strong><a name="4" class="item">'4'</a></strong>
+
+<dd>
+<p>Restrict Case Accusative <code>restrict_case_acc</code></p>
+</dd>
+</li>
+<dt><strong><a name="a" class="item">'A'</a></strong>
+
+<dd>
+<p>Restrict State Absolute <code>restrict_state_a</code></p>
+</dd>
+</li>
+<dt><strong><a name="backspace" class="item">'BackSpace'</a></strong>
+
+<dd>
+<p>Undo Annotate / Restrict <code>invoke_undo</code></p>
+</dd>
+</li>
+<dt><strong><a name="c" class="item">'C'</a></strong>
+
+<dd>
+<p>Restrict State Complex <code>restrict_state_c</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_1" class="item">'CTRL+1'</a></strong>
+
+<dd>
+<p>Restrict Person First <code>restrict_first</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_2" class="item">'CTRL+2'</a></strong>
+
+<dd>
+<p>Restrict Person Second <code>restrict_second</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_3" class="item">'CTRL+3'</a></strong>
+
+<dd>
+<p>Restrict Person Third <code>restrict_third</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_1" class="item">'CTRL+ALT+1'</a></strong>
+
+<dd>
+<p>Action: Edit MorphoTrees File <code>open_level_first</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_2" class="item">'CTRL+ALT+2'</a></strong>
+
+<dd>
+<p>Action: Edit Analytic File <code>open_level_second</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_3" class="item">'CTRL+ALT+3'</a></strong>
+
+<dd>
+<p>Action: Edit DeepLevels File <code>open_level_third</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_equal" class="item">'CTRL+ALT+equal'</a></strong>
+
+<dd>
+<p>Action: Synchronize Annotations <code>synchronize_file</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_down" class="item">'CTRL+Down'</a></strong>
+
+<dd>
+<p>Follow Annotation Down <code>follow_apply_down</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_end" class="item">'CTRL+End'</a></strong>
+
+<dd>
+<p>Move to Last on Level <code>move_next_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_f1" class="item">'CTRL+F1'</a></strong>
+
+<dd>
+<p>Level Guide Mode Normal <code>level_guide_mode_none</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_f2" class="item">'CTRL+F2'</a></strong>
+
+<dd>
+<p>Level Guide Mode Strict <code>level_guide_mode_fine</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_f3" class="item">'CTRL+F3'</a></strong>
+
+<dd>
+<p>Level Guide Mode Xtreme <code>level_guide_mode_high</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_home" class="item">'CTRL+Home'</a></strong>
+
+<dd>
+<p>Move to First on Level <code>move_next_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_left" class="item">'CTRL+Left'</a></strong>
+
+<dd>
+<p>Follow Annotation Left <code>follow_apply_left</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_return" class="item">'CTRL+Return'</a></strong>
+
+<dd>
+<p><code>ThisAddress()</code> to Clipboard <code>ThisAddressClipBoard</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_right" class="item">'CTRL+Right'</a></strong>
+
+<dd>
+<p>Follow Annotation Right <code>follow_apply_right</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_down" class="item">'CTRL+SHIFT+Down'</a></strong>
+
+<dd>
+<p>Move Down to Fork <code>move_to_fork</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_up" class="item">'CTRL+SHIFT+Up'</a></strong>
+
+<dd>
+<p>Move Up to Root <code>move_to_root</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_up" class="item">'CTRL+Up'</a></strong>
+
+<dd>
+<p>Follow Annotation Up <code>follow_apply_up</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_c" class="item">'CTRL+c'</a></strong>
+
+<dd>
+<p>Restrict Voice Active <code>restrict_active</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_d" class="item">'CTRL+d'</a></strong>
+
+<dd>
+<p>Restrict Illusory Dual <code>restrict_dual</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_equal" class="item">'CTRL+equal'</a></strong>
+
+<dd>
+<p>Toggle Tree Hide Mode <code>tree_hide_mode</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_f" class="item">'CTRL+f'</a></strong>
+
+<dd>
+<p>Restrict Illusory Feminine <code>restrict_feminine</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_m" class="item">'CTRL+m'</a></strong>
+
+<dd>
+<p>Restrict Illusory Masculine <code>restrict_masculine</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_p" class="item">'CTRL+p'</a></strong>
+
+<dd>
+<p>Restrict Illusory Plural <code>restrict_plural</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_s" class="item">'CTRL+s'</a></strong>
+
+<dd>
+<p>Restrict Illusory Singular <code>restrict_singular</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_space" class="item">'CTRL+space'</a></strong>
+
+<dd>
+<p>Annotate as if by Clicking <code>annotate_morphology_click</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_t" class="item">'CTRL+t'</a></strong>
+
+<dd>
+<p>Restrict Voice Passive <code>restrict_passive</code></p>
+</dd>
+</li>
+<dt><strong><a name="d" class="item">'D'</a></strong>
+
+<dd>
+<p>Restrict Adverb <code>restrict_adverb</code></p>
+</dd>
+</li>
+<dt><strong><a name="end" class="item">'End'</a></strong>
+
+<dd>
+<p>Move to Last Word <code>move_word_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="escape" class="item">'Escape'</a></strong>
+
+<dd>
+<p>Remove Induced Restrict <code>remove_induced_restrict</code></p>
+</dd>
+</li>
+<dt><strong><a name="home" class="item">'Home'</a></strong>
+
+<dd>
+<p>Move to First Word <code>move_word_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="i" class="item">'I'</a></strong>
+
+<dd>
+<p>Restrict Verb Indicative <code>restrict_indicative</code></p>
+</dd>
+</li>
+<dt><strong><a name="j" class="item">'J'</a></strong>
+
+<dd>
+<p>Restrict Verb Jussive <code>restrict_jussive</code></p>
+</dd>
+</li>
+<dt><strong><a name="l" class="item">'L'</a></strong>
+
+<dd>
+<p>Restrict State Lifted <code>restrict_state_l</code></p>
+</dd>
+</li>
+<dt><strong><a name="p" class="item">'P'</a></strong>
+
+<dd>
+<p>Restrict Verb Perfect <code>restrict_perfect</code></p>
+</dd>
+</li>
+<dt><strong><a name="s" class="item">'S'</a></strong>
+
+<dd>
+<p>Restrict Verb Subjunctive <code>restrict_subjunctive</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_backspace" class="item">'SHIFT+BackSpace'</a></strong>
+
+<dd>
+<p>Redo Annotate / Restrict <code>invoke_redo</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_end" class="item">'SHIFT+End'</a></strong>
+
+<dd>
+<p>Move to Last Paragraph <code>move_par_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_escape" class="item">'SHIFT+Escape'</a></strong>
+
+<dd>
+<p>Remove Inherited Restrict <code>remove_inherited_restrict</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_home" class="item">'SHIFT+Home'</a></strong>
+
+<dd>
+<p>Move to First Paragraph <code>move_par_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_next" class="item">'SHIFT+Next'</a></strong>
+
+<dd>
+<p>Move to Next Paragraph <code>move_to_next_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_prior" class="item">'SHIFT+Prior'</a></strong>
+
+<dd>
+<p>Move to Prev Paragraph <code>move_to_prev_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_space" class="item">'SHIFT+space'</a></strong>
+
+<dd>
+<p>Switch Either Context <code>switch_either_context</code></p>
+</dd>
+</li>
+<dt><strong><a name="a" class="item">'a'</a></strong>
+
+<dd>
+<p>Restrict Adjective <code>restrict_adjective</code></p>
+</dd>
+</li>
+<dt><strong><a name="c" class="item">'c'</a></strong>
+
+<dd>
+<p>Restrict Conjunction <code>restrict_conjunction</code></p>
+</dd>
+</li>
+<dt><strong><a name="d" class="item">'d'</a></strong>
+
+<dd>
+<p>Restrict State Definite <code>restrict_state_d</code></p>
+</dd>
+</li>
+<dt><strong><a name="exclam" class="item">'exclam'</a></strong>
+
+<dd>
+<p>Edit Annotation Comment <code>edit_comment</code></p>
+</dd>
+</li>
+<dt><strong><a name="f" class="item">'f'</a></strong>
+
+<dd>
+<p>Restrict Particle <code>restrict_particle</code></p>
+</dd>
+</li>
+<dt><strong><a name="i" class="item">'i'</a></strong>
+
+<dd>
+<p>Restrict State Indefinite <code>restrict_state_i</code></p>
+</dd>
+</li>
+<dt><strong><a name="n" class="item">'n'</a></strong>
+
+<dd>
+<p>Restrict Noun <code>restrict_noun</code></p>
+</dd>
+</li>
+<dt><strong><a name="p" class="item">'p'</a></strong>
+
+<dd>
+<p>Restrict Preposition <code>restrict_preposition</code></p>
+</dd>
+</li>
+<dt><strong><a name="r" class="item">'r'</a></strong>
+
+<dd>
+<p>Restrict State Reduced <code>restrict_state_r</code></p>
+</dd>
+</li>
+<dt><strong><a name="s" class="item">'s'</a></strong>
+
+<dd>
+<p>Restrict Pronoun <code>restrict_pronoun</code></p>
+</dd>
+</li>
+<dt><strong><a name="space" class="item">'space'</a></strong>
+
+<dd>
+<p>Annotate Morphology <code>annotate_morphology</code></p>
+</dd>
+</li>
+<dt><strong><a name="v" class="item">'v'</a></strong>
+
+<dd>
+<p>Restrict Verb <code>restrict_verb</code></p>
+</dd>
+</li>
+<dt><strong><a name="z" class="item">'z'</a></strong>
+
+<dd>
+<p>Restrict Proper Name <code>restrict_proper</code></p>
+</dd>
+</li>
+</dl>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>TrEd Tree Editor <a href="http://ufal.mff.cuni.cz/~pajas/tred/">http://ufal.mff.cuni.cz/~pajas/tred/</a></p>
+<p>Prague Arabic Dependency Treebank <a href="http://ufal.mff.cuni.cz/padt/online/">http://ufal.mff.cuni.cz/padt/online/</a></p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Otakar Smrz, <a href="http://ufal.mff.cuni.cz/~smrz/">http://ufal.mff.cuni.cz/~smrz/</a></p>
+<pre>
+    <span class="keyword">eval</span> <span class="operator">{</span> <span class="string">'E&lt;lt&gt;'</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'otakar smrz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">"\x40"</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'mff cuni cz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">'E&lt;gt&gt;'</span> <span class="operator">}</span>
+</pre>
+<p>Perl is also designed to make the easy jobs not that easy ;)</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="copyright_and_license">COPYRIGHT AND LICENSE</a></h1>
+<p>Copyright 2004-2008 by Otakar Smrz</p>
+<p>This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.</p>
+<p><a href="#__index__"><small>Back to Top</small></a></p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;MorphoTrees - Context for Annotation of Morphology in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

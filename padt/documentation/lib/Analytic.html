@@ -1,0 +1,504 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment</title>
+<link rel="stylesheet" href="../../blue.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#revision">REVISION</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#bindings">BINDINGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright_and_license">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="revision">REVISION</a></h1>
+<pre>
+    $Revision: 708 $       $Date: 2008-09-16 01:16:46 +0200 (Tue, 16 Sep 2008) $</pre>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>For reference, see the list of Analytic macros and key-bindings in the User-defined menu item in TrEd.</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="bindings">BINDINGS</a></h1>
+<dl>
+<dt><strong><a name="12" class="item">'1'</a></strong>
+
+<dd>
+<p>Arabic: Suffix Parallel <code>assign_parallel</code></p>
+</dd>
+</li>
+<dt><strong><a name="22" class="item">'2'</a></strong>
+
+<dd>
+<p>Arabic: Suffix Paren <code>assign_paren</code></p>
+</dd>
+</li>
+<dt><strong><a name="32" class="item">'3'</a></strong>
+
+<dd>
+<p>Arabic: Suffix ArabFa <code>assign_arabfa</code></p>
+</dd>
+</li>
+<dt><strong><a name="42" class="item">'4'</a></strong>
+
+<dd>
+<p>Arabic: Suffix ArabSpec <code>assign_arabspec</code></p>
+</dd>
+</li>
+<dt><strong><a name="5" class="item">'5'</a></strong>
+
+<dd>
+<p>Arabic: Suffix ArabClause <code>assign_arabclause</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_down" class="item">'ALT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node to either side brother if unique <code>thisToEitherBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_left" class="item">'ALT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to brother on the left <code>thisToRBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_right" class="item">'ALT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to brother on the right <code>thisToLBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_down" class="item">'ALT+SHIFT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node exchanged with parent <code>SwapNodesUp</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_left" class="item">'ALT+SHIFT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to uncle on the left <code>thisToParentRBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_right" class="item">'ALT+SHIFT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to uncle on the right <code>thisToParentLBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_up" class="item">'ALT+SHIFT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node to the root <code>thisToRoot</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_up" class="item">'ALT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node up one level to grandparent <code>thisToParent</code></p>
+</dd>
+</li>
+<dt><strong><a name="backspace2" class="item">'BackSpace'</a></strong>
+
+<dd>
+<p>Annotate: Undo recent annotation action <code>invoke_undo</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_12" class="item">'CTRL+ALT+1'</a></strong>
+
+<dd>
+<p>Action: Edit MorphoTrees File <code>open_level_first</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_22" class="item">'CTRL+ALT+2'</a></strong>
+
+<dd>
+<p>Action: Edit Analytic File <code>open_level_second</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_32" class="item">'CTRL+ALT+3'</a></strong>
+
+<dd>
+<p>Action: Edit DeepLevels File <code>open_level_third</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_down" class="item">'CTRL+ALT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node to inferior clause head <code>thisToInferClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_left" class="item">'CTRL+ALT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to following clause head <code>thisToRightClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_right" class="item">'CTRL+ALT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to preceeding clause head <code>thisToLeftClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_up" class="item">'CTRL+ALT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node to superior clause head <code>thisToSuperClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_equal2" class="item">'CTRL+ALT+equal'</a></strong>
+
+<dd>
+<p>Action: Synchronize Annotations <code>synchronize_file</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_down2" class="item">'CTRL+Down'</a></strong>
+
+<dd>
+<p>Move to the Inferior Clause Head <code>infer_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_e" class="item">'CTRL+E'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxE_Pa</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_end2" class="item">'CTRL+End'</a></strong>
+
+<dd>
+<p>Move to Leftmost Descendant <code>move_deep_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_home2" class="item">'CTRL+Home'</a></strong>
+
+<dd>
+<p>Move to Rightmost Descendant <code>move_deep_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_left2" class="item">'CTRL+Left'</a></strong>
+
+<dd>
+<p>Move to the Following Clause Head <code>next_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_m" class="item">'CTRL+M'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxM_Pa</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_return2" class="item">'CTRL+Return'</a></strong>
+
+<dd>
+<p><code>ThisAddress()</code> to Clipboard <code>ThisAddressClipBoard</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_right2" class="item">'CTRL+Right'</a></strong>
+
+<dd>
+<p>Move to the Preceeding Clause Head <code>prev_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_down2" class="item">'CTRL+SHIFT+Down'</a></strong>
+
+<dd>
+<p>Move Down to Fork <code>move_to_fork</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_f10" class="item">'CTRL+SHIFT+F10'</a></strong>
+
+<dd>
+<p>Arabic: Request auto afun for current subtree <code>request_auto_afun_subtree</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_f2" class="item">'CTRL+SHIFT+F2'</a></strong>
+
+<dd>
+<p>Arabic: Parse the current sentence and build a tree <code>padt_auto_parse_tree</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_f8" class="item">'CTRL+SHIFT+F8'</a></strong>
+
+<dd>
+<p>Arabic: Toggle request mode for auto afuns <code>hooks_request_mode</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_f9" class="item">'CTRL+SHIFT+F9'</a></strong>
+
+<dd>
+<p>Arabic: Request auto afun for current node <code>request_auto_afun_node</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_up2" class="item">'CTRL+SHIFT+Up'</a></strong>
+
+<dd>
+<p>Move Up to Root <code>move_to_root</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_t" class="item">'CTRL+T'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_Ante_Pa</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_up2" class="item">'CTRL+Up'</a></strong>
+
+<dd>
+<p>Move to the Superior Clause Head <code>super_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_x" class="item">'CTRL+X'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_ExD_Pa</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_e" class="item">'CTRL+e'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxE_Co</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_equal2" class="item">'CTRL+equal'</a></strong>
+
+<dd>
+<p>Toggle Children Hiding <code>tree_hide_mode</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_m2" class="item">'CTRL+m'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxM_Co</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_minus" class="item">'CTRL+minus'</a></strong>
+
+<dd>
+<p>Hide Children Subtrees <code>hide_children</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_plus" class="item">'CTRL+plus'</a></strong>
+
+<dd>
+<p>Unhide Children Recursively <code>unhide_subtree</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_question" class="item">'CTRL+question'</a></strong>
+
+<dd>
+<p>Arabic: Unset and request auto afun <code>unset_request_afun</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_space2" class="item">'CTRL+space'</a></strong>
+
+<dd>
+<p>Arabic: Accept auto-assigned annotation <code>accept_auto_afun</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_t2" class="item">'CTRL+t'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_Ante_Co</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_underscore" class="item">'CTRL+underscore'</a></strong>
+
+<dd>
+<p>Hide This Subtree <code>hide_this</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_x" class="item">'CTRL+x'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_ExD_Co</code></p>
+</dd>
+</li>
+<dt><strong><a name="e" class="item">'E'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxE_Ap</code></p>
+</dd>
+</li>
+<dt><strong><a name="end2" class="item">'End'</a></strong>
+
+<dd>
+<p>Move to Last Word <code>move_word_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="f8" class="item">'F8'</a></strong>
+
+<dd>
+<p>Display: Show / hide morphological tags <code>default_ar_attrs</code></p>
+</dd>
+</li>
+<dt><strong><a name="home2" class="item">'Home'</a></strong>
+
+<dd>
+<p>Move to First Word <code>move_word_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="m" class="item">'M'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_AuxM_Ap</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_end2" class="item">'SHIFT+End'</a></strong>
+
+<dd>
+<p>Move to Last Paragraph <code>move_par_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_home2" class="item">'SHIFT+Home'</a></strong>
+
+<dd>
+<p>Move to First Paragraph <code>move_par_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_next2" class="item">'SHIFT+Next'</a></strong>
+
+<dd>
+<p>Move to Next Paragraph <code>move_to_next_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_prior2" class="item">'SHIFT+Prior'</a></strong>
+
+<dd>
+<p>Move to Prev Paragraph <code>move_to_prev_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_space2" class="item">'SHIFT+space'</a></strong>
+
+<dd>
+<p>Annotate: Move to previous ??? <code>annotate_previous</code></p>
+</dd>
+</li>
+<dt><strong><a name="t" class="item">'T'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_Ante_Ap</code></p>
+</dd>
+</li>
+<dt><strong><a name="x" class="item">'X'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>afun_ExD_Ap</code></p>
+</dd>
+</li>
+<dt><strong><a name="e" class="item">'e'</a></strong>
+
+<dd>
+<p>Arabic: Assign afun AuxE <code>afun_AuxE</code></p>
+</dd>
+</li>
+<dt><strong><a name="exclam2" class="item">'exclam'</a></strong>
+
+<dd>
+<p>Annotate: Edit annotator's comment <code>edit_comment</code></p>
+</dd>
+</li>
+<dt><strong><a name="m" class="item">'m'</a></strong>
+
+<dd>
+<p>Arabic: Assign afun AuxM <code>afun_AuxM</code></p>
+</dd>
+</li>
+<dt><strong><a name="question" class="item">'question'</a></strong>
+
+<dd>
+<p>Arabic: Unset afun to ??? <code>unset_afun</code></p>
+</dd>
+</li>
+<dt><strong><a name="space2" class="item">'space'</a></strong>
+
+<dd>
+<p>Annotate: Move to following ??? <code>annotate_following</code></p>
+</dd>
+</li>
+<dt><strong><a name="t" class="item">'t'</a></strong>
+
+<dd>
+<p>Arabic: Assign afun Ante <code>afun_Ante</code></p>
+</dd>
+</li>
+<dt><strong><a name="x" class="item">'x'</a></strong>
+
+<dd>
+<p>Arabic: Assign afun ExD <code>afun_ExD</code></p>
+</dd>
+</li>
+</dl>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>TrEd Tree Editor <a href="http://ufal.mff.cuni.cz/~pajas/tred/">http://ufal.mff.cuni.cz/~pajas/tred/</a></p>
+<p>Prague Arabic Dependency Treebank <a href="http://ufal.mff.cuni.cz/padt/online/">http://ufal.mff.cuni.cz/padt/online/</a></p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Otakar Smrz, <a href="http://ufal.mff.cuni.cz/~smrz/">http://ufal.mff.cuni.cz/~smrz/</a></p>
+<pre>
+    <span class="keyword">eval</span> <span class="operator">{</span> <span class="string">'E&lt;lt&gt;'</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'otakar smrz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">"\x40"</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'mff cuni cz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">'E&lt;gt&gt;'</span> <span class="operator">}</span>
+</pre>
+<p>Perl is also designed to make the easy jobs not that easy ;)</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="copyright_and_license">COPYRIGHT AND LICENSE</a></h1>
+<p>Copyright 2004-2008 by Otakar Smrz</p>
+<p>This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.</p>
+<p><a href="#__index__"><small>Back to Top</small></a></p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

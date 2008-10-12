@@ -300,16 +300,16 @@ sub assign_arabfa {
   EditAttribute($this,'arabfa');
 }
 
-##bind assign_arabspec to key 4 menu Arabic: Suffix ArabSpec
-sub assign_arabspec {
-  $this->{arabspec}||='';
-  EditAttribute($this,'arabspec');
+##bind assign_coref to key 4 menu Arabic: Suffix Coref
+sub assign_coref {
+  $this->{s}{coref}||='';
+  EditAttribute($this,'s/coref');
 }
 
-##bind assign_arabclause to key 5 menu Arabic: Suffix ArabClause
-sub assign_arabclause {
-  $this->{arabclause}||='';
-  EditAttribute($this,'arabclause');
+##bind assign_clause to key 5 menu Arabic: Suffix Clause
+sub assign_clause {
+  $this->{s}{clause}||='';
+  EditAttribute($this,'s/clause');
 }
 
 # ##################################################################################################
@@ -616,64 +616,6 @@ sub hide_node {
     $this->{'hide'} = $this->{'hide'} eq 'hide' ? '' : 'hide';
 }
 
-sub get_auto_afun {
-
-    require Assign_arab_afun;
-
-    my ($ra, $rb, $rc) = Assign_arab_afun::afun($_[0]);
-
-    print STDERR "$this->{lemma} ($ra,$rb,$rc)\n";
-
-    return $ra =~ /^\s*$/ ? '' : $ra;
-}
-
-##bind request_auto_afun_node Ctrl+Shift+F9 menu Arabic: Request auto afun for current node
-sub request_auto_afun_node {
-
-    my $node = $_[0] eq __PACKAGE__ ? $this : $_[0];
-
-    unless ($node and $node->parent() and ($node->{'afun'} eq '???' or $node->{'afun'} eq '')) {
-
-        $Redraw = 'none';
-        ChangingFile(0);
-    }
-    else {
-
-        $node->{'afun'} = '???';    # it might have been empty
-        $node->{'afunaux'} = get_auto_afun($node);
-
-        $Redraw = 'tree';
-    }
-}
-
-##bind request_auto_afun_subtree to Ctrl+Shift+F10 menu Arabic: Request auto afun for current subtree
-sub request_auto_afun_subtree {
-
-    my $node = $this;
-
-    request_auto_afun_node($node);      # more strict checks
-
-    while ($node = $node->following($this)) {
-
-        if ($node->{'afun'} eq '???' or $node->{'afun'} eq '') {
-
-            $node->{'afun'} = '???';    # it might have been empty
-            $node->{'afunaux'} = get_auto_afun($node);
-        }
-    }
-
-    $Redraw = 'tree';
-}
-
-##bind hooks_request_mode Ctrl+Shift+F8 menu Arabic: Toggle request mode for auto afuns
-sub hooks_request_mode {
-
-    $hooks_request_mode = not $hooks_request_mode;
-
-    $Redraw = 'none';
-    ChangingFile(0);
-}
-
 sub get_value_line_hook {
 
     my ($fsfile, $index) = @_;
@@ -681,14 +623,14 @@ sub get_value_line_hook {
 
     ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
-    $nodes = [ sort { $a->{'y_ord'} <=> $b->{'y_ord'} } @{$nodes} ];
+    $nodes = [ sort { $a->{'s'}{'ord'} <=> $b->{'s'}{'ord'} } @{$nodes} ];
 
     $words = [ [ $nodes->[0]->{'origf'}, $nodes->[0], '-foreground => darkmagenta' ],
                map {
                         [ " " ],
-                        [ $_->{'origf'}, $_, $_->{'tag'} ? () : '-foreground => red' ],
+                        [ $_->{'m'}{'input'}, $_, $_->{'m'}{'tag'} ? () : '-foreground => red' ],
                }
-               grep { defined $_->{'origf'} and $_->{'origf'} ne '' } @{$nodes}[1 .. $#{$nodes}] ];
+               grep { defined $_->{'m'}{'input'} and $_->{'m'}{'input'} ne '' } @{$nodes}[1 .. $#{$nodes}] ];
 
     @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
 
@@ -699,7 +641,7 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 'y_ord') until !$node or defined $node->{'origf'} and $node->{'origf'} ne '';
+    $node = PrevNodeLinear($node, 's/ord') until !$node or defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
 
     return $node;
 }
@@ -737,7 +679,7 @@ sub node_release_hook {
 
         return unless $hooks_request_mode;
 
-        while ($done->{'afun'} eq '???' and $done->{'afunaux'} eq '') {
+        while ($done->{'s'}{'afun'} eq '???' and $done->{'s'}{'afunaux'} eq '') {
 
             unshift @line, $done;
 
@@ -844,7 +786,7 @@ sub node_moved_hook {
 
     my @line;
 
-    while ($done->{'afun'} eq '???' and $done->{'afunaux'} eq '') {
+    while ($done->{'s'}{'afun'} eq '???' and $done->{'s'}{'afunaux'} eq '') {
 
         unshift @line, $done;
 
@@ -868,7 +810,7 @@ sub node_style_hook {
 
     my ($node, $styles) = @_;
 
-    if ($node->{'arabspec'} eq 'Ref') {
+    if ($node->{'s'}{'coref'} eq 'Ref') {
 
         my $T = << 'TARGET';
 [!
@@ -895,7 +837,7 @@ COORDS
     }
 
 
-    if ($node->{arabspec} eq 'Msd') {
+    if ($node->{'s'}{'coref'} eq 'Msd') {
 
         my $T = << 'TARGET';
 [!
@@ -930,8 +872,8 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{arabclause} ne "" || $this->{tag} =~ /^V/ && $this->{afun} !~ /^Aux/
-                                     || $this->{afun} =~ /^Pred[ECMP]?$/;
+    return $this->{'s'}{'clause'} ne "" || $this->{tag} =~ /^V/ && $this->{afun} !~ /^Aux/
+                                        || $this->{afun} =~ /^Pred[ECMP]?$/;
 }
 
 sub theClauseHead ($;&) {
@@ -946,13 +888,13 @@ sub theClauseHead ($;&) {
 
     while ($head) {
 
-        $effect = $head->{afun};
+        $effect = $head->{'s'}{'afun'};
 
-        if ($head->{afun} =~ /^(?:Coord|Apos)$/) {
+        if ($head->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/) {
 
-            @children = grep { $_->{parallel} =~ /^(?:Co|Ap)$/ } $head->children();
+            @children = grep { $_->{'parallel'} =~ /^(?:Co|Ap)$/ } $head->children();
 
-            if (grep { $_->{afun} eq 'Atv' } @children) {
+            if (grep { $_->{'s'}{'afun'} eq 'Atv' } @children) {
 
                 $effect = 'Atv';
             }
@@ -960,32 +902,32 @@ sub theClauseHead ($;&) {
 
                 $effect = 'Pred';
             }
-            elsif (grep { $_->{afun} eq 'Pnom'} @children) {
+            elsif (grep { $_->{'s'}{'afun'} eq 'Pnom'} @children) {
 
                 $effect = 'Pnom';
             }
         }
 
-        if ($head->{afun} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
+        if ($head->{'s'}{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
 
             $main = $head;                      # {Pred} <- [Pnom] = [Pnom] and there exist [Verb] <- [Verb]
 
-            if ($main->{parallel} =~ /^(?:Co|Ap)$/) {
+            if ($main->{'parallel'} =~ /^(?:Co|Ap)$/) {
 
                 do {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{parallel} =~ /^(?:Co|Ap)$/ and $main->{afun} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{afun} =~ /^(?:Coord|Apos)$/;
 
-                $main = $head unless $main and $main->{afun} =~ /^(?:Coord|Apos)$/;
+                $main = $head unless $main and $main->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/;
             }
 
             if ($main->parent() and isPredicate($main->parent())) {
 
                 return $main->parent();
             }
-            elsif ($head->{afun} eq 'Pnom') {
+            elsif ($head->{'s'}{'afun'} eq 'Pnom') {
 
                 return $head;
             }
@@ -1021,7 +963,7 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{afun} eq 'Atr' and $_[0]->{tag} =~ /^A/
+            return $_[0] if $_[0]->{'s'}{'afun'} eq 'Atr' and $_[0]->{'m'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -1031,7 +973,7 @@ sub referring_Ref {
 
         my $ante = $head;
 
-        $ante = $ante->following($head) while $ante and $ante->{afun} ne 'Ante' and $ante != $this;
+        $ante = $ante->following($head) while $ante and $ante->{'s'}{'afun'} ne 'Ante' and $ante != $this;
 
         unless ($ante) {
 
@@ -1039,7 +981,7 @@ sub referring_Ref {
 
             $ante = $head;
 
-            $ante = $ante->following($head) while $ante and $ante->{afun} ne 'Ante' and $ante != $this;
+            $ante = $ante->following($head) while $ante and $ante->{'s'}{'afun'} ne 'Ante' and $ante != $this;
         }
 
         $ante = $ante->parent() while $ante and $ante->{parallel} =~ /^(?:Co|Ap)$/;
@@ -1069,9 +1011,9 @@ sub referring_Msd {
 
     my $head = $this->parent();                                     # the token itself might feature the critical tags
 
-    $head = $head->parent() if $this->{afun} eq 'Atr';                      # constructs like <_hAfa 'a^sadda _hawfiN>
+    $head = $head->parent() if $this->{'s'}{'afun'} eq 'Atr';       # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or $head->{tag} =~ /^[VNA]/;    # the verb, governing masdar or participle
+    $head = $head->parent() until not $head or $head->{'m'}{'tag'} =~ /^[VNA]/;    # the verb, masdar or participle
 
     return $head;
 }
@@ -1125,7 +1067,7 @@ sub default_ar_attrs {
 
     my ($type, $pattern) = ('node:', '#{custom2}${tag}');
 
-    my $code = q {<? '#{custom6}${x_comment} << ' if $this->{afun} ne 'AuxS' and $this->{x_comment} ne '' ?>};
+    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m/comment} ne '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -1180,15 +1122,15 @@ sub accept_auto_afun {
 
     my $node = $this;
 
-    unless ($this->{'afun'} eq '???' and $this->{'afunaux'} ne '') {
+    unless ($this->{'s'}{'afun'} eq '???' and $this->{'s'}{'afunaux'} ne '') {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = $this->{'afunaux'};
-        $this->{'afunaux'} = '';
+        $this->{'s'}{'afun'} = $this->{'s'}{'afunaux'};
+        $this->{'s'}{'afunaux'} = '';
 
         $Redraw = 'tree';
     }
@@ -1447,23 +1389,23 @@ sub inter_with_level ($) {
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.deeper.fs');
+    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.deeper.xml');
     (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'deeper', $name . '.deeper.fs';
-    $file[1] = path $path . "$level", $name . ".$level.fs";
+    $file[0] = path $path . 'deeper', $name . '.deeper.xml';
+    $file[1] = path $path . "$level", $name . ".$level.xml";
 
-    $file[2] = $level ne 'others' ? ( path $path . "$level", $name . '.deeper.fs')
-                                  : ( path $path . 'deeper', $name . ".$level.fs");
+    $file[2] = $level ne 'others' ? ( path $path . "$level", $name . '.deeper.xml' )
+                                  : ( path $path . 'deeper', $name . ".$level.xml" );
 
-    $file[3] = path $path . 'deeper', $name . '.deeper.fs.anno.fs';
+    $file[3] = path $path . 'deeper', $name . '.deeper.xml.anno.xml';
 
     unless ($file[0] eq $thisfile) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'deeper', $name . '.deeper.fs' ) . ".$fill",
+                        "Relocate it to " . ( path '..', 'deeper', $name . '.deeper.xml' ) . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1496,7 +1438,7 @@ sub synchronize_file {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file.$fill\n" .
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
                         "Make sure you are working with complete data!$fill",
             -title => 'Error',
             -type => 'OK',
@@ -1509,8 +1451,8 @@ sub synchronize_file {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.fs' ) . "!$fill\n" .
-                        "Please remove " . ( path '..', "$level", $name . '.deeper.fs' ) . ".$fill",
+            -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!$fill\n" .
+                        "Please remove " . ( path '..', "$level", $name . '.deeper.xml' ) . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1576,7 +1518,7 @@ sub open_level_first {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1622,7 +1564,7 @@ sub open_level_second {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.fs" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1712,7 +1654,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2007 by Otakar Smrz
+Copyright 2006-2008 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

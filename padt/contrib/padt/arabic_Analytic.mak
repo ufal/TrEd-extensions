@@ -9,6 +9,7 @@ package TredMacro;
 sub file_opened_hook {
 
     SwitchContext('Analytic');
+    SetCurrentStyleSheet('Analytic');
 }
 
 #include "arabic_common.mak"

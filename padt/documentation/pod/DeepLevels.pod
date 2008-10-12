@@ -1,0 +1,575 @@
+=head1 NAME
+
+DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment
+
+
+=head1 REVISION
+
+    $Revision: 611 $       $Date: 2008-07-13 12:21:17 +0200 (Sun, 13 Jul 2008) $
+
+
+=head1 DESCRIPTION
+
+For reference, see the list of DeepLevels macros and key-bindings in the User-defined menu item in TrEd.
+
+
+
+
+=head1 BINDINGS
+
+=over
+
+=item '0'
+
+Functor:  ID      Identity C<func_ID>
+
+=item '1'
+
+Functor:  DIR1    From where C<func_DIR1>
+
+=item '2'
+
+Functor:  DIR2    Through where C<func_DIR2>
+
+=item '3'
+
+Functor:  DIR3    To where C<func_DIR3>
+
+=item '4'
+
+Functor: MAT Partitiv (hrnek čaje) C<func_MAT>
+
+=item '6'
+
+Functor: FPHR fraze v cizim jazyce C<func_FPHR>
+
+=item '7'
+
+Functor: RHEM Rhematizer (i, také, jenom,vůbec, NEG, nikoli) C<func_RHEM>
+
+=item '9'
+
+Functor: MANN Manner, způsob (ústně, psát česky) C<func_MANN>
+
+=item 'A'
+
+Functor: PARTL C<func_PARTL>
+
+=item 'ALT+Down'
+
+Annotate: Current node to either side brother if unique C<thisToEitherBrother>
+
+=item 'ALT+Left'
+
+Annotate: Current node to brother on the left C<thisToRBrother>
+
+=item 'ALT+Right'
+
+Annotate: Current node to brother on the right C<thisToLBrother>
+
+=item 'ALT+SHIFT+Down'
+
+Annotate: Current node exchanged with parent C<SwapNodesUp>
+
+=item 'ALT+SHIFT+Left'
+
+Annotate: Current node to uncle on the left C<thisToParentRBrother>
+
+=item 'ALT+SHIFT+Right'
+
+Annotate: Current node to uncle on the right C<thisToParentLBrother>
+
+=item 'ALT+SHIFT+Up'
+
+Annotate: Current node to the root C<thisToRoot>
+
+=item 'ALT+Up'
+
+Annotate: Current node up one level to grandparent C<thisToParent>
+
+=item 'BackSpace'
+
+Annotate: Undo recent annotation action C<invoke_undo>
+
+=item 'C'
+
+Functor:  ACMP    Accompaniment C<func_ACMP>
+
+=item 'CTRL+ALT+1'
+
+Action: Edit MorphoTrees File C<open_level_first>
+
+=item 'CTRL+ALT+2'
+
+Action: Edit Analytic File C<open_level_second>
+
+=item 'CTRL+ALT+3'
+
+Action: Edit DeepLevels File C<open_level_third>
+
+=item 'CTRL+ALT+Down'
+
+Annotate: Current node to inferior clause head C<thisToInferClauseHead>
+
+=item 'CTRL+ALT+Left'
+
+Annotate: Current node to following clause head C<thisToRightClauseHead>
+
+=item 'CTRL+ALT+Right'
+
+Annotate: Current node to preceeding clause head C<thisToLeftClauseHead>
+
+=item 'CTRL+ALT+Up'
+
+Annotate: Current node to superior clause head C<thisToSuperClauseHead>
+
+=item 'CTRL+ALT+equal'
+
+Action: Synchronize Annotations C<synchronize_file>
+
+=item 'CTRL+Down'
+
+Move to the Inferior Clause Head C<infer_clause_head>
+
+=item 'CTRL+End'
+
+Move to Leftmost Descendant C<move_deep_end>
+
+=item 'CTRL+Home'
+
+Move to Rightmost Descendant C<move_deep_home>
+
+=item 'CTRL+Left'
+
+Move to the Following Clause Head C<next_clause_head>
+
+=item 'CTRL+O'
+
+Functor: CONTRD C<func_CONTRD>
+
+=item 'CTRL+Return'
+
+ThisAddress() to Clipboard C<ThisAddressClipBoard>
+
+=item 'CTRL+Right'
+
+Move to the Preceeding Clause Head C<prev_clause_head>
+
+=item 'CTRL+SHIFT+Down'
+
+Move Down to Fork C<move_to_fork>
+
+=item 'CTRL+SHIFT+F2'
+
+Arabic: Parse the current sentence and build a tree C<padt_auto_parse_tree>
+
+=item 'CTRL+SHIFT+Up'
+
+Move Up to Root C<move_to_root>
+
+=item 'CTRL+Up'
+
+Move to the Superior Clause Head C<super_clause_head>
+
+=item 'CTRL+a'
+
+Functor: TPAR Parallel (během, zatímco, za celý zápas, mezitím co) C<func_TPAR>
+
+=item 'CTRL+b'
+
+Context: B bound C<context_B>
+
+=item 'CTRL+c'
+
+Context: C contrastive C<context_C>
+
+=item 'CTRL+c'
+
+Functor: CNCS C<func_CNCS>
+
+=item 'CTRL+d'
+
+Functor: COND Condition, podmínka reálná (-li, jestlize, kdyz, az) C<func_COND>
+
+=item 'CTRL+e'
+
+Functor: CM C<func_CM>
+
+=item 'CTRL+f'
+
+Functor: CTERF Counterfactual, ireálná podmínka (kdyby) C<func_CTREF>
+
+=item 'CTRL+g'
+
+Functor: GRAD Gradation, stupňovací koord (i, a také) C<func_GRAD>
+
+=item 'CTRL+h'
+
+Functor: TFHL For how long, na jak dlouho (na věky) C<func_TFHL>
+
+=item 'CTRL+h'
+
+Display: Hide / unhide the node C<hide_node>
+
+=item 'CTRL+i'
+
+Functor: TSIN Since, odkdy (od té doby co, ode dne podpisu) C<func_TSIN>
+
+=item 'CTRL+k'
+
+Functor: CRIT Criterion, měřítko (podle něj, podle jeho slov) C<func_CRIT>
+
+=item 'CTRL+l'
+
+Functor: THL How long, jak dlouho (četl půl hodiny) C<func_THL>
+
+=item 'CTRL+m'
+
+Functor: MEANS Prostředek (psát rukou, tuzkou) C<func_MEANS>
+
+=item 'CTRL+n'
+
+Context: N non-bound C<context_N>
+
+=item 'CTRL+o'
+
+Functor: THO How often (často, mnohokrát...) C<func_THO>
+
+=item 'CTRL+p'
+
+Functor: PREC Ref. to prec. text(na zač. věty:tedy, tudíz, totiz,protoze, ..) C<func_PREC>
+
+=item 'CTRL+r'
+
+Functor: REAS Reason, důvod (nebot) C<func_REAS>
+
+=item 'CTRL+t'
+
+Functor: TTILL Till, dokdy (az do, dokud ne, nez) C<func_TILL>
+
+=item 'CTRL+u'
+
+Functor: SUBS Zastoupení (místo koho-čeho) C<func_SUBS>
+
+=item 'CTRL+v'
+
+Context: revert to unset C<unset_context>
+
+=item 'CTRL+w'
+
+Functor: TOWH To when, nakdy (přelozí výuku na pátek) C<func_TOWH>
+
+=item 'CTRL+z'
+
+Functor: PAR Parenthesis, vsuvka (myslím, věřím) C<func_PAR>
+
+=item 'D'
+
+Functor:  DES     Descriptive C<func_DES>
+
+=item 'E'
+
+Functor: ETHD Ethical Dative (já ti mám knih, děti nám nechodí včas) C<func_ETHD>
+
+=item 'End'
+
+Move to Last Word C<move_word_end>
+
+=item 'F'
+
+Functor: DIFF Difference, rozdíl (oč) C<func_DIFF>
+
+=item 'F8'
+
+Display: Show / hide morphological tags C<default_ar_attrs>
+
+=item 'H'
+
+Functor: HER heritage, dědictví (po otci) C<func_HER>
+
+=item 'Home'
+
+Move to First Word C<move_word_home>
+
+=item 'I'
+
+Functor:  AIM     Aim C<func_AIM>
+
+=item 'I'
+
+Functor: INTF falesný podmět (To Karel jestě nepřisel?) C<func_INTF>
+
+=item 'J'
+
+Functor:  DISJ    Disjunction C<func_DISJ>
+
+=item 'K'
+
+Functor: VOCAT Vokativ aponovaný (Pojď sem, Jirko!) C<func_VOCAT>
+
+=item 'L'
+
+Functor:  COMPL   Complement C<func_COMPL>
+
+=item 'M'
+
+Functor: MOD Adv. of modality (asi, mozná, to je myslím zlé) C<func_MOD>
+
+=item 'N'
+
+Functor: NORM Norma (ve shodě s, podle) C<func_NORM>
+
+=item 'O'
+
+Functor: CONFR C<func_CONFR>
+
+=item 'P'
+
+Functor:  APP     Appurtenance C<func_APP>
+
+=item 'P'
+
+Functor: CPR Porovnání (nez, jako, stejně jako) C<func_CPR>
+
+=item 'R'
+
+Functor: RESTR Omezení (kromě, mimo) C<func_RESTR>
+
+=item 'S'
+
+Functor: RESL Účinek (takze) C<func_RESL>
+
+=item 'S'
+
+Functor:  RSTR    Restrictive C<func_RSTR>
+
+=item 'SHIFT+End'
+
+Move to Last Paragraph C<move_par_end>
+
+=item 'SHIFT+Home'
+
+Move to First Paragraph C<move_par_home>
+
+=item 'SHIFT+Next'
+
+Move to Next Paragraph C<move_to_next_paragraph>
+
+=item 'SHIFT+Prior'
+
+Move to Prev Paragraph C<move_to_prev_paragraph>
+
+=item 'SHIFT+space'
+
+Annotate: Move to previous ??? C<annotate_previous>
+
+=item 'T'
+
+Functor:  INTT    Intention C<func_INTT>
+
+=item 'V'
+
+Functor: VOC Vokativní věta (Jirko!) C<func_VOC>
+
+=item 'W'
+
+Functor: TFRWH From when, zekdy (zbylo od vánoc cukroví) C<func_TFRWH>
+
+=item 'X'
+
+Functor: DPHR zavisla cast frazemu C<func_DPHR>
+
+=item 'a'
+
+Functor:  ACT     Actor C<func_ACT>
+
+=item 'b'
+
+Functor: BEN     Benefactive C<func_BEN>
+
+=item 'c'
+
+Functor: CAUS    Causative C<func_CAUS>
+
+=item 'd'
+
+Functor:  ADDR    Addressee C<func_ADDR>
+
+=item 'e'
+
+Functor:  EFF     Effect C<func_EFF>
+
+=item 'exclam'
+
+Annotate: Edit annotator's comment C<edit_comment>
+
+=item 'g'
+
+Functor:  REG     Regard C<func_REG>
+
+=item 'j'
+
+Functor:  CONJ    Conjunction C<func_CONJ>
+
+=item 'l'
+
+Functor:  LOC     Where (generic) C<func_LOC>
+
+=item 'menu'
+
+I<not in the menu> C<func_VOC>
+
+=item 'menu'
+
+I<not in the menu> C<func_CRIT>
+
+=item 'menu'
+
+I<not in the menu> C<func_MANN>
+
+=item 'menu'
+
+I<not in the menu> C<func_TTILL>
+
+=item 'menu'
+
+I<not in the menu> C<func_CONFR>
+
+=item 'menu'
+
+I<not in the menu> C<func_CPHR>
+
+=item 'menu'
+
+I<not in the menu> C<func_SUBS>
+
+=item 'menu'
+
+I<not in the menu> C<func_MEANS>
+
+=item 'menu'
+
+I<not in the menu> C<func_COND>
+
+=item 'menu'
+
+I<not in the menu> C<func_TSIN>
+
+=item 'menu'
+
+I<not in the menu> C<func_CPR>
+
+=item 'menu'
+
+I<not in the menu> C<func_TPAR>
+
+=item 'menu'
+
+I<not in the menu> C<func_TWHEN>
+
+=item 'menu'
+
+I<not in the menu> C<func_RESTR>
+
+=item 'menu'
+
+I<not in the menu> C<func_MAT>
+
+=item 'menu'
+
+I<not in the menu> C<func_TFHL>
+
+=item 'menu'
+
+I<not in the menu> C<func_DPHR>
+
+=item 'menu'
+
+I<not in the menu> C<func_THO>
+
+=item 'menu'
+
+I<not in the menu> C<func_THL>
+
+=item 'n'
+
+Functor: NORM    Normative C<func_NORM>
+
+=item 'n'
+
+Functor: DENOM Pojmenování C<func_DENOM>
+
+=item 'o'
+
+Functor:  ORIG    Origin C<func_ORIG>
+
+=item 'p'
+
+Functor:  PAT     Patient C<func_PAT>
+
+=item 'q'
+
+Functor: CSQ Consequence, důsledek koord. (a proto, a tak, a tedy, pročez) C<func_CSQ>
+
+=item 'q'
+
+Functor:  PRED    Predicate C<func_PRED>
+
+=item 'question'
+
+Functor: unset to ??? C<unset_func>
+
+=item 'r'
+
+Functor:  RESL    Result C<func_RESL>
+
+=item 's'
+
+Functor:  APPS    Apposition C<func_APPS>
+
+=item 'space'
+
+Annotate: Move to following ??? C<annotate_following>
+
+=item 't'
+
+Functor:  ATT     Attitude C<func_ATT>
+
+=item 'v'
+
+Functor:  ADVS    Adversative C<func_ADVS>
+
+=item 'w'
+
+Functor: TWHEN When, kdy (loni, vstupuje v platnost dnem podpisu) C<func_TWHEN>
+
+=item 'x'
+
+Functor:  EXT     Extent C<func_EXT>
+
+=back
+
+=head1 SEE ALSO
+
+TrEd Tree Editor L<http://ufal.mff.cuni.cz/~pajas/tred/>
+
+Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
+
+
+=head1 AUTHOR
+
+Otakar Smrz, L<http://ufal.mff.cuni.cz/~smrz/>
+
+    eval { 'E<lt>' . ( join '.', qw 'otakar smrz' ) . "\x40" . ( join '.', qw 'mff cuni cz' ) . 'E<gt>' }
+
+Perl is also designed to make the easy jobs not that easy ;)
+
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2006-2008 by Otakar Smrz
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+

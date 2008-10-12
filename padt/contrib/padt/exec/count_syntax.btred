@@ -24,28 +24,28 @@ sub autostart {
 
             unless ($this->parent()) {
 
-                $xtid = $this->{'form'} || '';
+                $xtid = $this->{'m'}{'form'} || '';
 
-                report ">< ", ( $this->{'afun'} || '???' ), $this->{'form'}
+                report ">< ", ( $this->{'afun'} || '???' ), $this->{'m'}{'form'}
                     unless $this->{'afun'} eq 'AuxS';
             }
             else {
 
                 $node++;
 
-                report "-- ", ( $this->{'afun'} || '???' ), $this->{'x_lookup'}
-                    unless $this->{'form'} ne '' or $none++ < 0;
+                report "-- ", ( $this->{'afun'} || '???' ), $this->{'m'}{'lookup'}
+                    unless $this->{'m'}{'form'} ne '' or $none++ < 0;
 
-                report "++ ", ( $this->{'afun'} || '???' ), $this->{'x_lookup'}, $this->{'x_comment'}
-                    unless $this->{'x_comment'} eq '';
+                report "++ ", ( $this->{'afun'} || '???' ), $this->{'m'}{'lookup'}, $this->{'m'}{'comment'}
+                    unless $this->{'m'}{'comment'} eq '';
 
-                report "<> ", ( $this->{'afun'} || '???' ), $this->{'x_lookup'}
-                    unless $this->{'x_id_ord'} =~ /^$xtid\//;
+                report "<> ", ( $this->{'afun'} || '???' ), $this->{'m'}{'lookup'}
+                    unless $this->{'m'}{'ref'} =~ /^$xtid\//;
 
-                report "!! ", ( $this->{'afun'} || '???' ), $this->{'x_lookup'}, $this->{'comment'}
+                report "!! ", ( $this->{'afun'} || '???' ), $this->{'m'}{'lookup'}, $this->{'comment'}
                     unless $this->{'comment'} eq '';
 
-                report "?? ", ( $this->{'afun'} || '???' ), $this->{'x_lookup'}
+                report "?? ", ( $this->{'afun'} || '???' ), $this->{'m'}{'lookup'}
                     unless $this->{'afun'} =~ /^ (?:
 
                         Pred|PredC|PredE|PredP|Pnom|Sb|Obj|Atr|Adv|

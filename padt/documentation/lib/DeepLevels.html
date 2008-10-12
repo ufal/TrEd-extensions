@@ -1,0 +1,888 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment</title>
+<link rel="stylesheet" href="../../blue.css" type="text/css" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:" />
+</head>
+
+<body>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+
+<!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#revision">REVISION</a></li>
+	<li><a href="#description">DESCRIPTION</a></li>
+	<li><a href="#bindings">BINDINGS</a></li>
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright_and_license">COPYRIGHT AND LICENSE</a></li>
+</ul>
+
+<hr name="index" />
+</div>
+<!-- INDEX END -->
+
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="revision">REVISION</a></h1>
+<pre>
+    $Revision: 611 $       $Date: 2008-07-13 12:21:17 +0200 (Sun, 13 Jul 2008) $</pre>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="description">DESCRIPTION</a></h1>
+<p>For reference, see the list of DeepLevels macros and key-bindings in the User-defined menu item in TrEd.</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="bindings">BINDINGS</a></h1>
+<dl>
+<dt><strong><a name="_0_" class="item">'0'</a></strong>
+
+<dd>
+<p>Functor:  ID      Identity <code>func_ID</code></p>
+</dd>
+</li>
+<dt><strong><a name="13" class="item">'1'</a></strong>
+
+<dd>
+<p>Functor:  DIR1    From where <code>func_DIR1</code></p>
+</dd>
+</li>
+<dt><strong><a name="23" class="item">'2'</a></strong>
+
+<dd>
+<p>Functor:  DIR2    Through where <code>func_DIR2</code></p>
+</dd>
+</li>
+<dt><strong><a name="33" class="item">'3'</a></strong>
+
+<dd>
+<p>Functor:  DIR3    To where <code>func_DIR3</code></p>
+</dd>
+</li>
+<dt><strong><a name="43" class="item">'4'</a></strong>
+
+<dd>
+<p>Functor: MAT Partitiv (hrnek čaje) <code>func_MAT</code></p>
+</dd>
+</li>
+<dt><strong><a name="6" class="item">'6'</a></strong>
+
+<dd>
+<p>Functor: FPHR fraze v cizim jazyce <code>func_FPHR</code></p>
+</dd>
+</li>
+<dt><strong><a name="7" class="item">'7'</a></strong>
+
+<dd>
+<p>Functor: RHEM Rhematizer (i, také, jenom,vůbec, NEG, nikoli) <code>func_RHEM</code></p>
+</dd>
+</li>
+<dt><strong><a name="9" class="item">'9'</a></strong>
+
+<dd>
+<p>Functor: MANN Manner, způsob (ústně, psát česky) <code>func_MANN</code></p>
+</dd>
+</li>
+<dt><strong><a name="a2" class="item">'A'</a></strong>
+
+<dd>
+<p>Functor: PARTL <code>func_PARTL</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_down2" class="item">'ALT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node to either side brother if unique <code>thisToEitherBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_left2" class="item">'ALT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to brother on the left <code>thisToRBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_right2" class="item">'ALT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to brother on the right <code>thisToLBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_down2" class="item">'ALT+SHIFT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node exchanged with parent <code>SwapNodesUp</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_left2" class="item">'ALT+SHIFT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to uncle on the left <code>thisToParentRBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_right2" class="item">'ALT+SHIFT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to uncle on the right <code>thisToParentLBrother</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_shift_up2" class="item">'ALT+SHIFT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node to the root <code>thisToRoot</code></p>
+</dd>
+</li>
+<dt><strong><a name="alt_up2" class="item">'ALT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node up one level to grandparent <code>thisToParent</code></p>
+</dd>
+</li>
+<dt><strong><a name="backspace3" class="item">'BackSpace'</a></strong>
+
+<dd>
+<p>Annotate: Undo recent annotation action <code>invoke_undo</code></p>
+</dd>
+</li>
+<dt><strong><a name="c2" class="item">'C'</a></strong>
+
+<dd>
+<p>Functor:  ACMP    Accompaniment <code>func_ACMP</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_13" class="item">'CTRL+ALT+1'</a></strong>
+
+<dd>
+<p>Action: Edit MorphoTrees File <code>open_level_first</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_23" class="item">'CTRL+ALT+2'</a></strong>
+
+<dd>
+<p>Action: Edit Analytic File <code>open_level_second</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_33" class="item">'CTRL+ALT+3'</a></strong>
+
+<dd>
+<p>Action: Edit DeepLevels File <code>open_level_third</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_down2" class="item">'CTRL+ALT+Down'</a></strong>
+
+<dd>
+<p>Annotate: Current node to inferior clause head <code>thisToInferClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_left2" class="item">'CTRL+ALT+Left'</a></strong>
+
+<dd>
+<p>Annotate: Current node to following clause head <code>thisToRightClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_right2" class="item">'CTRL+ALT+Right'</a></strong>
+
+<dd>
+<p>Annotate: Current node to preceeding clause head <code>thisToLeftClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_up2" class="item">'CTRL+ALT+Up'</a></strong>
+
+<dd>
+<p>Annotate: Current node to superior clause head <code>thisToSuperClauseHead</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_alt_equal3" class="item">'CTRL+ALT+equal'</a></strong>
+
+<dd>
+<p>Action: Synchronize Annotations <code>synchronize_file</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_down3" class="item">'CTRL+Down'</a></strong>
+
+<dd>
+<p>Move to the Inferior Clause Head <code>infer_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_end3" class="item">'CTRL+End'</a></strong>
+
+<dd>
+<p>Move to Leftmost Descendant <code>move_deep_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_home3" class="item">'CTRL+Home'</a></strong>
+
+<dd>
+<p>Move to Rightmost Descendant <code>move_deep_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_left3" class="item">'CTRL+Left'</a></strong>
+
+<dd>
+<p>Move to the Following Clause Head <code>next_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_o" class="item">'CTRL+O'</a></strong>
+
+<dd>
+<p>Functor: CONTRD <code>func_CONTRD</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_return3" class="item">'CTRL+Return'</a></strong>
+
+<dd>
+<p><code>ThisAddress()</code> to Clipboard <code>ThisAddressClipBoard</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_right3" class="item">'CTRL+Right'</a></strong>
+
+<dd>
+<p>Move to the Preceeding Clause Head <code>prev_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_down3" class="item">'CTRL+SHIFT+Down'</a></strong>
+
+<dd>
+<p>Move Down to Fork <code>move_to_fork</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_f22" class="item">'CTRL+SHIFT+F2'</a></strong>
+
+<dd>
+<p>Arabic: Parse the current sentence and build a tree <code>padt_auto_parse_tree</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_shift_up3" class="item">'CTRL+SHIFT+Up'</a></strong>
+
+<dd>
+<p>Move Up to Root <code>move_to_root</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_up3" class="item">'CTRL+Up'</a></strong>
+
+<dd>
+<p>Move to the Superior Clause Head <code>super_clause_head</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_a" class="item">'CTRL+a'</a></strong>
+
+<dd>
+<p>Functor: TPAR Parallel (během, zatímco, za celý zápas, mezitím co) <code>func_TPAR</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_b" class="item">'CTRL+b'</a></strong>
+
+<dd>
+<p>Context: B bound <code>context_B</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_c2" class="item">'CTRL+c'</a></strong>
+
+<dd>
+<p>Context: C contrastive <code>context_C</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_c3" class="item">'CTRL+c'</a></strong>
+
+<dd>
+<p>Functor: CNCS <code>func_CNCS</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_d2" class="item">'CTRL+d'</a></strong>
+
+<dd>
+<p>Functor: COND Condition, podmínka reálná (-li, jestlize, kdyz, az) <code>func_COND</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_e2" class="item">'CTRL+e'</a></strong>
+
+<dd>
+<p>Functor: CM <code>func_CM</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_f2" class="item">'CTRL+f'</a></strong>
+
+<dd>
+<p>Functor: CTERF Counterfactual, ireálná podmínka (kdyby) <code>func_CTREF</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_g" class="item">'CTRL+g'</a></strong>
+
+<dd>
+<p>Functor: GRAD Gradation, stupňovací koord (i, a také) <code>func_GRAD</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_h" class="item">'CTRL+h'</a></strong>
+
+<dd>
+<p>Functor: TFHL For how long, na jak dlouho (na věky) <code>func_TFHL</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_h2" class="item">'CTRL+h'</a></strong>
+
+<dd>
+<p>Display: Hide / unhide the node <code>hide_node</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_i" class="item">'CTRL+i'</a></strong>
+
+<dd>
+<p>Functor: TSIN Since, odkdy (od té doby co, ode dne podpisu) <code>func_TSIN</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_k" class="item">'CTRL+k'</a></strong>
+
+<dd>
+<p>Functor: CRIT Criterion, měřítko (podle něj, podle jeho slov) <code>func_CRIT</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_l" class="item">'CTRL+l'</a></strong>
+
+<dd>
+<p>Functor: THL How long, jak dlouho (četl půl hodiny) <code>func_THL</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_m3" class="item">'CTRL+m'</a></strong>
+
+<dd>
+<p>Functor: MEANS Prostředek (psát rukou, tuzkou) <code>func_MEANS</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_n" class="item">'CTRL+n'</a></strong>
+
+<dd>
+<p>Context: N non-bound <code>context_N</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_o" class="item">'CTRL+o'</a></strong>
+
+<dd>
+<p>Functor: THO How often (často, mnohokrát...) <code>func_THO</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_p2" class="item">'CTRL+p'</a></strong>
+
+<dd>
+<p>Functor: PREC Ref. to prec. text(na zač. věty:tedy, tudíz, totiz,protoze, ..) <code>func_PREC</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_r" class="item">'CTRL+r'</a></strong>
+
+<dd>
+<p>Functor: REAS Reason, důvod (nebot) <code>func_REAS</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_t3" class="item">'CTRL+t'</a></strong>
+
+<dd>
+<p>Functor: TTILL Till, dokdy (az do, dokud ne, nez) <code>func_TILL</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_u" class="item">'CTRL+u'</a></strong>
+
+<dd>
+<p>Functor: SUBS Zastoupení (místo koho-čeho) <code>func_SUBS</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_v" class="item">'CTRL+v'</a></strong>
+
+<dd>
+<p>Context: revert to unset <code>unset_context</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_w" class="item">'CTRL+w'</a></strong>
+
+<dd>
+<p>Functor: TOWH To when, nakdy (přelozí výuku na pátek) <code>func_TOWH</code></p>
+</dd>
+</li>
+<dt><strong><a name="ctrl_z" class="item">'CTRL+z'</a></strong>
+
+<dd>
+<p>Functor: PAR Parenthesis, vsuvka (myslím, věřím) <code>func_PAR</code></p>
+</dd>
+</li>
+<dt><strong><a name="d2" class="item">'D'</a></strong>
+
+<dd>
+<p>Functor:  DES     Descriptive <code>func_DES</code></p>
+</dd>
+</li>
+<dt><strong><a name="e2" class="item">'E'</a></strong>
+
+<dd>
+<p>Functor: ETHD Ethical Dative (já ti mám knih, děti nám nechodí včas) <code>func_ETHD</code></p>
+</dd>
+</li>
+<dt><strong><a name="end3" class="item">'End'</a></strong>
+
+<dd>
+<p>Move to Last Word <code>move_word_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="f" class="item">'F'</a></strong>
+
+<dd>
+<p>Functor: DIFF Difference, rozdíl (oč) <code>func_DIFF</code></p>
+</dd>
+</li>
+<dt><strong><a name="f82" class="item">'F8'</a></strong>
+
+<dd>
+<p>Display: Show / hide morphological tags <code>default_ar_attrs</code></p>
+</dd>
+</li>
+<dt><strong><a name="h" class="item">'H'</a></strong>
+
+<dd>
+<p>Functor: HER heritage, dědictví (po otci) <code>func_HER</code></p>
+</dd>
+</li>
+<dt><strong><a name="home3" class="item">'Home'</a></strong>
+
+<dd>
+<p>Move to First Word <code>move_word_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="i2" class="item">'I'</a></strong>
+
+<dd>
+<p>Functor:  AIM     Aim <code>func_AIM</code></p>
+</dd>
+</li>
+<dt><strong><a name="i3" class="item">'I'</a></strong>
+
+<dd>
+<p>Functor: INTF falesný podmět (To Karel jestě nepřisel?) <code>func_INTF</code></p>
+</dd>
+</li>
+<dt><strong><a name="j2" class="item">'J'</a></strong>
+
+<dd>
+<p>Functor:  DISJ    Disjunction <code>func_DISJ</code></p>
+</dd>
+</li>
+<dt><strong><a name="k" class="item">'K'</a></strong>
+
+<dd>
+<p>Functor: VOCAT Vokativ aponovaný (Pojď sem, Jirko!) <code>func_VOCAT</code></p>
+</dd>
+</li>
+<dt><strong><a name="l2" class="item">'L'</a></strong>
+
+<dd>
+<p>Functor:  COMPL   Complement <code>func_COMPL</code></p>
+</dd>
+</li>
+<dt><strong><a name="m2" class="item">'M'</a></strong>
+
+<dd>
+<p>Functor: MOD Adv. of modality (asi, mozná, to je myslím zlé) <code>func_MOD</code></p>
+</dd>
+</li>
+<dt><strong><a name="n" class="item">'N'</a></strong>
+
+<dd>
+<p>Functor: NORM Norma (ve shodě s, podle) <code>func_NORM</code></p>
+</dd>
+</li>
+<dt><strong><a name="o" class="item">'O'</a></strong>
+
+<dd>
+<p>Functor: CONFR <code>func_CONFR</code></p>
+</dd>
+</li>
+<dt><strong><a name="p2" class="item">'P'</a></strong>
+
+<dd>
+<p>Functor:  APP     Appurtenance <code>func_APP</code></p>
+</dd>
+</li>
+<dt><strong><a name="p3" class="item">'P'</a></strong>
+
+<dd>
+<p>Functor: CPR Porovnání (nez, jako, stejně jako) <code>func_CPR</code></p>
+</dd>
+</li>
+<dt><strong><a name="r" class="item">'R'</a></strong>
+
+<dd>
+<p>Functor: RESTR Omezení (kromě, mimo) <code>func_RESTR</code></p>
+</dd>
+</li>
+<dt><strong><a name="s2" class="item">'S'</a></strong>
+
+<dd>
+<p>Functor: RESL Účinek (takze) <code>func_RESL</code></p>
+</dd>
+</li>
+<dt><strong><a name="s3" class="item">'S'</a></strong>
+
+<dd>
+<p>Functor:  RSTR    Restrictive <code>func_RSTR</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_end3" class="item">'SHIFT+End'</a></strong>
+
+<dd>
+<p>Move to Last Paragraph <code>move_par_end</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_home3" class="item">'SHIFT+Home'</a></strong>
+
+<dd>
+<p>Move to First Paragraph <code>move_par_home</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_next3" class="item">'SHIFT+Next'</a></strong>
+
+<dd>
+<p>Move to Next Paragraph <code>move_to_next_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_prior3" class="item">'SHIFT+Prior'</a></strong>
+
+<dd>
+<p>Move to Prev Paragraph <code>move_to_prev_paragraph</code></p>
+</dd>
+</li>
+<dt><strong><a name="shift_space3" class="item">'SHIFT+space'</a></strong>
+
+<dd>
+<p>Annotate: Move to previous ??? <code>annotate_previous</code></p>
+</dd>
+</li>
+<dt><strong><a name="t2" class="item">'T'</a></strong>
+
+<dd>
+<p>Functor:  INTT    Intention <code>func_INTT</code></p>
+</dd>
+</li>
+<dt><strong><a name="v" class="item">'V'</a></strong>
+
+<dd>
+<p>Functor: VOC Vokativní věta (Jirko!) <code>func_VOC</code></p>
+</dd>
+</li>
+<dt><strong><a name="w" class="item">'W'</a></strong>
+
+<dd>
+<p>Functor: TFRWH From when, zekdy (zbylo od vánoc cukroví) <code>func_TFRWH</code></p>
+</dd>
+</li>
+<dt><strong><a name="x2" class="item">'X'</a></strong>
+
+<dd>
+<p>Functor: DPHR zavisla cast frazemu <code>func_DPHR</code></p>
+</dd>
+</li>
+<dt><strong><a name="a2" class="item">'a'</a></strong>
+
+<dd>
+<p>Functor:  ACT     Actor <code>func_ACT</code></p>
+</dd>
+</li>
+<dt><strong><a name="b" class="item">'b'</a></strong>
+
+<dd>
+<p>Functor: BEN     Benefactive <code>func_BEN</code></p>
+</dd>
+</li>
+<dt><strong><a name="c2" class="item">'c'</a></strong>
+
+<dd>
+<p>Functor: CAUS    Causative <code>func_CAUS</code></p>
+</dd>
+</li>
+<dt><strong><a name="d2" class="item">'d'</a></strong>
+
+<dd>
+<p>Functor:  ADDR    Addressee <code>func_ADDR</code></p>
+</dd>
+</li>
+<dt><strong><a name="e2" class="item">'e'</a></strong>
+
+<dd>
+<p>Functor:  EFF     Effect <code>func_EFF</code></p>
+</dd>
+</li>
+<dt><strong><a name="exclam3" class="item">'exclam'</a></strong>
+
+<dd>
+<p>Annotate: Edit annotator's comment <code>edit_comment</code></p>
+</dd>
+</li>
+<dt><strong><a name="g" class="item">'g'</a></strong>
+
+<dd>
+<p>Functor:  REG     Regard <code>func_REG</code></p>
+</dd>
+</li>
+<dt><strong><a name="j" class="item">'j'</a></strong>
+
+<dd>
+<p>Functor:  CONJ    Conjunction <code>func_CONJ</code></p>
+</dd>
+</li>
+<dt><strong><a name="l" class="item">'l'</a></strong>
+
+<dd>
+<p>Functor:  LOC     Where (generic) <code>func_LOC</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_VOC</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu2" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_CRIT</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu3" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_MANN</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu4" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_TTILL</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu5" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_CONFR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu6" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_CPHR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu7" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_SUBS</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu8" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_MEANS</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu9" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_COND</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu10" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_TSIN</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu11" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_CPR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu12" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_TPAR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu13" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_TWHEN</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu14" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_RESTR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu15" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_MAT</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu16" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_TFHL</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu17" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_DPHR</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu18" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_THO</code></p>
+</dd>
+</li>
+<dt><strong><a name="menu19" class="item">'menu'</a></strong>
+
+<dd>
+<p><em>not in the menu</em> <code>func_THL</code></p>
+</dd>
+</li>
+<dt><strong><a name="n2" class="item">'n'</a></strong>
+
+<dd>
+<p>Functor: NORM    Normative <code>func_NORM</code></p>
+</dd>
+</li>
+<dt><strong><a name="n3" class="item">'n'</a></strong>
+
+<dd>
+<p>Functor: DENOM Pojmenování <code>func_DENOM</code></p>
+</dd>
+</li>
+<dt><strong><a name="o" class="item">'o'</a></strong>
+
+<dd>
+<p>Functor:  ORIG    Origin <code>func_ORIG</code></p>
+</dd>
+</li>
+<dt><strong><a name="p2" class="item">'p'</a></strong>
+
+<dd>
+<p>Functor:  PAT     Patient <code>func_PAT</code></p>
+</dd>
+</li>
+<dt><strong><a name="q" class="item">'q'</a></strong>
+
+<dd>
+<p>Functor: CSQ Consequence, důsledek koord. (a proto, a tak, a tedy, pročez) <code>func_CSQ</code></p>
+</dd>
+</li>
+<dt><strong><a name="q2" class="item">'q'</a></strong>
+
+<dd>
+<p>Functor:  PRED    Predicate <code>func_PRED</code></p>
+</dd>
+</li>
+<dt><strong><a name="question2" class="item">'question'</a></strong>
+
+<dd>
+<p>Functor: unset to ??? <code>unset_func</code></p>
+</dd>
+</li>
+<dt><strong><a name="r2" class="item">'r'</a></strong>
+
+<dd>
+<p>Functor:  RESL    Result <code>func_RESL</code></p>
+</dd>
+</li>
+<dt><strong><a name="s2" class="item">'s'</a></strong>
+
+<dd>
+<p>Functor:  APPS    Apposition <code>func_APPS</code></p>
+</dd>
+</li>
+<dt><strong><a name="space3" class="item">'space'</a></strong>
+
+<dd>
+<p>Annotate: Move to following ??? <code>annotate_following</code></p>
+</dd>
+</li>
+<dt><strong><a name="t2" class="item">'t'</a></strong>
+
+<dd>
+<p>Functor:  ATT     Attitude <code>func_ATT</code></p>
+</dd>
+</li>
+<dt><strong><a name="v2" class="item">'v'</a></strong>
+
+<dd>
+<p>Functor:  ADVS    Adversative <code>func_ADVS</code></p>
+</dd>
+</li>
+<dt><strong><a name="w" class="item">'w'</a></strong>
+
+<dd>
+<p>Functor: TWHEN When, kdy (loni, vstupuje v platnost dnem podpisu) <code>func_TWHEN</code></p>
+</dd>
+</li>
+<dt><strong><a name="x2" class="item">'x'</a></strong>
+
+<dd>
+<p>Functor:  EXT     Extent <code>func_EXT</code></p>
+</dd>
+</li>
+</dl>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>TrEd Tree Editor <a href="http://ufal.mff.cuni.cz/~pajas/tred/">http://ufal.mff.cuni.cz/~pajas/tred/</a></p>
+<p>Prague Arabic Dependency Treebank <a href="http://ufal.mff.cuni.cz/padt/online/">http://ufal.mff.cuni.cz/padt/online/</a></p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
+<p>Otakar Smrz, <a href="http://ufal.mff.cuni.cz/~smrz/">http://ufal.mff.cuni.cz/~smrz/</a></p>
+<pre>
+    <span class="keyword">eval</span> <span class="operator">{</span> <span class="string">'E&lt;lt&gt;'</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'otakar smrz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">"\x40"</span> <span class="operator">.</span> <span class="operator">(</span> <span class="keyword">join</span> <span class="string">'.'</span><span class="operator">,</span> <span class="string">qw 'mff cuni cz'</span> <span class="operator">)</span> <span class="operator">.</span> <span class="string">'E&lt;gt&gt;'</span> <span class="operator">}</span>
+</pre>
+<p>Perl is also designed to make the easy jobs not that easy ;)</p>
+<p>
+<a href="#__index__"><small>Back to Top</small></a>
+</p>
+<hr />
+<h1><a name="copyright_and_license">COPYRIGHT AND LICENSE</a></h1>
+<p>Copyright 2006-2008 by Otakar Smrz</p>
+<p>This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.</p>
+<p><a href="#__index__"><small>Back to Top</small></a></p>
+<table border="0" width="100%" cellspacing="0" cellpadding="3">
+<tr><td class="block" valign="middle">
+<big><strong><span class="block">&nbsp;DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment</span></strong></big>
+</td></tr>
+</table>
+
+</body>
+
+</html>

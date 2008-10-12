@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
+    <revision>0.1.0</revision>
+    <description>PADT s-level</description>
+
+    <root name="Analytic" type="Trees.type"/>
+
+    <type name="Trees.type">
+        <structure>
+            <member name="meta">
+                <structure>
+                    <member name="revision">
+                        <cdata format="any"/>
+                    </member>
+                    <member name="date">
+                        <cdata format="any"/>
+                    </member>
+                </structure>
+            </member>
+            <member name="data" required="1">
+                <sequence role="#TREES">
+                    <element name="Tree" type="Tree.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Tree.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
+            <member name="afun" required="1">
+                <choice>
+                    <value>AuxS</value>
+                    <value>AuxX</value>
+                </choice>
+            </member>
+            <member name="comment" type="string.type"/>
+            <member name="m" type="m.type"/>
+            <member name="hide" type="string.type" role="#HIDE"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Node" type="Node.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Node.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
+            <member name="afun" type="afun.type" required="1"/>
+            <member name="comment" type="string.type"/>
+            <member name="parallel" type="parallel.type"/>
+            <member name="paren" type="paren.type"/>
+            <member name="arabfa" type="string.type"/>
+            <member name="coref" type="coref.type"/>
+            <member name="clause" type="clause.type"/>
+            <member name="afunaux" type="string.type"/>
+            <member name="m" type="m.type"/>
+            <member name="hide" type="string.type" role="#HIDE"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Node" type="Node.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="afun.type">
+        <choice>
+            <value>Pred</value>
+            <value>Pnom</value>
+            <value>PredE</value>
+            <value>PredC</value>
+            <value>PredM</value>
+            <value>PredP</value>
+            <value>Sb</value>
+            <value>Obj</value>
+            <value>Adv</value>
+            <value>Atr</value>
+            <value>Atv</value>
+            <value>ExD</value>
+            <value>Coord</value>
+            <value>Apos</value>
+            <value>Ante</value>
+            <value>AuxS</value>
+            <value>AuxX</value>
+            <value>AuxC</value>
+            <value>AuxP</value>
+            <value>AuxE</value>
+            <value>AuxM</value>
+            <value>AuxY</value>
+            <value>AuxG</value>
+            <value>AuxK</value>
+            <value>ObjAtr</value>
+            <value>AtrObj</value>
+            <value>AdvAtr</value>
+            <value>AtrAdv</value>
+            <value>AtrAtr</value>
+            <value>???</value>
+        </choice>
+    </type>
+
+    <type name="parallel.type">
+        <choice>
+            <value>Co</value>
+            <value>Ap</value>
+        </choice>
+    </type>
+
+    <type name="paren.type">
+        <choice>
+            <value>Pa</value>
+        </choice>
+    </type>
+
+    <type name="coref.type">
+        <choice>
+            <value>Ref</value>
+            <value>Msd</value>
+        </choice>
+    </type>
+
+    <type name="clause.type">
+        <choice>
+            <value>Pred</value>
+            <value>Pnom</value>
+            <value>PredE</value>
+            <value>PredC</value>
+            <value>PredM</value>
+            <value>PredP</value>
+        </choice>
+    </type>
+
+    <type name="m.type">
+        <structure>
+            <!--<member name="id" role="#ID" required="1" as_attribute="1"><cdata format="ID"/></member>-->
+            <member name="form" type="string.type"/>
+            <member name="lemma" type="string.type"/>
+            <member name="morph" type="string.type"/>
+            <member name="gloss" type="string.type"/>
+            <member name="comment" type="string.type"/>
+            <member name="lookup" type="string.type"/>
+            <member name="input" type="string.type"/>
+            <member name="ref" type="string.type" required="1"/>
+            <member name="tag" type="string.type"/>
+        </structure>
+    </type>
+
+    <type name="tag.type">
+        <structure>
+            <member name="content" type="string.type" required="1" as_attribute="1"/>
+            <member name="part-of-speech" type="pos.type" required="1"/>
+            <member name="mood" type="mood.type"/>
+            <member name="voice" type="voice.type"/>
+            <member name="person" type="person.type"/>
+            <member name="gender" type="gender.type"/>
+            <member name="number" type="number.type"/>
+            <member name="case" type="case.type"/>
+            <member name="definiteness" type="def.type"/>
+        </structure>
+    </type>
+
+    <type name="pos.type">
+        <choice>
+            <value>imperfect verb form</value>
+            <value>perfect verb form</value>
+            <value>imperative verb form</value>
+            <value>conjunction</value>
+            <value>preposition</value>
+            <value>interjection</value>
+            <value>noun</value>
+            <value>adjective</value>
+            <value>adverb</value>
+            <value>graphical symbol</value>
+            <value>number</value>
+            <value>abbreviation</value>
+            <value>particle</value>
+            <value>negative</value>
+            <value>interrogative</value>
+            <value>pronouns</value>
+            <value>demonstrative</value>
+            <value>relative</value>
+            <value>isolated definite article</value>
+            <value>proper name</value>
+        </choice>
+    </type>
+
+    <type name="mood.type">
+        <choice>
+            <value>indicative of imperfect verb</value>
+            <value>subjunctive of imperfect verb</value>
+            <value>jussive of imperfect verb</value>
+            <value>undecided between subjunctive of jussive of imperfect verb</value>
+        </choice>
+    </type>
+
+    <type name="voice.type">
+        <choice>
+            <value>active</value>
+            <value>passive</value>
+        </choice>
+    </type>
+
+    <type name="person.type">
+        <choice>
+            <value>speaker</value>
+            <value>addressee</value>
+            <value>others</value>
+        </choice>
+    </type>
+
+    <type name="gender.type">
+        <choice>
+            <value>masculine</value>
+            <value>feminine</value>
+        </choice>
+    </type>
+
+    <type name="number.type">
+        <choice>
+            <value>singular</value>
+            <value>dual</value>
+            <value>plural</value>
+        </choice>
+    </type>
+
+    <type name="case.type">
+        <choice>
+            <value>nominative</value>
+            <value>genitive</value>
+            <value>accusative</value>
+        </choice>
+    </type>
+
+    <type name="def.type">
+        <choice>
+            <value>indefinite</value>
+            <value>definite</value>
+            <value>reduced</value>
+            <value>complex</value>
+        </choice>
+    </type>
+
+    <type name="string.type">
+        <cdata format="any"/>
+    </type>
+
+</pml_schema>

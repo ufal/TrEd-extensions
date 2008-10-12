@@ -11,7 +11,7 @@ sub ThisType (;$) {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    if ($this->root()->{'type'} eq 'paragraph') {
+    if ($this->root()->{'#name'} eq 'Paragraph') {
 
         return 'P' . $this->level();
     }
@@ -32,63 +32,63 @@ sub autostart {
 
     do {
 
-        if ($this->{'type'} eq 'paragraph') {
+        if ($this->{'#name'} eq 'Paragraph') {
 
             $paragraph++;
 
             while ($this = $this->following()) {
 
-                if ($this->{'type'} eq 'word_node') {
+                if ($this->{'#name'} eq 'Word') {
 
                     $word++;
 
                     @children = defined $this->children() ? $this->children() : ();
 
-                    push @token_queue, [ $grp->{'FSFile'}->tree($this->{'ref'} - 1)->{'id'},
+                    push @token_queue, [ $grp->{'FSFile'}->tree($this->{'ref'} - 1)->{'idx'},
                                          scalar @children ];
 
-                    if ($this->{'apply_m'} > 0) {
+                    if ($this->{'apply'} > 0) {
 
                         $done++;
 
-                        report "-+ ", $root->{'id'} . "." . $this->{'ord'} unless @children;
+                        report "-+ ", $root->{'idx'} . "." . $this->{'ord'} unless @children;
                     }
                     else {
 
                         $none++;
 
-                        report "+- ", $root->{'id'} . "." . $this->{'ord'} if @children;
+                        report "+- ", $root->{'idx'} . "." . $this->{'ord'} if @children;
                     }
                 }
-                elsif ($this->{'type'} eq 'lemma_id') {
+                elsif ($this->{'#name'} eq 'Lexeme') {
 
-                    report "+- ", $root->{'id'} . "." . $this->{'ord'} if $this->children() > 1;
+                    report "+- ", $root->{'idx'} . "." . $this->{'ord'} if $this->children() > 1;
 
                     push @{$token_queue[-1]}, (defined $this->{'comment'} ? $this->{'comment'} : ''),
                                               $this->{'ref'};
                 }
-                elsif ($this->{'type'} eq 'token_node') {
+                elsif ($this->{'#name'} eq 'Form') {
 
                     push @{$token_queue[-1]}, (defined $this->{'comment'} ? $this->{'comment'} : ''),
                                               $this->{'ref'};
                 }
             }
         }
-        elsif ($this->{'type'} eq 'entity') {
+        elsif ($this->{'#name'} eq 'Entity') {
 
             $entity++;
 
-            if ($this->{'apply_m'} > 0) {
+            if ($this->{'apply'} > 0) {
 
-                report "!? ", $this->{'id'}, $this->{'lookup'}
-                    unless $token_queue[0]->[0] eq $this->{'id'} and $token_queue[0]->[1] != 0;
+                report "!? ", $this->{'idx'}, $this->{'lookup'}
+                    unless $token_queue[0]->[0] eq $this->{'idx'} and $token_queue[0]->[1] != 0;
             }
             else {
 
-                report "-- ", $this->{'id'}, $this->{'lookup'};
+                report "-- ", $this->{'idx'}, $this->{'lookup'};
 
-                report "?! ", $this->{'id'}, $this->{'lookup'}
-                    unless $token_queue[0]->[0] eq $this->{'id'} and $token_queue[0]->[1] == 0;
+                report "?! ", $this->{'idx'}, $this->{'lookup'}
+                    unless $token_queue[0]->[0] eq $this->{'idx'} and $token_queue[0]->[1] == 0;
             }
 
             (undef, $token_score) = splice @{$token_queue[0]}, 0, 2;
@@ -101,23 +101,23 @@ sub autostart {
 
                 if (defined $this->{'comment'} and $this->{'comment'} ne '') {
 
-                    if ($this->{'apply_m'} > 0) {
+                    if ($this->{'apply'} > 0) {
 
-                        report "++ ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'};
+                        report "++ ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'};
                     }
                     else {
 
-                        report "!! ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'};
+                        report "!! ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'};
                     }
                 }
 
-                if ($this->{'type'} eq 'partition') {
+                if ($this->{'#name'} eq 'Partition') {
 
                     $partition++;
 
                     if ($score_complete > 0) {
 
-                        report "+- ", $root->{'id'} . "." . $this->{'ord'}
+                        report "+- ", $root->{'idx'} . "." . $this->{'ord'}
                             unless $score_complete eq $score_children;
 
                         $score_unique++;
@@ -127,56 +127,56 @@ sub autostart {
 
                     $score_complete = $score_children = 0;
                 }
-                elsif ($this->{'type'} eq 'token_form') {
+                elsif ($this->{'#name'} eq 'Token') {
 
                     $token_form++;
 
                     $score_children++;
 
-                    if ($this->{'apply_m'} > 0) {
+                    if ($this->{'apply'} > 0) {
 
                         $score_complete++;
 
-                        report "-+ ", $root->{'id'} . "." . $this->{'ord'}
-                            if $this->{'apply_m'} > 1;
+                        report "-+ ", $root->{'idx'} . "." . $this->{'ord'}
+                            if $this->{'apply'} > 1;
                     }
                 }
-                elsif ($this->{'type'} eq 'lemma_id') {
+                elsif ($this->{'#name'} eq 'Lexeme') {
 
                     $lemma_id++;
 
-                    if ($this->{'apply_m'} > 0) {
+                    if ($this->{'apply'} > 0) {
 
-                        report "?? ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}
+                        report "?? ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}
                             unless defined $this->{'form'} and $this->{'form'} ne '';
 
-                        report ">< ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}
+                        report ">< ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}
                             unless @{$token_queue[0]} > 1 and $this->{'ord'} == $token_queue[0]->[-1] and
                                    $token_queue[0]->[-2] eq (defined $this->{'comment'} ? $this->{'comment'} : '');
 
                         splice @{$token_queue[0]}, -2, 2;
                     }
                 }
-                elsif ($this->{'type'} eq 'token_node') {
+                elsif ($this->{'#name'} eq 'Form') {
 
                     $token_node++;
 
-                    if ($this->{'apply_m'} > 0) {
+                    if ($this->{'apply'} > 0) {
 
                         $token++;
 
-                        report "?? ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}
+                        report "?? ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}
                             if $this->{'tag'} eq '-' x 10;
 
-                        report "!! ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}
+                        report "!! ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}
                             if $this->{'tag'} !~ /^[A-Z1-4-]{4}-[A-Z1-4-]{5}$/;
 
-                        report "!! ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'}
+                        report "!! ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}, $this->{'comment'}
                             if defined $this->{'comment'} and $this->{'comment'} ne '' and
                                ( $this->{'comment'} eq '-' x 10 or
                                  $this->{'comment'} !~ /^[A-Z1-4-]{4}-[A-Z1-4-]{5}$/ );
 
-                        report ">< ", $root->{'id'} . "." . $this->{'ord'}, $root->{'lookup'}
+                        report ">< ", $root->{'idx'} . "." . $this->{'ord'}, $root->{'lookup'}
                             unless @{$token_queue[0]} > 1 and $this->{'ord'} == $token_queue[0]->[-1] and
                                    $token_queue[0]->[-2] eq (defined $this->{'comment'} ? $this->{'comment'} : '');
 
@@ -188,9 +188,9 @@ sub autostart {
 
             $this = $root;
 
-            report "<> ", $root->{'id'} if $score_unique > 1 or $this->{'apply_m'} != $score_unique;
+            report "<> ", $root->{'idx'} if $score_unique > 1 or $this->{'apply'} != $score_unique;
 
-            report "<> ", $root->{'id'} if @{$token_queue[0]} > 0 or $token_score != 0;
+            report "<> ", $root->{'idx'} if @{$token_queue[0]} > 0 or $token_score != 0;
 
             shift @token_queue;
         }
