@@ -47,7 +47,7 @@ ADDR(.1), etc)
 
 - preposition+&Idph; - we should igore case tests in these cases
 
-=end
+=end comment
 
 =cut
 

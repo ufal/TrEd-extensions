@@ -6,7 +6,7 @@
   <pkgname>pdt10</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Old-style PDT 1.0 Annotation</title>
-  <version>1.1</version>
+  <version>1.2</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>Provides annotation mode for PDT 1.0 analytical layer in FS/CSTS format.</description>
 </tred_extension>

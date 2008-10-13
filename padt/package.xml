@@ -6,7 +6,7 @@
   <pkgname>padt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.4</version>
+  <version>1.5</version>
   <copyright year="2004-2008">Otakar Smrž</copyright>
   <description>Various annotation modes for the Prague Arabic Dependency Treebank, including ElixirFM and MorphoTrees.</description>
 </tred_extension>

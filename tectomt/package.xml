@@ -6,7 +6,7 @@
   <pkgname>tectomt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>TectoMT base for TrEd applications</title>
-  <version>1.1</version>
+  <version>1.2</version>
   <copyright year="2008">Zdeněk Žabokrtský</copyright>
   <require>
     <tred min_version="1.3587"/>

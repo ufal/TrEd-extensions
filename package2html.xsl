@@ -12,8 +12,7 @@
   <html>
     <head>
       <style>
-<style>
-/* <!-- */
+/* <xsl:comment> */
 .package {
    background-color: #ffffff;
    border: solid 1px #aaf;
@@ -42,7 +41,7 @@
     color: #666;
     padding: 3pt 3pt 3pt 3pt;
 }
-/* --> */
+/* </xsl:comment> */
 </style>
       <link href="style.css" rel="stylesheet"/>
     </head>
