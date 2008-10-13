@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DTD for valency lexicon of PDT 2.0 -->
+<grammar xmlns:a="http://relaxng.org/ns/compatibility/annotations/1.0" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <define name="valency_lexicon">
+    <element name="valency_lexicon">
+      <ref name="attlist.valency_lexicon"/>
+      <ref name="head"/>
+      <ref name="body"/>
+      <optional>
+        <ref name="tail"/>
+      </optional>
+    </element>
+  </define>
+  <define name="attlist.valency_lexicon" combine="interleave">
+    <attribute name="owner">
+      <data type="IDREF"/>
+    </attribute>
+  </define>
+  <!-- ================================================== -->
+  <!-- technical stuff -->
+  <define name="head">
+    <element name="head">
+      <ref name="attlist.head"/>
+      <ref name="global_history"/>
+      <ref name="list_of_users"/>
+    </element>
+  </define>
+  <define name="attlist.head" combine="interleave">
+    <empty/>
+  </define>
+  <!--
+    element forbid are for simply technical purposes and are used to
+    prevent reusing an obsoleted frame-id 
+  -->
+  <define name="tail">
+    <element name="tail">
+      <ref name="attlist.tail"/>
+      <oneOrMore>
+        <ref name="forbid"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.tail" combine="interleave">
+    <empty/>
+  </define>
+  <define name="forbid">
+    <element name="forbid">
+      <ref name="attlist.forbid"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.forbid" combine="interleave">
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+  </define>
+  <define name="body">
+    <element name="body">
+      <ref name="attlist.body"/>
+      <oneOrMore>
+        <ref name="word"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.body" combine="interleave">
+    <empty/>
+  </define>
+  <!-- history -->
+  <define name="global_history">
+    <element name="global_history">
+      <ref name="attlist.global_history"/>
+      <zeroOrMore>
+        <ref name="global_event"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.global_history" combine="interleave">
+    <empty/>
+  </define>
+  <define name="global_event">
+    <element name="global_event">
+      <ref name="attlist.global_event"/>
+      <text/>
+    </element>
+  </define>
+  <!-- obsahem elementu je slovni popis zmeny -->
+  <define name="attlist.global_event" combine="interleave">
+    <attribute name="time_stamp"/>
+    <attribute name="author"/>
+  </define>
+  <!-- only for annotation purposes - lists users, who have the right to change the file -->
+  <define name="list_of_users">
+    <element name="list_of_users">
+      <ref name="attlist.list_of_users"/>
+      <oneOrMore>
+        <ref name="user"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.list_of_users" combine="interleave">
+    <empty/>
+  </define>
+  <define name="user">
+    <element name="user">
+      <ref name="attlist.user"/>
+      <empty/>
+    </element>
+  </define>
+  <!-- user: radeji zkratka, ne cislo -->
+  <define name="attlist.user" combine="interleave">
+    <attribute name="name"/>
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+    <optional>
+      <attribute name="annotator" a:defaultValue="NO">
+        <choice>
+          <value>YES</value>
+          <value>NO</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="reviewer" a:defaultValue="NO">
+        <choice>
+          <value>YES</value>
+          <value>NO</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <!-- ================================================== -->
+  <define name="word">
+    <element name="word">
+      <ref name="attlist.word"/>
+      <optional>
+        <ref name="problems"/>
+      </optional>
+      <optional>
+        <ref name="note"/>
+      </optional>
+      <ref name="valency_frames"/>
+    </element>
+  </define>
+  <define name="attlist.word" combine="interleave">
+    <attribute name="lemma"/>
+    <optional>
+      <attribute name="POS" a:defaultValue="V">
+        <choice>
+          <value>V</value>
+          <value>A</value>
+          <value>N</value>
+          <value>D</value>
+        </choice>
+      </attribute>
+    </optional>
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+  </define>
+  <!-- annotator's notes -->
+  <define name="problems">
+    <element name="problems">
+      <ref name="attlist.problems"/>
+      <oneOrMore>
+        <ref name="problem"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.problems" combine="interleave">
+    <empty/>
+  </define>
+  <define name="problem">
+    <element name="problem">
+      <ref name="attlist.problem"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.problem" combine="interleave">
+    <optional>
+      <attribute name="author">
+        <data type="IDREF"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="solved" a:defaultValue="NO">
+        <choice>
+          <value>YES</value>
+          <value>NO</value>
+        </choice>
+      </attribute>
+    </optional>
+  </define>
+  <define name="valency_frames">
+    <element name="valency_frames">
+      <ref name="attlist.valency_frames"/>
+      <zeroOrMore>
+        <ref name="frame"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.valency_frames" combine="interleave">
+    <empty/>
+  </define>
+  <define name="frame">
+    <element name="frame">
+      <ref name="attlist.frame"/>
+      <ref name="example"/>
+      <optional>
+        <ref name="note"/>
+      </optional>
+      <optional>
+        <ref name="problems"/>
+      </optional>
+      <ref name="frame_elements"/>
+      <ref name="local_history"/>
+    </element>
+  </define>
+  <define name="attlist.frame" combine="interleave">
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+    <optional>
+      <attribute name="used" a:defaultValue="0"/>
+    </optional>
+    <optional>
+      <attribute name="hereditary_used" a:defaultValue="0"/>
+    </optional>
+    <optional>
+      <attribute name="status" a:defaultValue="active">
+        <choice>
+          <value>active</value>
+          <value>reviewed</value>
+          <value>substituted</value>
+          <value>obsolete</value>
+          <value>deleted</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="substituted_with">
+        <data type="IDREFS"/>
+      </attribute>
+    </optional>
+  </define>
+  <define name="example">
+    <element name="example">
+      <ref name="attlist.example"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.example" combine="interleave">
+    <empty/>
+  </define>
+  <define name="note">
+    <element name="note">
+      <ref name="attlist.note"/>
+      <text/>
+    </element>
+  </define>
+  <define name="attlist.note" combine="interleave">
+    <empty/>
+  </define>
+  <define name="frame_elements">
+    <element name="frame_elements">
+      <ref name="attlist.frame_elements"/>
+      <zeroOrMore>
+        <choice>
+          <ref name="element"/>
+          <ref name="element_alternation"/>
+        </choice>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.frame_elements" combine="interleave">
+    <empty/>
+  </define>
+  <define name="element_alternation">
+    <element name="element_alternation">
+      <ref name="attlist.element_alternation"/>
+      <oneOrMore>
+        <ref name="element"/>
+      </oneOrMore>
+    </element>
+  </define>
+  <define name="attlist.element_alternation" combine="interleave">
+    <empty/>
+  </define>
+  <define name="element">
+    <element name="element">
+      <ref name="attlist.element"/>
+      <zeroOrMore>
+        <ref name="form"/>
+      </zeroOrMore>
+    </element>
+  </define>
+
+  <define name="attlist.element" combine="interleave">
+    <attribute name="functor">
+      <choice>
+        <value>---</value>
+        <value>ACT</value>
+        <value>PAT</value>
+        <value>ADDR</value>
+        <value>EFF</value>
+        <value>ORIG</value>
+        <value>ACMP</value>
+        <value>AIM</value>
+        <value>APP</value>
+        <value>ATT</value>
+        <value>AUTH</value>
+        <value>BEN</value>
+        <value>CAUS</value>
+        <value>CNCS</value>
+        <value>COMPL</value>
+        <value>CONTRD</value>
+        <value>COND</value>
+        <value>CPHR</value>
+        <value>CPR</value>
+        <value>CRIT</value>
+        <value>DIFF</value>
+        <value>DIR1</value>
+        <value>DIR2</value>
+        <value>DIR3</value>
+        <value>DPHR</value>
+        <value>ETHD</value>
+        <value>EXT</value>
+        <value>HER</value>
+        <value>ID</value>
+        <value>INTF</value>
+        <value>INTT</value>
+        <value>LOC</value>
+        <value>MANN</value>
+        <value>MAT</value>
+        <value>MEANS</value>
+        <value>MOD</value>
+        <value>PARTL</value>
+        <value>REG</value>
+        <value>RESL</value>
+        <value>RESTR</value>
+        <value>RSTR</value>
+        <value>SUBS</value>
+        <value>TFHL</value>
+        <value>TFRWH</value>
+        <value>THL</value>
+        <value>THO</value>
+        <value>TOWH</value>
+        <value>TPAR</value>
+        <value>TSIN</value>
+        <value>TTILL</value>
+        <value>TWHEN</value>
+        <value>TOWH</value>
+        <value>VOCAT</value>
+      </choice>
+    </attribute>
+    <optional>
+      <attribute name="type" a:defaultValue="non-oblig">
+        <choice>
+          <value>oblig</value>
+          <value>non-oblig</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="forms"/>
+    </optional>
+    <optional>
+      <attribute name="orig_type"/>
+    </optional>
+  </define>
+  <define name="form">
+    <element name="form">
+      <ref name="attlist.form"/>
+      <choice>
+        <ref name="typical"/>
+        <ref name="elided"/>
+        <ref name="recip"/>
+        <ref name="state"/>
+        <group>
+          <optional>
+            <ref name="parent"/>
+          </optional>
+          <zeroOrMore>
+            <ref name="node"/>
+          </zeroOrMore>
+          <optional>
+            <ref name="parentpos"/>
+            <zeroOrMore>
+              <ref name="node"/>
+            </zeroOrMore>
+          </optional>
+        </group>
+      </choice>
+    </element>
+  </define>
+  <define name="attlist.form" combine="interleave">
+    <optional>
+      <attribute name="abbrev"/>
+    </optional>
+  </define>
+  <define name="typical">
+    <element name="typical">
+      <ref name="attlist.typical"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.typical" combine="interleave">
+    <empty/>
+  </define>
+  <define name="elided">
+    <element name="elided">
+      <ref name="attlist.elided"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.elided" combine="interleave">
+    <empty/>
+  </define>
+  <define name="recip">
+    <element name="recip">
+      <ref name="attlist.recip"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.recip" combine="interleave">
+    <empty/>
+  </define>
+  <define name="state">
+    <element name="state">
+      <ref name="attlist.state"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.state" combine="interleave">
+    <empty/>
+  </define>
+  <!-- constraints for the parent node of the leading word node -->
+  <define name="parent">
+    <element name="parent">
+      <ref name="attlist.parent"/>
+      <ref name="node"/>
+    </element>
+  </define>
+  <define name="attlist.parent" combine="interleave">
+    <empty/>
+  </define>
+  <!--
+    parentpos specifies position of the leading word with respect to
+    other node in the element realization
+  -->
+  <define name="parentpos">
+    <element name="parentpos">
+      <ref name="attlist.parentpos"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.parentpos" combine="interleave">
+    <empty/>
+  </define>
+  <!--
+    @pos:
+    a - adjective
+    d - adverb
+    i - interjection
+    n - noun
+    j - conjunction
+    v - verb
+    u - possesive form of a noun or pronoun
+    f - infinitive,
+    s - direct speach
+    c - direct subclause
+  -->
+  <define name="node">
+    <element name="node">
+      <ref name="attlist.node"/>
+      <zeroOrMore>
+        <ref name="node"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.node" combine="interleave">
+    <optional>
+      <attribute name="lemma"/>
+    </optional>
+    <optional>
+      <attribute name="afun" a:defaultValue="unspecified">
+        <choice>
+          <value>Pred</value>
+          <value>Pnom</value>
+          <value>AuxV</value>
+          <value>Sb</value>
+          <value>Obj</value>
+          <value>Atr</value>
+          <value>Adv</value>
+          <value>AtrAdv</value>
+          <value>AdvAtr</value>
+          <value>Coord</value>
+          <value>AtrObj</value>
+          <value>ObjAtr</value>
+          <value>AtrAtr</value>
+          <value>AuxT</value>
+          <value>AuxR</value>
+          <value>AuxP</value>
+          <value>Apos</value>
+          <value>ExD</value>
+          <value>AuxC</value>
+          <value>Atv</value>
+          <value>AtvV</value>
+          <value>AuxO</value>
+          <value>AuxZ</value>
+          <value>AuxY</value>
+          <value>AuxG</value>
+          <value>AuxK</value>
+          <value>AuxX</value>
+          <value>AuxS</value>
+          <value>unspecified</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="neg" a:defaultValue="unspecified">
+        <choice>
+          <value>negative</value>
+          <value>unspecified</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="form"/>
+    </optional>
+    <optional>
+      <attribute name="pos">
+        <choice>
+          <value>a</value>
+          <value>d</value>
+          <value>i</value>
+          <value>n</value>
+          <value>j</value>
+          <value>v</value>
+          <value>u</value>
+          <value>f</value>
+          <value>s</value>
+          <value>c</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="gen">
+        <choice>
+          <value>F</value>
+          <value>M</value>
+          <value>I</value>
+          <value>N</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="num">
+        <choice>
+          <value>S</value>
+          <value>P</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="deg">
+        <choice>
+          <value>1</value>
+          <value>2</value>
+          <value>3</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="case">
+        <choice>
+          <value>1</value>
+          <value>2</value>
+          <value>3</value>
+          <value>4</value>
+          <value>5</value>
+          <value>6</value>
+          <value>7</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="agreement" a:defaultValue="0">
+        <choice>
+          <value>0</value>
+          <value>1</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="inherits" a:defaultValue="0">
+        <choice>
+          <value>0</value>
+          <value>1</value>
+        </choice>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="tagpos1"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos2"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos3"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos4"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos5"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos6"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos7"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos8"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos9"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos10"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos11"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos12"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos13"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos14"/>
+    </optional>
+    <optional>
+      <attribute name="tagpos15"/>
+    </optional>
+  </define>
+  <!-- history of a valency frame (for annotation purposes only) -->
+  <define name="local_history">
+    <element name="local_history">
+      <ref name="attlist.local_history"/>
+      <zeroOrMore>
+        <ref name="local_event"/>
+      </zeroOrMore>
+    </element>
+  </define>
+  <define name="attlist.local_history" combine="interleave">
+    <empty/>
+  </define>
+  <define name="local_event">
+    <element name="local_event">
+      <ref name="attlist.local_event"/>
+      <empty/>
+    </element>
+  </define>
+  <define name="attlist.local_event" combine="interleave">
+    <attribute name="time_stamp"/>
+    <attribute name="type_of_event">
+      <choice>
+        <value>create</value>
+        <value>modify</value>
+        <value>delete</value>
+        <value>import</value>
+        <value>review</value>
+        <value>obsolete</value>
+        <value>unreview</value>
+      </choice>
+    </attribute>
+    <optional>
+      <attribute name="author">
+        <data type="IDREF"/>
+      </attribute>
+    </optional>
+    <optional>
+      <attribute name="imported_from"/>
+    </optional>
+  </define>
+  <start>
+    <choice>
+      <ref name="valency_lexicon"/>
+    </choice>
+  </start>
+</grammar>

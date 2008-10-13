@@ -1,0 +1,157 @@
+<!-- DTD for valency lexicon of PDT 2.0 -->
+
+<!ELEMENT valency_lexicon (head, body, tail?)>
+<!ATTLIST valency_lexicon
+            owner IDREF #REQUIRED>
+
+<!-- ================================================== -->
+<!-- technical stuff --> 
+
+
+<!ELEMENT head (global_history, list_of_users)>
+
+<!-- 
+  element forbid are for simply technical purposes and are used to
+  prevent reusing an obsoleted frame-id 
+-->
+<!ELEMENT tail (forbid+)>
+<!ELEMENT forbid EMPTY>
+<!ATTLIST forbid id ID #REQUIRED >
+
+
+<!ELEMENT body (word+)>
+
+<!-- history  -->
+
+<!ELEMENT global_history (global_event*)>   
+<!ELEMENT global_event (#PCDATA)> <!-- obsahem elementu je slovni popis zmeny -->
+<!ATTLIST global_event 
+               time_stamp CDATA #REQUIRED
+               author CDATA #REQUIRED   
+            > 
+
+<!-- only for annotation purposes - lists users, who have the right to change the file -->
+<!ELEMENT list_of_users (user+)>   
+<!ELEMENT user EMPTY>  
+<!-- user: radeji zkratka, ne cislo -->
+<!ATTLIST user 
+             name CDATA #REQUIRED
+             id ID  #REQUIRED           
+             annotator (YES|NO) "NO"
+             reviewer (YES|NO) "NO"
+           >
+<!-- ================================================== -->
+
+<!ELEMENT word (problems?, note?, valency_frames)>
+<!ATTLIST word lemma CDATA #REQUIRED   
+               POS (V|A|N|D)  "V"
+               id ID  #REQUIRED           
+       >
+
+<!-- annotator's notes -->
+
+<!ELEMENT problems (problem+)>
+<!ELEMENT problem (#PCDATA)>
+<!ATTLIST problem 
+               author IDREF #IMPLIED
+               solved (YES|NO) "NO"> 
+
+<!ELEMENT valency_frames (frame*)>
+<!ELEMENT frame (example, note?, problems?, frame_elements, local_history )>
+<!ATTLIST frame
+             id ID #REQUIRED
+             used CDATA "0"
+             hereditary_used CDATA "0"
+             status (active|reviewed|substituted|obsolete|deleted) "active"
+             substituted_with IDREFS #IMPLIED
+          >   
+          
+<!ELEMENT example (#PCDATA)>   
+<!ELEMENT note (#PCDATA)>   
+          
+<!ELEMENT frame_elements (element|element_alternation)*>  
+
+<!ELEMENT element_alternation (element+)>  
+
+<!ELEMENT element (form*)>  
+
+<!ATTLIST element 
+       functor  (---|ACT|PAT|ADDR|EFF|ORIG|ACMP|AIM|APP|ATT|AUTH|BEN|CAUS|CNCS|
+                 COMPL|CONTRD|COND|CPHR|CPR|CRIT|DIFF|DIR1|DIR2|DIR3|DPHR|
+                 ETHD|EXT|HER|ID|INTF|INTT|LOC|MANN|MAT|MEANS|MOD|PARTL|REG|
+                 RESL|RESTR|RSTR|SUBS|TFHL|TFRWH|THL|THO|TOWH|TPAR|TSIN|TTILL|
+                 TWHEN|TOWH|VOCAT) #REQUIRED  
+       type (oblig|non-oblig) "non-oblig"
+       forms CDATA #IMPLIED
+       orig_type CDATA #IMPLIED
+     > 
+
+<!ELEMENT form (typical | elided | recip | state | (parent?, node*, (parentpos, node*)?))>  
+<!ATTLIST form 
+       abbrev         CDATA #IMPLIED
+>
+
+<!ELEMENT typical EMPTY>
+<!ELEMENT elided EMPTY>
+<!ELEMENT recip EMPTY>
+<!ELEMENT state EMPTY>
+
+<!-- constraints for the parent node of the leading word node -->
+<!ELEMENT parent (node)>
+
+<!-- parentpos specifies position of the leading word with respect to
+     other node in the element realization  -->
+<!ELEMENT parentpos EMPTY>
+
+<!-- @pos:
+       a - adjective
+       d - adverb
+       i - interjection
+       n - noun
+       j - conjunction
+       v - verb
+       u - possesive form of a noun or pronoun
+       f - infinitive,
+       s - direct speach
+       c - direct subclause
+-->
+<!ELEMENT node (node*)>
+<!ATTLIST node
+        lemma         CDATA #IMPLIED
+        afun          (Pred|Pnom|AuxV|Sb|Obj|Atr|Adv|AtrAdv|AdvAtr|Coord|AtrObj|ObjAtr|AtrAtr|AuxT|AuxR|AuxP|Apos|ExD|AuxC|Atv|AtvV|AuxO|AuxZ|AuxY|AuxG|AuxK|AuxX|AuxS|unspecified) "unspecified"
+        neg           (negative|unspecified) "unspecified"
+        form          CDATA #IMPLIED
+        pos           (a|d|i|n|j|v|u|f|s|c) #IMPLIED
+        gen           (F|M|I|N) #IMPLIED
+        num           (S|P) #IMPLIED
+        deg           (1|2|3) #IMPLIED
+        case          (1|2|3|4|5|6|7) #IMPLIED
+        agreement     (0|1) "0"
+        inherits      (0|1) "0"
+        tagpos1       CDATA #IMPLIED
+        tagpos2       CDATA #IMPLIED
+        tagpos3       CDATA #IMPLIED
+        tagpos4       CDATA #IMPLIED
+        tagpos5       CDATA #IMPLIED
+        tagpos6       CDATA #IMPLIED
+        tagpos7       CDATA #IMPLIED
+        tagpos8       CDATA #IMPLIED
+        tagpos9       CDATA #IMPLIED
+        tagpos10      CDATA #IMPLIED
+        tagpos11      CDATA #IMPLIED
+        tagpos12      CDATA #IMPLIED
+        tagpos13      CDATA #IMPLIED
+        tagpos14      CDATA #IMPLIED
+        tagpos15      CDATA #IMPLIED
+>
+
+<!-- history of a valency frame (for annotation purposes only) -->
+
+<!ELEMENT local_history (local_event*)>
+<!ELEMENT local_event EMPTY>  
+<!ATTLIST local_event 
+       time_stamp CDATA #REQUIRED 
+       type_of_event (create|modify|delete|import|review|obsolete|unreview) #REQUIRED
+       author IDREF #IMPLIED
+       imported_from CDATA #IMPLIED
+    >   
