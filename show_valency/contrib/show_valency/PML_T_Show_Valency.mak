@@ -10,7 +10,6 @@ package PML_T_Show_Valency;
 #menu-binding-adopt PML_T_View
 
 BEGIN { import PML_T; }
-sub first (&@);
 use vars qw(@modes $mode);
 BEGIN {
    @modes = qw(

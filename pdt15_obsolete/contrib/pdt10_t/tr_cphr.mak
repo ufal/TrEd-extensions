@@ -11,7 +11,6 @@ BEGIN {
   import TR_FrameValidation qw(@fv_trans_rules_V);
 }
 
-sub first (&@);
 sub with_AR (&);
 sub uniq { my %a; @a{@_}=@_; values %a }
 

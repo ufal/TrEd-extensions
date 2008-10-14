@@ -12,7 +12,6 @@ package PML_T_Anot;
 #encoding iso-8859-2
 
 BEGIN { import PML_T; }
-sub first (&@);
 
 #include <contrib/support/unbind_edit.inc>
 

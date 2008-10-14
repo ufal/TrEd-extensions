@@ -33,7 +33,6 @@ BEGIN {
 
 {
 
-sub first (&@);
 
 no warnings qw(redefine);
 

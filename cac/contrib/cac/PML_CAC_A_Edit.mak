@@ -13,7 +13,6 @@ package PML_CAC_A_Edit;
 
 
 BEGIN { import PML_A; }
-sub first (&@);
 
 =pod
 

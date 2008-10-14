@@ -6,7 +6,6 @@
 
 package PML_A2T;
 BEGIN { import PML; }
-sub first (&@);
 
 =pod
 

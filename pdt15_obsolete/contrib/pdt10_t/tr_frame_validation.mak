@@ -5,7 +5,6 @@
 
 package TR_FrameValidation;
 use vars qw($V_backend $V_module $V_verbose $V $ExD_tolerant);
-sub first (&@);
 sub with_AR (&);
 BEGIN { import TR_Correction; }
 sub uniq { my %a; @a{@_}=@_; values %a }

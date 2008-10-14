@@ -9,7 +9,6 @@ BEGIN { import Tectogrammatic; }
 #bind FCopy to Ctrl+c menu copy node
 #bind FPaste to Ctrl+C menu paste node
 
-sub first (&@);
 use vars qw(%arrow_colors $aid_referent $contextBeforeSwitch);
 ######################### Hooks ######################
 

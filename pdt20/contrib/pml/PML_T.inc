@@ -11,7 +11,6 @@
 use Carp;
 BEGIN { import PML; }
 use Scalar::Util qw(weaken);
-sub first (&@);
 
 =pod
 

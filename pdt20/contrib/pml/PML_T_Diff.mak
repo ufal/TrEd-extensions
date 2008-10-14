@@ -8,7 +8,6 @@
 package PML_T_Diff;
 
 BEGIN { import PML_T; }
-sub first (&@);
 
 #binding-context PML_T_Diff
 
