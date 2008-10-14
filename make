@@ -19,11 +19,10 @@ for d in "${dirs[@]%/}"; do
     ~/tred-devel/devel/pack_extension.sh "$d" "$REPO"
 done
 
-
 (
 cd $REPO;
 echo '<extensions>';
-for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*\w+\s*$'`; do
+for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*(-|\w)+\s*$'`; do
     if [ -f "$d/package.xml" ]; then
 	cat "$d/package.xml" |grep -v '^<?xml'
     fi
