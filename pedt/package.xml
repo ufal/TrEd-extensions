@@ -6,7 +6,7 @@
   <pkgname>pedt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague English Treebank Annotation</title>
-  <version>1.4</version>
+  <version>1.6</version>
   <copyright year="2005-2008">Josef Toman</copyright>
   <description>Provides annotation mode for the Prague English Treebank and GUI for
      the PEDT valency lexicon.

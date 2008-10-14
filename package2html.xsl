@@ -13,6 +13,9 @@
     <head>
       <style>
 /* <xsl:comment> */
+* {
+  font-family: sans;
+}
 .package {
    background-color: #ffffff;
    border: solid 1px #aaf;
@@ -64,9 +67,10 @@
       </span>
     </div>
     <div class="desc">
-      <xsl:apply-templates select="p:description"/>
+      <xsl:call-template name="icon"/>
+        <xsl:apply-templates select="p:description"/>
    </div>
-   <div class="copyright">
+   <div class="copyright" style="clear:both">
      <xsl:apply-templates select="p:copyright"/>
    </div>    
   </div>
@@ -77,6 +81,19 @@
   <xsl:apply-templates select="@year"/>
   <xsl:text> by </xsl:text>
   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template name="icon">
+<!--  <span class="icon"> -->
+    <xsl:choose>
+      <xsl:when test="p:icon">
+      <img src="{concat(string(p:pkgname),'/',string(p:icon))}" style="float: left; padding: 6pt 6pt 0pt 6pt"/>
+      </xsl:when>
+      <xsl:otherwise>
+	<img src="extension.png" style="float: left; padding: 6pt 6pt 0pt 6pt" />
+    </xsl:otherwise>
+    </xsl:choose>
+<!--  </span> -->
 </xsl:template>
 
 </xsl:stylesheet>
