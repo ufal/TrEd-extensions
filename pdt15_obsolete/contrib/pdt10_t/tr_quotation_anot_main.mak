@@ -26,7 +26,7 @@ sub file_opened_hook {
 
 #bind GotoFileAsk to Alt+G menu Go to file...
 sub GotoFileAsk {
-  my $to=main::QueryString($grp->{framegroup},"Give a File Number","Number");
+  my $to=QueryString("Give a File Number","Number");
   return unless $to=~/^\s*\d+\s*$/;
   if (GotoFileNo($to-1)) {
     $FileNotSaved = GetFileSaveStatus();

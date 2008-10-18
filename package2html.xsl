@@ -36,13 +36,20 @@
 .desc {
     padding: 3pt 3pt 3pt 3pt;
 }
-
+.size {
+  text-align: right;
+  font-size: 7pt;
+  padding: 3pt 3pt 0pt 3pt;
+}
 .copyright {
     font-size: 7pt;
     font-style: italic;
     text-align: right;
     color: #666;
     padding: 3pt 3pt 3pt 3pt;
+}
+.version {
+    text-align: right;
 }
 /* </xsl:comment> */
 </style>
@@ -70,10 +77,52 @@
       <xsl:call-template name="icon"/>
         <xsl:apply-templates select="p:description"/>
    </div>
+   <xsl:if test="@package_size|@install_size">
+     <div class="size">
+       <xsl:text>Size: </xsl:text>
+       <xsl:if test="@package_size">
+	 <xsl:call-template name="format_size">
+	   <xsl:with-param name="size" select="@package_size"/>
+	 </xsl:call-template>
+	 <xsl:text> package </xsl:text>
+	 <xsl:if test="@install_size">
+	   <xsl:text>/ </xsl:text>
+	 </xsl:if>
+       </xsl:if>
+       <xsl:if test="@install_size">
+	 <xsl:call-template name="format_size">
+	   <xsl:with-param name="size" select="@install_size"/>
+	 </xsl:call-template>
+	 <xsl:text> installed</xsl:text>
+       </xsl:if>
+     </div>
+   </xsl:if>
    <div class="copyright" style="clear:both">
      <xsl:apply-templates select="p:copyright"/>
    </div>    
   </div>
+</xsl:template>
+
+<xsl:template name="format_size">
+  <xsl:param name="size"/>
+  <xsl:choose>
+    <xsl:when test="1024 > $size">
+      <xsl:value-of select="$size"/>
+      <xsl:text> B</xsl:text>
+    </xsl:when>
+    <xsl:when test="1024*1024 > $size">
+      <xsl:value-of select="round($size div 1024)"/>
+      <xsl:text> KiB</xsl:text>
+    </xsl:when>
+    <xsl:when test="1024*1024*1024 > $size">
+      <xsl:value-of select="round($size div (1024*1024))"/>
+      <xsl:text> MiB</xsl:text>
+    </xsl:when>
+    <xsl:when test="1024*1024*1024*1024 > $size">
+      <xsl:value-of select="round($size div (1024*1024*1024))"/>
+      <xsl:text> GiB</xsl:text>
+    </xsl:when>
+  </xsl:choose>
 </xsl:template>
 
 <xsl:template match="p:copyright">

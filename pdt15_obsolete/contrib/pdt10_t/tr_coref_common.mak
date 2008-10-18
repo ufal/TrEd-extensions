@@ -85,7 +85,7 @@ sub status_line_doubleclick_hook {
 	Tectogrammatic::choose_frame();
 	last;
       } else {
-	if (main::doEditAttr($grp,$this,$1)) {
+	if (EditAttribute($this,$1)) {
 	  ChangingFile(1);
 	}
 	last;
@@ -162,7 +162,7 @@ sub edit_commentA {
     return;
   }
   my $value=$this->{commentA};
-  $value=main::QueryString($grp->{framegroup},"Enter comment","commentA",$value);
+  $value=QueryString("Enter comment","commentA",$value);
   if (defined($value)) {
     $this->{commentA}=$value;
   }
@@ -182,7 +182,7 @@ sub edit_corinfo {
     return;
   }
   my $value=$this->{corinfo};
-  $value=main::QueryString($grp->{framegroup},"Enter corinfo","corinfo",$value);
+  $value=QueryString("Enter corinfo","corinfo",$value);
   if (defined($value)) {
     $this->{corinfo}=$value;
   }

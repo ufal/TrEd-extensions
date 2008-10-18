@@ -35,6 +35,67 @@ sub AddCoref{
   }
 }#AddCoref
 
+sub value_line_click_hook {
+  MouseEditLinks(1,@_);
+} # value_line_click_hook
+
+=item MouseEditLinks(ask,@_ of value_line_click_hook)
+
+Enables changes of C<a/aur.rf> and C<a/lex.rf> by clicking on the
+words of the sentence (value line).
+  1. Alt + left click: makes the word the C<a/lex.rf> of the current node.
+  2. Ctrl + left click: creates new son of the current node from the word.
+  3. Shift + left click: adds the word to C<a/aux.rf> or removes it from linked a-nodes.
+
+If ask is set to 1, asks for attributes for a new node.
+
+=cut
+
+sub MouseEditLinks {
+  my ($ask,$button,$mod,$rest) = @_;
+  if($button eq '1' and $mod){
+    SaveUndo('Change links to a-layer');
+    my ($aid) = grep /^anode:/,@$rest;
+    $aid =~ s/^anode://;
+    my $refid = CurrentFile()->metaData('refnames')->{adata};
+    my $anode = GetANodeByID($aid);
+    if($mod eq 'Alt'){
+      PML_A::ANodeToALexRf($anode,$this,CurrentFile());
+    }elsif($mod eq 'Control'){
+      $this = NewNode($this);
+      PML_A::ANodeToALexRf($anode,$this,CurrentFile());
+      if($ask){
+        EditFunctor() or DeleteNode() && return;
+        EditNodetype() or DeleteNode() && return;
+        EditAttribute($this,'is_generated') || DeleteNode() && return;
+      }else{
+        $this->{functor} = '---';
+        $this->{nodetype} = 'complex';
+        $this->{is_generated} = 1;
+      }
+    }elsif($mod eq 'Shift'){
+      if(grep $_ eq 'current',@$rest){
+        if($this->attr('a/lex.rf') eq $refid.'#'.$aid){
+          delete $this->{a}{'lex.rf'};
+          if($ask){
+            EditTLemma() or $this->{t_lemma} = '#Gen';
+          }else{
+            $this->{t_lemma} = '#NewNode';
+          }
+        }else{ # delete from aux
+          @{$this->{a}{'aux.rf'}} =
+            uniq(ListSubtract($this->attr('a/aux.rf'),
+                              List($refid.'#'.$aid)));
+        }
+      }else{ # not current
+        PML_A::ANodeToAAuxRf($anode,$this,CurrentFile());
+      }
+    }
+    ChangingFile(1);
+    Redraw();
+  }
+} # MouseEditLinks
+
 sub node_release_hook {
   my ($node,$target,$mod)=@_;
   return unless $target and $mod;
@@ -59,7 +120,7 @@ sub node_release_hook {
 }#node_release_hook
 
 sub get_status_line_hook {
-  my $statusline=&PML_T::get_status_line_hook;
+  my $statusline = &PML_T::get_status_line_hook;
   push @{$statusline->[0]},
     ($PML_T_Edit::remember ?
      ('   Remembered: ' => [qw(label)],
@@ -104,26 +165,8 @@ sub AssignValencyFrames {
 }
 
 sub status_line_doubleclick_hook {
-  # status-line field double clicked
-
-  # @_ contains a list of style names associated with the clicked
-  # field. Style names may obey arbitrary user-defined convention.
-
-  foreach (@_) {
-    if (/^\{(.*)}$/) {
-      if ($1 eq 'FRAME') {
-	ChooseValFrame();
-        last;
-      } else {
-        if (main::doEditAttr($grp,$this,$1)) {
-          ChangingFile(1);
-          Redraw_FSFile();
-        }
-        last;
-      }
-    }
-  }
-}
+  status_line_doubleclick(sub{ ChooseValFrame($_[0]) },@_);
+} # status_line_doubleclick_hook
 
 =item RememberNode()
 

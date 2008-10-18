@@ -1308,7 +1308,7 @@ sub status_line_doubleclick_hook {
 	choose_frame();
 	last;
       } else {
-	if (main::doEditAttr($grp,$this,$1)) {
+	if (EditAttribute($this,$1)) {
 	  ChangingFile(1);
 	  Redraw_FSFile();
 	}

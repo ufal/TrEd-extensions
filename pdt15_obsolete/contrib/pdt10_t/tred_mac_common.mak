@@ -24,7 +24,7 @@ sub PasteFromClipboard {}
 
 #bind GotoTreeAsk to Alt+g menu Go to...
 sub GotoTreeAsk {
-  my $to=main::QueryString($grp->{framegroup},"Give a Tree Number","Number");
+  my $to=QueryString("Give a Tree Number","Number");
 
 
   ChangingFile(0);
@@ -42,7 +42,7 @@ sub GotoTreeAsk {
 
 #bind TieGotoTreeAsk to Ctrl+Alt+g menu Go to... (tied)
 sub TieGotoTreeAsk {
-  my $to=main::QueryString($grp->{framegroup},"Give a Tree Number","Number");
+  my $to=QueryString("Give a Tree Number","Number");
 
   ChangingFile(0);
   if ($to=~/#/) {
@@ -139,7 +139,7 @@ sub editQuery {
   $ed->pack(qw/-padx 0 -pady 10 -expand yes -fill both/);
   $d->bind('<Return>' => [sub {1;}]);
   $ed->focus;
-  if (main::ShowDialog($d) =~ /OK/) {
+  if ($d->Show =~ /OK/) {
     $var=$ed->get('0.0','end');
     $d->destroy();
     return $var;

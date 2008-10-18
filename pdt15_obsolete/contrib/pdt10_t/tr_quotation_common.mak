@@ -30,7 +30,7 @@ sub edit_commentA {
     return;
   }
   my $value=$this->{commentA};
-  $value=main::QueryString($grp->{framegroup},"Enter comment","commentA",$value);
+  $value=QueryString("Enter comment","commentA",$value);
   if (defined($value)) {
     $this->{commentA}=$value;
   }

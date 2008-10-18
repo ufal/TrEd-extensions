@@ -28,7 +28,7 @@ for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*(-|\w)+\s*$'`; do
     fi
 done;
 echo '</extensions>';
-) | xsltproc package2html.xsl - > "$REPO/extensions.html"
+) | xsltproc package2html.xsl - > "$REPO/index.html"
 
 
 for d in pdt20; do

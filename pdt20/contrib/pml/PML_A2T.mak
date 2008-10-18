@@ -188,7 +188,7 @@ sub NewTredFile {
   die "'$fsfile' is not a FSFile\n" unless UNIVERSAL::isa($fsfile,'FSFile');
 
   die "File is already opened by TrEd\n" 
-    if grep { $_ == $fsfile } @main::openfiles;
+    if grep { $_ == $fsfile } GetOpenFiles();
   push @main::openfiles, $fsfile;
   main::updatePostponed($grp->{framegroup});
 }

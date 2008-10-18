@@ -262,23 +262,22 @@ sub get_value_line_hook {
     push @sent,$node;
     $node=$node->following();
   }
-  my@out;
-  my$first=1;
+  my @out;
   foreach $node (sort { $a->{ord} <=> $b->{ord} } @sent){
-    push@out,([" ","space"])unless$first;
-    $first=0;
     my $token = join(" ",map { $_->{token} } ListV($node->attr('m/w')));
     my $form = $node->attr('m/form');
     if ($form ne $token){
       push@out,(['['.$token.']',@{$refers_to{$node->{id}}},'-over=>1','-foreground=>'.CustomColor('spell')]);
     }
-    push@out,([$form,@{$refers_to{$node->{id}}}]);
+    push@out,([$form,@{$refers_to{$node->{id}}},'anode:'.$node->{id}]);
+    unless($node->attr('m/w/no_space_after')){
+      push@out,([" ","space"]);
+    }
   }
   return \@out;
 }
 
 #include <contrib/support/arrows.inc>
-
 
 # init caches
 sub root_style_hook {
@@ -449,33 +448,89 @@ sub JumpToAntecedentGram {
   return;
 }#JumpToAntecedentGram
 
+sub _get_frame {
+  my $rf = shift;
+  my ($prefix,$file) = FindVallex();
+  $rf =~ s/^\Q$prefix\E\#//;
+  my $lexicon = $ValLex::GUI::ValencyLexicon;
+  if (ref $lexicon){
+    my $frame = $lexicon->by_id($rf);
+    return $ValLex::GUI::ValencyLexicon->serialize_frame($frame) if $frame;
+  }
+  'Valency lexicon not found or not loaded!';
+}#_get_frame
+
 sub get_status_line_hook {
-  # get_status_line_hook may either return a string
-  # or a pair [ field-definitions, field-styles ]
   return unless $this;
-  return [
+  my $statusline= [
 	  # status line field definitions ( field-text => [ field-styles ] )
 	  [
-	   "     id: " => [qw(label)],
-	   $this->{id} => [qw({id} value)],
-	   "     a: " => [qw(label)],
-	   (join ", ",GetANodeREFs($this)) => [($this->{nodetype} eq 'root' ? '{atree.rf}' : '{a}'), 'value'],
-           ,
-	   ($this->{'val_frame.rf'} ?
-	    ("     frame: " => [qw(label)],
-	     join(",",AltV($this->{'val_frame.rf'})) => [qw({FRAME} value)]
-	    ) : ()),
-	  ],
-
+#	   "     id: " => [qw(label)],
+#	   $this->{id} => [qw({id} value)],
+	   "     a:" => [qw(label)]
+          ],
 	  # field styles
 	  [
+           "ref" => [-underline => 1, -foreground => 'blue'],
 	   "label" => [-foreground => 'black' ],
 	   "value" => [-underline => 1 ],
 	   "bg_white" => [ -background => 'white' ],
+           "status" => [ -foreground => CustomColor('status')]
 	  ]
 	 ];
-}
+  my $sep = " ";
+  foreach my $ref (
+                   $this->{nodetype} eq 'root'
+                   ?
+                   $this->{'atree.rf'}
+                   :
+                   ($this->attr('a/lex.rf'),ListV($this->attr('a/aux.rf')))){
+    if($ref){
+      push @{$statusline->[0]},
+        ($sep => [qw(label)],GetANodeByID($ref)->attr('m/form') => [ '{REF}','ref',$ref ]);
+    $sep=", ";
+    }
+  }
+  unshift @{$statusline->[0]},
+    ($this->{'val_frame.rf'} ?
+     ("     frame: " => [qw(label)],
+      join(",",map {_get_frame($_)} AltV($this->{'val_frame.rf'})) => [qw({FRAME} value)]
+     ) : ());
+  return $statusline;
+} # get_status_line_hook
 
+sub status_line_doubleclick {
+  # status-line field double clicked
+
+  # @_ contains a list of style names associated with the clicked
+  # field. Style names may obey arbitrary user-defined convention.
+
+  my $onValFrameClick = shift;
+
+  foreach (@_) {
+    if (/^\{(.*)}$/) {
+      if ($1 eq 'FRAME') {
+ 	$onValFrameClick->($this) if $onValFrameClick;
+        last;
+      } elsif($1 eq 'REF'){
+        my $aref = $_[-1];
+        $aref =~ s/.*?#//;
+        AnalyticalTree();
+        $this = $root;
+        my($node,$tree) = SearchForNodeById($aref);
+        TredMacro::GotoTree($tree);
+        $this = $node;
+        Redraw_FSFile();
+      } else {
+        if (EditAttribute($this,$1)) {
+          ChangingFile(1);
+          Redraw_FSFile();
+        }
+        last;
+      }
+    }
+  }
+}#status_line_doubleclick
 
 =item IsCoord($node?)
 
@@ -822,13 +877,23 @@ node:<?
   '#{customfunc}${functor}').
   "#{customsubfunc}".($${subfunctor}?".\${subfunctor}":'').($${is_state}?".\${is_state=state}":'') ?>
 
-node:<? $${nodetype} ne 'complex' and $${nodetype} ne 'root'
-        ? '#{customnodetype}${nodetype}'
-        : ''
-     ?>#{customcomplex}<?
-        local $_=$${gram/sempos};
-        s/^sem([^.]+)(\..)?[^.]*(.*)$/$1$2$3/;
-        '${gram/sempos='.$_.'}'
+node:<? $PML_T::showANodes
+        ? (($this->attr('a/lex.rf')
+            ? ('#{customlex}'
+              .(PML_T::GetANodeByID($this->attr('a/lex.rf'))->attr('m/form')))
+            : ''
+          ).($this->attr('a/aux.rf')
+            ? ('#{customaux} '
+              .join(' ',map{
+                  PML_T::GetANodeByID($_)->attr('m/form')
+                }ListV($this->attr('a/aux.rf'))
+              ))
+            : ''))
+        : (
+          ($${nodetype} ne 'complex' and $${nodetype} ne 'root')
+          ? '#{customnodetype}${nodetype}'
+          : '#{customcomplex}${gram/sempos}'
+        )
 ?>
 
 style:#{Node-width:7}#{Node-height:7}#{Node-currentwidth:9}#{Node-currentheight:9}
@@ -967,6 +1032,11 @@ hint:<?
 EOF
   }
 }#CreateStylesheets
+
+sub ToggleANodes {
+  $PML_T::showANodes=not $PML_T::showANodes;
+  ChangingFile(0);
+}#ToggleANodes
 
 sub allow_switch_context_hook {
   return 'stop' if SchemaName() ne 'tdata';

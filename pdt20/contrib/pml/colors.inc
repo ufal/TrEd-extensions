@@ -31,7 +31,9 @@
                      arrow_exoph blue
                      line_normal #7f7f7f
                      line_member #a0a0a0
-                     line_comm #6F11EA/;
+                     line_comm #6F11EA
+                     lex darkgreen
+                     aux darkorange/;
   while(@CustomColors){
     my$key=shift(@CustomColors);
     my$val=shift(@CustomColors);

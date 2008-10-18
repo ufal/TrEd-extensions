@@ -30,6 +30,7 @@ package PML_T_View;
 #bind JumpToAntecedentCompl to Alt+j menu Jump to complement coreference antecedent
 #bind JumpToAntecedentText to Ctrl+j menu Jump to textual coreference antecedent
 #bind JumpToAntecedentGram to J menu Jump to grammatical coreference antecedent
+#bind ToggleANodes to A menu Toggle display of a-nodes or grammatemes
 
 1;
 

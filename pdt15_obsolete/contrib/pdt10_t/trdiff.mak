@@ -461,7 +461,7 @@ sub DiffTRFiles_with_summary {
   $t->BindMouseWheelHoriz("Shift");
   $t->focus;
   print "showing dialog\n";
-  &main::ShowDialog($d);
+  $d->Show();
   $FileChanged=0;
 }
 

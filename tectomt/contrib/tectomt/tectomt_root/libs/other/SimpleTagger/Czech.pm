@@ -19,14 +19,16 @@ foreach my $table_name ('prob_tag_given_form','prob_tag_given_prevtag',
 			'prob_tag_given_suffix4','prob_tag_given_suffix2') {
     my $filename = "$data_dir/$table_name.tsv.gz";
     print STDERR "   $filename ... \n";
-    open I,"<:raw:perlio:gzip:utf8",$filename or die $! ;
-    while (<I>) {
+    my $fh = IOBackend::open_uri($filename,'UTF-8') or die $!;
+    # open my $fh,"<:raw:perlio:gzip:utf8",$filename or die $! ;
+    while (<$fh>) {
         chomp;
         my ($attr1,$attr2,$prob) = split /\t/;
         if (defined $prob and do{$prob=~s/[^\d]//g} and $prob >= 0.00001) {
             $prob{$table_name}{$attr1}{$attr2} = $prob || 1;
         }
     }
+    IOBackend::close_uri($fh);
 }
 print STDERR "Loaded.\n";
 

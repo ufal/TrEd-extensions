@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="10290">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>remote_control</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Remote Control for TrEd</title>
-  <version>1.2</version>
+  <version>1.5</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>This extension provides a macro that can 
   can connect to a remote server and process asynchronously commands (Perl one-liners) sent by the server.

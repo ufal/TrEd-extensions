@@ -86,7 +86,7 @@ sub insert_node_to_pos {
   # ask for ordinal number
   # splice given node to that position
   # reorder nodes
-  my $value=main::QueryString($grp->{framegroup},"Enter new ord","ord","");
+  my $value=QueryString("Enter new ord","ord","");
   return unless defined $value;
   my @nodes=GetNodes();
   splice @nodes,Index(\@nodes,$this),1;

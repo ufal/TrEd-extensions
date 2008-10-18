@@ -22,6 +22,11 @@ sub node_release_hook     { 'stop' }
 sub enable_attr_hook      { 'stop' }
 sub enable_edit_node_hook { 'stop' }
 
+sub status_line_doubleclick_hook {
+  status_line_doubleclick(sub{ ShowAssignedValFrames($_[0]) },@_);
+} # status_line_doubleclick_hook
+
+
 sub switch_context_hook {
   &PML_T::switch_context_hook;
   disable_node_menu_items() if GUI();

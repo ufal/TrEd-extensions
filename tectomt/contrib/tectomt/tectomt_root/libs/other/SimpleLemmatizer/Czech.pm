@@ -11,13 +11,15 @@ my $filename = "$ENV{TMT_SHARED}/generated_data/data_for_simple_lemmatizer/form_
 my %form_and_pos_to_lemma;
 
 print STDERR "Loading the lemmatization table...\n";
-open I,"<:raw:perlio:gzip:utf8",$filename or die $!;
-while (<I>) {
+my $fh = IOBackend::open_uri($filename,'UTF-8') or die $!;
+#open my $fh, "<:raw:perlio:gzip:utf8",$filename or die $!;
+while (<$fh>) {
     chomp;
     my ($form,$pos,$lemma) = split /\t/;
     $form_and_pos_to_lemma{$form}{$pos} = $lemma
         unless defined $form_and_pos_to_lemma{$form}{$pos};
 }
+IOBackend::close_uri($fh);
 print STDERR "Lemmatization table loaded.\n";
 
 sub lemmatize {
