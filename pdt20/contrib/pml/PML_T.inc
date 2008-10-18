@@ -267,9 +267,9 @@ sub get_value_line_hook {
     my $token = join(" ",map { $_->{token} } ListV($node->attr('m/w')));
     my $form = $node->attr('m/form');
     if ($form ne $token){
-      push@out,(['['.$token.']',@{$refers_to{$node->{id}}},'-over=>1','-foreground=>'.CustomColor('spell')]);
+      push@out,(['['.$token.']',@{$refers_to{$node->{id}}||[]},'-over=>1','-foreground=>'.CustomColor('spell')]);
     }
-    push@out,([$form,@{$refers_to{$node->{id}}},'anode:'.$node->{id}]);
+    push@out,([$form,@{$refers_to{$node->{id}}||[]}],'anode:'.$node->{id}]);
     unless($node->attr('m/w/no_space_after')){
       push@out,([" ","space"]);
     }
