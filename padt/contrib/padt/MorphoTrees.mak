@@ -35,6 +35,51 @@ our ($dims, $fill) = (10, ' ' x 4);
 #
 # ##################################################################################################
 
+sub CreateStylesheets {
+
+    return << '>>';
+
+style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :
+             $this->{score} > 0 ? '#{Line-fill:orange}' :
+                 defined $this->{apply} ? '#{Line-fill:black}' : '' ?>
+
+node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Form|Paragraph)$/
+                                      and $this->{comment} ne ''
+   ?><? $this->{'#name'} =~ /^(?:Token|Form|Partition)$/
+            ? ( '${form}' )
+            : (
+            $this->{'#name'} eq 'Lexeme'
+                ? ( '#{purple}${gloss} #{gray}${idx} #{darkmagenta}${form}' )
+                : (
+                $this->{'#name'} =~ /^(?:Entity|Paragraph)$/
+                    ? ( $this->{apply} > 0
+                        ? '#{black}${idx} #{gray}${lookup} #{red}${input}'
+                        : '#{black}${idx} #{gray}${lookup} #{black}${input}'
+                    )
+                    : ( $this->{apply} > 0
+                        ? '  #{red}${input}'
+                        : '  #{black}${input}'
+                    ) ) ) ?>
+
+node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Form'
+                                        and $this->{comment} ne ''
+   ?>#{darkred}${tag}<? $this->{inherit} eq '' ? '#{red}' : '#{orange}'
+   ?>${restrict}
+
+hint:<? '${gloss}' if $this->{'#name'} eq 'Form' ?>
+>>
+}
+
+sub switch_context_hook {
+
+    &PADT::switch_context_hook;
+}
+
+sub pre_switch_context_hook {
+
+    &PADT::pre_switch_context_hook;
+}
+
 sub node_release_hook {
 
     return 'stop' if defined $_[0]->{'#name'};
@@ -856,11 +901,7 @@ sub reflect_choice {
 
     switch_either_context('quick');
 
-#ifdef TRED
-
-    main::save_undo($grp, main::prepare_undo($grp));
-
-#endif
+    main::save_undo($grp, main::prepare_undo($grp)) if TredMacro::GUI();
 
     my $reflect = $this;
     my $twig = $leaf->parent();
@@ -1409,7 +1450,7 @@ sub open_level_second {
             return;
         }
 
-        system 'perl -X ' . ( escape CallerDir('exec').'/SyntaxFS.pl' ) .
+        system 'perl -X ' . ( escape CallerDir('exec') . '/SyntaxFS.pl' ) .
                       ' ' . ( expace $file[0] );
 
         mkdir path $path, "$level" unless -d path $path, "$level";

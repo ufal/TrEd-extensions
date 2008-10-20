@@ -32,6 +32,43 @@ our ($justify_mode, $support_unicode, $ArabicRendering);
 #
 # ##################################################################################################
 
+sub CreateStylesheets {
+
+    return << '>>';
+
+rootstyle:<? '#{vertical}#{Node-textalign:left}' ?>
+                    
+style:<? '#{Line-coords:n,n,p,n,p,p}' ?>
+                    
+node:<? $this->{morph} eq '' ? '#{custom1}${label}' : '#{custom6}${form}' ?>
+
+node:#{custom4}${tag_2}
+
+node:#{custom5}${tag_3}
+
+node:#{custom2}${morph}
+
+node:#{custom3}${tag_1}
+
+hint:<? join "\n", 'morph: ${morph}',
+                   'label: ${label}'
+                   'tag_1: ${tag_1}'
+                   'tag_2: ${tag_2}'
+                   'tag_3: ${tag_3}'
+                   'comment: ${comment}' ?>
+>>
+}
+
+sub switch_context_hook {
+
+    &PADT::switch_context_hook;
+}
+
+sub pre_switch_context_hook {
+
+    &PADT::pre_switch_context_hook;
+}
+
 #bind tree_justify_mode Ctrl+j menu Toggle Tree Justify Mode
 sub tree_justify_mode {
 

@@ -1,0 +1,16 @@
+context: DeepLevels
+style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) .
+         ( $this->{context} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :
+           $this->{context} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :
+           $this->{context} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
+node: <? $this->{'m'}{'form'} =~ /^./ ? $this->{'m'}{'lemma'} =~ /^([^\_]+)/ ? $1 : '${m/form}'
+                                      : '#{custom6}${m/input}' ?>
+node: <? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne '' ? '#{custom3}${s/afun}'
+                                                                                : '#{custom5}${func}' ),
+      ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' } qw 'parallel paren s/coref s/clause' ) || () ) ?>
+
+hint:tag:   ${m/tag}
+      lemma: ${m/lemma}
+      morph: ${m/morph}
+      gloss: ${m/gloss}
+      comment: ${m/comment}

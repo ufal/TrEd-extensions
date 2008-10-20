@@ -421,6 +421,42 @@ sub thisToInferClauseHead {
 #
 # ##################################################################################################
 
+sub CreateStylesheets {
+
+    return << '>>';
+
+style:<? $this->{clause} ne '' || $this->{m}{tag} =~ /^V/ || $this->{afun} =~ /^P/
+         ? '#{Line-fill:gold}' : '' ?>
+
+node:<? $this->{m}{form} =~ /^./ ? '${m/form}' : '#{custom6}${m/input}' ?>
+
+node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
+                                  ? '#{custom3}${afunaux}' 
+                                  : '#{custom1}${afun}' ),
+                            ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
+                                              qw 'parallel paren arabfa coref clause' ) || () ) ?>
+
+node:<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne '' 
+   ?>#{custom2}${m/tag}
+
+hint:<? join "\n", 'tag: ${m/tag}',
+                   'lemma: ${m/lemma}',
+                   'morph: ${m/morph}',
+                   'gloss: ${m/gloss}',
+                   'comment: ${m/comment}' ?>
+>>
+}
+
+sub switch_context_hook {
+
+    &PADT::switch_context_hook;
+}
+
+sub pre_switch_context_hook {
+
+    &PADT::pre_switch_context_hook;
+}
+
 sub get_auto_afun {
 
     require Assign_arab_afun;
@@ -1306,15 +1342,15 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'perl -X ' . ( escape CallerDir('exec').'/SyntaxFS.pl' ) .
+    system 'perl -X ' . ( escape CallerDir('exec') . '/SyntaxFS.pl' ) .
                   ' ' . ( expace $file[1] );
 
-    system 'btred -QI ' . ( escape CallerDir('exec').'/syntax_pretty.ntred' ) .
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/syntax_pretty.ntred' ) .
                     ' -s fs -a xml ' . ( espace $file[4] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('exec').'/migrate_annotation_syntax.btred' ) .
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_syntax.btred' ) .
                     ' ' . ( espace $file[0] );
 
     print "... succeeded.\n";
@@ -1423,7 +1459,7 @@ sub open_level_third {
             return;
         }
 
-        system 'perl -X ' . ( escape CallerDir('exec').'/DeeperFS.pl' ) .
+        system 'perl -X ' . ( escape CallerDir('exec') . '/DeeperFS.pl' ) .
                       ' ' . ( expace $file[0] );
 
         mkdir path $path, "$level" unless -d path $path, "$level";

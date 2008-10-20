@@ -1,0 +1,12 @@
+context: Analytic
+style: <? $this->{arabclause} ne '' ||
+$this->{tag} =~ /^V/ || $this->{afun} =~ /^P/ ? '#{Line-fill:gold}' : ()
+?>
+node: <? $this->{form} =~ /^./ ? '${form}' : '#{custom6}${origf}' ?>
+node: <?
+join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne '' ?
+'#{custom3}${afunaux}' : '#{custom1}${afun}' ), ( ( join '_', map { '${' . $_ . '}' } grep { $this->{$_} ne '' }
+qw 'parallel paren arabfa arabspec arabclause' ) || () )
+?>
+
+hint: tag:   ${tag}lemma: ${lemma}morph: ${x_morph}gloss: ${x_gloss}comment: ${x_comment}

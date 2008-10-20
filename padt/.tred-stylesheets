@@ -1,79 +1,0 @@
-##################################################
-stylesheet: Analytic
-context:    Analytic
-style: <? $this->{clause} ne '' ||$this->{m}{tag} =~ /^V/ || $this->{afun} =~ /^P/ ? '#{Line-fill:gold}' : ()?>
-node: <? $this->{m}{form} =~ /^./ ? '${m/form}' : '#{custom6}${m/input}' ?>
-node: <?join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne '' ?'#{custom3}${afunaux}' : '#{custom1}${afun}' ), ( ( join '_', map { '${' . $_ . '}' } grep { $this->{$_} ne '' }qw 'parallel paren arabfa coref clause' ) || () )?>
-node: <? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne '' ?>#{custom2}${m/tag}
-hint:       tag:   ${m/tag}
-hint:       lemma: ${m/lemma}
-hint:       morph: ${m/morph}
-hint:       gloss: ${m/gloss}
-hint:       comment: ${m/comment}
-
-
-##################################################
-stylesheet: Analytic FS
-context:    Analytic
-style: <? $this->{arabclause} ne '' ||$this->{tag} =~ /^V/ || $this->{afun} =~ /^P/ ? '#{Line-fill:gold}' : ()?>
-node: <? $this->{form} =~ /^./ ? '${form}' : '#{custom6}${origf}' ?>
-node: <?join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne '' ?'#{custom3}${afunaux}' : '#{custom1}${afun}' ), ( ( join '_', map { '${' . $_ . '}' } grep { $this->{$_} ne '' }qw 'parallel paren arabfa arabspec arabclause' ) || () )?>
-hint: tag:   ${tag}lemma: ${lemma}morph: ${x_morph}gloss: ${x_gloss}comment: ${x_comment}
-
-
-##################################################
-stylesheet: DeepLevels
-context:    DeepLevels
-style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) .         ( $this->{context} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :           $this->{context} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :           $this->{context} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
-node: <? $this->{'m'}{'form'} =~ /^./ ? $this->{'m'}{'lemma'} =~ /^([^\_]+)/ ? $1 : '${m/form}'                                      : '#{custom6}${m/input}' ?>
-node: <? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne '' ? '#{custom3}${s/afun}'                                                                                : '#{custom5}${func}' ),      ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' } qw 'parallel paren s/coref s/clause' ) || () ) ?>
-hint:tag:   ${m/tag}
-hint:      lemma: ${m/lemma}
-hint:      morph: ${m/morph}
-hint:      gloss: ${m/gloss}
-hint:      comment: ${m/comment}
-
-
-##################################################
-stylesheet: DeepLevels FS
-context:    DeepLevels
-style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) . ( $this->{context} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' : $this->{context} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' : $this->{context} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
-node: <? $this->{form} =~ /^./ ? $this->{lemma} =~ /^([^\_]+)/ ? $1 : '${form}' : '#{custom6}${origf}' ?>
-node: <? join '#{custom5}_', ( $this->{func} eq '???' && $this->{afun} ne '' ? '#{custom3}${afun}' : '#{custom5}${func}' ), ( ( join '_', map { '${' . $_ . '}' } grep { $this->{$_} ne '' } qw 'parallel paren arabfa arabspec arabclause' ) || () ) ?>
-tag:   ${tag}
-lemma: ${lemma}
-morph: ${x_morph}
-gloss: ${x_gloss}
-comment: ${x_comment}
-
-
-##################################################
-stylesheet: ElixirFM
-context:    ElixirFM
-rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .             '#{skipHiddenLevels:1}#{lineSpacing:1.2}' ?>
-style:<? ( $this->level() < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .         ( $ElixirFM::hiding_level && $this->level() > $ElixirFM::hiding_level               ? '#{Node-hide:1}' :           $this->level() == 0 ? '#{Node-hide:1}' :           $this->level() == 4 ? '#{Node-rellevel:1}' . (                 $this->{'type'} eq 'OBL'               ? '#{Line-dash}#{Line-width:3}#{Line-fill:black}'               : $this->{'type'} eq 'OPT'               ? '#{Line-dash:-}#{Line-width:2}#{Line-fill:black}'               : '#{Line-dash:-}#{Line-width:2}#{Line-fill:red}' ) :           $this->level() == 6 ? '#{Node-rellevel}' . (                 '#{Line-dash}#{Line-width:2}#{Line-fill:black}'           ) : '' ) ?>
-node:<? $this->level() == 2      ? '${entity=' . ElixirFM::entity($this)->[0] . '}   #{custom6}${entity=' .        ( join '}  #{custom3}${entity=',          map { ref $_ ? @{$_} : () }          map { $_->{form}, $_->{imperf}, $_->{second}, $_->{pfirst} }          ElixirFM::entity($this)->[1] ) . '}' .        ( $this->{'limits'}{'fst'} ?          "\n" . '#{custom7}${limits=limited} #{custom3}${limits="' .          $this->{'limits'}{'fst'} . '"}' : '' ) .        ( ElixirFM::entity($this)->[1]{'derive'} ?          "\n" . '#{custom7}${entity=derives} #{custom3}${entity="' .          ElixirFM::entity($this)->[1]{'derive'} . '"}' : '' )      : $this->level() == 4      ? ( $this->{'type'} eq 'OBL' ? '#{custom2}' :          $this->{'type'} eq 'OPT' ? '#{custom6}' : '') .          '${=' . $this->{'role'} . '}'      : $this->level() > 4      ? ( join "\n", $this->{'form'} eq '' ? ()                     : '${=' . ElixirFM::phor($this->{'form'}) . '}',                     $this->{'tag'} eq '' ? ()                     : '#{custom2}${=' . $this->{'tag'} . '}' )      : '#{darkgrey}${entity=' . $this->{'#name'} . '}'   ?><? $this->level() == 1      ? '  #{custom6}' . ElixirFM::phor(ElixirFM::cling($this->{'root'})) .        '  #{custom2}' . '${root}'      : '' ?>
-node:<? $this->level() == 2      ? '#{custom2}${morphs=' . $this->{morphs} . '}'        . ( join "", map { "\n" . $_ } map {              '#{custom6}${entity=' . $_ . '}' }            ElixirFM::plurals($this),            ElixirFM::masdars($this) )        . ( join "", map { "\n" . $_ } map {              '#{custom3}${entity=' . $_ . '}' }            ElixirFM::feminis($this) )      : '' ?>
-node:<? $this->level() == 2      ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .        '#{grey30}' . ( join "",          map { "\n" . ElixirFM::phon(ElixirFM::merge($_->[0], $_->[1])) }          map { [$this->parent()->{'root'}, $_] }          ElixirFM::plurals($this),          ElixirFM::masdars($this),          ElixirFM::feminis($this) )      : '' ?>
-node:<? $this->level() == 2      ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .        '#{grey30}' . ( join "",          map { "\n" . ElixirFM::orth(ElixirFM::merge($_->[0], $_->[1])) }          map { [$this->parent()->{'root'}, $_] }          ElixirFM::plurals($this),          ElixirFM::masdars($this),          ElixirFM::feminis($this) )      : '' ?>
-node:#{custom3}<?'${reflex=' . (join ", ", @{$this->{reflex}}) . '}'?>
-
-
-##################################################
-stylesheet: MorphoTrees
-context:    MorphoTrees
-style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :             $this->{score} > 0 ? '#{Line-fill:orange}' :                 defined $this->{apply} ? '#{Line-fill:black}' : ''                    ?>
-node: <? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Form|Paragraph)$/ and $this->{comment} ne '' ?><?                        $this->{'#name'} =~ /^(?:Token|Form|Partition)$/                            ? ( '${form}' )                            : (                            $this->{'#name'} eq 'Lexeme'                                ? ( '#{purple}${gloss} #{gray}${idx} #{darkmagenta}${form}' )                                : (                                $this->{'#name'} =~ /^(?:Entity|Paragraph)$/                                    ? ( $this->{apply} > 0                                        ? '#{black}${idx} #{gray}${lookup} #{red}${input}'                                        : '#{black}${idx} #{gray}${lookup} #{black}${input}'                                    )                                    : ( $this->{apply} > 0                                        ? '  #{red}${input}'                                        : '  #{black}${input}'                                    )                                )                            )                    ?>
-node: <? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Form' and $this->{comment} ne '' ?>#{darkred}${tag}<?                        $this->{inherit} eq '' ? '#{red}' : '#{orange}'                    ?>${restrict}
-hint:<? '${gloss}' if $this->{'#name'} eq 'Form' ?>
-
-
-##################################################
-stylesheet: MorphoTrees FS
-context:    MorphoTrees
-style:<? $this->{apply_m} > 0 ? '#{Line-fill:red}' :             $this->{apply_t} > 0 ? '#{Line-fill:orange}' :                 defined $this->{apply_m} ? '#{Line-fill:black}' : ''                    ?>
-node: <? '#{magenta}${comment} << ' if $this->{type} !~ /^(?:token_form|paragraph)$/ and $this->{comment} ne '' ?><?                        $this->{type} =~ /^(?:token_form|token_node|partition)$/                            ? ( '${token_node}' )                            : (                            $this->{type} eq 'lemma_id'                                ? ( '#{purple}${gloss} #{gray}${id} #{darkmagenta}${token_node}' )                                : (                                $this->{type} =~ /^(?:entity|paragraph)$/                                    ? ( $this->{apply_m} > 0                                        ? '#{black}${id} #{gray}${lookup} #{red}${input}'                                        : '#{black}${id} #{gray}${lookup} #{black}${input}'                                    )                                    : ( $this->{apply_m} > 0                                        ? '  #{red}${input}'                                        : '  #{black}${input}'                                    )                                )                            )                    ?>
-node: <? '#{goldenrod}${comment} << ' if $this->{type} eq 'token_node' and $this->{comment} ne '' ?>#{darkred}${tag}<?                        $this->{inherit} eq '' ? '#{red}' : '#{orange}'                    ?>${restrict}
-hint:<? '${gloss}' if $this->{type} eq 'token_node' ?>
-
-

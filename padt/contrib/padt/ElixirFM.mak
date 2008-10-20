@@ -2,7 +2,7 @@
 #
 # ElixirFM Context for the TrEd Environment ########################################################
 
-# $Id: ElixirFM.mak 718 2008-10-02 22:30:36Z smrz $
+# $Id: ElixirFM.mak 730 2008-10-18 20:48:24Z smrz $
 
 package ElixirFM;
 
@@ -15,7 +15,7 @@ use ElixirFM;
 use File::Spec;
 use File::Copy;
 
-our $VERSION = do { q $Revision: 718 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 730 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 # ##################################################################################################
 #
@@ -555,6 +555,100 @@ sub copy_subtree {
 #
 # ##################################################################################################
 
+sub CreateStylesheets {
+
+    return << '>>';
+
+rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
+             '#{skipHiddenLevels:1}#{lineSpacing:1.2}' ?>
+
+style:<? ( $this->level() < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
+         ( $ElixirFM::hiding_level && $this->level() > $ElixirFM::hiding_level
+               ? '#{Node-hide:1}' :
+           $this->level() == 0 ? '#{Node-hide:1}' :
+           $this->level() == 4 ? '#{Node-rellevel:1}' . (
+                 $this->{'type'} eq 'OBL'
+               ? '#{Line-dash}#{Line-width:3}#{Line-fill:black}'
+               : $this->{'type'} eq 'OPT'
+               ? '#{Line-dash:-}#{Line-width:2}#{Line-fill:black}'
+               : '#{Line-dash:-}#{Line-width:2}#{Line-fill:red}' ) :
+           $this->level() == 6 ? '#{Node-rellevel}' . (
+                 '#{Line-dash}#{Line-width:2}#{Line-fill:black}'
+           ) : '' ) ?>
+
+node:<? $this->level() == 2
+      ? '${entity=' . ElixirFM::entity($this)->[0] . '}   #{custom6}${entity=' .
+        ( join '}  #{custom3}${entity=',
+          map { ref $_ ? @{$_} : () }
+          map { $_->{form}, $_->{imperf}, $_->{second}, $_->{pfirst} }
+          ElixirFM::entity($this)->[1] ) . '}' .
+        ( $this->{'limits'}{'fst'} ?
+          "\n" . '#{custom7}${limits=limited} #{custom3}${limits="' .
+          $this->{'limits'}{'fst'} . '"}' : '' ) .
+        ( ElixirFM::entity($this)->[1]{'derive'} ?
+          "\n" . '#{custom7}${entity=derives} #{custom3}${entity="' .
+          ElixirFM::entity($this)->[1]{'derive'} . '"}' : '' )
+      : $this->level() == 4
+      ? ( $this->{'type'} eq 'OBL' ? '#{custom2}' :
+          $this->{'type'} eq 'OPT' ? '#{custom6}' : '') .
+          '${=' . $this->{'role'} . '}'
+      : $this->level() > 4
+      ? ( join "\n", $this->{'form'} eq '' ? ()
+                     : '${=' . ElixirFM::phor($this->{'form'}) . '}',
+                     $this->{'tag'} eq '' ? ()
+                     : '#{custom2}${=' . $this->{'tag'} . '}' )
+      : '#{darkgrey}${entity=' . $this->{'#name'} . '}'
+   ?><? $this->level() == 1
+      ? '  #{custom6}' . ElixirFM::phor(ElixirFM::cling($this->{'root'})) .
+        '  #{custom2}' . '${root}'
+      : '' ?>
+
+node:<? $this->level() == 2
+      ? '#{custom2}${morphs=' . $this->{morphs} . '}'
+        . ( join "", map { "\n" . $_ } map {
+              '#{custom6}${entity=' . $_ . '}' }
+            ElixirFM::plurals($this),
+            ElixirFM::masdars($this) )
+        . ( join "", map { "\n" . $_ } map {
+              '#{custom3}${entity=' . $_ . '}' }
+            ElixirFM::feminis($this) )
+      : '' ?>
+
+node:<? $this->level() == 2
+      ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .
+        '#{grey30}' . ( join "",
+          map { "\n" . ElixirFM::phon(ElixirFM::merge($_->[0], $_->[1])) }
+          map { [$this->parent()->{'root'}, $_] }
+          ElixirFM::plurals($this),
+          ElixirFM::masdars($this),
+          ElixirFM::feminis($this) )
+      : '' ?>
+
+node:<? $this->level() == 2
+      ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .
+        '#{grey30}' . ( join "",
+          map { "\n" . ElixirFM::orth(ElixirFM::merge($_->[0], $_->[1])) }
+          map { [$this->parent()->{'root'}, $_] }
+          ElixirFM::plurals($this),
+          ElixirFM::masdars($this),
+          ElixirFM::feminis($this) )
+      : '' ?>
+
+node:#{custom3}<?'${reflex=' . (join ", ", @{$this->{reflex}}) . '}'?>
+
+>>
+}
+
+sub switch_context_hook {
+
+    &PADT::switch_context_hook;
+}
+
+sub pre_switch_context_hook {
+
+    &PADT::pre_switch_context_hook;
+}
+
 sub node_release_hook {
 
     my ($node, $done, $mode) = @_;
@@ -971,7 +1065,7 @@ ElixirFM - Context for Annotation of the ElixirFM Lexicon in the TrEd Environmen
 
 =head1 REVISION
 
-    $Revision: 718 $       $Date: 2008-10-03 00:30:36 +0200 (Fri, 03 Oct 2008) $
+    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
 
 
 =head1 DESCRIPTION

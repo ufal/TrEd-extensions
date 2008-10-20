@@ -610,6 +610,42 @@ sub thisToInferClauseHead {
 #
 # ##################################################################################################
 
+sub CreateStylesheets {
+
+    return << '>>';
+
+style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) .
+         ( $this->{context} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :
+           $this->{context} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :
+           $this->{context} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
+
+node:<? $this->{'m'}{'form'} =~ /^./ ? $this->{'m'}{'lemma'} =~ /^([^\_]+)/ ? $1 : '${m/form}'
+                                     : '#{custom6}${m/input}' ?>
+
+node:<? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne '' 
+                                  ? '#{custom3}${s/afun}'
+                                  : '#{custom5}${func}' ),
+                            ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
+                                        qw 'parallel paren s/coref /clause' )  ?>
+
+hint:<? join "\n", 'tag: ${m/tag}',
+                   'lemma: ${m/lemma}',
+                   'morph: ${m/morph}',
+                   'gloss: ${m/gloss}',
+                   'comment: ${m/comment}' ?>
+>>
+}
+
+sub switch_context_hook {
+
+    &PADT::switch_context_hook;
+}
+
+sub pre_switch_context_hook {
+
+    &PADT::pre_switch_context_hook;
+}
+
 #bind hide_node to Ctrl+h menu Display: Hide / unhide the node
 sub hide_node {
 
@@ -1488,12 +1524,12 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'perl -X ' . ( escape CallerDir('exec').'/DeeperFS.pl' ) .
+    system 'perl -X ' . ( escape CallerDir('exec') . '/DeeperFS.pl' ) .
                   ' ' . ( expace $file[1] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('exec').'/migrate_annotation_deeper.btred' ) .
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_deeper.btred' ) .
                     ' ' . ( espace $file[0] );
 
     print "... succeeded.\n";
