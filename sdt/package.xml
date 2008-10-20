@@ -6,7 +6,7 @@
   <pkgname>sdt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Slovene Dependency Treebank Annotation</title>
-  <version>1.5</version>
+  <version>1.6</version>
   <copyright year="2003">Zdeněk Žabokrtský</copyright>
   <description>Provides an annotation mode for syntactical dependency annotaiton 
   of Slovene corpus in the style of PDT 1.0. The package contains also

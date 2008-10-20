@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="570212">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="570213">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt20_sample</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Dependency Treebank 2.0 Sample Data</title>
-  <version>1.9</version>
+  <version>1.11</version>
   <copyright year="2006">UFAL MFF UK</copyright>
   <description>Contains 10 a-layer and 10 t-layer sample files from PDT 2.0
   and adds corresponding file list items to the Session menu.

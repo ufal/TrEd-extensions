@@ -6,7 +6,7 @@
   <pkgname>pdt_auto_afun</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Automatically Assign Analytical Functions</title>
-  <version>1.5</version>
+  <version>1.6</version>
   <copyright year="2002">Zdeněk Žabokrtský</copyright>
   <description>Provides a macros that attempt to assign automatically analytical functions
     to analytical nodes (PDT 1.0 or PDT 2.0 a-layer), based on morphological information

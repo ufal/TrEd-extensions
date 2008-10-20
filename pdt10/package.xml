@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="125441">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="125383">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt10</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Old-style PDT 1.0 Annotation</title>
-  <version>1.5</version>
+  <version>1.6</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>Provides annotation mode for PDT 1.0 analytical layer in FS/CSTS format.</description>
 </tred_extension>
