@@ -15,6 +15,8 @@
       <optional><element name="pml:source_html"><text/></element></optional>
       <optional><element name="pml:target_lang"><ref name="type-lang.type"/></element></optional>
       <optional><element name="pml:target_text"><text/></element></optional>
+      <optional><element name="pml:application"><text/></element></optional>
+      
       
       <optional><element name="pml:english_source_text"><text/></element></optional>
       <optional><element name="pml:english_source_html"><text/></element></optional>
@@ -22,6 +24,8 @@
       <optional><element name="pml:czech_source_text"><text/></element></optional>
       <optional><element name="pml:czech_source_html"><text/></element></optional>
       <optional><element name="pml:czech_target_text"><text/></element></optional>
+      <optional><element name="pml:SCzechX"><text/></element></optional>
+      <optional><element name="pml:SCzechW"><ref name="type-w-doc.type"/></element></optional>
     </interleave></define>
   
   
@@ -520,6 +524,8 @@
       <value datatypeLibrary="" type="string">AuxG</value>
       <value datatypeLibrary="" type="string">AuxK</value>
       <value datatypeLibrary="" type="string">AuxX</value>
+      
+      <value datatypeLibrary="" type="string">Det</value>
     </choice></define>
   
   <define name="type-english_m_root.type"><interleave>
@@ -601,6 +607,31 @@
           <optional><element name="pml:head.rf"><ref name="PMLREF"/></element></optional>
         </interleave></element></optional>
       <optional><element name="pml:clause_number"><text/></element></optional>
+      
+      <optional><element name="pml:formeme_processed"><text/></element></optional>
+      <optional><element name="pml:numericTrlemmaConverted"><text/></element></optional>
+      <optional><element name="pml:has_right_delimiter"><text/></element></optional>
+      <optional><element name="pml:derivation_processed"><text/></element></optional>
+      <optional><element name="pml:diathesis"><text/></element></optional>
+      <optional><element name="pml:vallexFrame.str"><text/></element></optional>
+      <optional><element name="pml:xml_formemes.str"><text/></element></optional>
+      <optional><element name="pml:isSubordinate"><text/></element></optional>
+      <optional><element name="pml:reorderCprLeftTo"><text/></element></optional>
+      <optional><element name="pml:reorderLeftLeftmostParent"><text/></element></optional>
+      <optional><element name="pml:reorderRightLeftmostParent"><text/></element></optional>
+      <optional><element name="pml:reorderRhem"><text/></element></optional>
+      <optional><element name="pml:reorder"><interleave>
+          <optional><element name="pml:is_genitive_reorder"><text/></element></optional>
+        </interleave></element></optional>
+      
+      <optional><element name="pml:dott"><interleave>
+          <optional><element name="pml:pos.str"><text/></element></optional>
+          <optional><element name="pml:tag"><text/></element></optional>
+        </interleave></element></optional>
+      
+      <optional><element name="pml:synset_id"><text/></element></optional>
+      <optional><element name="pml:is_countable"><text/></element></optional>
+      <optional><element name="pml:hypernyms_str"><text/></element></optional>
     </interleave></define>
   <define name="type-align-links.type"><interleave>
       <optional><element name="pml:counterpart.rf"><ref name="PMLREF"/></element></optional>
@@ -629,6 +660,7 @@
       <optional><element name="pml:numertype"><ref name="type-t-numertype.type"/></element></optional>
       <optional><element name="pml:politeness"><ref name="type-t-politeness.type"/></element></optional>
       <optional><element name="pml:negation"><ref name="type-t-negation.type"/></element></optional>
+      <optional><element name="pml:definiteness"><ref name="type-t-definiteness.type"/></element></optional>
     </interleave></define>
   <define name="type-t-named_entity.type"><interleave>
       <optional><element name="pml:number"><text/></element></optional>
@@ -695,6 +727,11 @@
       <value datatypeLibrary="" type="string">res0</value>
       <value datatypeLibrary="" type="string">nr</value>
     </choice></define>
+  <define name="type-t-definiteness.type"><choice>
+      <value datatypeLibrary="" type="string">def1</value>
+      <value datatypeLibrary="" type="string">def0</value>
+      <value datatypeLibrary="" type="string">nr</value>
+    </choice></define>
   <define name="type-t-aspect.type"><choice>
       <value datatypeLibrary="" type="string">proc</value>
       <value datatypeLibrary="" type="string">cpl</value>
@@ -706,6 +743,16 @@
       <value datatypeLibrary="" type="string">post</value>
       <value datatypeLibrary="" type="string">nr</value>
       <value datatypeLibrary="" type="string">nil</value>
+      
+      <value datatypeLibrary="" type="string">Infinitive</value>
+      <value datatypeLibrary="" type="string">Present</value>
+      <value datatypeLibrary="" type="string">PresentPerfect</value>
+      <value datatypeLibrary="" type="string">PresentContinuous</value>
+      <value datatypeLibrary="" type="string">PresentPerfectContinuous</value>
+      <value datatypeLibrary="" type="string">Past</value>
+      <value datatypeLibrary="" type="string">PastContinuous</value>
+      <value datatypeLibrary="" type="string">PastPerfect</value>
+      <value datatypeLibrary="" type="string">PastPerfectContinuous</value>
     </choice></define>
   <define name="type-t-deontmod.type"><choice>
       <value datatypeLibrary="" type="string">deb</value>
@@ -948,10 +995,13 @@
       <optional><element name="pml:children"><choice><zeroOrMore><element name="pml:LM"><ref name="type-TCzechA-node.type"/></element></zeroOrMore><ref name="type-TCzechA-node.type"/></choice></element></optional>
       <optional><element name="pml:morphcat"><ref name="type-czech_morphcat.type"/></element></optional>
       <optional><element name="pml:clause_number"><text/></element></optional>
+      
+      <optional><element name="pml:is_indeclinable"><ref name="type-bool.type"/></element></optional>
     </interleave></define>
   <define name="type-czech_morphcat.type"><interleave>
       <optional><element name="pml:pos"><text/></element></optional>
       <optional><element name="pml:subpos"><text/></element></optional>
+      <optional><element name="pml:synpos"><text/></element></optional>
       <optional><element name="pml:gender"><text/></element></optional>
       <optional><element name="pml:number"><text/></element></optional>
       <optional><element name="pml:case"><text/></element></optional>
@@ -964,6 +1014,10 @@
       <optional><element name="pml:voice"><text/></element></optional>
       <optional><element name="pml:reserve1"><text/></element></optional>
       <optional><element name="pml:reserve2"><text/></element></optional>
+      
+      <optional><element name="pml:compound_person"><text/></element></optional>
+      <optional><element name="pml:compound_number"><text/></element></optional>
+      <optional><element name="pml:compound_gender"><text/></element></optional>
     </interleave></define>
   
   
@@ -1041,6 +1095,27 @@
             </interleave></choice></element></optional>
       </interleave></choice></define>
   
+  <define name="type-w-doc.type">
+      <oneOrMore><element name="pml:para"><ref name="type-w-para.type"/></element></oneOrMore>
+    </define>
+  <define name="type-w-para.type"><zeroOrMore><choice>
+      <element name="pml:othermarkup"><ref name="type-w-othermarkup.type"/></element>
+      <element name="pml:w"><ref name="type-w-node.type"/></element>
+    </choice></zeroOrMore></define>
+  <define name="type-w-othermarkup.type">
+      <optional><attribute name="origin"><text/></attribute></optional>
+      <text/>
+    </define>
+  <define name="type-w-node.type"><interleave>
+      <attribute name="id"><data type="ID"/></attribute>
+      <element name="pml:token"><text/></element>
+      <optional><element name="pml:no_space_after"><ref name="type-bool.type"/></element></optional>
+    </interleave></define>
+  <define name="type-bool.type"><choice>
+      <value datatypeLibrary="" type="string">0</value>
+      <value datatypeLibrary="" type="string">1</value>
+    </choice></define>
+  
   <define name="type-TCzechT-root.type"><interleave>
       <attribute name="id"><data type="ID"/></attribute>
       <optional><element name="pml:atree.rf"><ref name="PMLREF"/></element></optional>
@@ -1110,5 +1185,30 @@
           <optional><element name="pml:head.rf"><ref name="PMLREF"/></element></optional>
         </interleave></element></optional>
       <optional><element name="pml:clause_number"><text/></element></optional>
+      
+      <optional><element name="pml:formeme_processed"><text/></element></optional>
+      <optional><element name="pml:numericTrlemmaConverted"><text/></element></optional>
+      <optional><element name="pml:has_right_delimiter"><text/></element></optional>
+      <optional><element name="pml:derivation_processed"><text/></element></optional>
+      <optional><element name="pml:diathesis"><text/></element></optional>
+      <optional><element name="pml:vallexFrame.str"><text/></element></optional>
+      <optional><element name="pml:xml_formemes.str"><text/></element></optional>
+      <optional><element name="pml:isSubordinate"><text/></element></optional>
+      <optional><element name="pml:reorderCprLeftTo"><text/></element></optional>
+      <optional><element name="pml:reorderLeftLeftmostParent"><text/></element></optional>
+      <optional><element name="pml:reorderRightLeftmostParent"><text/></element></optional>
+      <optional><element name="pml:reorderRhem"><text/></element></optional>
+      <optional><element name="pml:reorder"><interleave>
+          <optional><element name="pml:is_genitive_reorder"><text/></element></optional>
+        </interleave></element></optional>
+      
+      <optional><element name="pml:dott"><interleave>
+          <optional><element name="pml:pos.str"><text/></element></optional>
+          <optional><element name="pml:tag"><text/></element></optional>
+        </interleave></element></optional>
+      
+      <optional><element name="pml:synset_id"><text/></element></optional>
+      <optional><element name="pml:is_countable"><text/></element></optional>
+      <optional><element name="pml:hypernyms_str"><text/></element></optional>
     </interleave></define>
 </grammar>

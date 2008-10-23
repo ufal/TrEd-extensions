@@ -38,6 +38,10 @@
        <member name="czech_source_text"><cdata format="any"/></member>
        <member name="czech_source_html"><cdata format="any"/></member>
        <member name="czech_target_text"><cdata format="any"/></member>
+
+       <member name="SCzechX"><cdata format="any"/></member>
+       <member name="SCzechW" type="w-doc.type" />
+
     </structure>
   </type>
 
@@ -285,6 +289,9 @@
           <member name="possible.rf">
              <list ordered="0"><cdata format="PMLREF"/></list>
           </member>
+          <member name="phrasal.rf">
+             <list ordered="0"><cdata format="PMLREF"/></list>
+          </member>
         </structure>
       </member> 
     </structure>
@@ -324,6 +331,7 @@
         <member name="form"><cdata format="any"/></member>
         <member name="lemma"><cdata format="any"/></member>
         <member name="tag" type="english_p_postag.type"/>
+		<member name="bbn_tag" type="bbn_tag.type" />
 <!--        <member name="m.rf" role="#KNIT" type="m-node.type"/> -->
     </structure>
 </type>
@@ -456,6 +464,116 @@
     </choice>
   </type>
 
+  <type name="bbn_tag.type">
+    <choice>
+      <value>ANIMAL</value>
+      <value>CARDINAL</value>
+      <value>CONTACT_INFO:ADDRESS</value>
+      <value>CONTACT_INFO:OTHER</value>
+      <value>CONTACT_INFO:PHONE</value>
+      <value>DATE</value>
+      <value>DATE:AGE</value>
+      <value>DATE:DATE</value>
+      <value>DATE:DURATION</value>
+      <value>DATE:OTHER</value>
+      <value>DISEASE</value>
+      <value>EVENT:HURRICANE</value>
+      <value>EVENT:OTHER</value>
+      <value>EVENT:WAR</value>
+      <value>FAC:AIRPORT</value>
+      <value>FAC:ATTRACTION</value>
+      <value>FAC:BRIDGE</value>
+      <value>FAC:BUILDING</value>
+      <value>FAC:HIGHWAY_STREET</value>
+      <value>FAC:HOTEL</value>
+      <value>FAC:OTHER</value>
+      <value>FAC_DESC:AIRPORT</value>
+      <value>FAC_DESC:ATTRACTION</value>
+      <value>FAC_DESC:BRIDGE</value>
+      <value>FAC_DESC:BUILDING</value>
+      <value>FAC_DESC:HIGHWAY_STREET</value>
+      <value>FAC_DESC:OTHER</value>
+      <value>FAC_DESC:STREET_HIGHWAY</value>
+      <value>GAME</value>
+      <value>GPE:CITY</value>
+      <value>GPE:COUNTRY</value>
+      <value>GPE:OTHER</value>
+      <value>GPE:STATE_PROVINCE</value>
+      <value>GPE_DESC:CITY</value>
+      <value>GPE_DESC:COUNTRY</value>
+      <value>GPE_DESC:OTHER</value>
+      <value>GPE_DESC:STATE_PROVINCE</value>
+      <value>LANGUAGE</value>
+      <value>LAW</value>
+      <value>LOCATION</value>
+      <value>LOCATION:BORDER</value>
+      <value>LOCATION:CITY</value>
+      <value>LOCATION:CONTINENT</value>
+      <value>LOCATION:LAKE_SEA_OCEAN</value>
+      <value>LOCATION:OTHER</value>
+      <value>LOCATION:REGION</value>
+      <value>LOCATION:RIVER</value>
+      <value>MONEY</value>
+      <value>NORP:NATIONALITY</value>
+      <value>NORP:OTHER</value>
+      <value>NORP:POLITICAL</value>
+      <value>NORP:RELIGION</value>
+      <value>ORDINAL</value>
+      <value>ORGANIZATION:CITY</value>
+      <value>ORGANIZATION:CORPORATION</value>
+      <value>ORGANIZATION:EDUCATIONAL</value>
+      <value>ORGANIZATION:GOVERNMENT</value>
+      <value>ORGANIZATION:HOSPITAL</value>
+      <value>ORGANIZATION:HOTEL</value>
+      <value>ORGANIZATION:MUSEUM</value>
+      <value>ORGANIZATION:OTHER</value>
+      <value>ORGANIZATION:POLITICAL</value>
+      <value>ORGANIZATION:RELIGIOUS</value>
+      <value>ORGANIZATION:STATE_PROVINCE</value>
+      <value>ORG_DESC:CORPORATION</value>
+      <value>ORG_DESC:EDUCATIONAL</value>
+      <value>ORG_DESC:GOVERNMENT</value>
+      <value>ORG_DESC:HOSPITAL</value>
+      <value>ORG_DESC:HOTEL</value>
+      <value>ORG_DESC:MUSEUM</value>
+      <value>ORG_DESC:OTHER</value>
+      <value>ORG_DESC:POLITICAL</value>
+      <value>ORG_DESC:RELIGIOUS</value>
+      <value>PERCENT</value>
+      <value>PERSON</value>
+      <value>PER_DESC</value>
+      <value>PLANT</value>
+      <value>PRODCUT:OTHER</value>
+      <value>PRODUCT:DRUG</value>
+      <value>PRODUCT:FOOD</value>
+      <value>PRODUCT:OTHER</value>
+      <value>PRODUCT:VEHICLE</value>
+      <value>PRODUCT:WEAPON</value>
+      <value>PRODUCT_DESC:OTHER</value>
+      <value>PRODUCT_DESC:VEHICLE</value>
+      <value>PRODUCT_DESC:WEAPON</value>
+      <value>QUANTITY:1D</value>
+      <value>QUANTITY:2D</value>
+      <value>QUANTITY:3D</value>
+      <value>QUANTITY:ENERGY</value>
+      <value>QUANTITY:OTHER</value>
+      <value>QUANTITY:SPEED</value>
+      <value>QUANTITY:TEMPERATURE</value>
+      <value>QUANTITY:WEIGHT</value>
+      <value>SUBSTANCE:CHEMICAL</value>
+      <value>SUBSTANCE:DRUG</value>
+      <value>SUBSTANCE:FOOD</value>
+      <value>SUBSTANCE:NUCLEAR</value>
+      <value>SUBSTANCE:OTHER</value>
+      <value>TIME</value>
+      <value>WORK_OF_ART:BOOK</value>
+      <value>WORK_OF_ART:OTHER</value>
+      <value>WORK_OF_ART:PAINTING</value>
+      <value>WORK_OF_ART:PLAY</value>
+      <value>WORK_OF_ART:SONG</value>
+    </choice>
+  </type>
+
 
 
 
@@ -539,6 +657,8 @@
       <value>AuxG</value>
       <value>AuxK</value>
       <value>AuxX</value>
+      <!-- afun for articles/determiners used in en_generate. ptacek 2008 -->
+      <value>Det</value>
     </choice>
   </type>
 
@@ -623,6 +743,7 @@
       <member name="children" role="#CHILDNODES">
         <list ordered="1" type="t-node.type"/>
       </member>
+	  <member name="anot_error" type="t-anot_error.type" />
     </structure>
   </type>
 
@@ -664,6 +785,8 @@
       <member name="subfunctor" type="t-subfunctor.type"/>
       <member name="is_member" type="bool.type"/>
       <member name="is_name_of_person" type="bool.type"/>
+	  <member name="bbn_tag" type="bbn_tag.type"/>
+	  <member name="anot_error" type="t-anot_error.type" />
       <member name="quot">
         <list ordered="0">
           <structure>
@@ -765,7 +888,7 @@
       <member name="reorderLeftLeftmostParent"><cdata format="any"/></member>
       <member name="reorderRightLeftmostParent"><cdata format="any"/></member>
       <member name="reorderRhem"><cdata format="any"/></member>
-      <member name="reorder">
+      <member name="delayed_reorder">
       	<structure>
       		<member name="is_genitive_reorder"><cdata format="any"/></member>
       	</structure>
@@ -783,6 +906,12 @@
 	  <member name="is_countable" ><cdata format="any"/></member>
 	  <member name="hypernyms_str" ><cdata format="any"/></member>
     </structure>
+  </type>
+
+  <type name="t-anot_error.type">
+    <list ordered="0">
+	  <cdata format="any"/>
+	</list>
   </type>
 
  <type name="align-links.type">
@@ -845,6 +974,7 @@
       <member name="numertype" type="t-numertype.type"/>
       <member name="politeness" type="t-politeness.type"/>
       <member name="negation" type="t-negation.type"/>
+      <member name="definiteness" type="t-definiteness.type"/>
     </structure>
   </type>
 
@@ -942,6 +1072,14 @@
       <value>nr</value>
     </choice>
   </type>
+  
+  <type name="t-definiteness.type">
+    <choice>
+      <value>def1</value>
+      <value>def0</value>
+      <value>nr</value>
+    </choice>
+  </type>
 
   <type name="t-aspect.type">
     <choice>
@@ -968,6 +1106,7 @@
       <value>Past</value>
       <value>PastContinuous</value>
       <value>PastPerfect</value>
+      <value>PastPerfectContinuous</value>
     </choice>
   </type>
 
@@ -1302,6 +1441,12 @@
       <member name="clause_number"><cdata format="any"/></member>
       <!-- ptacek 5.8.2008 for cz_generate -->
       <member name="is_indeclinable" type="bool.type"/>
+      <!-- ptacek 19.10.2008 for en_generate -->
+      <member name="delayed_reorder">
+      	<structure>
+      		<member name="non_projective_shift_to_leftmost_of"><cdata format="any"/></member>
+      	</structure>
+      </member>
     </structure>
   </type>
 
@@ -1438,7 +1583,43 @@
    </type>
 
 
+<!-- support for embeding XML into w-layer, adapted from PDT2.0 and arranged -->
 
+  <type name="w-doc.type">
+    <container>
+      <sequence content_pattern="para+">
+        <element name="para" type="w-para.type"/>
+      </sequence>
+    </container>
+  </type>
 
+  <type name="w-para.type">
+    <sequence>
+      <element name="othermarkup" type="w-othermarkup.type"/>
+      <element name="w" type="w-node.type"/>
+    </sequence>
+  </type>
+
+  <type name="w-othermarkup.type">
+    <container>
+      <attribute name="origin"><cdata format="any"/></attribute>
+      <cdata format="any"/>
+    </container>
+  </type>
+
+  <type name="w-node.type">
+    <structure name="w-node">
+      <member as_attribute="1" name="id" role="#ID" required="1"><cdata format="ID"/></member>
+      <member name="token" required="1"><cdata format="any"/></member>
+      <member name="no_space_after" type="bool.type"/>
+    </structure>
+  </type>
+
+  <type name="bool.type">
+    <choice>
+      <value>0</value>
+      <value>1</value>
+    </choice>
+  </type>
 
 </pml_schema>

@@ -402,8 +402,34 @@ use Cwd;
         } else {
             Report::fatal("Cannot shift left without a left neighbor") unless $left_neighbor;
             @left_treelet = ($left_neighbor, $left_neighbor->get_descendants);
+            # TODO: looks like useless sort?
             @left_treelet = sort {$a->get_ordering_value<=>$b->get_ordering_value} @left_treelet;
         }
+    
+        my $my_mass   = scalar @my_treelet;
+        my $left_mass = scalar @left_treelet;
+    
+        # ords in my treelet
+        foreach (@my_treelet) {
+            $_->set_ordering_value($_->get_ordering_value() - $left_mass);
+        }
+        
+        # ords after me
+        foreach (@left_treelet) {
+            $_->set_ordering_value($_->get_ordering_value() + $my_mass);
+        }
+    }
+    
+    sub shift_to_leftmost {
+        my ($self) = @_;
+        my $parent = $self->get_parent;
+        Report::fatal("Cannot shift node without a parent") unless $parent;
+        my $my_ord = $self->get_ordering_value;
+        my $left_neighbor = $self->get_left_neighbor();
+        my @my_treelet = $self->get_treelet_nodes();
+        my @my_ordered_treelet = sort {$a->get_ordering_value<=>$b->get_ordering_value} ($self, $self->get_ordered_descendants());
+        my $my_leftmost_descendant_ord = $my_ordered_treelet[0]->get_ordering_value();
+        my @left_treelet = grep { $_->get_ordering_value() < $my_leftmost_descendant_ord } $parent->get_treelet_nodes();
     
         my $my_mass   = scalar @my_treelet;
         my $left_mass = scalar @left_treelet;

@@ -14,23 +14,27 @@ use TectoMT::Node;
 use TectoMT::Scenario;
 
 my $scenario =  TectoMT::Scenario->new({'blocks' => [ qw(
-                                                            SCzechW_to_SCzechM::Tokenize.pm
-                                                            SCzechW_to_SCzechM::Simple_tagger
-                                                            SCzechW_to_SCzechM::Simple_lemmatizer
-                                                            SCzechM_to_SCzechA::ZZ_parser
-                                                            SCzechA_to_SCzechT::Mark_auxiliary_nodes
-                                                            SCzechA_to_SCzechT::Build_ttree
-                                                            SCzechA_to_SCzechT::Rehang_unary_coord_conj
-                                                            SCzechA_to_SCzechT::Fill_is_member
-                                                            SCzechA_to_SCzechT::Assign_coap_functors
-                                                            SCzechA_to_SCzechT::Distrib_coord_aux
-                                                            SCzechA_to_SCzechT::Mark_clause_heads
-                                                            SCzechA_to_SCzechT::Mark_relclause_heads
-                                                            SCzechA_to_SCzechT::Fix_tlemmas
-                                                            SCzechA_to_SCzechT::Recompute_deepord
-                                                            SCzechA_to_SCzechT::Assign_nodetype
-                                                            SCzechA_to_SCzechT::Assign_grammatemes
-                                                            SCzechA_to_SCzechT::Detect_formeme 
+	SCzechW_to_SCzechM::Tokenize.pm
+	SCzechW_to_SCzechM::Simple_tagger
+	SCzechW_to_SCzechM::Simple_lemmatizer
+        SCzechM_to_SCzechA::ZZ_parser
+        SCzechM_to_SCzechA::Fill_afun
+	SCzechM_to_SCzechA::Fix_is_member
+        SCzechA_to_SCzechT::Mark_auxiliary_nodes
+        SCzechA_to_SCzechT::Build_ttree
+        SCzechA_to_SCzechT::Rehang_unary_coord_conj
+	SCzechA_to_SCzechT::Fill_is_member
+        SCzechA_to_SCzechT::Assign_coap_functors
+        SCzechA_to_SCzechT::Fix_is_member
+        SCzechA_to_SCzechT::Distrib_coord_aux
+        SCzechA_to_SCzechT::Mark_clause_heads
+        SCzechA_to_SCzechT::Mark_relclause_heads
+        SCzechA_to_SCzechT::Fix_tlemmas
+        SCzechA_to_SCzechT::Recompute_deepord
+        SCzechA_to_SCzechT::Assign_nodetype
+        SCzechA_to_SCzechT::Assign_grammatemes
+        SCzechA_to_SCzechT::Detect_formeme
+        SCzechA_to_SCzechT::TBLa2t_phaseFd
                                                     ) ]});
 
 

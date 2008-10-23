@@ -35,6 +35,8 @@ sub process_document {
 
 1;
 
+## !!! pozor, v podstate jen copy-paste anglickeho originalu, kandidat na parametrizaci
+
 
 =over
 
