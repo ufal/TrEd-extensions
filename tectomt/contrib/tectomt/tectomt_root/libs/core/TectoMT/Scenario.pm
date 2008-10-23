@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use Report;
 use Class::Std;
+use File::Basename;
 
 use Fslib;
 my @backends=('FSBackend',ImportBackends(
@@ -62,7 +63,7 @@ use BlockAliases;
             my $i=0;
             foreach my $block_name (@expanded_block_names) {
                 $i++;
-                Report::info_unfinished("Loading block $block_name ($i/".(0+@expanded_block_names).") ...");
+                Report::info_unfinished("Loading block $block_name ($i/".(0+@expanded_block_names).") ... ");
                 eval "use $block_name;";
                 my $constructor_params="";
                 if ($@) {
@@ -80,7 +81,7 @@ use BlockAliases;
                         my $generic_dir = $input_sourtarg."Anylang1".$input_layer."_to_".$output_sourtarg."Anylang2".$output_layer;
                         my $generic_block_name = $block_name;
                         $generic_block_name=~s/$block_dir/$generic_dir/;
-                        Report::info("Trying to load generic block $generic_block_name ");
+                        Report::info_unfinished("Loading block $generic_block_name ... ");
                         #... blockdir:$block_dir genericdir:$generic_dir");
                         eval "use $generic_block_name;";
                         if ($@) {
@@ -134,8 +135,8 @@ use BlockAliases;
             my $doc_number = 0;
             foreach my $document (@documents) {
                 $doc_number++;
-                my $filename = $document->get_fsfile_name();
-                Report::info "Applying block $block_number/$block_total ".ref($block)." on document '$filename' ...";
+                my $filename = basename($document->get_fsfile_name());
+                Report::info "Applying block $block_number/$block_total ".ref($block)." on '$filename'";
                 #	$doc_number/$doc_total
                 $block->process_document($document);
             }

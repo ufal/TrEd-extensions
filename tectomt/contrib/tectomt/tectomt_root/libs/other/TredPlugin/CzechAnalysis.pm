@@ -14,6 +14,7 @@ use TectoMT::Node;
 use TectoMT::Scenario;
 
 my $scenario =  TectoMT::Scenario->new({'blocks' => [ qw(
+        SCzechW_to_SCzechM::Sentence_segmentation
 	SCzechW_to_SCzechM::Tokenize.pm
 	SCzechW_to_SCzechM::Simple_tagger
 	SCzechW_to_SCzechM::Simple_lemmatizer
@@ -38,23 +39,24 @@ my $scenario =  TectoMT::Scenario->new({'blocks' => [ qw(
                                                     ) ]});
 
 
-sub Get_mat_sentence_analyses {
-    my $sentence = shift;
+sub Get_mat_text_analyses {
+    my $text = shift;
 
-    if (not defined $sentence or $sentence eq "") {
-        die "Undefined or empty input sentence!";
+    if (not defined $text or $text eq "") {
+        die "Undefined or empty input text!";
     }
 
     my $document = TectoMT::Document->new();
-    my $bundle = $document->new_bundle();
-    $bundle->set_attr('id', 'b1');
-    $bundle->set_attr('czech_source_sentence', $sentence);
+    $document->set_attr('czech_source_text', $text);
 
     $scenario->apply_on_tmt_documents($document);
 
-    my $fs_m_root = $bundle->get_tree('SCzechM')->get_tied_fsnode;
-    my $fs_a_root = $bundle->get_tree('SCzechA')->get_tied_fsnode;
-    my $fs_t_root = $bundle->get_tree('SCzechT')->get_tied_fsnode;
-    return ( $fs_m_root, $fs_a_root, $fs_t_root );
+    my @bundles = $document->get_bundles;
+
+    my @fs_m_roots = map {$_->get_tree('SCzechM')->get_tied_fsnode;} @bundles;
+    my @fs_a_roots = map {$_->get_tree('SCzechA')->get_tied_fsnode;} @bundles;
+    my @fs_t_roots = map {$_->get_tree('SCzechT')->get_tied_fsnode;} @bundles;
+
+    return ( \@fs_m_roots, \@fs_a_roots, \@fs_t_roots );
 
 }

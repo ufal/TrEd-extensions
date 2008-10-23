@@ -62,7 +62,7 @@ use Scalar::Util qw( weaken );
                     }
                 } else {
                     if (not defined $missing_class_already_warned{$class}) {
-                        Report::warn "Could not load class $class or construct its instance! TectoMT::Node is used instead.\n";
+                        Report::info "Could not load class $class or construct its instance, TectoMT::Node is used instead.\n";
                         $missing_class_already_warned{$class} = 1;
                     }
                     $new_node = TectoMT::Node->new({'fsnode'=>$fsnode});

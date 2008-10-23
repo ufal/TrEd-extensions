@@ -39,7 +39,19 @@ use Cwd;
 
 
     sub disconnect {
-        my ($self) = @_;
+        my ($self, $arg_ref) = @_;
+        
+        # 0. update ords if requested
+        if ($arg_ref->{update_ords}) {
+            my $my_ord  = $self->get_ordering_value();
+            my @treelet = $self->get_treelet_nodes();
+            my $my_mass = scalar @treelet;
+            my @bag = grep { $_->get_ordering_value() > $my_ord } $self->get_root->get_descendants();
+            # ords after me
+            foreach (@bag) {
+                $_->set_ordering_value($_->get_ordering_value() - $my_mass);
+            }
+        }
 
         # 1. disconnection in the background fs representation:
         my $fsnode = $self->get_tied_fsnode;
@@ -54,7 +66,6 @@ use Cwd;
         #    }
 
         #    print STDERR "$self disconnected now!\n";
-
     }
 
 
@@ -424,10 +435,8 @@ use Cwd;
         my ($self) = @_;
         my $parent = $self->get_parent;
         Report::fatal("Cannot shift node without a parent") unless $parent;
-        my $my_ord = $self->get_ordering_value;
-        my $left_neighbor = $self->get_left_neighbor();
         my @my_treelet = $self->get_treelet_nodes();
-        my @my_ordered_treelet = sort {$a->get_ordering_value<=>$b->get_ordering_value} ($self, $self->get_ordered_descendants());
+        my @my_ordered_treelet = sort {$a->get_ordering_value<=>$b->get_ordering_value} @my_treelet;
         my $my_leftmost_descendant_ord = $my_ordered_treelet[0]->get_ordering_value();
         my @left_treelet = grep { $_->get_ordering_value() < $my_leftmost_descendant_ord } $parent->get_treelet_nodes();
     
@@ -441,6 +450,30 @@ use Cwd;
         
         # ords after me
         foreach (@left_treelet) {
+            $_->set_ordering_value($_->get_ordering_value() + $my_mass);
+        }
+    }
+    
+    sub non_projective_shift_to_leftmost_of {
+        my ($self, $ref_parent) = @_;
+        my @my_treelet = $self->get_treelet_nodes();
+        my @my_ordered_treelet = sort {$a->get_ordering_value<=>$b->get_ordering_value} @my_treelet;
+        my $my_leftmost_descendant_ord = $my_ordered_treelet[0]->get_ordering_value();
+        my @left_partial_treelet = grep { $_->get_ordering_value() < $my_leftmost_descendant_ord } $ref_parent->get_treelet_nodes();
+    
+        my $my_mass   = scalar @my_treelet;
+        my $left_mass = scalar @left_partial_treelet;
+        
+        #print STDERR "<> my_mass:$my_mass left_mass:$left_mass\n";
+        #print STDERR join(' ', map { $_->get_m_lemma().'.'.$_->get_ordering_value() } $self->get_root->get_ordered_descendants())."\n";
+    
+        # ords in my treelet
+        foreach (@my_treelet) {
+            $_->set_ordering_value($_->get_ordering_value() - $left_mass);
+        }
+        
+        # ords after me
+        foreach (@left_partial_treelet) {
             $_->set_ordering_value($_->get_ordering_value() + $my_mass);
         }
     }
