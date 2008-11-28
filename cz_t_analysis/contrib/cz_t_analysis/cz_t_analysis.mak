@@ -37,7 +37,7 @@ Bind(
   __PACKAGE__.'->analyze_sentence'  => {
     # key => 'F9',
     context=>'TredMacro',
-    menu=>'Analyze Czech Sentence',
+    menu=>'Analyze Czech Text',
     changing_file => 0,
   }
 );
@@ -91,12 +91,13 @@ sub analyze_sentence {
   }
 
   $basename='result' unless defined($basename) and length($basename);
-  $sentence ||=
-    (GUI() ? StringQuery("Analyze sentence","Czech sentence:",
-			$TrEd::MacroStorage::CZ_T_Analysis::sentence)
-           : ($TrEd::MacroStorage::CZ_T_Analysis::sentence))
-    || return;
-
+  unless ($sentence) {
+    if (GUI()) {
+      $sentence = EditBoxQuery("Analyze text",$TrEd::MacroStorage::CZ_T_Analysis::sentence,"Enter czech text to analyze:") || return;
+    } else {
+      $sentence = $TrEd::MacroStorage::CZ_T_Analysis::sentence;
+    }
+  }
   $TrEd::MacroStorage::CZ_T_Analysis::sentence=$sentence;
 
   {
@@ -109,33 +110,35 @@ sub analyze_sentence {
     AddResourcePath(@rp);
   }
 
-  my %result;
-  @result{qw(m a t)} = TredPlugin::CzechAnalysis::Get_mat_sentence_analyses($sentence);
+  my %results;
+  @results{qw(m a t)} = TredPlugin::CzechAnalysis::Get_mat_text_analyses($sentence);
 
   $dir ||= File::Temp->tempdir('tredXXXX',TMPDIR=>1,CLEANUP=>1);
 
   # fix the results
-  $result{m}->{'#name'}='s';
-  for my $m ($result{m}->descendants) {
-    $m->{'#name'}='m';
-    $m->{'#content'}=Fslib::Struct->new({
-      map { $_ => delete $m->{$_} }
-	qw(id form lemma tag)
-    },1);
+  for my $m_root (@{$results{m}}) {
+    $m_root->{'#name'}='s';
+    for my $m ($m_root->descendants) {
+      $m->{'#name'}='m';
+      $m->{'#content'}=Fslib::Struct->new({
+	map { $_ => delete $m->{$_} }
+	  qw(id form lemma tag)
+	 },1);
+    }
   }
-  for my $a ($result{a}) {
-    $a->{'s.rf'}='m#'.$a->{id};
-    $a->{'s.rf'}=~s/A/M/;
-  }
-
-  if (exists &PML_A_Edit::assign_afun_auto_tree) {
-    PML_A_Edit->assign_afun_auto_tree( $result{a} ); # before we delete m
-  }
-
-  for my $a ($result{a}->descendants) {
-    $a->{'m.rf'}='m#'.$a->{id};
-    $a->{'m.rf'}=~s/A/M/;
-    delete $a->{m};
+  for my $a_root (@{$results{a}}) {
+    for my $a ($a_root) {
+      $a->{'s.rf'}='m#'.$a->{id};
+      $a->{'s.rf'}=~s/A/M/;
+    }
+    if (exists &PML_A_Edit::assign_afun_auto_tree) {
+      PML_A_Edit->assign_afun_auto_tree( $a_root ); # before we delete m
+    }
+    for my $a ($a_root->descendants) {
+      $a->{'m.rf'}='m#'.$a->{id};
+      $a->{'m.rf'}=~s/A/M/;
+      delete $a->{m};
+    }
   }
 
   for my $layer (qw(m a t)) {
@@ -150,7 +153,7 @@ sub analyze_sentence {
 	$_=File::Spec->catpath($vol,$dir,$fn);
       }
     }
-    $fsfile->append_tree($result{$layer});
+    $fsfile->append_tree($_) for @{$results{$layer}};
     my $out = File::Spec->catfile($dir,"${basename}.${layer}.gz");
     print "Saving $out\n";
     $fsfile->writeFile($out);

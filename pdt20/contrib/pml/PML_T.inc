@@ -486,8 +486,9 @@ sub get_status_line_hook {
                    :
                    ($this->attr('a/lex.rf'),ListV($this->attr('a/aux.rf')))){
     if($ref){
+      my $anode = GetANodeByID($ref);
       push @{$statusline->[0]},
-        ($sep => [qw(label)],GetANodeByID($ref)->attr('m/form') => [ '{REF}','ref',$ref ]);
+        ($sep => [qw(label)],($anode ? ($anode->attr('m/form') => [ '{REF}','ref',$ref ]) : ()));
     $sep=", ";
     }
   }
