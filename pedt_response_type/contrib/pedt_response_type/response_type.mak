@@ -8,13 +8,13 @@ BEGIN {
   import TredMacro;
 }
 
-#include <contrib/pedt/PML_En_T_Anot.mak>
+#include <contrib/pedt/PML_En_T.mak>
 #include <contrib/support/arrows.inc>
 
 #binding-context Response_Type
 
-#key-binding-adopt PML_En_T_Anot
-#menu-binding-adopt PML_En_T_Anot
+#key-binding-adopt PML_En_T
+#menu-binding-adopt PML_En_T
 
 # init caches
 
