@@ -1,13 +1,13 @@
 # -*- cperl -*-
 ## author: Petr Pajas, Zdenek Zabokrtsky
-## Time-stamp: <2008-10-02 00:24:19 pajas>
+## Time-stamp: <2008-12-04 22:23:46 pajas>
 
 #encoding iso-8859-2
 
-use lib CallerDir('auto_func');
+use lib CallerDir();
 use AFA;
 
-my $AFA_dir = CallerDir('auto_func');
+my $AFA_dir = CallerDir();
 my $init_AFA=0;
 my %advfunc;
 my %ntime;
