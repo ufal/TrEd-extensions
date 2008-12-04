@@ -2,10 +2,20 @@
 <pml_schema
   xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/"
   version="1.1">
-  <revision>1.0.1.1</revision>
+  <revision>1.0.4</revision>
   <description>PDT 2.0 analytical trees</description>
-  <reference name="mdata" readas="dom"/>
-  <reference name="wdata" readas="dom"/>
+  <reference name="mdata" readas="pml"/>
+
+  <import schema="mdata_schema.xml" type="m-node.type" minimal_revision="1.0.2"/>
+  <import schema="mdata_schema.xml" type="bool.type"/>
+
+  <derive type="m-node.type">
+    <structure>
+      <member name="id" as_attribute="1" role="#ID" required="1">
+	<cdata format="PMLREF"/>
+      </member>
+    </structure>
+  </derive>
 
   <root name="adata" type="a-adata.type"/>
 
@@ -49,7 +59,7 @@
       </member>
       <member name="afun" type="a-afun.type" required="1"/>
       <member name="is_member" type="bool.type"/>
-      <member type="bool.type" name="is_parenthesis_root"/>
+      <member name="is_parenthesis_root" type="bool.type"/>
       <member name="ord" role="#ORDER" required="1"><cdata format="nonNegativeInteger"/></member>
       <member name="children" role="#CHILDNODES">
 	<list type="a-node.type" ordered="1"/>
@@ -86,44 +96,6 @@
       <value>AuxG</value>
       <value>AuxK</value>
       <value>AuxX</value>
-    </choice>
-  </type>
-
-  <type name="m-node.type">
-    <structure name="m-node">
-      <member name="id" as_attribute="1" role="#ID" required="1"><cdata format="ID"/></member>
-      <member name="src.rf"><cdata format="PMLREF"/></member>
-      <member name="w.rf">
-        <list ordered="1" role="#KNIT" type="w-node.type"><cdata format="PMLREF"/></list>
-      </member>
-      <member name="form_change" type="m-form_change.type"/>
-      <member name="form" required="1"><cdata format="any"/></member>
-      <member name="lemma" required="1"><cdata format="any"/></member>
-      <member name="tag" required="1"><cdata format="any"/></member>
-    </structure>
-  </type>
-
-  <type name="m-form_change.type">
-    <choice>
-      <value>ctcd</value>
-      <value>spell</value>
-      <value>insert</value>
-      <value>num_normalization</value>
-    </choice>
-  </type>
-
-  <type name="w-node.type">
-    <structure name="w-node">
-      <member name="id" as_attribute="1" role="#ID" required="1"><cdata format="ID"/></member>
-      <member name="token" required="1"><cdata format="any"/></member>
-      <member name="no_space_after" type="bool.type"/>
-    </structure>
-  </type>
-
-  <type name="bool.type">
-    <choice>
-      <value>0</value>
-      <value>1</value>
     </choice>
   </type>
 
