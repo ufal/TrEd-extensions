@@ -3,6 +3,11 @@
   xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/"
   version="1.1">
   <revision>1.0.1.1</revision>
+  <!--
+     revision 1.0.1: PDT 2.0 release
+     revision 1.0.1.1: declare PMLREF content type for members with role #KNIT
+                       moved role=#TREES declaration from member to the list
+  -->
   <description>PDT 2.0 analytical trees</description>
   <reference name="mdata" readas="dom"/>
   <reference name="wdata" readas="dom"/>
@@ -12,8 +17,8 @@
   <type name="a-adata.type">
     <structure>
       <member name="meta" required="0" type="a-meta.type"/>
-      <member name="trees" role="#TREES" required="1">
-	<list type="a-root.type" ordered="1"/>
+      <member name="trees" required="1">
+	<list type="a-root.type" role="#TREES" ordered="1"/>
       </member>
     </structure>
   </type>
@@ -94,7 +99,9 @@
       <member name="id" as_attribute="1" role="#ID" required="1"><cdata format="ID"/></member>
       <member name="src.rf"><cdata format="PMLREF"/></member>
       <member name="w.rf">
-        <list ordered="1" role="#KNIT" type="w-node.type"><cdata format="PMLREF"/></list>
+        <list ordered="1" role="#KNIT" type="w-node.type">
+	  <cdata format="PMLREF"/>
+	</list>
       </member>
       <member name="form_change" type="m-form_change.type"/>
       <member name="form" required="1"><cdata format="any"/></member>
