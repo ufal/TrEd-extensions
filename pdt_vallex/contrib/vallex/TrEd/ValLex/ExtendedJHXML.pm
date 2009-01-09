@@ -1,8 +1,8 @@
 # -*- cperl -*-
 
 package TrEd::ValLex::ExtendedJHXML;
-use ValLex::Extended;
-use ValLex::JHXMLData;
+use TrEd::ValLex::Extended;
+use TrEd::ValLex::JHXMLData;
 use base qw(TrEd::ValLex::Extended TrEd::ValLex::JHXMLData);
 
 sub remove_node {

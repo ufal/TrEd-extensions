@@ -67,18 +67,18 @@ sub init_XMLDataClass {
       $XMLDataClass="TrEd::ValLex::ExtendedJHXML";
     }
   }
-  require ValLex::Data;
+  require TrEd::ValLex::Data;
   if ($XMLDataClass =~ /JHXML/) {
-    require ValLex::ExtendedJHXML;
+    require TrEd::ValLex::ExtendedJHXML;
   } elsif ($XMLDataClass =~ /LibXML/) {
-    require ValLex::ExtendedLibXML;
+    require TrEd::ValLex::ExtendedLibXML;
   }
 }
 
 sub init_VallexClasses {
-  require ValLex::Widgets;
-  require ValLex::Editor;
-  require ValLex::Chooser;
+  require TrEd::ValLex::Widgets;
+  require TrEd::ValLex::Editor;
+  require TrEd::ValLex::Chooser;
   require TrEd::CPConvert;
 }
 

@@ -1,8 +1,8 @@
 # -*- cperl -*-
 
 package TrEd::ValLex::ExtendedLibXML;
-use ValLex::Extended;
-use ValLex::LibXMLData;
+use TrEd::ValLex::Extended;
+use TrEd::oValLex::LibXMLData;
 use base qw(TrEd::ValLex::Extended TrEd::ValLex::LibXMLData);
 
 sub by_id {

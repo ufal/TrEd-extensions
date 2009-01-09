@@ -8,8 +8,8 @@ package TrEd::ValLex::Data;
 use strict;
 use utf8;
 
-require ValLex::Sort;
-require ValLex::DummyConv;
+use TrEd::ValLex::Sort;
+use TrEd::ValLex::DummyConv;
 
 my @abbrev_forms = (
 ['do+2' => 'do-1[.2]'],
