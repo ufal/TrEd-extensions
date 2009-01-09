@@ -1,14 +1,14 @@
 # -*- cperl -*-
-package Response_Type;
 #ifdef TRED
-{
 
+#include <contrib/pedt/contrib.mac>
+{
+package Response_Type;
 use strict;
 BEGIN {
   import TredMacro;
 }
 
-#include <contrib/pedt/PML_En_T.mak>
 #include <contrib/support/arrows.inc>
 
 #binding-context Response_Type
