@@ -89,8 +89,7 @@ EOF
 
 Creates a new t-tree linked with the current a-tree and appends the
 newly created t-tree to a given t-file. Initially the t-tree consists
-of the ro
-ot node alone. More nodes can be added e.g. using
+of the root node alone. More nodes can be added e.g. using
 C<PML_T::NewNode($parent)> and linked to a-nodes using
 C<PML_A::AddANodeToALexRf> and C<PML_A::AddANodeToAAuxRf>.
 
@@ -133,6 +132,7 @@ sub InitTTree {
   $t_root->{deepord}=0;
   $t_root->{id} = $a_root->{id};
   $t_root->{id} =~ s/^a/T/; # T instead of t to aviod collision with PDT IDs
+  weaken( GetNodeHash($t_file)->{$t_root->{id}} = $t_root );
 }
 
 sub ANodeToALexRf {
