@@ -325,20 +325,24 @@ C<arrow_exoph>.
 =cut
 
 sub DrawCorefArrows {
-  my ($node,$styles,$line,$corefs,$cortypes,$displayed_nodes_hash)=@_;
+  my ($node,$styles,$line,$corefs,$cortypes,$reserved,$style_opts)=@_;
   my ($rotate_prv_snt,$rotate_nxt_snt,$rotate_dfr_doc)=(0,0,0);
   my @edges;
+  $style_opts ||= {};
   my %common = (
     -arrow => 'last',
     -smooth => 1,
     -arrowshape => '16,18,3',
     -width => 1,
     -dash => '',
+    %{$style_opts->{'*'}||{}},
   );
   foreach my $coref (@$corefs) {
     my $cortype=shift @$cortypes;
     my($refed,$treeNo)=SearchForNodeById($coref);
-    my %edge = (-tag => $cortype);
+    my %edge = (-tag => $cortype,
+		%{$style_opts->{$cortype}||{}},
+	       );
     if ($refed) {
       my $orientation=
 	exists($PML_T::displayed_nodes{$refed}) ? 0 : $treeNo-CurrentTreeNumber()-1;
@@ -368,11 +372,12 @@ sub DrawCorefArrows {
   }
   if ($node->{coref_special} eq 'segm') { # pointer to an unspecified segment of preceeding sentences
     print STDERR "ref-arrows: Segment - unaimed arrow\n" if $main::macroDebug; 
-   push @edges, {
+    push @edges, {
       -fill   => CustomColor('arrow_segment'),
       -deltax => -25,
       -deltay => 10*($rotate_prv_snt++),
       -tag => 'segm',
+      %{$style_opts->{segm}||{}},
     };
   }
   if ($node->{coref_special} eq 'exoph') {
@@ -382,6 +387,7 @@ sub DrawCorefArrows {
       -deltax => 10*($rotate_dfr_doc++),
       -deltay => -25,
       -tag => 'exoph',
+      %{$style_opts->{exoph}||{}},
     };
   }
   DrawArrows($node,$styles,\@edges,\%common);
