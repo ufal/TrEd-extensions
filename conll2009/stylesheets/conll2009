@@ -1,0 +1,32 @@
+context: .*
+node:${form} #{darkcyan}${deprel} #{magenta}<? join'|',map /.*:(.*)/,ListV($this->{apreds}) ?>
+#{brown}${lemma} #{gray}${pos} #{purple}${pred}
+#{violet}${feat}
+
+text:${form}
+
+style:<?
+  my %fillcolors = qw(A0 lightblue ACT lightblue AUTH lightblue arg0-agt lightblue C-A0 lightblue R-A0 lightblue GA lightblue GA2 lightblue
+                      A1 orange PAT orange arg1-pat orange C-A1 orange WO orange
+                      A2 violet EFF violet arg1-tem violet NO violet
+                      A3 darkcyan ORIG darkcyan TO darkcyan
+                      A4 lightgreen ADDR lightgreen argM-fin lightgreen arg2-fin lightgreen NI lightgreen
+                      A5 red arg4-des red arg2-efi red DE red
+                      A6 green NoGap green
+                      DIR1 brown DIR2 brown DIR3 brown LOC brown argM-loc brown arg2-loc brown AM-LOC brown NO brown
+                      TWHEN cyan THL cyan TTILL cyan TSIN cyan TPAR cyan THO cyan TFHL cyan TFRWH cyan TOWH cyan argM-tmp cyan AM-TMP cyan TMP cyan
+                      COMPL green COMPL2 green
+                     );
+  my ($coords,$fill,$arr,$smth,$dash);
+  foreach (ListV($this->{apreds})){
+    my ($ord,$type) = split /:/,$_;
+    $coords .= $ord eq $${order}
+               ? '&n,n,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2-30,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2+30,x[order = '.$ord.'],y[order = '.$ord.']'
+               : '&n,n,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2+60,x[order = '.$ord.'],y[order = '.$ord.']';
+    $fill .= '&'.($fillcolors{$type} || 'gray') ;
+    $arr .= '&first';
+    $smth .= '&1';
+    $dash .= '&5,3';
+  }
+  "#{Line-coords:n,n,p,p$coords}#{Line-fill:black$fill}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}"
+?>

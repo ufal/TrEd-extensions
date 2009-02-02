@@ -1,0 +1,16 @@
+#!btred -T -e args()
+# -*- cperl -*-
+
+## Takes all APRED_X attributes and folds them into a list.
+## Author: Jan Stepanek
+
+sub args {
+  my @preds = sort { $a->{order} <=> $b->{order} } grep $_->{pred},$root,$root->descendants;
+  foreach my $node ($root,$root->descendants){
+    foreach my $arg (grep /^apred_[0-9]+/,keys %$node){
+      $arg =~ s/^apred_//;
+      AddToList($node,'apreds',$preds[$arg-1]->{order}.':'.$node->{"apred_$arg"});
+      delete $node->{"apred_$arg"};
+    }
+  }
+} # args

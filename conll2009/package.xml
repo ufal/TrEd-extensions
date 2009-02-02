@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="28000">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>CoNLL-2009-ST</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>CoNLL 2009 Shared Task</title>
+  <version>1.0</version>
+  <copyright year="2009">Jan Štěpánek</copyright>
+
+  <description>Contains scripts and a stylesheet used for creating the
+  visualization of the CoNLL-2009-ST trial data. Can be used to
+  convert any data from CoNLL-2009-ST format to PML so that they can
+  be opened by TrEd.  NOTE: Works only on Linux and similar
+  systems. XSH must be installed.
+  </description>
+  <icon>icons/conll2009.png</icon>
+</tred_extension>
