@@ -56,27 +56,27 @@ package main;
 
 require strict;
 require Tk::Adjuster;
-require ValLex::Data;
+require TrEd::ValLex::Data;
 
 $opt_m=lc($opt_m);
 $opt_m ||= 'jhxml';
 
 if ("$opt_m" eq "jhxml") {
   $XMLDataClass ="TrEd::ValLex::JHXMLData";
-  require ValLex::JHXMLData;
+  require TrEd::ValLex::JHXMLData;
 } elsif ("$opt_m" eq "libxml") {
   $XMLDataClass ="TrEd::ValLex::LibXMLData";
-  require ValLex::LibXMLData;
+  require TrEd::ValLex::LibXMLData;
 } elsif ("$opt_m" eq "gdome") {
   $XMLDataClass ="TrEd::ValLex::GDOMEData";
-  require ValLex::GDOMEData;
+  require TrEd::ValLex::GDOMEData;
 } elsif ("$opt_m" eq "dom") {
   $XMLDataClass ="TrEd::ValLex::XML_DOM_Data";
-  require ValLex::XML_DOM_Data;
+  require TrEd::ValLex::XML_DOM_Data;
 }
 
-require ValLex::Widgets;
-require ValLex::Editor;
+require TrEd::ValLex::Widgets;
+require TrEd::ValLex::Editor;
 require TrEd::CPConvert;
 
 my $double = 0;

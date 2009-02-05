@@ -10,8 +10,8 @@ BEGIN { import TredMacro; }
 sub new {
   my ($self,$file)=@_;
   require XML::JHXML;
-  require ValLex::Data;
-  require ValLex::ExtendedJHXML;
+  require TrEd::ValLex::Data;
+  require TrEd::ValLex::ExtendedJHXML;
   $file ||= $ENV{VALLEX} || FindInResources('vallex.xml');
   return TrEd::ValLex::ExtendedJHXML->new($file);
 }
