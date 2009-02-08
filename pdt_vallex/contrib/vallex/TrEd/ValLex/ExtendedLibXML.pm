@@ -2,7 +2,7 @@
 
 package TrEd::ValLex::ExtendedLibXML;
 use TrEd::ValLex::Extended;
-use TrEd::oValLex::LibXMLData;
+use TrEd::ValLex::LibXMLData;
 use base qw(TrEd::ValLex::Extended TrEd::ValLex::LibXMLData);
 
 sub by_id {
