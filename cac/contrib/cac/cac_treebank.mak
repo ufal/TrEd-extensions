@@ -161,45 +161,46 @@ sub rebuild_cac_tree {
     }
   }
 
-  # put prespositions
-  my ($n, $ntag, $ntag1, $nn, $nntag, $nntag1, $nn_parent);
-  for (my $i=0; $i<@nodes;$i++) {
+### 16/2/09 BH: zobrazit puvodni zavislosti; ted nepotrebuji videt, kam by se mely povesit predlozky
+###  # put prespositions
+###  my ($n, $ntag, $ntag1, $nn, $nntag, $nntag1, $nn_parent);
+###  for (my $i=0; $i<@nodes;$i++) {
 
-    $n = $nodes[$i];
-    $ntag = $n->{'m'}{tag};
-    ($ntag1) = $ntag =~ /(.)............../;
+###    $n = $nodes[$i];
+###    $ntag = $n->{'m'}{tag};
+###    ($ntag1) = $ntag =~ /(.)............../;
 
-    # get next node and tag if current one is a prepostion and find the noun the preposion is supposed to be attached to
-    if($ntag1 eq 'R' and $i<@nodes) {
-        $nn = $nodes[$i+1];
-        $nntag = $nn->{'m'}{tag};
-        ($nntag1) = $nntag =~ /(.)............../;
+###    # get next node and tag if current one is a prepostion and find the noun the preposion is supposed to be attached to
+###    if($ntag1 eq 'R' and $i<@nodes) {
+###        $nn = $nodes[$i+1];
+###        $nntag = $nn->{'m'}{tag};
+###        ($nntag1) = $nntag =~ /(.)............../;
 
-        # if the next node is not a noun, go up the tree until you find a noun
-        while($nntag1 ne 'N' and $nn->parent) {
-            $nn = $nn->parent;
-            $nntag = $nn->{'m'}{tag};
-            ($nntag1) = $nntag =~ /(.)............../;
-        }
+###        # if the next node is not a noun, go up the tree until you find a noun
+###        while($nntag1 ne 'N' and $nn->parent) {
+###            $nn = $nn->parent;
+###            $nntag = $nn->{'m'}{tag};
+###            ($nntag1) = $nntag =~ /(.)............../;
+###        }
 
-        # if the noun was found
-        #   attach the preposition to the parent of the noun
-        #   and the subtree of the noun to the preposition
-        if($nntag1 eq 'N') {
-            #get parent of the noun (that is of $nn)
-            if($nn->parent) {
-                $nn_parent = $nn->parent;
+###        # if the noun was found
+###        #   attach the preposition to the parent of the noun
+###        #   and the subtree of the noun to the preposition
+###        if($nntag1 eq 'N') {
+###            #get parent of the noun (that is of $nn)
+###            if($nn->parent) {
+###                $nn_parent = $nn->parent;
 
-                # exchange subtrees
-                CutPaste($n, $nn_parent);
-                CutPaste($nn, $n);
-            }
-        }
-  #  print "$ntag1-$nntag1  ";
-    }
+###                # exchange subtrees
+###                CutPaste($n, $nn_parent);
+###                CutPaste($nn, $n);
+###            }
+###        }
+###  #  print "$ntag1-$nntag1  ";
+###    }
 
 
-  } # end for
+###  } # end for
 
 }
 
