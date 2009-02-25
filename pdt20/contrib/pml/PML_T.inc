@@ -326,6 +326,13 @@ C<arrow_exoph>.
 
 sub DrawCorefArrows {
   my ($node,$styles,$line,$corefs,$cortypes,$reserved,$style_opts)=@_;
+
+  # corefs is an array-ref of node IDs
+  # coreftypes is an array-ref of cortypes strings or
+  # of hashes { -cortype => 'cortype', ...edge_options... }
+  # specifying a cortype and custom edge drawing options passed to
+  # DrawArrows from <contrib/support/arrows.inc>
+
   my ($rotate_prv_snt,$rotate_nxt_snt,$rotate_dfr_doc)=(0,0,0);
   my @edges;
   $style_opts ||= {};
@@ -339,6 +346,11 @@ sub DrawCorefArrows {
   );
   foreach my $coref (@$corefs) {
     my $cortype=shift @$cortypes;
+    my $edge_style;
+    if (ref $cortype) {
+      $edge_style = $cortype;
+      $cortype = delete $edge_style->{-cortype};
+    }
     my($refed,$treeNo)=SearchForNodeById($coref);
     my %edge = (-tag => $cortype,
 		%{$style_opts->{$cortype}||{}},
@@ -368,7 +380,7 @@ sub DrawCorefArrows {
       $edge{-deltax}=10*($rotate_dfr_doc++);
       $edge{-deltay}=-25;
     }
-    push @edges,\%edge;
+    push @edges,{%edge, %{$edge_style||{}}};
   }
   if ($node->{coref_special} eq 'segm') { # pointer to an unspecified segment of preceeding sentences
     print STDERR "ref-arrows: Segment - unaimed arrow\n" if $main::macroDebug; 
@@ -377,6 +389,7 @@ sub DrawCorefArrows {
       -deltax => -25,
       -deltay => 10*($rotate_prv_snt++),
       -tag => 'segm',
+      %{$edge_style||{}},
       %{$style_opts->{segm}||{}},
     };
   }
@@ -387,6 +400,7 @@ sub DrawCorefArrows {
       -deltax => 10*($rotate_dfr_doc++),
       -deltay => -25,
       -tag => 'exoph',
+      %{$edge_style||{}},
       %{$style_opts->{exoph}||{}},
     };
   }
