@@ -389,7 +389,6 @@ sub DrawCorefArrows {
       -deltax => -25,
       -deltay => 10*($rotate_prv_snt++),
       -tag => 'segm',
-      %{$edge_style||{}},
       %{$style_opts->{segm}||{}},
     };
   }
@@ -400,7 +399,6 @@ sub DrawCorefArrows {
       -deltax => 10*($rotate_dfr_doc++),
       -deltay => -25,
       -tag => 'exoph',
-      %{$edge_style||{}},
       %{$style_opts->{exoph}||{}},
     };
   }
