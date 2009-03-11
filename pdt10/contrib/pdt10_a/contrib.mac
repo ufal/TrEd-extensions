@@ -1,7 +1,7 @@
 #ifndef pdt10_a
 #define pdt10_a
 
-#include "graph_compatibility.mak"
+#include "graph_compatibility.inc"
 
 #binding-context Analytic
 #include "ar.mak"
