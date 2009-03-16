@@ -20,7 +20,7 @@ while (( $# )) ; do
         ((max-=14))
         arglist=''
         for n in $(seq 1 $max) ; do arglist=$arglist,APRED_$n ;done
-        "$bin"/conll2pml -r -o "$1" -m $sentences_per_file -F FEAT -c ID,FORM,LEMMA,PLEMMA,POS,PPOS,FEAT,PFEAT,HEAD,PHEAD,DEPREL,PDEPREL,FILLPRED,PRED$arglist "$1"
+        "$bin"/conll2pml -r -o "$1" -m $sentences_per_file -c ID,FORM,LEMMA,PLEMMA,POS,PPOS,FEAT,PFEAT,HEAD,PHEAD,DEPREL,PDEPREL,FILLPRED,PRED$arglist "$1"
         sed -i~ 's/\(<s:member name="apred_1">\)/<s:member name="apreds" type="feats.type"\/>\1/' "$1_schema.xml"
         "$btred" -S -I "$bin"/args.btred "$1"_*.pml
         "$bin"/remove_argN.sh "$1"_schema.xml

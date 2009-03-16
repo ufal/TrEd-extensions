@@ -27,7 +27,7 @@ GetOptions(\%opts,
 	'head-from|h=s',
 	'order-attribute|O=s',
         'parents|p',
-	'struct-feat|F',
+	'struct-feats|F',
 	'technical-root|r',
 	'help',
 	'usage',
@@ -82,7 +82,7 @@ while (@ARGV) {
       @tok{ @columns } = @tok;
       my $feat = delete $tok{FEATS};
       if ($feat) {
-	if ($opts{'struct-feat'}) {
+	if ($opts{'struct-feats'}) {
 	  for my $f (split /\|/, $feat) {
 	    my ($n,$v)=split /=/,$f,2;
 	    if (defined($v)) {
