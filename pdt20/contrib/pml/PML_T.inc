@@ -284,7 +284,8 @@ sub root_style_hook {
   my ($node,$styles)=@_;
   %PML_T::coreflemmas_hash=();
   %PML_T::displayed_nodes;
-  @PML_T::displayed_nodes{ GetDisplayedNodes() } = ();
+  my @displayed = GetDisplayedNodes();
+  @PML_T::displayed_nodes{ @displayed } = ( 0..$#displayed );
   DrawArrows_init();
   return;
 }
