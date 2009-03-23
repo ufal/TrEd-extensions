@@ -3,14 +3,28 @@
 #ifndef pdt_vallex
 #define pdt_vallex
 
+push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
+  my ($hook)=@_;
+  my $resuming = ($hook eq 'file_resumed_hook');
+  my $current = CurrentContext();
+  if (PML::SchemaName() eq 'valency_lexicon') {
+    SetCurrentStylesheet('Vallex') if $resuming;
+    return 'PML_Vallex';
+  }
+  return;
+};
+
+
 {
-use lib TredMacro::CallerDir();
-package ValLex::GUI; # so that it can get deleted
-BEGIN {
-  require ValLex::GUI;
-}
+  use lib TredMacro::CallerDir();
+  package ValLex::GUI; # so that it can get deleted
+  BEGIN {
+    require ValLex::GUI;
+  }
 }
 
 #include "non_gui.mak"
+
+#include "pml_vallex.mak"
 
 #endif pdt_vallex
