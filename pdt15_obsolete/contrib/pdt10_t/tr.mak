@@ -1,13 +1,13 @@
 ## -*- cperl -*-
 ## author: Petr Pajas
-## Time-stamp: <2008-04-08 11:29:15 pajas>
+## Time-stamp: <2009-04-03 11:31:47 pajas>
 
 package Tectogrammatic;
 
 BEGIN { import TredMacro; }
 
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  if ($grp->{FSFile}->FS->hide eq 'TR') {
+  if ($grp->{FSFile} and $grp->{FSFile}->FS and $grp->{FSFile}->FS->hide eq 'TR') {
     if (CurrentContext() eq 'TR_Correction' or CurrentContext() eq 'TFA') {
       return CurrentContext();
     } else {
