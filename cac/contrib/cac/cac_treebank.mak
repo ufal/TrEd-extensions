@@ -358,16 +358,16 @@ sub describe_x_origs {
 6   |5   |NA  |sdru¾ené pojmenování v koordinaci s jiným sdru¾eným pojmenováním
 2   |5   |NA  |spona u jednoèl. v.
 6   |6   |NA  |dvojice spojkové a pøísloveèné
-1   |3   |NA  |...
+1   |3   |NA  |atribut
 2   |31  |NA  |atribut
 6   |9   |NA  |øídící výraz elidován
 2   |32  |NA  |apozice
 6   |0   |NA  |øídící výraz vyøazen
-1   |4   |NA  |...
+1   |4   |NA  |objekt
 2   |41  |NA  |objekt
-6   |7   |NA  |???
+6   |7   |NA  |non-identical reduplication of a word
 2   |42  |NA  |doplnìk
-6   |8   |NA  |???
+6   |8   |NA  |identical reduplication of a word
 1   |5   |NA  |adverbiále
 2   |51  |NA  |místa
 2   |52  |NA  |èasu
