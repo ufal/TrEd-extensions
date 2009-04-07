@@ -66,7 +66,7 @@ if ( length($prefix_dir) and ! -d $prefix_dir ) {
 my $tech_root = $opts{'technical-root'};
 
 my $fileno = 0;
-my ($sentences, $trees); # counts
+my ($sentences, $trees)=(0,0); # counts
 my @trees;
 my @sent;
 my %feat;
