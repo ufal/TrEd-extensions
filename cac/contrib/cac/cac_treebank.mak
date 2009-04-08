@@ -107,15 +107,54 @@ sub default_ar_attrs {
 }
 
 
-#bind rebuild_cac_tree to Alt+r menu Rebuild CAC tree structure
-sub rebuild_cac_tree {
 
-    # prepare style
-    default_ar_attrs();
+
+#bind toggle_cac_tree to Alt+r menu Toggle showing CAC tree structure
+our %show_rebuilt_tree;
+sub toggle_cac_tree {
+  # first toggle
+  $show_rebuilt_tree{$grp}=!$show_rebuilt_tree{$grp};
+
+  # now take the opportunity to cleanup the window hash
+  my %windows; @windows{ TrEdWindows() } = ();
+  for (keys %show_rebuilt_tree) {
+    delete $show_rebuilt_tree{$_} unless exists $windows{$_};
+  }
+}
+
+sub get_nodelist_hook {
+  my ($fsfile,$treeNo,$recentActiveNode,$show_hidden)=@_;
+  return unless $fsfile;
+  unless ($show_rebuilt_tree{$grp}) {
+    return [ $fsfile->nodes($treeNo,$recentActiveNode,$show_hidden) ];
+  }
+
+  my $tree = $fsfile->tree($treeNo) || return;
+  my $active_pos=-1;
+  while ($recentActiveNode) {
+    $active_pos++;
+    $recentActiveNode=$recentActiveNode->previous;
+  }
+  my $clone = $fsfile->FS->clone_subtree($tree);
+  {
+    local $root = $clone;
+    rebuild_cac_tree();
+  }
+  my @nodes = ($clone, $clone->descendants);
+  my $active = $active_pos>=0 ? $nodes[$active_pos] : $clone;
+  return [
+    [ sort { $a->{ord} <=> $b->{ord} } @nodes ],
+    $active
+  ];
+}
+
+sub rebuild_cac_tree {
+  # prepare style
+  default_ar_attrs();
 
   my @nodes = sort {$a->{origr} <=> $b->{origr}}
     grep { $_->{origr} ne "" }
-    $root->descendants;
+      $root->descendants;
 
   for (my $i=0; $i<@nodes;$i++) {
     my $n = $nodes[$i];
@@ -134,28 +173,30 @@ sub rebuild_cac_tree {
       } elsif ($plusminus eq '_' or $plusminus eq '-') {
         $p = $nodes[$i-$delta];
       }
-
-      if ($p) {$n->{dep_type} = $p->{ord};} # KR
-
+      
+      if ($p) {
+	$n->{dep_type} = $p->{ord};
+      }				# KR
+      
       CutPaste($n,$p) if ($p && node_is_in_subtree_of($p,$n) == 0) ;
-      } elsif ($n->{origt}=~/^81/) {
-        my $j = $i+1;
-        while ($j<@nodes) {
-          my $p = $nodes[$j];
-          if ($p->{origt} ne "" and substr($p->{origa},5,1) =~ /[12]/) {
-               CutPaste($n,$p);
-               last;
-           }
-           $j++
-         }
-      } else {
+    } elsif ($n->{origt}=~/^81/) {
+      my $j = $i+1;
+      while ($j<@nodes) {
+	my $p = $nodes[$j];
+	if ($p->{origt} ne "" and substr($p->{origa},5,1) =~ /[12]/) {
+	  CutPaste($n,$p);
+	  last;
+	}
+	$j++
+      }
+    } else {
       my $j = $i+1;
       while ($j<@nodes) {
         my $p = $nodes[$j];
         if ($p->{origt} ne "" and substr($p->{origt},2,1) eq '7') {
-            CutPaste($n,$p);
-            last;
-        }
+	  CutPaste($n,$p);
+	  last;
+	}
         $j++
       }
     }
