@@ -21,6 +21,7 @@ GetOptions(\%opts,
 	'max-sentences|m=i',
 	'out-prefix|o=s',
 	'id-prefix|I=s',
+	'root-tag|R=s',
 	'node-ids|i',
 	'columns|c=s',
 	'schema-only|s',
@@ -62,6 +63,7 @@ if ( length($prefix_dir) and ! -d $prefix_dir ) {
   mkpath($prefix_dir);
 }
 
+my $root_tag = $opts{'root-tag'} || 'conll';
 
 my $tech_root = $opts{'technical-root'};
 
@@ -118,7 +120,7 @@ sub dump_schema {
 			       DATA_INDENT => 1);
 
   $writer->startTag('s:pml_schema', version => '1.1', 'xmlns:s' => PML_SCHEMA_NS);
-  $writer->emptyTag('s:root', name => 'conll', type =>'conll.type');
+  $writer->emptyTag('s:root', name => $root_tag, type =>'conll.type');
 
   # conll.type
   $writer->startTag('s:type', name => 'conll.type');
@@ -216,7 +218,7 @@ sub dump_file {
 			       DATA_MODE => 1,
 			       DATA_INDENT => 1);
   print  STDERR "\n" unless $opts{quiet};
-  $writer->startTag('conll', xmlns => PMLNS);
+  $writer->startTag($root_tag, xmlns => PMLNS);
   
   # PML HEADER
   $writer->startTag('head');
@@ -236,7 +238,7 @@ sub dump_file {
     }
   }
   $writer->endTag('body');
-  $writer->endTag('conll');
+  $writer->endTag($root_tag);
   $writer->end();
   $output->close();
   print  STDERR "\n" unless $opts{quiet};
@@ -379,6 +381,13 @@ Create a technical root for each sentence. This eliminates the problem
 of generating multiple trees for some sentences. Technical roots only
 bear the attribute xml:id, whose form is 's-N', where N is the number
 of the sentence in the input file.
+
+=item B<--root-tag|-R> C<name>
+
+Use given name for the document root element of the resulting PML
+instance (default is 'conll', i.e. <conll>). Since there are different
+CoNLL formats, it is advisible to select a suitable name
+(e.g. conll2009 for the data from the CoNLL 2009 shared task).
 
 =item B<--id-prefix|-I> C<prefix>
 
