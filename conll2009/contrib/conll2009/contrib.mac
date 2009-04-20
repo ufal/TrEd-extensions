@@ -1,0 +1,37 @@
+# -*- cperl -*-
+
+#ifndef conll2009
+#define conll2009
+
+push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
+  my ($hook)=@_;
+  my $resuming = ($hook eq 'file_resumed_hook');
+  my $current = CurrentContext();
+  if (PML::SchemaName() eq 'conll2009') {
+    SetCurrentStylesheet('conll2009') if $resuming;
+    return 'Conll2009';
+  }
+  return;
+};
+
+{
+package Conll2009;
+
+#binding-context Conll2009
+#bind space to EditAttributes
+
+BEGIN { import TredMacro; }
+use strict;
+
+sub allow_switch_context_hook {
+  return 'stop' if SchemaName() ne 'conll2009';
+}
+sub switch_context_hook {
+  SetCurrentStylesheet('conll2009');
+  Redraw() if GUI();
+}
+
+}
+1;
+
+#endif conll2009

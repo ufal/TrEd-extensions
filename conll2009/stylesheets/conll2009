@@ -1,12 +1,7 @@
 context: .*
-node:${form} #{darkcyan}${deprel} #{magenta}<? join'|',map /.*:(.*)/,ListV($this->{apreds}) ?>
-#{brown}${lemma} #{gray}${pos} #{purple}${pred}
-#{violet}${feat}
-
-text:${form}
-
-style:<?
-  my %fillcolors = qw(A0 lightblue ACT lightblue AUTH lightblue arg0-agt lightblue C-A0 lightblue R-A0 lightblue GA lightblue GA2 lightblue
+rootstyle:#{NodeLabel-skipempty:1}#{skipHiddenLevels:1}#{skipHiddenParents:1}
+rootstyle:<?
+   %Conll2009::fillcolors = qw(A0 lightblue ACT lightblue AUTH lightblue arg0-agt lightblue C-A0 lightblue R-A0 lightblue GA lightblue GA2 lightblue
                       A1 orange PAT orange arg1-pat orange C-A1 orange WO orange
                       A2 violet EFF violet arg1-tem violet NO violet
                       A3 darkcyan ORIG darkcyan TO darkcyan
@@ -17,16 +12,41 @@ style:<?
                       TWHEN cyan THL cyan TTILL cyan TSIN cyan TPAR cyan THO cyan TFHL cyan TFRWH cyan TOWH cyan argM-tmp cyan AM-TMP cyan TMP cyan
                       COMPL green COMPL2 green
                      );
-  my ($coords,$fill,$arr,$smth,$dash);
-  foreach (ListV($this->{apreds})){
-    my ($ord,$type) = split /:/,$_;
-    $coords .= $ord eq $${order}
-               ? '&n,n,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2-30,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2+30,x[order = '.$ord.'],y[order = '.$ord.']'
-               : '&n,n,(n+x[order = '.$ord.'])/2-60,(n+y[order = '.$ord.'])/2+60,x[order = '.$ord.'],y[order = '.$ord.']';
-    $fill .= '&'.($fillcolors{$type} || 'gray') ;
+?>
+
+style:<? $this==$root ? '#{Node-hide:1}' : '' ?>
+node:${form}
+node:#{darkblue}${deprel}<? 
+  join'',map {' #{'.($Conll2009::fillcolors{$_->{label}} || 'gray').'}'. 
+               $_->{label} } ListV($this->{apreds}); 
+?>
+node:#{brown}${lemma}<? $${pos} ? ' ' : '' ?>#{gray}${pos}<? $${pred} ? ' ' : '' ?>#{purple}${pred}
+text:${form}
+
+
+style: <?
+  my ($coords,$fill,$main_fill,$hint,$arr,$smth,$dash);
+  foreach my $apred (ListV($this->{apreds})) {
+    my ($ref,$label) = ($apred->{'target.rf'}, $apred->{'label'});
+    my $color = $Conll2009::fillcolors{$label} || 'gray';
+    if (!$main_fill and $ref eq $this->parent->{'xml:id'}) {
+       $main_fill=$color;
+       $hint=$label.$hint;
+       next;
+    }
+    my $T = qq{[! PML::GetNodeByID('$ref') !]};
+   $coords .=  ($ref eq $${xml:id})
+                   ?  qq[&n,n,(n+x$T)/2-60,(n+y$T)/2-30,(n+x$T)/2-60,(n+y$T)/2+30,x$T,y$T]
+                   :  qq[&n,n,(n+x$T)/2-60,(n+y$T)/2+60,x$T,y$T];
+    $fill .= '&'.$color;
+    $hint.='&'.$label;
     $arr .= '&first';
     $smth .= '&1';
     $dash .= '&5,3';
   }
-  "#{Line-coords:n,n,p,p$coords}#{Line-fill:black$fill}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}"
+  $main_fill||='black';
+  "#{Line-coords:n,n,p,p$coords}#{Line-fill:$main_fill$fill}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}#{Line-hint:$hint}"
 ?>
+
+
+hint:<? join "\n",grep /\S/,split /\|/,$${feat} ?>
