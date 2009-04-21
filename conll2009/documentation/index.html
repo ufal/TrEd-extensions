@@ -1,28 +1,26 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
   <head>
-    <meta http-equiv="content/type" content="text/html;charset=utf-8">
+    <meta http-equiv="content/type" content="text/html; charset=UTF-8">
     <title>CoNLL-2009-st</title>
   </head>
   <body><h1>CoNLL 2009 Shared Task Data Visualization</h1>
-    <p>This package contains scripts and a stylesheet used for
-    creating the visualization of the <a
-    href="http://ufal.mff.cuni.cz/conll2009-st/"
-    target="_blank">CoNLL-2009-ST</a> trial data.  It can be used to
-    convert any data from CoNLL-2009-ST format to <a
-    href="http://ufal.ms.mff.cuni.cz/jazz/pml/doc/pml_doc.html"
-    target="_blank">PML</a> so that they can be opened by TrEd.</p>
+    <p>This package contains a stylesheet for visualization of
+      <a href="http://ufal.mff.cuni.cz/conll2009-st/"
+      target="_blank">CoNLL-2009-ST</a>
+      data  in TrEd and
+      scripts for converting data from the CoNLL-2009-ST format to the PML format.</p>
 
-    <p><em>NOTE:</em> Works only on Linux and similar systems. <tt><a
-    href="http://xsh.sourceforge.net" target="_blank">XSH</a></tt>
-    and <tt>bash</tt> must be installed.
+    <p><em>NOTE:</em> The conversion script works
+      only on Unix and similar systems
+      where basic UNIX tools like <tt>bash</tt> and <tt>sed</tt> are installed.
     </p>
 
     <h2>Usage</h2>
     <p>Run the <tt>bash</tt> script </p>
     <pre>conll2009/bin/conll2009-to-pml.sh</pre>
     <p>with CoNLL-2009-ST data files as arguments. When finished, open
-    the created <code>*.pml</code> data in tred, using the stylesheet
+    the created <code>*.pml</code> data in TrEd, using the stylesheet
     <tt>conll2009</tt>.</p>
 
     <h2>Authors</h2>
@@ -30,6 +28,5 @@
     Pajas. The latest version of the script can be downloaded <a
     href="http://ufal.mff.cuni.cz/jazz/PML/tools/conll2pml">here</a>.
     The rest was done by Jan Štěpánek in 2009.
-
 </body>
 </html>

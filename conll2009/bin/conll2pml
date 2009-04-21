@@ -308,7 +308,7 @@ sub next_sentence {
     }
     my @root;
     for my $t (@sent) {
-      if ($t->{$HEAD} == 0) {
+      if (($t->{$HEAD}||0) == 0) {
 	push @root, $t;
       } else {
 	push @{$sent{ $t->{$HEAD} }{CHILDNODES}}, $t;
