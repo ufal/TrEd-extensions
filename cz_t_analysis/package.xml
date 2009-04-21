@@ -6,7 +6,7 @@
   <pkgname>cz_t_analysis</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Simple Czech Tectogrammatical Parser</title>
-  <version>1.13</version>
+  <version>1.23</version>
   <copyright year="2008">Zdeněk Žabokrtský, Václav Klimeš, Petr Pajas</copyright>
   <description>Provides a simple TectoMT-based Czech analyzer that produces
   tectogrammatical, analytical and morphological layers
@@ -16,5 +16,6 @@
     <tred min_version="1.3587"/>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
     <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/tectomt"/>
+    <extension name="pdt_auto_afun" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_auto_afun"/>
   </require>
 </tred_extension>

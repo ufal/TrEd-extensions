@@ -131,9 +131,7 @@ sub analyze_sentence {
       $a->{'s.rf'}='m#'.$a->{id};
       $a->{'s.rf'}=~s/A/M/;
     }
-    if (exists &PML_A_Edit::assign_afun_auto_tree) {
-      PML_A_Edit->assign_afun_auto_tree( $a_root ); # before we delete m
-    }
+    PML_A_Edit->assign_afun_auto_tree( $a_root ); # before we delete m
     for my $a ($a_root->descendants) {
       $a->{'m.rf'}='m#'.$a->{id};
       $a->{'m.rf'}=~s/A/M/;
