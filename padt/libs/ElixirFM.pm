@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 707 2008-09-15 06:31:59Z smrz $
+# $Id: ElixirFM.pm 840 2009-04-13 21:28:15Z smrz $
 
 package ElixirFM;
 
@@ -10,13 +10,67 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || do { q $Revision: 707 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 840 $ =~ /(\d+)/;
+
+use Encode::Arabic;
+
+use XML::Parser;
 
 # ##################################################################################################
 #
 # ##################################################################################################
 
-use Encode::Arabic;
+use subs 'foldr', 'foldl';
+
+sub foldr (&$@) {
+
+    my ($fun, $nil, @lst) = @_;
+
+    return $nil unless @lst;
+
+    return $fun->($lst[0], foldr $fun, $nil, @lst[1 .. @lst - 1]);
+}
+
+sub foldl (&$@) {
+
+    my ($fun, $nil, @lst) = @_;
+
+    return $nil unless @lst;
+
+    return foldl $fun, $fun->($nil, $lst[0]), @lst[1 .. @lst - 1];
+}
+
+sub nub (&@) {
+
+    my ($fun, @lst, %nub) = @_;
+
+    return grep { my $r = $fun->($_); exists $nub{$r} ? 0 : ++$nub{$r} } @lst;
+}
+
+sub tuples (@) {
+
+    my @data = @_;
+
+    push @data, undef if @data % 2;
+
+    my @pair;
+
+    for (my $i = 0; $i < @data; $i += 2) {
+
+        push @pair, [$data[$i], $data[$i + 1]];
+    }
+
+    return @pair;
+}
+
+sub concat (@) {
+
+    return map { ref $_ eq 'ARRAY' ? @{$_} : $_ } @_;
+}
+
+# ##################################################################################################
+#
+# ##################################################################################################
 
 sub orth {
 
@@ -30,12 +84,12 @@ sub phon {
 
 sub orph {
 
-    return join " ", grep { $_ ne '' } orth($_[0]), phon($_[0]);
+    return join defined $_[1] ? $_[1] : " ", grep { $_ ne '' } orth($_[0]), phon($_[0]);
 }
 
 sub phor {
 
-    return join " ", grep { $_ ne '' } phon($_[0]), orth($_[0]);
+    return join defined $_[1] ? $_[1] : " ", grep { $_ ne '' } phon($_[0]), orth($_[0]);
 }
 
 sub cling {
@@ -45,6 +99,19 @@ sub cling {
     $text =~ tr[ ][]d;
 
     return $text;
+}
+
+sub nice {
+
+    my $morphs = morphs($_[0]);
+
+    $morphs->[0] = merge("", $morphs->[0]);
+
+    $morphs->[1] = [ map { $_ =~ /"/ ? showPrefix($_) : $_ } @{$morphs->[1]} ];
+
+    $morphs->[2] = [ map { $_ =~ /"/ ? showSuffix($_) : $_ } @{$morphs->[2]} ];
+
+    return join "-", map { phon($_) } @{$morphs->[1]}, $morphs->[0], @{$morphs->[2]};
 }
 
 our $tagset = [
@@ -129,7 +196,11 @@ our $dims = scalar @{$tagset};
 
 sub describe {
 
-    my @slot = split //, $_[0];
+    my $i = 0;
+
+    my @slot = map { $i++ % 2 ? [ split //, $_ ] : map { [$_] } split //, $_ } split /[\[\]]/, $_[0];
+
+    my $terse = defined $_[1] ? $_[1] : '';
 
     if (@slot > $dims) {
 
@@ -137,18 +208,36 @@ sub describe {
     }
     else {
 
-        push @slot, ('-') x ($dims - @slot);
+        push @slot, ([]) x ($dims - @slot);
     }
 
-    my $type = exists $tagset->[0][1]{$slot[0] . '-'}      ? $tagset->[0][1]{$slot[0] . '-'}      : '';
-    my $kind = exists $tagset->[0][1]{$slot[0] . $slot[1]} ? $tagset->[0][1]{$slot[0] . $slot[1]} : '';
+    @slot = map { [ grep { $_ ne '-' } @{$_} ] } @slot;
 
-    my @cats = map { exists $tagset->[$_][1]{$slot[$_]} ? [$tagset->[$_][0], $tagset->[$_][1]{$slot[$_]}] : [] }
-	       2 .. $dims - 1;
+    my @type = map { my $x = $_;
 
-    unshift @cats, $type eq $kind ? [$type, ''] : [$type, $kind];
+                     [ exists $tagset->[0][1]{$_ . '-'} ? $tagset->[0][1]{$_ . '-'} : '',
 
-    return join ", ", grep { $_ ne '' } map { join " ", grep { $_ ne '' } reverse @{$_} } @cats;
+                       join " ", grep { $_ ne '' }
+
+                            map { exists $tagset->[0][1]{$x . $_} ? $tagset->[0][1]{$x . $_} : '' } @{$slot[1]} ]
+
+                } @{$slot[0]};
+
+    my @cats = map { my $x = $_;
+
+                     [ $terse && $_ != 5 ? '' : $tagset->[$x][0],
+
+                       join " ", grep { $_ ne '' }
+
+                            map { exists $tagset->[$x][1]{$_} ? $tagset->[$x][1]{$_} : '' } @{$slot[$x]} ]
+
+                } 2 .. $dims - 1;
+
+    return join ", ", grep { $_ ne '' }
+
+                      (join " ", map { grep { $_ ne '' } $_->[1], $_->[0] } @type),
+
+                      (map { join " ", grep { $_ ne '' } $_->[1] ne '' ? ($_->[1], $_->[0]) : () } @cats);
 }
 
 sub retrieve {
@@ -187,7 +276,7 @@ sub retrieve {
     	$one =~ /^imp(?:er)?/i          and push @{$tag[1]}, 'I',
     	                                                     'C' and next;
 
-    	$one =~ /^pers/i                and push @{$tag[1]}, 'P' and next;
+    	$one =~ /^pers(?:ona)?l/i       and push @{$tag[1]}, 'P' and next;
     	$one =~ /^dem/i                 and push @{$tag[1]}, 'D' and next;
     	$one =~ /^rel/i                 and push @{$tag[1]}, 'R' and next;
 
@@ -215,7 +304,7 @@ sub retrieve {
     	$one =~ /^pl/i                  and push @{$tag[7]}, 'P' and next;
 
     	$one =~ /^nom/i                 and push @{$tag[8]}, '1' and next;
-    	$one =~ /^gen/i                 and push @{$tag[8]}, '2' and next;
+    	$one =~ /^gen(?![dr])/i         and push @{$tag[8]}, '2' and next;
     	$one =~ /^acc/i                 and push @{$tag[8]}, '4' and next;
     	$one =~ /^obl/i                 and push @{$tag[8]}, '2',
                                                              '4' and next;
@@ -249,9 +338,21 @@ sub retrieve {
     	}
     }
 
+    if (not @{$tag[1]}) {
+
+        if (@{$tag[2]}) {
+
+            push @{$tag[1]}, 'I';
+        }
+        elsif (@{$tag[3]} or @{$tag[5]}) {
+
+            push @{$tag[1]}, 'P', 'I';
+        }
+    }
+
     my $tag = join "", map { @{$_} == 0 ? '-' : @{$_} == 1 ? $_->[0] : '[' . (join '', @{$_}) . ']' } @tag;
 
-    push @tags, $tag unless $tag eq '-' x $dims;
+    unshift @tags, $tag unless $tag eq '-' x $dims;
 
     return @tags;
 }
@@ -261,32 +362,338 @@ sub restrict {
     my @restrict = split //, length $_[0] == $dims ? $_[0] : '-' x $dims;
     my @inherit = split //, $_[1];
 
-    return join '', map { $restrict[$_] eq '-' && defined $inherit[$_] ? $inherit[$_] : $restrict[$_] } 0 .. $#restrict;
+    return join '', map { $restrict[$_] eq '-' && defined $inherit[$_] ? $inherit[$_] : $restrict[$_] } 0 .. @restrict - 1;
+}
+
+sub prune {
+
+    my $node = $_[0];
+
+    return $node unless $node->{'data'}{'type'} == 4;
+
+    @{$node->{'node'}} = grep {
+
+	                      not grep { not @{$_->{'node'}} } @{$_->{'node'}}
+
+                         } @{$node->{'node'}};
+
+    return $node;
+}
+
+sub concise {
+
+    return @_ unless @_ > 1;
+
+    my @data = @_;
+
+    my $data = pop @data;
+
+    return foldr {
+
+            return @_ unless ref $_[0] eq 'ARRAY' and ref $_[1] eq 'ARRAY';
+
+            return @_ unless @{$_[0]} > 1 and @{$_[1]} > 1 and @{$_[0]} == @{$_[1]};
+
+            for (1 .. @{$_[0]} - 1) {
+
+                return @_ unless $_[0][$_] eq $_[1][$_];
+            }
+
+            my @fst = $_[0]->[0] =~ /^("?[A-Z1-4-]{6})([MF])([A-Z1-4-]{3}"?)$/;
+
+            my @snd = $_[1]->[0] =~ /^("?[A-Z1-4-]{6})([MF])([A-Z1-4-]{3}"?)$/;
+
+            return @_ unless @fst == 3 and @snd == 3;
+
+            return @_ unless $fst[0] eq $snd[0] and $fst[2] eq $snd[2] and $fst[1] ne $snd[1];
+
+            return [ $fst[0] . '-' . $fst[2], @{$_[0]}[1 .. @{$_[0]} - 1] ], @_[2 .. @_ - 1];
+
+        } $data, @data;
+}
+
+sub parse {
+
+    my $parser = new XML::Parser 'Handlers' => {
+
+        'Init'  => sub {
+                            my $expat = shift;
+
+                            $expat->{Lists} = [];
+                            $expat->{Tree} = [];
+
+                            $expat->{Curlist} = [ '', {}, $expat->{Tree} ];
+                    },
+
+        'Start' => sub {
+                            my $expat = shift;
+                            my $name = shift;
+                            my $elem = [ $name, { @_ }, [] ];
+
+                            push @{ $expat->{Curlist}[-1] }, $elem;
+                            push @{ $expat->{Lists} }, $expat->{Curlist};
+
+                            $expat->{Curlist} = $elem;
+                    },
+
+        'End'   => sub {
+                            my $expat = shift;
+                            my $name = shift;
+
+                            my $elem = $expat->{Curlist};
+
+                            my $hash = $expat->{Curlist}[1];
+                            my $list = $expat->{Curlist}[-1];
+
+
+                            if (@{$list} == 1 and not ref $list->[0]) {
+
+                                $expat->{Curlist}[-1] = $list->[0];
+                            }
+                            else {
+
+                                @{$list} = grep { ref $_ or $_ !~ /^\s*$/ } @{$list};
+
+                                my $memo = {};
+                                my $quit = '';
+
+                                foreach my $one (@{$list}) {
+
+                                    if (ref $one and $one->[0] !~ /^[A-Z]/ and
+                                        not exists $hash->{$one->[0]} and
+                                        not exists $memo->{$one->[0]}) {
+
+                                        $memo->{$one->[0]} = $one;
+                                    }
+                                    else {
+
+                                        $quit = 'quit';
+
+                                        last;
+                                    }
+                                }
+
+                                unless ($quit) {
+
+                                    foreach my $one (keys %{$memo}) {
+
+                                        if (keys %{$memo->{$one}[1]}) {
+
+                                            if (ref $memo->{$one}[-1] and not @{$memo->{$one}[-1]}) {
+
+                                                $hash->{$one} = $memo->{$one}[1];
+                                            }
+                                        }
+                                        else {
+
+                                            $hash->{$one} = $memo->{$one}[-1];
+                                        }
+                                    }
+
+                                    $expat->{Curlist}[-1] = [];
+                                }
+                            }
+
+                            $expat->{Curlist} = pop @{ $expat->{Lists} };
+                    },
+
+        'Char'  => sub {
+                            my $expat = shift;
+                            my $text = shift;
+                            my $list = $expat->{Curlist}[-1];
+
+                            if (@{$list} > 0 and not ref $list->[-1]) {
+
+                                $list->[-1] .= $text;
+                            }
+                            else {
+
+                                push @{$list}, $text;
+                            }
+                    },
+
+        'Final' => sub {
+                            my $expat = shift;
+
+                            delete $expat->{Curlist};
+                            delete $expat->{Lists};
+
+                            return $expat->{Tree}[0];
+                    },
+
+        };
+
+    return $parser->parse($_[0]);
+}
+
+sub unpretty {
+
+    my ($data, $mode) = (@_, '');
+
+    my @data;
+
+    if ($mode eq 'resolve') {
+
+        (undef, @data) = split /[:]{4}/, $data;
+
+        @data = map {
+
+            my ($data, @node) = split /[:]{3}/, $_;
+
+            {
+                'data'  =>  {
+
+                    'info'  =>  [ map { join ' ', split ' ' } split /[:]{2}/, $data ],
+                    'type'  =>  4,
+                },
+
+                'node'  =>  [
+
+                    map {
+
+                        my ($data, @node) = split /[:]{2}/, $_;
+
+                        {
+                            'data'  =>  {
+
+                                'info'  =>  [ map { join ' ', split ' ' } split /[:]{1}/, $data ],
+                                'type'  =>  3,
+                            },
+
+                            'node'  =>  [
+
+                                map {
+
+                                    my ($data, @node) = split /[:]{1}/, $_;
+
+                                    {
+                                        'data'  =>  {
+
+                                            'info'  =>  [ join ' ', split ' ', $data ],
+                                            'type'  =>  2,
+                                        },
+
+                                        'node'  =>  [
+
+                                            map {
+
+                                                my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+
+                                                $i .= '    ';
+
+                                                s/^[\t\n ]+//;
+                                                s/[\t\n ]+$//;
+
+                                                my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+
+                                                {
+                                                    'data'  =>  {
+
+                                                        'info'  =>  [ split /[\n ]*\t/, $data ],
+                                                        'type'  =>  1,
+                                                    },
+
+                                                    'node'  =>  [
+
+                                                        map {
+
+                                                            {
+                                                                'data'  =>  {
+
+                                                                    'info'  =>  [ split /[\n ]*\t/, $_ ],
+                                                                    'type'  =>  0,
+                                                                },
+
+                                                                'node'  =>  [
+
+                                                                ],
+                                                            }
+
+                                                        } @node
+                                                    ],
+                                                }
+
+                                            } @node
+                                        ],
+                                    }
+
+                                } @node
+                            ],
+                        }
+
+                    } @node
+                ],
+            }
+
+        } @data;
+    }
+    elsif ($mode eq 'lookup') {
+
+        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
+
+        pop @data;
+
+        @data = map {
+
+            my @data = split /\s*<\/Nest>\s*/, $_;
+
+            [
+                map {
+
+                    my ($clip, $data) = split /\s*<Nest>\s*/, $_;
+
+                    my ($root) = $data =~ /(<root>.*?<\/root>)/;
+
+                    my (@ents) = $data =~ /(<Entry>.*?<\/Entry>)/gs;
+
+                    {
+                        'clip'  =>  ( join '', split ' ', $clip ),
+                        'root'  =>  ElixirFM::parse($root)->[2],
+                        'ents'  =>  [ @ents ],
+                    }
+
+                } @data
+            ]
+
+        } @data;
+    }
+    else {
+
+        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
+
+        pop @data;
+
+        @data = map {
+
+            my @data = split /\n/, $_;
+
+            [
+                map {
+
+                    [ split /\t/, $_ ]
+
+                } @data
+            ]
+
+        } @data;
+    }
+
+    return @data;
+}
+
+sub template {
+
+    my ($t, $p, $s) = @_;
+
+    $p = $p =~ /\"$/ ? $p . " >>| " : $p . " >| " unless $p eq '';
+    $s = $s =~ /^\"/ ? " |<< " . $s : " |< " . $s unless $s eq '';
+
+    return $p . $t . $s;
 }
 
 # ##################################################################################################
 #
 # ##################################################################################################
-
-use subs 'foldr', 'foldl';
-
-sub foldr (&$@) {
-
-    my ($fun, $nil, @lst) = @_;
-
-    return $nil unless @lst;
-
-    return $fun->($lst[0], foldr $fun, $nil, @lst[1 .. @lst - 1]);
-}
-
-sub foldl (&$@) {
-
-    my ($fun, $nil, @lst) = @_;
-
-    return $nil unless @lst;
-
-    return foldl $fun, $fun->($nil, $lst[0]), @lst[1 .. @lst - 1];
-}
 
 sub merge {
 
@@ -400,6 +807,11 @@ sub interlocks {
 
         $pattern .= 'w' if $pattern =~ /A$/ and @{$s} and $s->[0] eq "Iy";
 
+        $pattern =~ s/^H/'/;
+        $pattern =~ s/^([IMNSTUY])/\l$1/;
+
+        return $pattern unless @root;
+
         if ("' _h _d" eq join ' ', @root) {
 
             $pattern =~ s/Ft/assimVIII($root[0], 1)/e;
@@ -409,7 +821,7 @@ sub interlocks {
             $pattern =~ s/Ft/assimVIII($root[0], 0)/e;
         }
 
-        $pattern =~ s/[nN]F/assimVII($root[0], 0)/e;
+        $pattern =~ s/nF/assimVII($root[0], 0)/e;
 
         $pattern =~ s/F/$root[0]/g if defined $root[0];
         $pattern =~ s/C/$root[1]/g if defined $root[1];
@@ -420,18 +832,23 @@ sub interlocks {
         $pattern =~ s/D/$root[2]/g if defined $root[2];
         $pattern =~ s/S/$root[3]/g if defined $root[3];
     }
-    elsif (@root == 1 and $pattern =~ /^(?:_____|Identity)$/) {
+    elsif ($pattern =~ /^(?:_____|Identity)$/) {
+
+        @root = (@root, ('_____')[@root .. 0]);
 
         $pattern = $root[0];
 
         $pattern .= 'w' if $pattern =~ /A$/ and @{$s} and $s->[0] eq "Iy";
-
-        return $pattern;
     }
-    elsif (@root == 3) {
+    elsif ($pattern =~ /[FCL]/) {
+
+        @root = (@root, ('F', 'C', 'L')[@root .. 2]);
 
         $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^(?:F[aiu]CLA'|F[IU]LA')$/
                                                   and @{$s} and not $s->[0] =~ /^"[aiu]N?"$/;
+
+        $pattern =~ s/^H/'/;
+        $pattern =~ s/^([IMNSTUY])/\l$1/;
 
         if ("' _h _d" eq join ' ', @root) {
 
@@ -448,21 +865,22 @@ sub interlocks {
         $pattern =~ s/C/$root[1]/g;
         $pattern =~ s/L/$root[2]/g;
     }
-    elsif (@root == 4) {
+    elsif ($pattern =~ /[KRDS]/) {
+
+        @root = (@root, ('K', 'R', 'D', 'S')[@root .. 3]);
+
+        $pattern =~ s/^H/'/;
+        $pattern =~ s/^([IMNSTUY])/\l$1/;
 
         $pattern =~ s/K/$root[0]/g;
         $pattern =~ s/R/$root[1]/g;
         $pattern =~ s/D/$root[2]/g;
         $pattern =~ s/S/$root[3]/g;
     }
-    else {
+    elsif ($pattern ne '') {
 
-        return "!!! @root !!!";
+        return "!!! @root $pattern !!!";
     }
-
-    $pattern =~ s/^H/'/;
-
-    $pattern = lcfirst $pattern;
 
     return $pattern;
 }
@@ -535,6 +953,8 @@ sub mergeSuffix {
 
             return $x if $x =~ /^at/;
 
+            return "aw" . $x if $x =~ /^u/;
+
             return "a^gIy" if $x eq "a^gIy";
         }
 
@@ -567,6 +987,8 @@ sub mergeSuffix {
 
             return "I" . $x if $x =~ /^[nt]/;
 
+            return $x if $x =~ /^[iu]/;
+
             return "Iy" if $x eq "Iy";
         }
 
@@ -598,6 +1020,8 @@ sub mergeSuffix {
             return "aN" if $x =~ /^[aiu]N$/;
 
             return $x if $x =~ /^at/;
+
+            return "aw" . $x if $x =~ /^u/;
         }
 
         return "aw" . showSuffix($_[1]);
@@ -629,6 +1053,8 @@ sub mergeSuffix {
             return $x if $x =~ /^[ui]N$/;
 
             return "U" . $x if $x =~ /^[nt]/;
+
+            return $x if $x =~ /^[iu]/;
         }
 
         return "uw" . showSuffix($_[1]);
@@ -650,7 +1076,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 707 $        $Date: 2008-09-15 08:31:59 +0200 (Mon, 15 Sep 2008) $
+    $Revision: 840 $        $Date: 2009-04-13 23:28:15 +0200 (Mon, 13 Apr 2009) $
 
 
 =head1 SYNOPSIS
@@ -686,7 +1112,7 @@ Otakar Smrz C<< <otakar smrz mff cuni cz> >>, L<http://ufal.mff.cuni.cz/~smrz/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2005-2008 Otakar Smrz
+Copyright (C) 2005-2009 Otakar Smrz
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>0.1.0</revision>
-    <description>PADT m-level</description>
+    <revision>1.1.0</revision>
+    <description>PADT Morphology</description>
 
     <root name="MorphoTrees" type="Trees.type"/>
 
@@ -18,9 +18,9 @@
                 </structure>
             </member>
             <member name="data" required="1">
-                <sequence role="#TREES" content_pattern="(Paragraph, Entity*)*">
+                <sequence role="#TREES" content_pattern="(Paragraph, Element*)*">
                     <element name="Paragraph" type="Paragraph.type"/>
-                    <element name="Entity" type="Entity.type"/>
+                    <element name="Element" type="Element.type"/>
                 </sequence>
             </member>
         </structure>
@@ -30,15 +30,14 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="input" type="string.type"/>
-            <member name="form" type="string.type"/>
-            <member name="idx" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="tag" type="string.type"/>
-            <member name="par" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
+            <member name="input" type="String.type"/>
+            <member name="form" type="String.type"/>
+            <member name="idx" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="par" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Word" type="Word.type"/>
@@ -51,14 +50,14 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="input" type="string.type"/>
-            <member name="form" type="string.type"/>
-            <member name="idx" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="ref" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
+            <member name="input" type="String.type"/>
+            <member name="form" type="String.type"/>
+            <member name="idx" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="ref" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Lexeme" type="Lexeme.type"/>
@@ -67,22 +66,22 @@
         </structure>
     </type>
 
-    <type name="Entity.type">
+    <type name="Element.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="input" type="string.type"/>
-            <member name="lookup" type="string.type"/>
-            <member name="form" type="string.type"/>
-            <member name="idx" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="ref" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="restrict" type="string.type"/>
-            <member name="inherit" type="string.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
-            <member name="tips" type="string.type"/>
+            <member name="input" type="String.type"/>
+            <member name="lookup" type="String.type"/>
+            <member name="form" type="String.type"/>
+            <member name="idx" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="ref" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Partition" type="Partition.type"/>
@@ -95,34 +94,34 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="form" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="restrict" type="string.type"/>
-            <member name="inherit" type="string.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
-            <member name="tips" type="string.type"/>
+            <member name="form" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Token" type="Token.type"/>
+                    <element name="Component" type="Component.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Token.type">
+    <type name="Component.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="form" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="restrict" type="string.type"/>
-            <member name="inherit" type="string.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
-            <member name="tips" type="string.type"/>
+            <member name="form" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Lexeme" type="Lexeme.type"/>
@@ -135,376 +134,64 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="form" type="string.type"/>
-            <member name="morph" type="string.type"/>
-            <member name="root" type="string.type"/>
-            <member name="idx" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="gloss" type="string.type"/>
-            <member name="ref" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="restrict" type="string.type"/>
-            <member name="inherit" type="string.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
-            <member name="tips" type="string.type"/>
+            <member name="root" type="Root.type"/>
+            <member name="core" type="Entry.type"/>
+            <member name="form" type="String.type"/>
+            <member name="idx" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="ref" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Form" type="Form.type"/>
+                    <element name="Token" type="Token.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Form.type">
+    <type name="Token.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
-            <member name="form" type="string.type"/>
-            <member name="morph" type="string.type"/>
-            <member name="root" type="string.type"/>
-            <member name="comment" type="string.type"/>
-            <member name="tag" type="string.type"/>
-            <member name="gloss" type="string.type"/>
-            <member name="ref" type="string.type"/>
-            <member name="apply" type="string.type"/>
-            <member name="score" type="score.type"/>
-            <member name="restrict" type="string.type"/>
-            <member name="inherit" type="string.type"/>
-            <member name="hide" type="string.type" role="#HIDE"/>
-            <member name="tips" type="string.type"/>
+            <member name="morphs" type="Morphs.type"/>
+            <member name="tag" type="Tags.type"/>
+            <member name="form" type="String.type"/>
+            <member name="comment" type="String.type"/>
+            <member name="gloss" type="String.type"/>
+            <member name="ref" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
         </structure>
     </type>
 
-    <type name="m.type">
-        <structure name="m">
-            <member name="id" role="#ID" required="1" as_attribute="1"><cdata format="ID"/></member>
-            <member name="lemma" type="string.type" required="1"/>
-            <member name="form" type="string.type" required="1"/>
-            <member name="gloss" type="string.type"/>
-            <member name="tag" type="tag.type" required="1"/>
-        </structure>
-    </type>
-
-    <type name="tag.type">
-        <structure>
-            <member name="content" type="string.type" required="1" as_attribute="1"/>
-            <member name="part-of-speech" type="pos.type" required="1"/>
-            <member name="mood" type="mood.type"/>
-            <member name="voice" type="voice.type"/>
-            <member name="person" type="person.type"/>
-            <member name="gender" type="gender.type"/>
-            <member name="number" type="number.type"/>
-            <member name="case" type="case.type"/>
-            <member name="definiteness" type="def.type"/>
-        </structure>
-    </type>
-
-    <type name="pos.type">
-        <choice>
-            <value>imperfect verb form</value>
-            <value>perfect verb form</value>
-            <value>imperative verb form</value>
-            <value>conjunction</value>
-            <value>preposition</value>
-            <value>interjection</value>
-            <value>noun</value>
-            <value>adjective</value>
-            <value>adverb</value>
-            <value>graphical symbol</value>
-            <value>number</value>
-            <value>abbreviation</value>
-            <value>particle</value>
-            <value>negative</value>
-            <value>interrogative</value>
-            <value>pronouns</value>
-            <value>demonstrative</value>
-            <value>relative</value>
-            <value>isolated definite article</value>
-            <value>proper name</value>
-        </choice>
-    </type>
-
-    <type name="mood.type">
-        <choice>
-            <value>indicative of imperfect verb</value>
-            <value>subjunctive of imperfect verb</value>
-            <value>jussive of imperfect verb</value>
-            <value>undecided between subjunctive of jussive of imperfect verb</value>
-        </choice>
-    </type>
-
-    <type name="voice.type">
-        <choice>
-            <value>active</value>
-            <value>passive</value>
-        </choice>
-    </type>
-
-    <type name="person.type">
-        <choice>
-            <value>speaker</value>
-            <value>addressee</value>
-            <value>others</value>
-        </choice>
-    </type>
-
-    <type name="gender.type">
-        <choice>
-            <value>masculine</value>
-            <value>feminine</value>
-        </choice>
-    </type>
-
-    <type name="number.type">
-        <choice>
-            <value>singular</value>
-            <value>dual</value>
-            <value>plural</value>
-        </choice>
-    </type>
-
-    <type name="case.type">
-        <choice>
-            <value>nominative</value>
-            <value>genitive</value>
-            <value>accusative</value>
-        </choice>
-    </type>
-
-    <type name="def.type">
-        <choice>
-            <value>indefinite</value>
-            <value>definite</value>
-            <value>reduced</value>
-            <value>complex</value>
-        </choice>
-    </type>
-
-    <type name="string.type">
-        <cdata format="any"/>
-    </type>
-
-    <type name="m.type">
-        <structure role="#NODE">
-            <member name="id" role="#ID" required="1" as_attribute="1"><cdata format="ID"/></member>
-            <member name="lemma" type="string.type" required="1"/>
-            <member name="form" type="string.type" required="1"/>
-            <member name="gloss" type="string.type"/>
-            <member name="tag" type="tag.type" required="1"/>
-        </structure>
-    </type>
-
-    <type name="tag.type">
-        <structure>
-            <member name="content" type="string.type" required="1" as_attribute="1"/>
-            <member name="part-of-speech" type="pos.type" required="1"/>
-            <member name="mood" type="mood.type"/>
-            <member name="voice" type="voice.type"/>
-            <member name="person" type="person.type"/>
-            <member name="gender" type="gender.type"/>
-            <member name="number" type="number.type"/>
-            <member name="case" type="case.type"/>
-            <member name="definiteness" type="def.type"/>
-        </structure>
-    </type>
-
-    <type name="pos.type">
-        <choice>
-            <value>imperfect verb form</value>
-            <value>perfect verb form</value>
-            <value>imperative verb form</value>
-            <value>conjunction</value>
-            <value>preposition</value>
-            <value>interjection</value>
-            <value>noun</value>
-            <value>adjective</value>
-            <value>adverb</value>
-            <value>graphical symbol</value>
-            <value>number</value>
-            <value>abbreviation</value>
-            <value>particle</value>
-            <value>negative</value>
-            <value>interrogative</value>
-            <value>pronouns</value>
-            <value>demonstrative</value>
-            <value>relative</value>
-            <value>isolated definite article</value>
-            <value>proper name</value>
-        </choice>
-    </type>
-
-    <type name="mood.type">
-        <choice>
-            <value>indicative of imperfect verb</value>
-            <value>subjunctive of imperfect verb</value>
-            <value>jussive of imperfect verb</value>
-            <value>undecided between subjunctive of jussive of imperfect verb</value>
-        </choice>
-    </type>
-
-    <type name="voice.type">
-        <choice>
-            <value>active</value>
-            <value>passive</value>
-        </choice>
-    </type>
-
-    <type name="person.type">
-        <choice>
-            <value>speaker</value>
-            <value>addressee</value>
-            <value>others</value>
-        </choice>
-    </type>
-
-    <type name="gender.type">
-        <choice>
-            <value>masculine</value>
-            <value>feminine</value>
-        </choice>
-    </type>
-
-    <type name="number.type">
-        <choice>
-            <value>singular</value>
-            <value>dual</value>
-            <value>plural</value>
-        </choice>
-    </type>
-
-    <type name="case.type">
-        <choice>
-            <value>nominative</value>
-            <value>genitive</value>
-            <value>accusative</value>
-        </choice>
-    </type>
-
-    <type name="def.type">
-        <choice>
-            <value>indefinite</value>
-            <value>definite</value>
-            <value>reduced</value>
-            <value>complex</value>
-        </choice>
-    </type>
-
-    <type name="annotations.type">
-        <sequence contetn_type="annotate+">
-            <element name="annotate" type="annotate.type"/>
-        </sequence>
-    </type>
-
-    <type name="annotate.type">
-        <structure name="anot">
-            <member name="id" role="#ID" required="1" as_attribute="1"><cdata format="ID"/></member>
-            <member name="e.rf" type="dentity.type" role="#KNIT"><cdata format="PMLREF"/></member>
-            <member name="operations" type="operations.type" required="1"/>
-        </structure>
-    </type>
-
-    <type name="operations.type">
-        <sequence content_type="operation*">
-            <element name="operation" type="operation.type"/>
-        </sequence>
-    </type>
-
-    <type name="operation.type">
-        <structure name="op">
-            <member name="type" type="op.type"/>
-            <member name="value" type="string.type"/>
-            <member name="node.nd"><cdata format="ID"/></member>
-        </structure>
-    </type>
-
-    <type name="op.type">
-        <choice>
-            <value>restrict</value>
-            <value>select</value>
-        </choice>
-    </type>
-
-    <type name="dictionary.type">
-        <sequence content_type="entity+">
-            <element name="entity" type="dentity.type"/>
-        </sequence>
-    </type>
-
-    <type name="dentity.type">
-        <container>
-            <attribute name="id"><cdata format="ID"/></attribute>
-            <sequence content_type="input?,id?,ord?,lookup?,partition+">
-                <element name="input" type="string.type"/>
-                <element name="lexid" type="string.type"/>
-                <element name="ord" type="string.type"/>
-                <element name="lookup" type="string.type"/>
-                <element name="partition" type="dpartition.type"/>
-            </sequence>
-        </container>
-    </type>
-
-    <type name="dpartition.type">
-        <container>
-            <attribute name="id"><cdata format="ID"/></attribute>
-            <sequence content_type="form?,ord?,token_form+">
-                <element name="form" type="string.type"/>
-                <element name="ord" type="string.type"/>
-                <element name="token_form" type="dtoken_form.type"/>
-            </sequence>
-        </container>
-    </type>
-
-    <type name="dtoken_form.type">
-        <container>
-            <attribute name="id"><cdata format="ID"/></attribute>
-            <sequence content_type="form?,ord?,comment?,lemma_id+">
-                <element name="form" type="string.type"/>
-                <element name="ord" type="string.type"/>
-                <element name="comment" type="string.type"/>
-                <element name="lemma_id" type="dlemma_id.type"/>
-            </sequence>
-        </container>
-    </type>
-
-    <type name="dlemma_id.type">
-        <container>
-            <attribute name="id"><cdata format="ID"/></attribute>
-            <sequence content_type="form?,gloss?,id?,ord?,comment?,token_node+">
-                <element name="form" type="string.type"/>
-                <element name="gloss" type="string.type"/>
-                <element name="lexid" type="string.type"/>
-                <element name="ord" type="string.type"/>
-                <element name="comment" type="string.type"/>
-                <element name="token_node" type="dtoken_node.type"/>
-            </sequence>
-        </container>
-    </type>
-
-    <type name="dtoken_node.type">
-        <container>
-            <attribute name="id"><cdata format="ID"/></attribute>
-            <structure>
-                <member name="form" type="string.type"/>
-                <member name="gloss" type="string.type"/>
-                <member name="tag" type="string.type"/>
-                <member name="ord" type="string.type"/>
-                <member name="morph" type="string.type"/>
-                <member name="comment" type="string.type"/>
-            </structure>
-        </container>
-    </type>
-
-    <type name="string.type">
-        <cdata format="any"/>
-    </type>
-
-    <type name="score.type">
+    <type name="Score.type">
         <alt>
-            <container type="string.type">
-                <attribute name="src" type="string.type"/>
+            <container type="String.type">
+                <attribute name="src" type="String.type"/>
             </container>
         </alt>
+    </type>
+
+    <type name="String.type">
+        <cdata format="any"/>
+    </type>
+
+    <import schema="elixir.schema.xml"/>
+
+    <type name="Entry.type">
+        <structure>
+            <member name="morphs" type="Morphs.type" required="1"/>
+            <member name="entity" type="Entity.type" required="1"/>
+            <member name="limits" type="Limits.type"/>
+            <member name="reflex" type="Reflex.type"/>
+        </structure>
     </type>
 
 </pml_schema>

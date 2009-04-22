@@ -5,7 +5,7 @@ DeepLevels - Context for Annotation of Tectogrammatics and Deeper Levels in the 
 
 =head1 REVISION
 
-    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
+    $Revision: 834 $       $Date: 2009-03-25 23:25:55 +0100 (Wed, 25 Mar 2009) $
 
 
 =head1 DESCRIPTION
@@ -567,7 +567,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2008 by Otakar Smrz
+Copyright 2006-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

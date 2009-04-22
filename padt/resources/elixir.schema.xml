@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.0.1</revision>
+    <revision>1.1.1</revision>
     <description>ElixirFM Lexicon</description>
 
     <root name="ElixirFM" type="Lexicon.type" />
@@ -87,6 +87,7 @@
                     <member name="gender" type="Gender.type"/>
                     <member name="number" type="Number.type"/>
                     <member name="derive" type="Derive.type"/>
+                    <member name="except" type="Except.type"/>
                 </structure>
             </element>
             <element name="Adj" >
@@ -199,6 +200,13 @@
         </choice>
     </type>
 
+    <type name="Except.type">
+        <choice>
+            <value>Diptote</value>
+            <value>Triptote</value>
+        </choice>
+    </type>
+
     <type name="Morphs.type">
         <cdata format="any"/>
     </type>
@@ -239,7 +247,12 @@
         <sequence>
             <element name="Frame">
                 <structure role="#NODE">
-                    <member name="reflex" type="Reflex.type"/>
+                    <member name="reflex">
+                        <structure>
+                            <member name="fst" type="Reflex.type"/>
+                            <member name="snd" type="Reflex.type"/>
+                        </structure>
+                    </member>
                     <member name="slots" role="#CHILDNODES">
                         <sequence>
                             <element name="Slot" type="Slot.type"/>

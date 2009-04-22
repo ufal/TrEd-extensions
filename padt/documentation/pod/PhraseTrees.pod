@@ -5,7 +5,7 @@ PhraseTrees - Context for Annotation of Constituency Syntax in the TrEd Environm
 
 =head1 REVISION
 
-    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
+    $Revision: 808 $       $Date: 2009-02-10 00:19:07 +0100 (Tue, 10 Feb 2009) $
 
 
 =head1 DESCRIPTION
@@ -131,7 +131,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2005-2008 by Otakar Smrz
+Copyright 2005-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -5,7 +5,7 @@ ElixirFM - Context for Annotation of the ElixirFM Lexicon in the TrEd Environmen
 
 =head1 REVISION
 
-    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
+    $Revision: 838 $       $Date: 2009-04-09 01:14:18 +0200 (Thu, 09 Apr 2009) $
 
 
 =head1 DESCRIPTION
@@ -143,6 +143,10 @@ Hiding Level Higher C<hiding_level_higher>
 
 New Nest C<new_Nest>
 
+=item 'CTRL+p'
+
+Paradigm Except C<paradigm_except>
+
 =item 'CTRL+plus'
 
 Hiding Level Deeper C<hiding_level_deeper>
@@ -207,7 +211,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2008 by Otakar Smrz
+Copyright 2006-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

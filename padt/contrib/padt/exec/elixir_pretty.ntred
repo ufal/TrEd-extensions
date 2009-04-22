@@ -19,7 +19,7 @@ our $null = 1;  # strings longer than $null become character lists
 
 our $zero = 'A';
 
-our $max = 169;
+our $max = 100;
 
 
 sub escape ($) {
@@ -37,7 +37,7 @@ sub render ($) {
 sub charify ($) {
 
     local $Data::Dumper::Useqq;
-    
+
     $Data::Dumper::Useqq = 0;
 
     return '[' . (join ',', map { substr Data::Dumper->Dump(['\'' . $_]), 2, -1 } split //, $_[0]) . ']';
@@ -46,7 +46,7 @@ sub charify ($) {
 sub stringify ($) {
 
     local $Data::Dumper::Useqq;
-    
+
     $Data::Dumper::Useqq = 1;
 
     return substr Data::Dumper->Dump(["\"" . $_[0]]), 2, -1;     # 100 -> "100"
@@ -66,7 +66,7 @@ sub pretty_nest {
 
     my ($root) = @_;
 
-    return  ' |> ' . (stringify $root->{'root'}) . ' <| [' . "\n\n" .
+    return  ' |> ' . ($root->{'root'} =~ / / ? stringify $root->{'root'} : charify $root->{'root'}) . ' <| [' . "\n\n" .
 
             ( join ",\n\n", map { pretty_entry($_) } $root->children() ) .
 
@@ -85,7 +85,7 @@ sub pretty_entry {
     my $domain = $limits->{'fst'} || '';
 
     $domain = '"' . $domain . '"' unless $domain eq '';
-    
+
     my $merged = ElixirFM::merge($root->parent()->{'root'}, $morphs);
 
     my $plural = $entity->[1]{'plural'} || [];
@@ -96,7 +96,9 @@ sub pretty_entry {
 
     $derive = "otherwise" if $derive eq '------F---';
 
-  # my $form   = $entity->[1]{'form'}   || [];
+    my $except = $entity->[1]{'except'} || '';
+
+    # my $form   = $entity->[1]{'form'}   || [];
 
     my $imperf = $entity->[1]{'imperf'} || [];
     my $pfirst = $entity->[1]{'pfirst'} || [];
@@ -120,8 +122,10 @@ sub pretty_entry {
 
                    (@{$femini} > 0 ? map { '   `femini`     ' . $_ } @{$femini} : ()),
 
+                   ($except ne '' ? "\n" . '    `excepts` ' . $except : ()),
+
                    ($domain ne '' ? "\n" . '    `limited` ' . $domain : ()),
-                    
+
                    ($derive ne '' ? "\n" . '    `derives` ' . $derive : ()));
 }
 
@@ -136,7 +140,7 @@ sub pretty_words ($$) {
                              stringify $_ } @data;
 
     $data = "unwords [ " . $data  . " ]" if @data > 1;
-    
+
     return $data;
 }
 
@@ -146,43 +150,43 @@ sub pretty_words ($$) {
 
 sub autostart {
 
-    my (undef, $group, $type) = split /[\-\.]/, FileName();
+    my (undef, $type, $group) = reverse split /[\-\.]/, FileName();
 
     die "The group and type '$group'/'$type' cannot be empty" if $group eq '' or $type eq '';
-    
+
     $group = ucfirst $group;
     $type  = ucfirst $type;
 
     my $module = $zero;
     my $idx = 0;
-    
+
     local $\ = "\n";
 
     beginLexicon($group, $type);
 
-    beginModule($group, $type, $module);
-    
-    do { {
+    my @tree = GetTrees();
+
+    while ($root = shift @tree) {
 
         next unless $root->children();
 
+        beginModule($group, $type, $module) unless $idx;
+
         print pretty_cluster($root, ++$idx);
 
-        unless ($idx < $max) {
+        next if $idx < $max and @tree;
 
-            closeModule($idx);
+        closeModule($idx);
 
-            $idx = 0;
+        last unless @tree;
 
-            $module++;
+        $idx = 0;
 
-            beginModule($group, $type, $module);
-        }
-    } }
-    while NextTree();
+        $module++;
+    }
 
     closeModule($idx);
-    
+
     closeLexicon($group, $type, $module);
 }
 
@@ -192,9 +196,9 @@ sub beginLexicon {
     my ($group, $type) = @_;
 
     mkdir "$group" unless -e "$group";
-    
+
     mkdir "$group/$type" unless -e "$group/$type";
-    
+
     return;
 }
 
@@ -208,7 +212,7 @@ sub closeLexicon {
 
     print << "    return;";
 
-module Elixir.Data.$group.$type (lexicon) where
+module Elixir.Data.$group.$type (chapter) where
 
 import Elixir.Lexicon
 
@@ -220,11 +224,11 @@ import Elixir.Lexicon
 
 version = revised "\$Revision: \$"
 
-lexicon = include chapter
+lexicon = (concat . concat) chapter
 
     return;
 
-    print "chapter = [ " . (join ",\n" . " " x 12, map { "$_.lexicon" } $zero .. $module) . " ]";
+    print "chapter = [ " . (join ",\n" . " " x 12, map { "$_.section" } $zero .. $module) . " ]";
 
     close C;
 
@@ -244,7 +248,7 @@ sub beginModule ($) {
 
     print << "    return;";
 
-module Elixir.Data.$group.$type.$module (lexicon) where
+module Elixir.Data.$group.$type.$module (section) where
 
 import Elixir.Lexicon
 
@@ -254,14 +258,14 @@ version = revised "\$Revision: \$"
 lexicon = $listing
 
     return;
-    
+
     return;
 }
 
 sub closeModule($) {
 
     my ($idx) = @_;
-    
+
     print "section = [ " . (join ",\n" . " " x 12, map { "cluster_$_" } 1 .. $idx) . " ]";
 
     close C;

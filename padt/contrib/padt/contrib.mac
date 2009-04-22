@@ -5,12 +5,10 @@
 
 use lib CallerDir();
 
-package TredMacro;
-
-push @AUTO_CONTEXT_GUESSING, sub {
+push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
 
     my $schema = PML::SchemaName();
-    
+
     return $schema       if defined $schema and $schema =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|PhraseTrees/;
 
     return 'MorphoTrees' if $grp->{FSFile}->FS()->isList('type') and
@@ -34,7 +32,7 @@ push @AUTO_CONTEXT_GUESSING, sub {
 
 package PADT;
 
-BEGIN { 
+BEGIN {
 
     import TredMacro;
 }
@@ -52,7 +50,7 @@ sub initialize_direction {
     $TrEd::TreeView::DefaultNodeStyle{Node} = [ -textalign => $_[1] ];
 
     $_->treeView->apply_options($main::treeViewOpts) foreach @{$grp->{framegroup}->{treeWindows}};
-    
+
     main::update_value_line($grp->{framegroup});
 }
 
@@ -61,9 +59,9 @@ sub switch_context_hook {
     return unless GUI();
 
     my $class = $_[1];
-    
+
     my $style = &{$class . '::CreateStylesheets'}();
-  
+
     SetStylesheetPatterns($style, $class, 1) unless StylesheetExists($class);
 
     my $sheet = GetCurrentStylesheet();
@@ -72,14 +70,14 @@ sub switch_context_hook {
 
     UnbindBuiltin('Shift+Home');
     UnbindBuiltin('Shift+End');
-    
+
     initialize_direction('right-to-left', 'right');
 }
 
 sub pre_switch_context_hook {
 
     return unless GUI();
-    
+
     return if $_[0] =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|PhraseTrees/ and
               $_[1] =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|PhraseTrees/;
 

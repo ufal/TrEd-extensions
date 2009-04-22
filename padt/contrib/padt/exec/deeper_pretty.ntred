@@ -50,9 +50,9 @@ sub autostart {
     open F, '>', $file . ".xml";
 
     select F;
-    
+
     local $\ = "\n";
-    
+
     print '<?xml version="1.0" encoding="utf-8"?>';
     print '';
     print '<DeepLevels xmlns="http://ufal.mff.cuni.cz/pdt/pml/">';
@@ -69,16 +69,16 @@ sub autostart {
         local $indent = $indent . '  ';
 
         my $id = {};
-        
+
         do {
 
             $id->{'p'}++;
-            
+
             pretty_tree($root, $id);
-        } 
+        }
         while NextTree();
     }
-    
+
     print ' </data>';
     print '</DeepLevels>';
 
@@ -89,30 +89,30 @@ sub autostart {
 sub pretty_tree {
 
     my ($root, $id) = @_;
-    
+
     print $indent . '<Tree id="s-' . 'p' .  $id->{'p'} . '">';
 
     {
         local $indent = $indent . ' ';
 
         foreach my $attr (grep { $_ !~ /^x_|^(?:origf|lemma|tag|form)$/ and $_ !~ /^y_|^(?:afun|afunaux|arabspec|arabclause)$/ } $root->attribute_paths()) {
-            
+
             print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                            '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                 if exists $root->{$attr} and $root->{$attr} ne "";
         }
 
         print $indent . '<s>';
-        
+
         {
             local $indent = $indent . ' ';
-                        
+
             foreach my $attr (grep { $_ =~ /^y_|^(?:afun|afunaux|arabspec|arabclause)$/ } $root->attribute_paths()) {
-            
+
                 print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                                '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                     if exists $root->{$attr} and $root->{$attr} ne "";
             }
         }
@@ -120,15 +120,15 @@ sub pretty_tree {
         print $indent . '</s>';
 
         print $indent . '<m>';
-        
+
         {
             local $indent = $indent . ' ';
-                        
+
             foreach my $attr (grep { $_ =~ /^x_|^(?:origf|lemma|tag|form)$/ } $root->attribute_paths()) {
-            
+
                 print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                                '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                     if exists $root->{$attr} and $root->{$attr} ne "";
             }
         }
@@ -136,13 +136,13 @@ sub pretty_tree {
         print $indent . '</m>';
 
         print $indent . '<with>' if $root->children();
-        
+
         {
             local $indent = $indent . ' ';
-            
+
             foreach my $node ($root->children()) {
 
-                pretty_node($node, $id);              
+                pretty_node($node, $id);
             }
         }
 
@@ -160,7 +160,7 @@ sub pretty_node {
     if ($root->{'x_id_ord'} eq '') {
 
         $id->{'r'} .= '-x';
-        
+
         delete $root->{'x_id_ord'};
 
         delete $root->{'afun'} if $root->{'afun'} eq '-';
@@ -173,30 +173,30 @@ sub pretty_node {
 
         warn join "\t", "Mismatch in 'x_id_ord'", $root->{'x_id_ord'}, ThisAddress($root) . "\n" if $id->{'p'} ne $1;
     }
-    
+
     print $indent . '<Node id="s-' . ( join "", map { defined $id->{$_} ? $_ . $id->{$_} : '' } qw "p w r" ) . '">';
 
     {
         local $indent = $indent . ' ';
 
         foreach my $attr (grep { $_ !~ /^x_|^(?:origf|lemma|tag|form)$/ and $_ !~ /^y_|^(?:afun|afunaux|arabspec|arabclause)$/ } $root->attribute_paths()) {
-            
+
             print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                            '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                 if exists $root->{$attr} and $root->{$attr} ne "";
         }
 
         print $indent . '<s>';
-        
+
         {
             local $indent = $indent . ' ';
-                        
+
             foreach my $attr (grep { $_ =~ /^y_|^(?:afun|afunaux|arabspec|arabclause)$/ } $root->attribute_paths()) {
-            
+
                 print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                                '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                     if exists $root->{$attr} and $root->{$attr} ne "";
             }
         }
@@ -204,15 +204,15 @@ sub pretty_node {
         print $indent . '</s>';
 
         print $indent . '<m>';
-        
+
         {
             local $indent = $indent . ' ';
-                        
+
             foreach my $attr (grep { $_ =~ /^x_|^(?:origf|lemma|tag|form)$/ } $root->attribute_paths()) {
-            
+
                 print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                                '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                     if exists $root->{$attr} and $root->{$attr} ne "";
             }
         }
@@ -220,13 +220,13 @@ sub pretty_node {
         print $indent . '</m>';
 
         print $indent . '<with>' if $root->children();
-        
+
         {
             local $indent = $indent . ' ';
-            
+
             foreach my $node ($root->children()) {
 
-                pretty_node($node, $id);              
+                pretty_node($node, $id);
             }
         }
 

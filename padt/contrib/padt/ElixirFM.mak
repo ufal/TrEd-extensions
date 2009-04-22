@@ -2,7 +2,7 @@
 #
 # ElixirFM Context for the TrEd Environment ########################################################
 
-# $Id: ElixirFM.mak 730 2008-10-18 20:48:24Z smrz $
+# $Id: ElixirFM.mak 838 2009-04-08 23:14:18Z smrz $
 
 package ElixirFM;
 
@@ -15,7 +15,7 @@ use ElixirFM;
 use File::Spec;
 use File::Copy;
 
-our $VERSION = do { q $Revision: 730 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = join '.', '1.1', q $Revision: 838 $ =~ /(\d+)/;
 
 # ##################################################################################################
 #
@@ -81,20 +81,20 @@ sub masdars {
 # foreach my $x (@keys) {
 
     # my $y = $x;
-    
+
     # $y =~ s/^(.+[aiuAIU])(.)[aiu]\2$/$1$2\~/;
     # $y =~ s/^(.+[^aiuAIU])(.)([aiu])\2$/$1$3$2\~/;
 
     # $y =~ s/[OWI\|\}]$/'/;
-    
+
     # $y =~ s/aY?$//;
     # $y =~ s/uw?$//;
     # $y =~ s/iy?$//;
-        
+
     # if ($x ne $y) {
-    
+
         # $lexicon->{$y} = $lexicon->{$x};
-        
+
         # delete $lexicon->{$x};
     # }
 # }
@@ -125,9 +125,9 @@ sub masdars {
     # my $y = exists ElixirFM::entity($this)->[1]{'pfirst'} ? ElixirFM::entity($this)->[1]{'pfirst'}[0] || '' : '';
 
     # foreach my $z ($x, $y) {
-    
+
         # $z = encode "buckwalter", decode "arabtex", ElixirFM::merge($this->parent()->{'root'}, $z);
-    
+
         # $z =~ s/[OWI\|\}]$/'/;
 
         # $z =~ s/aA/A/g;
@@ -135,13 +135,13 @@ sub masdars {
         # $z =~ s/aY$//;
         # $z =~ s/uw$//;
         # $z =~ s/iy$//;
-    
+
         # if (exists $lexicon->{$z}) {
 
             # unless ($this->children()) {
 
                 # ChangingFile(1);
-                
+
                 # $this = new_Frame();
                 # $this = new_Frame();
             # }
@@ -414,6 +414,8 @@ sub new_Nest {
 
     DetermineNodeType($node);
 
+    $node->{'root'} = $this->{'root'} if exists $this->{'root'};
+
     return $node;
 }
 
@@ -482,6 +484,24 @@ sub new_Frame {
     ChangingFile(1);
 
     return $node;
+}
+
+#bind paradigm_except Ctrl+p menu Paradigm Except
+sub paradigm_except {
+
+    ChangingFile(0);
+
+    return unless $this->level() == 2;
+
+    my $ent = ElixirFM::entity($this);
+
+    return unless $ent->[0] eq 'Noun';
+
+    $ent->[1]{'except'} = exists $ent->[1]{'except'} && $ent->[1]{'except'} ne ''
+                               ? $ent->[1]{'except'} eq 'Triptote' ? 'Diptote' : ''
+                               : 'Triptote';
+
+    ChangingFile(1);
 }
 
 #bind change_slot_role Ctrl+r menu Change Slot Role
@@ -634,7 +654,12 @@ node:<? $this->level() == 2
           ElixirFM::feminis($this) )
       : '' ?>
 
-node:#{custom3}<?'${reflex=' . (join ", ", @{$this->{reflex}}) . '}'?>
+node:<? $this->level() == 2
+      ? '#{custom3}${reflex=' . (join ", ", @{$this->{'reflex'}}) . '}'
+      : join "\n", ( @{$this->{'reflex'}{'fst'}} ?
+        '#{custom2}${reflex=' . (join ", ", @{$this->{'reflex'}{'fst'}}) . '}' : () ),
+                   ( @{$this->{'reflex'}{'snd'}} ?
+        '#{custom6}${reflex=' . (join ", ", @{$this->{'reflex'}{'snd'}}) . '}' : () ) ?>
 
 >>
 }
@@ -932,7 +957,7 @@ sub hiding_level_deeper {
     $hiding_level++;
 
     $hiding_level %= 6;
-    
+
     ChangingFile(0);
 }
 
@@ -942,7 +967,7 @@ sub hiding_level_higher {
     $hiding_level--;
 
     $hiding_level %= 6;
-    
+
     ChangingFile(0);
 }
 
@@ -961,27 +986,6 @@ sub hiding_level_reset {
 sub path (@) {
 
     return File::Spec->join(@_);
-}
-
-sub escape ($) {
-
-    return $^O eq 'MSWin32' ? '"' . $_[0] . '"' : "'" . $_[0] . "'";
-}
-
-sub espace ($) {
-
-    my $name = $_[0];
-
-    $name =~ s/\\/\//g if $^O eq 'MSWin32' and $name =~ / /;
-
-    return escape $name;
-}
-
-sub expace ($) {
-
-    return '"' . "'" . $_[0] . "'" . '"'  if $^O eq 'MSWin32' and $_[0] =~ / /;
-
-    return escape $_[0];
 }
 
 sub inter_with_level ($) {
@@ -1065,7 +1069,7 @@ ElixirFM - Context for Annotation of the ElixirFM Lexicon in the TrEd Environmen
 
 =head1 REVISION
 
-    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
+    $Revision: 838 $       $Date: 2009-04-09 01:14:18 +0200 (Thu, 09 Apr 2009) $
 
 
 =head1 DESCRIPTION
@@ -1091,7 +1095,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2008 by Otakar Smrz
+Copyright 2006-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

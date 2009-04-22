@@ -11,11 +11,11 @@ our ($root, $this);
 
 our $type = { 'paragraph'   =>  'Paragraph',
               'word_node'   =>  'Word',
-              'entity'      =>  'Entity',
+              'entity'      =>  'Element',
               'partition'   =>  'Partition',
-              'token_form'  =>  'Token',
+              'token_form'  =>  'Component',
               'lemma_id'    =>  'Lexeme',
-              'token_node'  =>  'Form'      };
+              'token_node'  =>  'Token'     };
 
 our $name = { 'apply_m' => 'apply',
               'apply_t' => 'score',
@@ -49,9 +49,9 @@ sub autostart {
     open F, '>', $file . ".xml";
 
     select F;
-    
+
     local $\ = "\n";
-    
+
     print '<?xml version="1.0" encoding="utf-8"?>';
     print '';
     print '<MorphoTrees xmlns="http://ufal.mff.cuni.cz/pdt/pml/">';
@@ -68,11 +68,11 @@ sub autostart {
         local $indent = $indent . '  ';
 
         my $id = [];
-        
+
         do {
 
             if ($root->{'type'} eq 'paragraph') {
-            
+
                 pretty_para($root, $id);
 
                 @{$id} = ($id->[0]);
@@ -81,10 +81,10 @@ sub autostart {
 
                 pretty_tree($root, $id);
             }
-        } 
+        }
         while NextTree();
     }
-    
+
     print ' </data>';
     print '</MorphoTrees>';
 
@@ -97,13 +97,13 @@ sub pretty_para {
     my ($root, $id) = @_;
 
     my $level = $root->level();
-    
+
     @{$id} = @{$id}[0 .. $level];
 
     $id->[$level]++;
-    
+
     if ($level == 0) {
-    
+
         $root->{'id'} =~ /^\#([0-9]*)$/;
 
         warn "Mismatch in 'id'\t" . ThisAddress($root) . "\n" if $id->[0] ne $1;
@@ -121,21 +121,21 @@ sub pretty_para {
         local $indent = $indent . ' ';
 
         foreach my $attr (grep { $_ ne 'type' } $root->attribute_paths()) {
-            
+
             print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                            '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                 if exists $root->{$attr} and $root->{$attr} ne "";
         }
 
         print $indent . '<with>' if $root->children();
-        
+
         {
             local $indent = $indent . ' ';
-            
+
             foreach my $node ($root->children()) {
 
-                pretty_para($node, $id);              
+                pretty_para($node, $id);
             }
         }
 
@@ -151,10 +151,10 @@ sub pretty_tree {
     my ($root, $id) = @_;
 
     my $level = $root->level();
-    
+
     @{$id} = @{$id}[0 .. $level + 1];
 
-    $id->[$level + 1]++; 
+    $id->[$level + 1]++;
 
     if ($root->level() == 0) {
 
@@ -162,7 +162,7 @@ sub pretty_tree {
 
         warn "Mismatch in 'id'\t" . ThisAddress($root) . "\n" if $id->[0] ne $1 or $id->[1] ne $2;
     }
-    
+
     print $indent . '<' . $type->{$root->{'type'}} .' id="m-' .
         ( join "", map { defined $id->[$_] ? (qw "p e q t l f")[$_] . $id->[$_] : '' } 0 .. 5 ) . '">';
 
@@ -170,18 +170,18 @@ sub pretty_tree {
         local $indent = $indent . ' ';
 
         foreach my $attr (grep { $_ ne 'type' } $root->attribute_paths()) {
-            
+
             print $indent . '<' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>' . (render $root->{$attr}) .
                            '</' . (exists $name->{$attr} ? $name->{$attr} : $attr) .'>'
-                
+
                 if exists $root->{$attr} and $root->{$attr} ne "";
         }
 
         print $indent . '<with>' if $root->children();
-        
+
         {
             local $indent = $indent . ' ';
-            
+
             foreach my $node ($root->children()) {
 
                 pretty_tree($node, $id);

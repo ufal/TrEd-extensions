@@ -622,11 +622,11 @@ style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) .
 node:<? $this->{'m'}{'form'} =~ /^./ ? $this->{'m'}{'lemma'} =~ /^([^\_]+)/ ? $1 : '${m/form}'
                                      : '#{custom6}${m/input}' ?>
 
-node:<? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne '' 
+node:<? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne ''
                                   ? '#{custom3}${s/afun}'
                                   : '#{custom5}${func}' ),
-                            ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
-                                        qw 'parallel paren s/coref /clause' )  ?>
+                            ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
+                                              qw 'parallel paren s/coref /clause' ) || () ) ?>
 
 hint:<? join "\n", 'tag: ${m/tag}',
                    'lemma: ${m/lemma}',
@@ -908,8 +908,8 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{'s'}{'clause'} ne "" || $this->{tag} =~ /^V/ && $this->{afun} !~ /^Aux/
-                                        || $this->{afun} =~ /^Pred[ECMP]?$/;
+    return $this->{'s'}{'clause'} ne "" || $this->{'m'}{'tag'} =~ /^V/ && $this->{'s'}{'afun'} !~ /^Aux/
+                                        || $this->{'s'}{'afun'} =~ /^Pred[ECMP]?$/;
 }
 
 sub theClauseHead ($;&) {
@@ -954,7 +954,7 @@ sub theClauseHead ($;&) {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{afun} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/;
 
                 $main = $head unless $main and $main->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/;
             }
@@ -1101,9 +1101,9 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
 
-    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m/comment} ne '' ?>};
+    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m}{comment} ne '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -1112,8 +1112,6 @@ sub default_ar_attrs {
     SetStylesheetPatterns([ $hint, $cntxt, [ @filter, @{$style} == @filter ? $type . ' ' . $code . $pattern : () ] ]);
 
     ChangingFile(0);
-
-    return 1;
 }
 
 #bind invoke_undo BackSpace menu Annotate: Undo recent annotation action
@@ -1690,7 +1688,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2008 by Otakar Smrz
+Copyright 2006-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

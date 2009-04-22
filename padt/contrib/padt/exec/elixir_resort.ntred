@@ -1,0 +1,121 @@
+#!/usr/bin/ntred
+
+#include ../lib/ElixirFM.mak
+
+package TredMacro;
+
+use Encode;
+
+use strict;
+
+our $grp;
+
+sub autostart {
+
+    my $list = $grp->{'FSFile'}->treeList();
+
+    my @data;
+
+    $data[0] = [ grep { isNull($_) } @{$list} ];
+
+    @{$list} = grep { not isNull($_) } @{$list};
+
+
+    $data[3] = [ grep { isMoony($_) } @{$list} ];
+
+    $data[2] = [ grep {     isForeign($_) } @{$data[3]} ];
+    $data[3] = [ grep { not isForeign($_) } @{$data[3]} ];
+
+    $data[1] = [ grep { isComplex($_) } @{$data[3]} ];
+    $data[3] = [ grep { isRegular($_) } @{$data[3]} ];
+
+
+    $data[6] = [ grep { isSunny($_) } @{$list} ];
+
+    $data[5] = [ grep {     isForeign($_) } @{$data[6]} ];
+    $data[6] = [ grep { not isForeign($_) } @{$data[6]} ];
+
+    $data[4] = [ grep { isComplex($_) } @{$data[6]} ];
+    $data[6] = [ grep { isRegular($_) } @{$data[6]} ];
+
+
+    @{$list} = map { my $null = new FSNode; DetermineNodeType($null); $null,
+                     sort { stringCompare($a->firstson()->{'root'},
+                                          $b->firstson()->{'root'}) } @{$_} } @data[1 .. 6];
+
+
+    warn "Null Clusters: " . @{$data[0]} . "\n";
+    warn "Moony Complex: " . @{$data[1]} . "\n";
+    warn "Moony Foreign: " . @{$data[2]} . "\n";
+    warn "Moony Regular: " . @{$data[3]} . "\n";
+    warn "Sunny Complex: " . @{$data[4]} . "\n";
+    warn "Sunny Foreign: " . @{$data[5]} . "\n";
+    warn "Sunny Regular: " . @{$data[6]} . "\n";
+
+    ChangingFile(1);
+}
+
+sub isNull {
+
+    return not $_[0]->children();
+}
+
+sub isMoony {
+
+    my @r = map { split /(?<![._^,])/, $_ } split " ", $_[0]->firstson()->{'root'};
+
+    my %moony = map { $_, 1 } qw "' b ^g .h _h ` .g f q k m h w y";
+
+    return exists $moony{$r[0]};
+}
+
+sub isSunny {
+
+    return not isMoony($_[0]);
+}
+
+sub isRegular {
+
+    return not isComplex($_[0]);
+}
+
+sub isComplex {
+
+    my @r = map { [ map { split /(?<![._^,])/, $_ } split " ", $_->{'root'} ] } $_[0]->children();
+
+    return grep { @{$_} > 1 and $_->[-2] eq $_->[-1] or grep { /^['wy]$/ } @{$_} } @r;
+}
+
+sub isForeign {
+
+    my $this = shift;
+
+    while ($this = $this->following()) {
+
+        return if $this->level() == 2 and ElixirFM::entity($this)->[0] !~ /^(?:Xtra|Ynit|Zero)$/;
+    }
+
+    return 1;
+}
+
+sub stringCompare {
+
+    my ($x, $y) = @_;
+
+    my @x = split /(?<![._^,])/, $x;
+
+    my @y = split /(?<![._^,])/, $y;
+
+    my $i;
+
+    my %cmp = map { $_, $i++ } qw "' b t _t ^g .h _h d _d r z s ^s .s .d .t .z ` .g f q k l m n h w y";
+
+    for ($i = 0; $i < @x and $i < @y; $i++) {
+
+        my $cmp = $cmp{$x[$i]} <=> $cmp{$y[$i]};
+
+        return $cmp if $cmp;
+    }
+
+    return @x <=> @y;
+}

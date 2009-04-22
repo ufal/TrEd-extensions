@@ -2,7 +2,7 @@
 #
 # Encoding of Arabic: ArabTeX Notation by Klaus Lagally, ZDMG #################################
 
-# $Id: ZDMG.pm 676 2008-08-14 11:25:26Z smrz $
+# $Id: ZDMG.pm 808 2009-02-09 23:19:07Z smrz $
 
 package Encode::Arabic::ArabTeX::ZDMG;
 
@@ -13,7 +13,7 @@ use warnings;
 
 use Carp;
 
-our $VERSION = do { q $Revision: 676 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 808 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
 use Encode::Arabic::ArabTeX ();
@@ -343,7 +343,7 @@ sub decoder ($;$$) {
                 (
                     map {
 
-                        "l-" . $_->[0] x 2, [ '', $_->[0] . "-" . $_->[0] ],
+                        "l-" . $_->[0] x 2, [ "", $_->[0] . "-" . $_->[0] ],
 
                     } @sunny, @moony
                 ),
@@ -449,18 +449,37 @@ sub decoder ($;$$) {
                 (
                     map {
 
-                        "i" . $_, [ '', "I" ],
-                        "u" . $_, [ '', "U" ],
+                        my $fix = $_;
 
-                        "\\cap\x09" . "i" . $_, [ '', "\\cap\x09" . "I" ],
-                        "\\cap\x0A" . "i" . $_, [ '', "\\cap\x0A" . "I" ],
-                        "\\cap\x0D" . "i" . $_, [ '', "\\cap\x0D" . "I" ],
-                        "\\cap\x20" . "i" . $_, [ '', "\\cap\x20" . "I" ],
+                        "i" . $_, [ "", "I" ],
+                        "u" . $_, [ "", "U" ],
 
-                        "\\cap\x09" . "u" . $_, [ '', "\\cap\x09" . "U" ],
-                        "\\cap\x0A" . "u" . $_, [ '', "\\cap\x0A" . "U" ],
-                        "\\cap\x0D" . "u" . $_, [ '', "\\cap\x0D" . "U" ],
-                        "\\cap\x20" . "u" . $_, [ '', "\\cap\x20" . "U" ],
+                        "\\cap\x09" . "i" . $_, [ "", "\\cap\x09" . "I" ],
+                        "\\cap\x0A" . "i" . $_, [ "", "\\cap\x0A" . "I" ],
+                        "\\cap\x0D" . "i" . $_, [ "", "\\cap\x0D" . "I" ],
+                        "\\cap\x20" . "i" . $_, [ "", "\\cap\x20" . "I" ],
+
+                        "\\cap\x09" . "u" . $_, [ "", "\\cap\x09" . "U" ],
+                        "\\cap\x0A" . "u" . $_, [ "", "\\cap\x0A" . "U" ],
+                        "\\cap\x0D" . "u" . $_, [ "", "\\cap\x0D" . "U" ],
+                        "\\cap\x20" . "u" . $_, [ "", "\\cap\x20" . "U" ],
+
+                        map {
+
+                            "i" . $fix . $_->[0], [ "i", $fix . $_->[0] ],
+                            "u" . $fix . $_->[0], [ "u", $fix . $_->[0] ],
+
+                            "\\cap\x09" . "i" . $fix . $_->[0], [ "I", $fix . $_->[0] ],
+                            "\\cap\x0A" . "i" . $fix . $_->[0], [ "I", $fix . $_->[0] ],
+                            "\\cap\x0D" . "i" . $fix . $_->[0], [ "I", $fix . $_->[0] ],
+                            "\\cap\x20" . "i" . $fix . $_->[0], [ "I", $fix . $_->[0] ],
+
+                            "\\cap\x09" . "u" . $fix . $_->[0], [ "U", $fix . $_->[0] ],
+                            "\\cap\x0A" . "u" . $fix . $_->[0], [ "U", $fix . $_->[0] ],
+                            "\\cap\x0D" . "u" . $fix . $_->[0], [ "U", $fix . $_->[0] ],
+                            "\\cap\x20" . "u" . $fix . $_->[0], [ "U", $fix . $_->[0] ],
+
+                        } @vowel, $empty[0]
 
                     } "y", "w"  # "'"
                 ),
@@ -521,10 +540,10 @@ sub decoder ($;$$) {
                 (
                     map {
 
-                        "\\cap\x09" . $_, [ '', "\\cap " ],
-                        "\\cap\x0A" . $_, [ '', "\\cap " ],
-                        "\\cap\x0D" . $_, [ '', "\\cap " ],
-                        "\\cap\x20" . $_, [ '', "\\cap " ],
+                        "\\cap\x09" . $_, [ "", "\\cap " ],
+                        "\\cap\x0A" . $_, [ "", "\\cap " ],
+                        "\\cap\x0D" . $_, [ "", "\\cap " ],
+                        "\\cap\x20" . $_, [ "", "\\cap " ],
 
                     } "\x09", "\x0A", "\x0D", "\x20"
                 ),
@@ -557,7 +576,7 @@ Encode::Arabic::ArabTeX::ZDMG - ZDMG phonetic transcription of Arabic using the 
 
 =head1 REVISION
 
-    $Revision: 676 $        $Date: 2008-08-14 13:25:26 +0200 (Thu, 14 Aug 2008) $
+    $Revision: 808 $        $Date: 2009-02-10 00:19:07 +0100 (Tue, 10 Feb 2009) $
 
 
 =head1 SYNOPSIS
@@ -619,7 +638,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003-2008 by Otakar Smrz
+Copyright 2003-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

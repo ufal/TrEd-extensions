@@ -37,9 +37,9 @@ sub CreateStylesheets {
     return << '>>';
 
 rootstyle:<? '#{vertical}#{Node-textalign:left}' ?>
-                    
+
 style:<? '#{Line-coords:n,n,p,n,p,p}' ?>
-                    
+
 node:<? $this->{morph} eq '' ? '#{custom1}${label}' : '#{custom6}${form}' ?>
 
 node:#{custom4}${tag_2}
@@ -548,7 +548,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2005-2008 by Otakar Smrz
+Copyright 2005-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

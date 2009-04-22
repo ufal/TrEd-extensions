@@ -5,7 +5,7 @@ MorphoTrees - Context for Annotation of Morphology in the TrEd Environment
 
 =head1 REVISION
 
-    $Revision: 730 $       $Date: 2008-10-18 22:48:24 +0200 (Sat, 18 Oct 2008) $
+    $Revision: 840 $       $Date: 2009-04-13 23:28:15 +0200 (Mon, 13 Apr 2009) $
 
 
 =head1 DESCRIPTION
@@ -160,6 +160,10 @@ Restrict Illusory Masculine C<restrict_masculine>
 
 Restrict Illusory Plural C<restrict_plural>
 
+=item 'CTRL+r'
+
+ElixirFM Resolve C<elixir_resolve>
+
 =item 'CTRL+s'
 
 Restrict Illusory Singular C<restrict_singular>
@@ -308,7 +312,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2008 by Otakar Smrz
+Copyright 2004-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

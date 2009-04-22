@@ -425,19 +425,18 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? $this->{clause} ne '' || $this->{m}{tag} =~ /^V/ || $this->{afun} =~ /^P/
-         ? '#{Line-fill:gold}' : '' ?>
+style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
 node:<? $this->{m}{form} =~ /^./ ? '${m/form}' : '#{custom6}${m/input}' ?>
 
 node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
-                                  ? '#{custom3}${afunaux}' 
+                                  ? '#{custom3}${afunaux}'
                                   : '#{custom1}${afun}' ),
                             ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
                                               qw 'parallel paren arabfa coref clause' ) || () ) ?>
 
-node:<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne '' 
-   ?>#{custom2}${m/tag}
+node:<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne ''
+       ?>#{custom2}${m/tag}
 
 hint:<? join "\n", 'tag: ${m/tag}',
                    'lemma: ${m/lemma}',
@@ -699,13 +698,13 @@ sub theClauseHead ($;&) {
 
     while ($head) {
 
-        $effect = $head->{afun};
+        $effect = $head->{'afun'};
 
-        if ($head->{afun} =~ /^(?:Coord|Apos)$/) {
+        if ($head->{'afun'} =~ /^(?:Coord|Apos)$/) {
 
             @children = grep { $_->{parallel} =~ /^(?:Co|Ap)$/ } $head->children();
 
-            if (grep { $_->{afun} eq 'Atv' } @children) {
+            if (grep { $_->{'afun'} eq 'Atv' } @children) {
 
                 $effect = 'Atv';
             }
@@ -713,13 +712,13 @@ sub theClauseHead ($;&) {
 
                 $effect = 'Pred';
             }
-            elsif (grep { $_->{afun} eq 'Pnom'} @children) {
+            elsif (grep { $_->{'afun'} eq 'Pnom'} @children) {
 
                 $effect = 'Pnom';
             }
         }
 
-        if ($head->{afun} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
+        if ($head->{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
 
             $main = $head;                      # {Pred} <- [Pnom] = [Pnom] and there exist [Verb] <- [Verb]
 
@@ -729,16 +728,16 @@ sub theClauseHead ($;&) {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{parallel} =~ /^(?:Co|Ap)$/ and $main->{afun} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{parallel} =~ /^(?:Co|Ap)$/ and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
 
-                $main = $head unless $main and $main->{afun} =~ /^(?:Coord|Apos)$/;
+                $main = $head unless $main and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
             }
 
             if ($main->parent() and isPredicate($main->parent())) {
 
                 return $main->parent();
             }
-            elsif ($head->{afun} eq 'Pnom') {
+            elsif ($head->{'afun'} eq 'Pnom') {
 
                 return $head;
             }
@@ -774,7 +773,7 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{afun} eq 'Atr' and $_[0]->{tag} =~ /^A/
+            return $_[0] if $_[0]->{'afun'} eq 'Atr' and $_[0]->{'m'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -784,7 +783,7 @@ sub referring_Ref {
 
         my $ante = $head;
 
-        $ante = $ante->following($head) while $ante and $ante->{afun} ne 'Ante' and $ante != $this;
+        $ante = $ante->following($head) while $ante and $ante->{'afun'} ne 'Ante' and $ante != $this;
 
         unless ($ante) {
 
@@ -792,7 +791,7 @@ sub referring_Ref {
 
             $ante = $head;
 
-            $ante = $ante->following($head) while $ante and $ante->{afun} ne 'Ante' and $ante != $this;
+            $ante = $ante->following($head) while $ante and $ante->{'afun'} ne 'Ante' and $ante != $this;
         }
 
         $ante = $ante->parent() while $ante and $ante->{parallel} =~ /^(?:Co|Ap)$/;
@@ -822,9 +821,9 @@ sub referring_Msd {
 
     my $head = $this->parent();                                     # the token itself might feature the critical tags
 
-    $head = $head->parent() if $this->{afun} eq 'Atr';                      # constructs like <_hAfa 'a^sadda _hawfiN>
+    $head = $head->parent() if $this->{'afun'} eq 'Atr';                            # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or $head->{tag} =~ /^[VNA]/;    # the verb, governing masdar or participle
+    $head = $head->parent() until not $head or $head->{'m'}{'tag'} =~ /^[VNA]/;     # the verb, governing masdar or participle
 
     return $head;
 }
@@ -1543,7 +1542,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2008 by Otakar Smrz
+Copyright 2004-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

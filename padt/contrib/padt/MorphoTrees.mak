@@ -10,10 +10,16 @@ use 5.008;
 
 use strict;
 
+use ElixirFM;
+
+use Exec::ElixirFM;
+
+use Encode::Arabic ':modes';
+
 use File::Spec;
 use File::Copy;
 
-our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
 #
@@ -43,15 +49,17 @@ style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :
              $this->{score} > 0 ? '#{Line-fill:orange}' :
                  defined $this->{apply} ? '#{Line-fill:black}' : '' ?>
 
-node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Form|Paragraph)$/
+node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
                                       and $this->{comment} ne ''
-   ?><? $this->{'#name'} =~ /^(?:Token|Form|Partition)$/
-            ? ( '${form}' )
+   ?><? $this->{'#name'} =~ /^(?:Component|Token|Partition)$/
+            ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
-                ? ( '#{purple}${gloss} #{gray}${idx} #{darkmagenta}${form}' )
+                ? ( '#{purple}' . ( join ", ", @{$this->{'core'}{'reflex'}} ) . ' ' .
+                    '#{gray}${idx} #{darkmagenta}' .
+                    ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
                 : (
-                $this->{'#name'} =~ /^(?:Entity|Paragraph)$/
+                $this->{'#name'} =~ /^(?:Element|Paragraph)$/
                     ? ( $this->{apply} > 0
                         ? '#{black}${idx} #{gray}${lookup} #{red}${input}'
                         : '#{black}${idx} #{gray}${lookup} #{black}${input}'
@@ -61,12 +69,12 @@ node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Form|Paragraph)$/
                         : '  #{black}${input}'
                     ) ) ) ?>
 
-node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Form'
+node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Token'
                                         and $this->{comment} ne ''
    ?>#{darkred}${tag}<? $this->{inherit} eq '' ? '#{red}' : '#{orange}'
    ?>${restrict}
 
-hint:<? '${gloss}' if $this->{'#name'} eq 'Form' ?>
+hint:<? '${gloss}' if $this->{'#name'} eq 'Token' ?>
 >>
 }
 
@@ -192,7 +200,7 @@ sub get_value_line_hook {
                             [ " " ],
                             [ $_->{'input'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
 
-                        } grep { $_->{'#name'} eq 'Entity' } @{$nodes} ];
+                        } grep { $_->{'#name'} eq 'Element' } @{$nodes} ];
     }
 
     @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
@@ -202,7 +210,7 @@ sub get_value_line_hook {
 
 sub highlight_value_line_tag_hook {
 
-    return $grp->{root} if $grp->{root}->{'#name'} eq 'Entity';
+    return $grp->{root} if $grp->{root}->{'#name'} eq 'Element';
 
     my $node = $grp->{currentNode};
 
@@ -707,7 +715,7 @@ sub edit_comment {
         return;
     }
 
-    my $switch = $this->{'#name'} eq 'Form' || $this->{'#name'} eq 'Lexeme';
+    my $switch = $this->{'#name'} eq 'Token' || $this->{'#name'} eq 'Lexeme';
 
     if ($switch and not $this->{'apply'} > 0) {
 
@@ -738,6 +746,114 @@ sub edit_comment {
     switch_either_context() if $switch;
 
     $this->{$comment} = $value if defined $value;
+}
+
+# ##################################################################################################
+#
+# ##################################################################################################
+
+#bind elixir_resolve to Ctrl+r menu ElixirFM Resolve
+
+sub elixir_resolve {
+
+    if ($root->{'#name'} eq 'Paragraph') {
+
+        my $reply = Exec::ElixirFM::elixir 'resolve', join " ", map { $_->{'input'} } $root->children();
+
+        foreach (ElixirFM::unpretty($reply, 'resolve')) {
+
+            NextTree();
+
+            morphotrees($root, $_);
+        }
+    }
+    else {
+
+        my $reply = Exec::ElixirFM::elixir 'resolve', $root->{'input'};
+
+        foreach (ElixirFM::unpretty($reply, 'resolve')) {
+
+            morphotrees($root, $_);
+        }
+    }
+}
+
+sub morphotrees {
+
+    my ($done, $data) = @_;
+
+    foreach (reverse @{$data->{'node'}}) {
+
+        my $node = NewSon($done);
+
+        DetermineNodeType($node);
+
+        my $done = $node;
+
+        foreach (reverse @{$_->{'node'}}) {
+
+            my $node = NewSon($done);
+
+            DetermineNodeType($node);
+
+            my @form = ();
+
+            my $done = $node;
+
+            foreach (reverse @{$_->{'node'}}) {
+
+                my $node = NewSon($done);
+
+                DetermineNodeType($node);
+
+                $node->{'root'} = substr $_->{'data'}{'info'}[5], 1, -1;
+
+                $node->{'core'} = new Fslib::Struct;
+
+                $node->{'core'}{'morphs'} = $_->{'data'}{'info'}[6];
+
+                $node->{'core'}{'reflex'} = new Fslib::List @{eval $_->{'data'}{'info'}[2]};
+
+                my $data = ElixirFM::parse($_->{'data'}{'info'}[1]);
+
+                foreach ('plural', 'femini', 'form', 'pfirst', 'imperf', 'second', 'masdar') {
+
+                    next unless exists $data->[1]{$_};
+
+                    $data->[1]{$_} = [ ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_} ];
+                }
+
+                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element ($data->[0], new Fslib::Struct ($data->[1]))];
+
+                $node->{'form'} = $_->{'data'}{'info'}[4];
+
+                my $done = $node;
+
+                foreach (reverse @{$_->{'node'}}) {
+
+                    my $node = NewSon($done);
+
+                    DetermineNodeType($node);
+
+                    $node->{'tag'} = $_->{'data'}{'info'}[0];
+
+                    $node->{'form'} = $_->{'data'}{'info'}[1];
+
+                    $node->{'morphs'} = $_->{'data'}{'info'}[3];
+
+                    unshift @form, $node->{'form'};
+                }
+            }
+
+            demode "arabtex", "noneplus";
+
+            $node->{'form'} = join " ", ElixirFM::nub { $_[0] } sort map { decode "arabtex", $_ } @form;
+
+            demode "arabtex", "default";
+        }
+
+        $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
+    }
 }
 
 # ##################################################################################################
@@ -784,7 +900,7 @@ sub annotate_morphology {
 
     unless (@children) {
 
-        if ($node->{'#name'} eq 'Form') {
+        if ($node->{'#name'} eq 'Token') {
 
             $diff = $node->{'apply'} == 0 ? 1 : $node == $this ? -1 : 0;
 
@@ -1021,14 +1137,14 @@ sub restrict_hide {
 
     ChangingFile(0);
 
-    return unless $root->{'#name'} eq 'Entity';
+    return unless $root->{'#name'} eq 'Element';
 
     $Redraw = 'tree';   # be careful in annotate_morphology()
     ChangingFile(1);
 
     my ($restrict, $context) = @_;
 
-    my $node = $this->{'#name'} eq 'Form' ? $this->parent() : $this;
+    my $node = $this->{'#name'} eq 'Token' ? $this->parent() : $this;
     my $roof = $node;
 
     my (@tips, %tips, $orig, $diff);
@@ -1077,7 +1193,7 @@ sub restrict_hide {
             $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
         }
 
-        if ($node->{'#name'} eq 'Form') {
+        if ($node->{'#name'} eq 'Token') {
 
             if (restrict($node->{'inherit'}, $node->{'tag'}) ne $node->{'tag'}) {
 
@@ -1614,7 +1730,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2008 by Otakar Smrz
+Copyright 2004-2009 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
