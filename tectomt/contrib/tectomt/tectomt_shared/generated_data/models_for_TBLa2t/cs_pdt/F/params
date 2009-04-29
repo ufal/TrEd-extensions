@@ -1,0 +1,6 @@
+MAIN                  = /net/projects/tectomt_shared/generated_data/models_for_TBLa2t/cs_pdt/F;
+FILE_TEMPLATE         = ${MAIN}/feat;
+RULE_TEMPLATES        = ${MAIN}/templX;
+EMPTY_LINES_ARE_SEPARATORS = 0;
+
+ORDER_BASED_ON_SIZE = 1;

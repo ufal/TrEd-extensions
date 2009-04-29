@@ -1,0 +1,2034 @@
+#train_voc_file: /net/projects/tectomt_shared/generated_data/models_for_TBLa2t/cs_pdt/F/t.voc
+GOOD:2003 BAD:342 SCORE:1661 RULE: pos=N ppos=N mr=N2 => func=APP
+GOOD:920 BAD:258 SCORE:662 RULE: pos=N mr=v+N6 => func=LOC
+GOOD:414 BAD:0 SCORE:414 RULE: pos=C pafun=Atr pvoi=- => func=RSTR
+GOOD:446 BAD:99 SCORE:347 RULE: afun=Adv spos=g => func=MANN
+GOOD:302 BAD:0 SCORE:302 RULE: spos=S => func=APP
+GOOD:310 BAD:8 SCORE:302 RULE: cas=1 pspos=s => func=PAT
+GOOD:352 BAD:55 SCORE:297 RULE: pos=N mr=z+N2 => func=DIR1
+GOOD:277 BAD:5 SCORE:272 RULE: pos=N mr=do+N2 => func=DIR3
+GOOD:236 BAD:0 SCORE:236 RULE: afun=Coord ch=0 => func=PREC
+GOOD:267 BAD:49 SCORE:218 RULE: pos=N mr=na+N6 => func=LOC
+GOOD:199 BAD:0 SCORE:199 RULE: lemma=svůj => func=APP
+GOOD:207 BAD:10 SCORE:197 RULE: afun=ExD cas=- func=ACT => func=TWHEN
+GOOD:181 BAD:4 SCORE:177 RULE: pos=N mr=pro+N4 => func=BEN
+GOOD:246 BAD:81 SCORE:165 RULE: pos=N cas=4 func=RSTR => func=PAT
+GOOD:158 BAD:0 SCORE:158 RULE: pos=N mr=podle+N2 => func=CRIT
+GOOD:151 BAD:9 SCORE:142 RULE: pos=N mr=o+N6 => func=PAT
+GOOD:264 BAD:128 SCORE:136 RULE: cas=3 ppos=V pch=2 => func=ADDR
+GOOD:130 BAD:3 SCORE:127 RULE: afun=Adv mr=N7 => func=MEANS
+GOOD:122 BAD:3 SCORE:119 RULE: afun=Adv cas=3 => func=BEN
+GOOD:116 BAD:0 SCORE:116 RULE: lemma=ale ch=2 => func=ADVS
+GOOD:122 BAD:7 SCORE:115 RULE: pos=N ppos=N mr=s+N7 => func=ACMP
+GOOD:116 BAD:6 SCORE:110 RULE: spos=b pvoi=- pch=0 => func=EXT
+GOOD:106 BAD:0 SCORE:106 RULE: lemma=rok func=LOC => func=TWHEN
+GOOD:98 BAD:0 SCORE:98 RULE: ppos=V func=RSTR => func=PAT
+GOOD:98 BAD:0 SCORE:98 RULE: afun=Adv mr=s+N7 => func=ACMP
+GOOD:97 BAD:3 SCORE:94 RULE: pos=N mr=k+N3 => func=PAT
+GOOD:108 BAD:14 SCORE:94 RULE: cas=1 plemma=###### pch=0 => func=ID
+GOOD:143 BAD:52 SCORE:91 RULE: afun=Adv spos=b ppos=V => func=TWHEN
+GOOD:102 BAD:16 SCORE:86 RULE: spos=f ppos=N => func=PAT
+GOOD:136 BAD:52 SCORE:84 RULE: afun=Atr pafun=Atr mr=N => func=APP
+GOOD:81 BAD:2 SCORE:79 RULE: plemma=říci func=PAT => func=EFF
+GOOD:88 BAD:12 SCORE:76 RULE: lemma=nebo ch=2 => func=DISJ
+GOOD:80 BAD:5 SCORE:75 RULE: pos=N mr=u+N2 => func=LOC
+GOOD:90 BAD:19 SCORE:71 RULE: afun=Coord mr=C => func=OPER
+GOOD:71 BAD:0 SCORE:71 RULE: pos=N ppos=N mr=N4 => func=RSTR
+GOOD:71 BAD:2 SCORE:69 RULE: pos=N plemma=milión => func=MAT
+GOOD:112 BAD:45 SCORE:67 RULE: afun=Adv pos=V ppos=V => func=COND
+GOOD:62 BAD:0 SCORE:62 RULE: afun=Adv mr=od+N2 => func=TSIN
+GOOD:60 BAD:0 SCORE:60 RULE: lemma=jak ppos=V => func=MANN
+GOOD:58 BAD:2 SCORE:56 RULE: pos=N plemma=počet => func=MAT
+GOOD:69 BAD:13 SCORE:56 RULE: pos=N pspos=s mr=N7 => func=ACT
+GOOD:84 BAD:29 SCORE:55 RULE: afun=Obj cas=- ppos=N => func=RSTR
+GOOD:69 BAD:11 SCORE:58 RULE: pos=V ppos=N mr=že+V => func=PAT
+GOOD:59 BAD:5 SCORE:54 RULE: pafun=Adv mr=N1 func=RSTR => func=ID
+GOOD:54 BAD:0 SCORE:54 RULE: afun=AuxZ ppos=N pch=0 => func=CM
+GOOD:59 BAD:6 SCORE:53 RULE: afun=Adv mr=na+N4 => func=DIR3
+GOOD:53 BAD:0 SCORE:53 RULE: pvoi=- pch=0 func=RHEM => func=EXT
+GOOD:55 BAD:3 SCORE:52 RULE: afun=Atr pafun=Obj mr=N1 => func=ID
+GOOD:50 BAD:0 SCORE:50 RULE: lemma=kde => func=LOC
+GOOD:50 BAD:0 SCORE:50 RULE: lemma=také afun=Adv => func=RHEM
+GOOD:51 BAD:2 SCORE:49 RULE: afun=Obj cas=6 => func=PAT
+GOOD:50 BAD:3 SCORE:47 RULE: pos=P func=TWHEN => func=LOC
+GOOD:49 BAD:3 SCORE:46 RULE: afun=Obj cas=2 => func=PAT
+GOOD:46 BAD:0 SCORE:46 RULE: pos=V mr=protože+V => func=CAUS
+GOOD:47 BAD:1 SCORE:46 RULE: afun=Atr mr=mezi+N7 => func=ACT
+GOOD:48 BAD:2 SCORE:46 RULE: pos=N mr=bez+N2 => func=ACMP
+GOOD:91 BAD:45 SCORE:46 RULE: cas=4 ch=2 plemma=mít => func=CPHR
+GOOD:45 BAD:0 SCORE:45 RULE: ppos=V mr=podle+P2 => func=CRIT
+GOOD:45 BAD:0 SCORE:45 RULE: afun=Adv mr=aby+V => func=AIM
+GOOD:203 BAD:158 SCORE:45 RULE: pch=2 mr=N2 func=APP => func=PAT
+GOOD:45 BAD:0 SCORE:45 RULE: pos=V pvoi=- mr=než+V => func=CPR
+GOOD:50 BAD:6 SCORE:44 RULE: plemma=jít func=PAT => func=ACT
+GOOD:42 BAD:0 SCORE:42 RULE: afun=Atr mr=o+N2 => func=DIFF
+GOOD:60 BAD:18 SCORE:42 RULE: cas=- ch=0 pch=-1 => func=CM
+GOOD:55 BAD:13 SCORE:42 RULE: pos=N pspos=A mr=N7 => func=ACT
+GOOD:42 BAD:1 SCORE:41 RULE: pos=N plemma=miliarda => func=MAT
+GOOD:41 BAD:2 SCORE:39 RULE: mr=z+P2 => func=DIR1
+GOOD:39 BAD:0 SCORE:39 RULE: afun=AuxY pos=T ppos=V => func=MOD
+GOOD:39 BAD:1 SCORE:38 RULE: pos=N mr=v+N => func=LOC
+GOOD:37 BAD:0 SCORE:37 RULE: lemma=doba cas=6 => func=TWHEN
+GOOD:37 BAD:0 SCORE:37 RULE: pos=V plemma=uvést func=PAT => func=EFF
+GOOD:36 BAD:0 SCORE:36 RULE: pos=V plemma=říkat => func=EFF
+GOOD:57 BAD:22 SCORE:35 RULE: lemma=už => func=RHEM
+GOOD:35 BAD:1 SCORE:34 RULE: pos=V plemma=###### pch=1 => func=EFF
+GOOD:33 BAD:0 SCORE:33 RULE: lemma=brzy => func=TWHEN
+GOOD:35 BAD:2 SCORE:33 RULE: mr=jako+V => func=CPR
+GOOD:34 BAD:1 SCORE:33 RULE: pos=N mr=při+N6 => func=TWHEN
+GOOD:33 BAD:0 SCORE:33 RULE: pos=A ppos=N => func=RSTR
+GOOD:34 BAD:1 SCORE:33 RULE: pos=N plemma=tisíc => func=MAT
+GOOD:33 BAD:0 SCORE:33 RULE: plemma=společnost mr=N1 => func=ID
+GOOD:39 BAD:7 SCORE:32 RULE: pos=N mr=po+N6 => func=TWHEN
+GOOD:31 BAD:0 SCORE:31 RULE: lemma=tady => func=LOC
+GOOD:33 BAD:2 SCORE:31 RULE: plemma=tvrdit func=PAT => func=EFF
+GOOD:31 BAD:0 SCORE:31 RULE: lemma=však ch=2 => func=ADVS
+GOOD:32 BAD:1 SCORE:31 RULE: afun=ExD pos=N func=RSTR => func=PAR
+GOOD:39 BAD:8 SCORE:31 RULE: pafun=Obj mr=N func=RSTR => func=APP
+GOOD:31 BAD:1 SCORE:30 RULE: mr=před+N7 => func=TWHEN
+GOOD:30 BAD:0 SCORE:30 RULE: lemma=dosud => func=TTILL
+GOOD:30 BAD:0 SCORE:30 RULE: lemma=stále => func=THL
+GOOD:30 BAD:0 SCORE:30 RULE: lemma=tak func=TWHEN => func=MANN
+GOOD:29 BAD:0 SCORE:29 RULE: lemma=navíc ppos=V => func=PREC
+GOOD:29 BAD:0 SCORE:29 RULE: lemma=hodně afun=Adv => func=EXT
+GOOD:30 BAD:1 SCORE:29 RULE: afun=Adv pvoi=A mr=C => func=EXT
+GOOD:29 BAD:1 SCORE:28 RULE: spos=v ppos=V => func=THO
+GOOD:40 BAD:12 SCORE:28 RULE: pos=N ppos=V mr=za+N4 => func=EFF
+GOOD:27 BAD:0 SCORE:27 RULE: lemma=neboť => func=REAS
+GOOD:27 BAD:0 SCORE:27 RULE: lemma=jenž func=RSTR => func=APP
+GOOD:62 BAD:35 SCORE:27 RULE: afun=Atr spos=U ch=0 => func=APP
+GOOD:27 BAD:1 SCORE:26 RULE: cas=4 func=LOC => func=TWHEN
+GOOD:27 BAD:1 SCORE:26 RULE: pos=P mr=pro+P4 => func=BEN
+GOOD:26 BAD:0 SCORE:26 RULE: pos=N mr=včetně+N2 => func=ACMP
+GOOD:27 BAD:1 SCORE:26 RULE: afun=Adv pspos=p mr=když+V => func=TWHEN
+GOOD:30 BAD:5 SCORE:25 RULE: lemma=již => func=RHEM
+GOOD:25 BAD:0 SCORE:25 RULE: lemma=zde => func=LOC
+GOOD:26 BAD:1 SCORE:25 RULE: lemma=sice => func=CM
+GOOD:25 BAD:0 SCORE:25 RULE: pos=N plemma=většina => func=MAT
+GOOD:25 BAD:0 SCORE:25 RULE: afun=Apos ch=0 => func=CM
+GOOD:25 BAD:0 SCORE:25 RULE: afun=Atr plemma=řada mr=N2 => func=MAT
+GOOD:25 BAD:1 SCORE:24 RULE: pos=V plemma=- => func=PRED
+GOOD:24 BAD:0 SCORE:24 RULE: afun=AuxY spos=g => func=MOD
+GOOD:24 BAD:0 SCORE:24 RULE: pos=V plemma=prohlásit => func=EFF
+GOOD:24 BAD:0 SCORE:24 RULE: afun=Obj plemma=dojít => func=ACT
+GOOD:37 BAD:14 SCORE:23 RULE: afun=Atr plemma=být pspos=B => func=ACT
+GOOD:22 BAD:0 SCORE:22 RULE: lemma=rovněž afun=Adv => func=RHEM
+GOOD:22 BAD:0 SCORE:22 RULE: afun=Obj mr=za+A4 => func=EFF
+GOOD:22 BAD:1 SCORE:21 RULE: pos=V mr=i+když+V => func=CNCS
+GOOD:21 BAD:0 SCORE:21 RULE: afun=Adv ppos=V mr=P7 => func=MEANS
+GOOD:22 BAD:1 SCORE:21 RULE: pos=N plemma=firma func=RSTR => func=ID
+GOOD:20 BAD:0 SCORE:20 RULE: mr=o+Z => func=DIFF
+GOOD:19 BAD:0 SCORE:19 RULE: lemma=pozdě => func=TWHEN
+GOOD:19 BAD:0 SCORE:19 RULE: lemma=nadále => func=THL
+GOOD:20 BAD:1 SCORE:19 RULE: lemma=den afun=Adv => func=TWHEN
+GOOD:19 BAD:0 SCORE:19 RULE: pos=V mr=zatímco+V => func=CONTRD
+GOOD:24 BAD:5 SCORE:19 RULE: cas=X ch=0 plemma=###### => func=FPHR
+GOOD:39 BAD:20 SCORE:19 RULE: afun=Adv cas=3 func=PAT => func=AIM
+GOOD:18 BAD:0 SCORE:18 RULE: mr=během+N2 => func=TPAR
+GOOD:18 BAD:0 SCORE:18 RULE: lemma=často => func=THO
+GOOD:18 BAD:0 SCORE:18 RULE: lemma=dlouho => func=THL
+GOOD:18 BAD:0 SCORE:18 RULE: lemma=proč => func=CAUS
+GOOD:18 BAD:0 SCORE:18 RULE: lemma=například ppos=V => func=RHEM
+GOOD:18 BAD:0 SCORE:18 RULE: pos=N mr=rámec+v+N2 => func=REG
+GOOD:18 BAD:0 SCORE:18 RULE: pos=N plemma=možnost => func=PAT
+GOOD:19 BAD:1 SCORE:18 RULE: plemma=procento mr=N2 => func=MAT
+GOOD:19 BAD:1 SCORE:18 RULE: plemma=sdělit func=PAT => func=EFF
+GOOD:18 BAD:0 SCORE:18 RULE: pos=N mr=z+N => func=DIR1
+GOOD:18 BAD:0 SCORE:18 RULE: lemma=třeba afun=Pnom => func=CPHR
+GOOD:18 BAD:0 SCORE:18 RULE: ch=2 func=PREC => func=APPS
+GOOD:18 BAD:0 SCORE:18 RULE: plemma=vývoj func=APP => func=ACT
+GOOD:17 BAD:0 SCORE:17 RULE: lemma=tam => func=LOC
+GOOD:17 BAD:0 SCORE:17 RULE: lemma=milión func=APP => func=RSTR
+GOOD:23 BAD:6 SCORE:17 RULE: plemma=část func=APP => func=MAT
+GOOD:17 BAD:0 SCORE:17 RULE: afun=Atr plemma=činit => func=EXT
+GOOD:18 BAD:1 SCORE:17 RULE: cas=X ch=2 func=RSTR => func=APP
+GOOD:17 BAD:0 SCORE:17 RULE: afun=Atr plemma=jednání mr=N2 => func=ACT
+GOOD:16 BAD:0 SCORE:16 RULE: afun=Adv mr=vedle+N2 => func=RESTR
+GOOD:16 BAD:0 SCORE:16 RULE: pos=N mr=kromě+N2 => func=RESTR
+GOOD:16 BAD:0 SCORE:16 RULE: afun=Sb plemma=podařit => func=PAT
+GOOD:16 BAD:0 SCORE:16 RULE: afun=Adv mr=na+základ+N2 => func=CRIT
+GOOD:16 BAD:0 SCORE:16 RULE: afun=Adv mr=díky+N3 => func=CAUS
+GOOD:16 BAD:0 SCORE:16 RULE: afun=Adv mr=že+V => func=CAUS
+GOOD:16 BAD:0 SCORE:16 RULE: cas=2 plemma=rozhodnutí => func=ACT
+GOOD:18 BAD:2 SCORE:16 RULE: afun=Atr cas=1 ppos=V => func=ACT
+GOOD:15 BAD:0 SCORE:15 RULE: lemma=spíše => func=RHEM
+GOOD:19 BAD:4 SCORE:15 RULE: lemma=přitom => func=PREC
+GOOD:15 BAD:0 SCORE:15 RULE: lemma=vůbec => func=EXT
+GOOD:15 BAD:0 SCORE:15 RULE: lemma=skutečně => func=ATT
+GOOD:16 BAD:1 SCORE:15 RULE: lemma=dále afun=Adv => func=THL
+GOOD:15 BAD:0 SCORE:15 RULE: afun=Adv mr=o+N4 => func=DIFF
+GOOD:15 BAD:0 SCORE:15 RULE: afun=Obj plemma=podařit => func=ACT
+GOOD:22 BAD:7 SCORE:15 RULE: afun=ExD cas=4 func=ACT => func=PAT
+GOOD:14 BAD:0 SCORE:14 RULE: lemma=kam => func=DIR3
+GOOD:14 BAD:0 SCORE:14 RULE: mr=než+N2 => func=CPR
+GOOD:14 BAD:0 SCORE:14 RULE: lemma=vlastně => func=ATT
+GOOD:17 BAD:3 SCORE:14 RULE: lemma=takzvaný => func=ATT
+GOOD:14 BAD:0 SCORE:14 RULE: pos=N mr=vůči+N3 => func=REG
+GOOD:14 BAD:0 SCORE:14 RULE: plemma=- mr=Z => func=PRED
+GOOD:14 BAD:0 SCORE:14 RULE: lemma=naopak afun=Adv => func=PREC
+GOOD:14 BAD:0 SCORE:14 RULE: ch=0 func=APPS => func=PREC
+GOOD:14 BAD:0 SCORE:14 RULE: afun=Sb plemma=zdát => func=PAT
+GOOD:14 BAD:0 SCORE:14 RULE: afun=Atr plemma=prodej => func=PAT
+GOOD:14 BAD:0 SCORE:14 RULE: pos=N plemma=revize => func=PAT
+GOOD:17 BAD:3 SCORE:14 RULE: pos=N plemma=představitel => func=PAT
+GOOD:14 BAD:0 SCORE:14 RULE: lemma=až afun=Coord => func=OPER
+GOOD:15 BAD:1 SCORE:14 RULE: pos=V plemma=konstatovat => func=EFF
+GOOD:14 BAD:0 SCORE:14 RULE: pos=N mr=do+N => func=DIR3
+GOOD:14 BAD:0 SCORE:14 RULE: ppos=N func=PREC => func=CM
+GOOD:15 BAD:1 SCORE:14 RULE: lemma=důvod cas=2 => func=CAUS
+GOOD:15 BAD:1 SCORE:14 RULE: pos=N plemma=růst => func=ACT
+GOOD:14 BAD:0 SCORE:14 RULE: pos=N ppos=C func=RSTR => func=MAT
+GOOD:17 BAD:3 SCORE:14 RULE: afun=ExD cas=1 pvoi=A => func=ACT
+GOOD:13 BAD:0 SCORE:13 RULE: lemma=samozřejmě => func=ATT
+GOOD:13 BAD:0 SCORE:13 RULE: lemma=přece => func=ATT
+GOOD:14 BAD:1 SCORE:13 RULE: lemma=procento func=APP => func=RSTR
+GOOD:13 BAD:0 SCORE:13 RULE: afun=Sb ppos=N => func=RSTR
+GOOD:13 BAD:0 SCORE:13 RULE: plemma=změna func=APP => func=PAT
+GOOD:13 BAD:0 SCORE:13 RULE: afun=Adv mr=mezi+N7 => func=LOC
+GOOD:13 BAD:0 SCORE:13 RULE: pos=V plemma=dodat => func=EFF
+GOOD:13 BAD:0 SCORE:13 RULE: lemma=ČR func=RSTR => func=APP
+GOOD:13 BAD:0 SCORE:13 RULE: plemma=návrh func=APP => func=ACT
+GOOD:13 BAD:0 SCORE:13 RULE: afun=ExD cas=7 func=ACT => func=MEANS
+GOOD:12 BAD:0 SCORE:12 RULE: mr=mimo+A4 => func=RESTR
+GOOD:12 BAD:0 SCORE:12 RULE: lemma=možná => func=MOD
+GOOD:13 BAD:1 SCORE:12 RULE: lemma=snad => func=MOD
+GOOD:12 BAD:0 SCORE:12 RULE: lemma=doma => func=LOC
+GOOD:12 BAD:0 SCORE:12 RULE: lemma=minuta cas=6 => func=TWHEN
+GOOD:13 BAD:1 SCORE:12 RULE: lemma=rok mr=do+N2 => func=TTILL
+GOOD:12 BAD:0 SCORE:12 RULE: plemma=majitel func=APP => func=PAT
+GOOD:12 BAD:0 SCORE:12 RULE: pos=N plemma=% => func=MAT
+GOOD:18 BAD:6 SCORE:12 RULE: pch=0 func=FPHR => func=ID
+GOOD:20 BAD:8 SCORE:12 RULE: pspos=B func=ADVS => func=GRAD
+GOOD:12 BAD:0 SCORE:12 RULE: mr=V func=TWHEN => func=EFF
+GOOD:12 BAD:0 SCORE:12 RULE: plemma=dílo func=APP => func=AUTH
+GOOD:12 BAD:0 SCORE:12 RULE: lemma=avšak ch=2 => func=ADVS
+GOOD:12 BAD:0 SCORE:12 RULE: pos=N ppos=N mr=proti+N3 => func=PAT
+GOOD:13 BAD:1 SCORE:12 RULE: afun=Atr pos=N plemma=město => func=ID
+GOOD:14 BAD:2 SCORE:12 RULE: afun=Adv pch=2 mr=za+N4 => func=CAUS
+GOOD:12 BAD:0 SCORE:12 RULE: lemma=LN afun=Obj pch=2 => func=ADDR
+GOOD:11 BAD:0 SCORE:11 RULE: lemma=většinou => func=EXT
+GOOD:11 BAD:0 SCORE:11 RULE: lemma=současně ppos=V => func=TWHEN
+GOOD:12 BAD:1 SCORE:11 RULE: spos=b func=PAT => func=TWHEN
+GOOD:17 BAD:6 SCORE:11 RULE: pos=A cas=6 => func=RSTR
+GOOD:11 BAD:0 SCORE:11 RULE: pos=N plemma=ochrana => func=PAT
+GOOD:12 BAD:1 SCORE:11 RULE: pos=N plemma=důvod => func=PAT
+GOOD:12 BAD:1 SCORE:11 RULE: ch=0 mr=k+P3 => func=PAT
+GOOD:11 BAD:0 SCORE:11 RULE: plemma=trenér func=APP => func=PAT
+GOOD:11 BAD:0 SCORE:11 RULE: plemma=podpora func=APP => func=PAT
+GOOD:11 BAD:0 SCORE:11 RULE: afun=Atr mr=oblast+v+N2 => func=LOC
+GOOD:11 BAD:0 SCORE:11 RULE: pos=N mr=mezi+N4 => func=DIR3
+GOOD:11 BAD:0 SCORE:11 RULE: pos=P func=TWHEN => func=DIR3
+GOOD:11 BAD:0 SCORE:11 RULE: pos=N mr=pro+N => func=BEN
+GOOD:11 BAD:0 SCORE:11 RULE: cas=7 plemma=jednání => func=ADDR
+GOOD:11 BAD:0 SCORE:11 RULE: cas=2 plemma=účast => func=ACT
+GOOD:11 BAD:0 SCORE:11 RULE: plemma=projev func=APP => func=ACT
+GOOD:14 BAD:3 SCORE:11 RULE: plemma=názor func=APP => func=ACT
+GOOD:11 BAD:0 SCORE:11 RULE: afun=Adv mr=s+P7 => func=ACMP
+GOOD:14 BAD:3 SCORE:11 RULE: pos=C plemma=být func=ACT => func=PAT
+GOOD:11 BAD:0 SCORE:11 RULE: pos=V ppos=N mr=aby+V => func=PAT
+GOOD:18 BAD:7 SCORE:11 RULE: cas=X ch=0 plemma=- => func=PAR
+GOOD:15 BAD:4 SCORE:11 RULE: pos=N pch=0 mr=mezi+N7 => func=LOC
+GOOD:25 BAD:14 SCORE:11 RULE: lemma=- afun=Coord mr=N1 => func=CONTRA
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=mj => func=RESTR
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=daleko => func=EXT
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=přičemž => func=CONJ
+GOOD:10 BAD:0 SCORE:10 RULE: mr=případ+v+N2 => func=COND
+GOOD:10 BAD:0 SCORE:10 RULE: mr=ačkoliv+V => func=CNCS
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=údajně => func=ATT
+GOOD:10 BAD:0 SCORE:10 RULE: afun=Atr mr=doba+v+N2 => func=TWHEN
+GOOD:12 BAD:2 SCORE:10 RULE: lemma=konec mr=do+N2 => func=TTILL
+GOOD:10 BAD:0 SCORE:10 RULE: pos=N mr=hledisko+z+N2 => func=REG
+GOOD:10 BAD:0 SCORE:10 RULE: pos=N plemma=novela => func=PAT
+GOOD:13 BAD:3 SCORE:10 RULE: plemma=zástupce func=APP => func=PAT
+GOOD:10 BAD:0 SCORE:10 RULE: plemma=nabídka func=APP => func=PAT
+GOOD:12 BAD:2 SCORE:10 RULE: afun=Atr mr=od+N2 => func=ORIG
+GOOD:11 BAD:1 SCORE:10 RULE: pos=N mr=za+N7 => func=LOC
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=málo afun=Adv => func=EXT
+GOOD:10 BAD:0 SCORE:10 RULE: spos== plemma=porážka => func=EXT
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=dispozice afun=Adv => func=DPHR
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=, afun=Coord => func=CONJ
+GOOD:10 BAD:0 SCORE:10 RULE: pos=N mr=jako+N1 => func=COMPL
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=proto afun=AuxY => func=CM
+GOOD:10 BAD:0 SCORE:10 RULE: cas=7 plemma=rozhovor => func=ADDR
+GOOD:10 BAD:0 SCORE:10 RULE: plemma=být func=ADDR => func=ACT
+GOOD:18 BAD:8 SCORE:10 RULE: lemma=rok afun=Atr func=PAT => func=THL
+GOOD:10 BAD:0 SCORE:10 RULE: lemma=výše afun=Atr mr=v+N6 => func=RSTR
+GOOD:11 BAD:1 SCORE:10 RULE: lemma=miliarda cas=2 ppos=N => func=RSTR
+GOOD:10 BAD:0 SCORE:10 RULE: pos=P ppos=V func=EXT => func=LOC
+GOOD:10 BAD:0 SCORE:10 RULE: pos=D ppos=A func=LOC => func=EXT
+GOOD:11 BAD:1 SCORE:10 RULE: afun=ExD pspos=f mr=N1 => func=ACT
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=současnost => func=TWHEN
+GOOD:9 BAD:0 SCORE:9 RULE: mr=co+V => func=TWHEN
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=Jan => func=RSTR
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=+ => func=OPER
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=krátce => func=MANN
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=rok mr=na+N4 => func=TFHL
+GOOD:14 BAD:5 SCORE:9 RULE: lemma=ještě afun=Adv => func=RHEM
+GOOD:9 BAD:0 SCORE:9 RULE: lemma=foto plemma=###### => func=PAT
+GOOD:9 BAD:0 SCORE:9 RULE: plemma=volba func=APP => func=PAT
+GOOD:9 BAD:0 SCORE:9 RULE: pos=N mr=prostřednictví+N2 => func=MEANS
+GOOD:11 BAD:2 SCORE:9 RULE: plemma=součást func=APP => func=MAT
+GOOD:10 BAD:1 SCORE:9 RULE: pos=V plemma=myslit => func=EFF
+GOOD:12 BAD:3 SCORE:9 RULE: pos=P func=EXT => func=DIFF
+GOOD:9 BAD:0 SCORE:9 RULE: cas=4 plemma=projevit => func=CPHR
+GOOD:9 BAD:0 SCORE:9 RULE: cas=7 plemma=utkání => func=ADDR
+GOOD:9 BAD:0 SCORE:9 RULE: plemma=nárůst func=APP => func=ACT
+GOOD:10 BAD:1 SCORE:9 RULE: spos=s ppos=N mr=V => func=RSTR
+GOOD:9 BAD:0 SCORE:9 RULE: pos=V ppos=D mr=že+V => func=RESL
+GOOD:12 BAD:3 SCORE:9 RULE: afun=Obj ch=1 mr=od+N2 => func=ORIG
+GOOD:12 BAD:3 SCORE:9 RULE: afun=Atr plemma=skupina mr=N2 => func=MAT
+GOOD:9 BAD:0 SCORE:9 RULE: pos=N plemma=slovo func=RSTR => func=ID
+GOOD:10 BAD:1 SCORE:9 RULE: pos=V plemma=uvádět pvoi=A => func=EFF
+GOOD:15 BAD:6 SCORE:9 RULE: afun=Adv ch=1 mr=za+N2 => func=COND
+GOOD:9 BAD:0 SCORE:9 RULE: afun=Atr plemma=rozvoj mr=N2 => func=ACT
+GOOD:9 BAD:1 SCORE:8 RULE: lemma=březen => func=TWHEN
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=poměrně => func=EXT
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=zhruba => func=EXT
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=zpět => func=DIR3
+GOOD:8 BAD:0 SCORE:8 RULE: mr=kvůli+N3 => func=CAUS
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=prostě => func=ATT
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=ostatně => func=ATT
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=září func=LOC => func=TWHEN
+GOOD:8 BAD:0 SCORE:8 RULE: mr=do+N2 func=TWHEN => func=TTILL
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=rok mr=z+N2 => func=TSIN
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Atr plemma=Klaus => func=RSTR
+GOOD:8 BAD:0 SCORE:8 RULE: pos=J func=MOD => func=PREC
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Atr plemma=zavedení => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: cas=7 plemma=kontakt => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: cas=6 plemma=podíl => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: ch=1 func=FPHR => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: plemma=výběr mr=N2 => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: pos=N plemma=pár => func=MAT
+GOOD:8 BAD:0 SCORE:8 RULE: cas=2 plemma=nedostatek => func=MAT
+GOOD:8 BAD:0 SCORE:8 RULE: cas=2 plemma=stovka => func=MAT
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Adv mr=na+N => func=LOC
+GOOD:10 BAD:2 SCORE:8 RULE: plemma=oznámit mr=že+V => func=EFF
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=možný spos=C => func=CPHR
+GOOD:8 BAD:0 SCORE:8 RULE: plemma=klást func=PAT => func=CPHR
+GOOD:11 BAD:3 SCORE:8 RULE: lemma=případ mr=v+N6 => func=COND
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Adv mr=přestože+V => func=CNCS
+GOOD:10 BAD:2 SCORE:8 RULE: lemma=tak func=PREC => func=CM
+GOOD:8 BAD:0 SCORE:8 RULE: pos=N mr=k+vzhledem+N3 => func=CAUS
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Obj plemma=spolupracovat => func=ADDR
+GOOD:10 BAD:2 SCORE:8 RULE: lemma=poslanec mr=N2 => func=ACT
+GOOD:8 BAD:0 SCORE:8 RULE: cas=4 plemma=jednat => func=ACT
+GOOD:8 BAD:0 SCORE:8 RULE: plemma=vyjádření func=APP => func=ACT
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=měsíc afun=Atr ppos=V => func=THL
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=doba afun=Adv cas=4 => func=TFHL
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=prezident pafun=Atr func=APP => func=RSTR
+GOOD:14 BAD:6 SCORE:8 RULE: lemma=smlouva cas=2 ppos=N => func=PAT
+GOOD:9 BAD:1 SCORE:8 RULE: ppos=V pch=1 func=AIM => func=PAT
+GOOD:10 BAD:2 SCORE:8 RULE: pch=1 mr=V func=COND => func=PAT
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Obj pos=V plemma=myslet => func=EFF
+GOOD:11 BAD:3 SCORE:8 RULE: pos=A plemma=mít pch=2 => func=EFF
+GOOD:8 BAD:0 SCORE:8 RULE: spos=b ppos=N pch=0 => func=CM
+GOOD:8 BAD:0 SCORE:8 RULE: pos=N plemma=###### mr=za+N4 => func=CAUS
+GOOD:8 BAD:0 SCORE:8 RULE: afun=Obj plemma=požádat mr=N4 => func=ADDR
+GOOD:8 BAD:0 SCORE:8 RULE: lemma=federace ch=0 pch=0 => func=ACT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=budoucno => func=TWHEN
+GOOD:7 BAD:0 SCORE:7 RULE: mr=průběh+v+N2 => func=TPAR
+GOOD:8 BAD:1 SCORE:7 RULE: lemma=sociálně => func=REG
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=DPH => func=PAT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=určitě => func=MOD
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=příliš => func=EXT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=najevo => func=DPHR
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=opravdu => func=ATT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=bohužel => func=ATT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=( => func=APPS
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=období cas=6 => func=TWHEN
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=červenec func=LOC => func=TWHEN
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=čas func=LOC => func=TWHEN
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=telefon afun=Atr => func=RSTR
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N plemma=bilance => func=RSTR
+GOOD:8 BAD:1 SCORE:7 RULE: mr=A1 func=FPHR => func=RSTR
+GOOD:7 BAD:0 SCORE:7 RULE: afun=Obj plemma=odpovídat => func=PAT
+GOOD:7 BAD:0 SCORE:7 RULE: afun=Atr plemma=nákup => func=PAT
+GOOD:7 BAD:0 SCORE:7 RULE: afun=Atr plemma=registrace => func=PAT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=asi func=RHEM => func=MOD
+GOOD:7 BAD:0 SCORE:7 RULE: afun=Atr plemma=spousta => func=MAT
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N plemma=množství => func=MAT
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N plemma=desítka => func=MAT
+GOOD:9 BAD:2 SCORE:7 RULE: lemma=způsob afun=Adv => func=MANN
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=jinak mr=D => func=MANN
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=Bohemia cas=X => func=ID
+GOOD:7 BAD:0 SCORE:7 RULE: cas=1 plemma=okres => func=ID
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=dost afun=Adv => func=EXT
+GOOD:7 BAD:0 SCORE:7 RULE: spos=g plemma=zvýšit => func=EXT
+GOOD:7 BAD:0 SCORE:7 RULE: pos=V plemma=dodávat => func=EFF
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=OSN afun=Atr => func=APP
+GOOD:9 BAD:2 SCORE:7 RULE: lemma=1994 pch=1 => func=APP
+GOOD:7 BAD:0 SCORE:7 RULE: cas=7 plemma=jednat => func=ADDR
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N plemma=pokles => func=ACT
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N mr=strana+z+N2 => func=ACT
+GOOD:10 BAD:3 SCORE:7 RULE: spos=f plemma=být => func=ACT
+GOOD:8 BAD:1 SCORE:7 RULE: plemma=vliv mr=N2 => func=ACT
+GOOD:9 BAD:2 SCORE:7 RULE: afun=Adv spos=^ ch=0 => func=PREC
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=právo ch=1 mr=N2 => func=PAT
+GOOD:8 BAD:1 SCORE:7 RULE: pos=N plemma=otázka pch=0 => func=PAT
+GOOD:7 BAD:0 SCORE:7 RULE: lemma=míra afun=Adv ch=1 => func=EXT
+GOOD:7 BAD:0 SCORE:7 RULE: pos=N pafun=ExD mr=N3 => func=ADDR
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=momentálně => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: spos=o => func=THO
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=spolu => func=MANN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=velmi => func=EXT
+GOOD:6 BAD:0 SCORE:6 RULE: mr=do+P2 => func=DIR3
+GOOD:6 BAD:0 SCORE:6 RULE: mr=oproti+N3 => func=CPR
+GOOD:6 BAD:0 SCORE:6 RULE: mr=než+N4 => func=CPR
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=zapotřebí => func=CPHR
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=tudíž => func=CM
+GOOD:6 BAD:0 SCORE:6 RULE: mr=pro+N2 => func=BEN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=nýbrž => func=ADVS
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=duben cas=6 => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=měsíc cas=6 => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=týden cas=6 => func=TWHEN
+GOOD:8 BAD:2 SCORE:6 RULE: lemma=včerejší pch=2 => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=srpen func=LOC => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=červen func=LOC => func=TWHEN
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N mr=místo+N2 => func=SUBS
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Atr plemma=Kotas => func=RSTR
+GOOD:7 BAD:1 SCORE:6 RULE: lemma=směr mr=v+N6 => func=REG
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=přesto afun=Adv => func=PREC
+GOOD:7 BAD:1 SCORE:6 RULE: lemma=situace afun=Atr => func=PAT
+GOOD:8 BAD:2 SCORE:6 RULE: lemma=dítě func=APP => func=PAT
+GOOD:7 BAD:1 SCORE:6 RULE: lemma=počet func=APP => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Obj plemma=vadit => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Obj plemma=chybět => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Atr plemma=dosažení => func=PAT
+GOOD:7 BAD:1 SCORE:6 RULE: afun=Atr plemma=vytvoření => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=V plemma=ukládat => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=rekonstrukce => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=příprava => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=spotřeba => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=privatizace => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: cas=7 plemma=setkání => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=účast mr=na+N6 => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=dovoz mr=N2 => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=zvýšení mr=N2 => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=výrobce mr=N2 => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=vyzvat func=AIM => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=vydání func=APP => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Atr plemma=půl => func=MAT
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=sto => func=MAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=AuxP pos=N => func=MANN
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N mr=forma+N2 => func=MANN
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=tolik ch=0 => func=EXT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=AuxZ plemma=milión => func=EXT
+GOOD:7 BAD:1 SCORE:6 RULE: lemma=ten plemma=uvést => func=EFF
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=zdát mr=V => func=EFF
+GOOD:6 BAD:0 SCORE:6 RULE: spos=f mr=kdyby+V => func=COND
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Adv mr=následek+N2 => func=CAUS
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N mr=důsledek+v+N2 => func=CAUS
+GOOD:6 BAD:0 SCORE:6 RULE: pos=A mr=pro+A4 => func=BEN
+GOOD:8 BAD:2 SCORE:6 RULE: plemma=kniha func=APP => func=AUTH
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=podstata cas=6 => func=ATT
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=FS afun=Atr => func=APP
+GOOD:6 BAD:0 SCORE:6 RULE: cas=4 plemma=vyzvat => func=ADDR
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=spolupráce func=ACMP => func=ADDR
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Atr plemma=skončení => func=ACT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Atr mr=mezi+N => func=ACT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=příchod func=APP => func=ACT
+GOOD:9 BAD:3 SCORE:6 RULE: plemma=práce func=APP => func=ACT
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=vztah func=ID => func=ACT
+GOOD:7 BAD:1 SCORE:6 RULE: lemma=ředitel pch=1 func=APP => func=RSTR
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=ten cas=2 func=LOC => func=RESTR
+GOOD:6 BAD:0 SCORE:6 RULE: afun=ExD pos=A plemma=být => func=PAT
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Obj cas=1 ppos=A => func=MANN
+GOOD:6 BAD:0 SCORE:6 RULE: ppos=V pch=-1 func=CM => func=MANN
+GOOD:6 BAD:0 SCORE:6 RULE: plemma=###### mr=V func=CPR => func=ID
+GOOD:7 BAD:1 SCORE:6 RULE: afun=Atr plemma=stát ppos=V => func=EXT
+GOOD:6 BAD:0 SCORE:6 RULE: lemma=ten plemma=být mr=na+P6 => func=DPHR
+GOOD:9 BAD:3 SCORE:6 RULE: plemma=dávat pch=2 mr=N4 => func=CPHR
+GOOD:9 BAD:3 SCORE:6 RULE: pos=Z plemma=- mr=V => func=CONJ
+GOOD:6 BAD:0 SCORE:6 RULE: ch=0 plemma=slovník func=APP => func=AUTH
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N cas=4 plemma=úvěr => func=AIM
+GOOD:6 BAD:0 SCORE:6 RULE: pos=N plemma=mít mr=na+N4 => func=AIM
+GOOD:6 BAD:0 SCORE:6 RULE: afun=Obj cas=4 plemma=informovat => func=ADDR
+GOOD:7 BAD:1 SCORE:6 RULE: pos=A pafun=Adv func=APP => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=původně => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=okamžitě => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: mr=v+N2 => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=každoročně => func=THO
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=měsíčně => func=THO
+GOOD:6 BAD:1 SCORE:5 RULE: lemma=ročně => func=THL
+GOOD:6 BAD:1 SCORE:5 RULE: lemma=právě => func=RHEM
+GOOD:6 BAD:1 SCORE:5 RULE: lemma=zase => func=PREC
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=jistě => func=MOD
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=takto => func=MANN
+GOOD:5 BAD:0 SCORE:5 RULE: mr=mimo+N4 => func=LOC
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=HIV => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=dostatečně => func=EXT
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=sem => func=DIR3
+GOOD:5 BAD:0 SCORE:5 RULE: mr=podle+N => func=CRIT
+GOOD:6 BAD:1 SCORE:5 RULE: lemma=prosinec afun=Adv => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=noc cas=6 => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=chvíle cas=6 => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=polovina cas=6 => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=leden func=LOC => func=TWHEN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=září mr=do+N2 => func=TTILL
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=strana mr=za+N4 => func=SUBS
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=hodně plemma=###### => func=RSTR
+GOOD:5 BAD:0 SCORE:5 RULE: pos=V ppos=P => func=RSTR
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=nikoliv ppos=V => func=RHEM
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=hledisko afun=Adv => func=REG
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=obligace pafun=Pred => func=REG
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=synonymum afun=Atr => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj cas=6 => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Sb plemma=budovat => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Atr plemma=ukončení => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Atr plemma=realizace => func=PAT
+GOOD:6 BAD:1 SCORE:5 RULE: afun=Atr plemma=zakladatel => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Atr plemma=zrušení => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=vlastník => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=transformace => func=PAT
+GOOD:6 BAD:1 SCORE:5 RULE: pos=N plemma=provoz => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: cas=7 plemma=styk => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: cas=2 plemma=dodržování => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=ztráta func=APP => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: pafun=Obj mr=proti+N3 => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=l => func=MAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Atr plemma=chování => func=MANN
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=MiG afun=Atr => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=televize => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: cas=1 plemma=název => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=kategorie mr=N1 => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=podnik mr=N1 => func=ID
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj plemma=poznamenat => func=EFF
+GOOD:6 BAD:1 SCORE:5 RULE: afun=Obj plemma=vyprávět => func=EFF
+GOOD:5 BAD:0 SCORE:5 RULE: cas=7 plemma=vybavit => func=EFF
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=úvaha cas=4 => func=DPHR
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=rád plemma=mít => func=DPHR
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Adv mr=pod+N4 => func=DIR3
+GOOD:5 BAD:0 SCORE:5 RULE: pos=V mr=pokud+V => func=COND
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Adv mr=přes+N4 => func=CNCS
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=návrh mr=na+N4 => func=CAUS
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=román func=APP => func=AUTH
+GOOD:8 BAD:3 SCORE:5 RULE: afun=Atr plemma=leden => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=osud => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=fond func=PAT => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: cas=7 plemma=prohrát => func=ADDR
+GOOD:5 BAD:0 SCORE:5 RULE: cas=4 plemma=obrátit => func=ADDR
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj plemma=dařit => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Adv mr=N1 => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: cas=X plemma=průzkum => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: cas=2 plemma=snaha => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=příliv func=APP => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=výrok func=APP => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=vstup func=APP => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N mr=s+souvislost+v+N7 => func=ACMP
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=trenér afun=Atr pafun=Atr => func=RSTR
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Adv pos=C ppos=N => func=RSTR
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=problém afun=Atr pch=1 => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=hodně plemma=být pch=1 => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Coord spos=b func=PREC => func=PAT
+GOOD:10 BAD:5 SCORE:5 RULE: afun=Atr plemma=cena mr=N2 => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Sb pspos=s func=ACT => func=PAT
+GOOD:7 BAD:2 SCORE:5 RULE: pos=N cas=7 plemma=problém => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: pos=N plemma=příčina pch=0 => func=PAT
+GOOD:6 BAD:1 SCORE:5 RULE: afun=ExD cas=X ppos=V => func=PAR
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj cas=2 plemma=dělat => func=ORIG
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=být afun=Atr plemma=být => func=LOC
+GOOD:7 BAD:2 SCORE:5 RULE: pos=N ch=0 plemma=agentura => func=ID
+GOOD:6 BAD:1 SCORE:5 RULE: afun=AuxZ pvoi=- func=MOD => func=EXT
+GOOD:9 BAD:4 SCORE:5 RULE: pafun=Pnom pch=0 func=MANN => func=EXT
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj pos=V plemma=odpovědět => func=EFF
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj cas=6 plemma=mít => func=DPHR
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Adv pafun=Atr mr=k+P3 => func=DIR3
+GOOD:6 BAD:1 SCORE:5 RULE: plemma=patřit pafun=Pred mr=k+N3 => func=DIR3
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=společnost pch=2 mr=N2 => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: cas=2 ppos=N func=THL => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: cas=3 plemma=sloužit pch=2 => func=AIM
+GOOD:5 BAD:0 SCORE:5 RULE: afun=Obj pspos=f mr=P3 => func=ADDR
+GOOD:5 BAD:0 SCORE:5 RULE: lemma=společnost afun=Atr pafun=Pred => func=ACT
+GOOD:7 BAD:2 SCORE:5 RULE: afun=Atr pos=N plemma=zápas => func=ACT
+GOOD:5 BAD:0 SCORE:5 RULE: cas=7 plemma=zápas => func=ADDR
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=vztah pch=1 func=APP => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=dávno => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=čtvrtletí => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=nyní => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=denně => func=THO
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=Vladimír => func=RSTR
+GOOD:5 BAD:1 SCORE:4 RULE: lemma=Jiří => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=Karel => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: mr=za+N => func=PREC
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=vir => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: mr=o+N => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: mr=na+C => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=všude => func=LOC
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=jinde => func=LOC
+GOOD:4 BAD:0 SCORE:4 RULE: mr=mezi+A7 => func=LOC
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=poněkud => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=zcela => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=celkem => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=téměř => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: mr=rozpor+s+v+N7 => func=CRIT
+GOOD:4 BAD:0 SCORE:4 RULE: mr=na+od+rozdíl+N2 => func=CPR
+GOOD:4 BAD:0 SCORE:4 RULE: mr=s+srovnání+v+N7 => func=CPR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=jakož => func=CONJ
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=Kotíkův => func=AUTH
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=rozhodně => func=ATT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=pochopitelně => func=ATT
+GOOD:5 BAD:1 SCORE:4 RULE: lemma=raději => func=ATT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=aniž => func=ADVS
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=hladina => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=léto afun=Adv => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=okamžik afun=Adv => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=začátek cas=6 => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=dnes pafun=Atr => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: pspos=s mr=za+N2 => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=doba mr=do+N2 => func=TTILL
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=doba mr=z+N2 => func=TSIN
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Adv plemma=trvající => func=THL
+GOOD:4 BAD:0 SCORE:4 RULE: mr=po+N4 func=TWHEN => func=THL
+GOOD:4 BAD:0 SCORE:4 RULE: mr=N4 func=TFHL => func=THL
+GOOD:5 BAD:1 SCORE:4 RULE: lemma=rok mr=pro+N4 => func=TFHL
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=hodně ppos=N => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=1994 pch=2 => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=Chalupa => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=Stahuljak => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=Bárta => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Sb ppos=P => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: pos=C plemma=% => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: pos=V plemma=doba => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: ch=2 func=FPHR => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=ne afun=ExD => func=RHEM
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=přeskupit => func=REG
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=data afun=Atr => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=signál afun=Atr => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=názor afun=Atr => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=pečeť cas=2 => func=PAT
+GOOD:6 BAD:2 SCORE:4 RULE: lemma=systém cas=2 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=úrok cas=2 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=zákon plemma=návrh => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=objekt pafun=Sb => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=hranice mr=N2 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=dohoda mr=N2 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=dějiny func=APP => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=vyhovovat => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=předejít => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=stačit => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=padělání => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=liberalizace => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=sponzorování => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=uplatnění => func=PAT
+GOOD:5 BAD:0 SCORE:5 RULE: spos=A ppos=N func=PAT => func=MANN
+GOOD:6 BAD:2 SCORE:4 RULE: pos=V plemma=otázka => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=pocit => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=vražda => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=poptávka => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: cas=7 plemma=pracovat => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: cas=2 plemma=pronájem => func=PAT
+GOOD:5 BAD:1 SCORE:4 RULE: ch=1 mr=nad+N7 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=zájem mr=na+N6 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=obchod mr=s+N7 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=vyslovit func=BEN => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=promluvit func=DIR3 => func=PAT
+GOOD:5 BAD:1 SCORE:4 RULE: plemma=účastník func=APP => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=akce func=APP => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=stavba func=APP => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=výstavba func=APP => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=dostat mr=od+N2 => func=ORIG
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=klubíčko => func=MAT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=zbytek => func=MAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=zvlášť pafun=Atr => func=MANN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=měna mr=v+N6 => func=MANN
+GOOD:4 BAD:0 SCORE:4 RULE: ch=0 mr=pod+N7 => func=LOC
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=odstavec afun=Atr => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: pos=V plemma=titulek => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=nakladatelství => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=vůz => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=obec mr=N1 => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=skupina mr=N1 => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=program mr=N1 => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=moc afun=Adv => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=podstatně pafun=Atr => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=tisíc pspos=f => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=C plemma=závěr => func=EXT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atv plemma=chápat => func=EFF
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=namítnout => func=EFF
+GOOD:4 BAD:0 SCORE:4 RULE: pos=V plemma=soudit => func=EFF
+GOOD:4 BAD:0 SCORE:4 RULE: cas=7 plemma=jmenovat => func=EFF
+GOOD:6 BAD:2 SCORE:4 RULE: pos=N plemma=cesta => func=DIR3
+GOOD:4 BAD:0 SCORE:4 RULE: cas=3 plemma=směřovat => func=DIR3
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=přesvědčení afun=Obj => func=CPHR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=nutný spos=C => func=CPHR
+GOOD:6 BAD:2 SCORE:4 RULE: plemma=udělat mr=N4 => func=CPHR
+GOOD:6 BAD:1 SCORE:5 RULE: pafun=Pred pch=0 func=CPHR => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=, afun=ExD => func=CONJ
+GOOD:4 BAD:0 SCORE:4 RULE: mr=pod+N7 func=TWHEN => func=COND
+GOOD:4 BAD:0 SCORE:4 RULE: afun=AuxT cas=3 => func=BEN
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=obraz func=APP => func=AUTH
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=zásada cas=6 => func=ATT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=Open ppos=N => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=LN func=RSTR => func=APP
+GOOD:5 BAD:0 SCORE:5 RULE: plemma=dotaz func=APP => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=druh => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=odstavec => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=pracovník => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=veletrh => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=program mr=N2 => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=podpora func=DIR3 => func=AIM
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=jenže ch=2 => func=ADVS
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=ovšem ch=2 => func=ADVS
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=adresovaný => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=zahrnout => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr mr=s+N => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: cas=4 plemma=přesvědčit => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: cas=2 plemma=zeptat => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=ČSFR plemma=rozdělení => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=on mr=P7 => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Obj plemma=docházet => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=vznik => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=zánik => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=uplynutí => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=rozpad => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=mlčení => func=ACT
+GOOD:5 BAD:1 SCORE:4 RULE: afun=Atr plemma=podání => func=ACT
+GOOD:5 BAD:1 SCORE:4 RULE: afun=Atr plemma=působnost => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=chybět => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=N plemma=poznámka => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: cas=2 plemma=usnesení => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: ch=1 plemma=poškození => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=setkání mr=N2 => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=porada mr=N2 => func=ACT
+GOOD:5 BAD:1 SCORE:4 RULE: plemma=slovo mr=N2 => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=###### mr=že+V => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=výpověď func=APP => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=dopis func=APP => func=ACT
+GOOD:6 BAD:2 SCORE:4 RULE: plemma=podíl func=APP => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=odhad func=APP => func=ACT
+GOOD:5 BAD:1 SCORE:4 RULE: lemma=ještě afun=AuxZ pspos=B => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=počátek cas=6 pspos=p => func=TWHEN
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Adv cas=- pspos=v => func=TWHEN
+GOOD:5 BAD:1 SCORE:4 RULE: lemma=předseda afun=Atr pafun=Atr => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: plemma=slovo pch=1 func=PAT => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=druh afun=Atr ch=2 => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=rok afun=Atr plemma=být => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=náklad cas=2 pch=1 => func=PAT
+GOOD:6 BAD:2 SCORE:4 RULE: afun=Obj plemma=mít pafun=Sb => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: pos=A ch=1 plemma=###### => func=PAT
+GOOD:5 BAD:1 SCORE:4 RULE: ch=1 plemma=: pafun=Apos => func=PAT
+GOOD:4 BAD:0 SCORE:4 RULE: ch=0 plemma=###### mr=N7 => func=PAT
+GOOD:5 BAD:1 SCORE:4 RULE: ch=2 pafun=Atv func=APP => func=PAT
+GOOD:5 BAD:1 SCORE:4 RULE: pos=N plemma=polovina pafun=Obj => func=MAT
+GOOD:5 BAD:1 SCORE:4 RULE: pos=N ch=1 plemma=klub => func=ID
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=typ cas=2 ch=1 => func=RSTR
+GOOD:4 BAD:0 SCORE:4 RULE: pos=V ch=0 plemma=###### => func=FPHR
+GOOD:4 BAD:0 SCORE:4 RULE: ch=1 pvoi=- mr=na+N2 => func=EFF
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr pafun=Atr mr=od+N2 => func=DIR1
+GOOD:4 BAD:0 SCORE:4 RULE: afun=AuxZ pspos=f pch=0 => func=CM
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=mládež cas=2 pch=2 => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: cas=7 plemma=smlouva pafun=Obj => func=ADDR
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=vláda cas=2 pch=2 => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: lemma=procento pspos=B pch=1 => func=ACT
+GOOD:5 BAD:1 SCORE:4 RULE: afun=Atr ch=2 mr=Z => func=ACT
+GOOD:4 BAD:0 SCORE:4 RULE: afun=Atr plemma=utkání mr=N1 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=včera => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=konečně => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=zatím => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: mr=při+P6 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: mr=před+N => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: mr=konec+N2 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=doposud => func=TTILL
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=dodnes => func=TTILL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=pravidelně => func=THO
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=občas => func=THO
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=zpravidla => func=THO
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=dlouhodobě => func=THL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=František => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Josef => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=O => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=t => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=M => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Petr => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Ivan => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=J => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=teprve => func=RHEM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ohled => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=hospodářsky => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=plyn => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=elektřina => func=PAT
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=strategie => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ano => func=PARTL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nutně => func=MOD
+GOOD:3 BAD:0 SCORE:3 RULE: mr=pomocí+N2 => func=MEANS
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=naprázdno => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=uprostřed => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=vlevo => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nízko => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: mr=na+úroveň+N2 => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: mr=blízkost+v+N2 => func=LOC
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=UNPROFOR => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=trochu => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=mírně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nijak => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=významně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=částečně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=přibližně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=značně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=plně => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=dohromady => func=DPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=buď => func=DISJ
+GOOD:3 BAD:0 SCORE:3 RULE: mr=před+N4 => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=odtud => func=DIR1
+GOOD:3 BAD:0 SCORE:3 RULE: mr=o+C4 => func=DIFF
+GOOD:3 BAD:0 SCORE:3 RULE: mr=s+soulad+v+N7 => func=CRIT
+GOOD:3 BAD:0 SCORE:3 RULE: mr=na+v+závislost+N6 => func=CRIT
+GOOD:3 BAD:0 SCORE:3 RULE: mr=porovnání+s+v+N7 => func=CPR
+GOOD:3 BAD:0 SCORE:3 RULE: mr=ať+V => func=CNCS
+GOOD:3 BAD:0 SCORE:3 RULE: mr=ač+V => func=CNCS
+GOOD:6 BAD:3 SCORE:3 RULE: lemma=nejen => func=CM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=zato => func=CM
+GOOD:3 BAD:0 SCORE:3 RULE: mr=díky+že+V => func=CAUS
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=přirozeně => func=ATT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=doslova => func=ATT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=mimochodem => func=ATT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=naštěstí => func=ATT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=prakticky => func=ATT
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=1948 => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: mr=pro+případ+N2 => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: mr=s+v+čelo+N7 => func=ACMP
+GOOD:3 BAD:0 SCORE:3 RULE: afun=ExD cas=5 => func=VOCAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=termín afun=Adv => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=závěr afun=Adv => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=datum afun=Adv => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=týden afun=ExD => func=TWHEN
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=den afun=Atr => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=minulost cas=6 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=historie cas=6 => func=TWHEN
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=utkání cas=6 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=květen cas=6 => func=TWHEN
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=konec cas=6 => func=TWHEN
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=říjen ch=1 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ten mr=před+P7 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv mr=jakmile+V => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=červenec mr=z+N2 => func=TSIN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rok mr=od+N2 => func=TSIN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=daleko pspos=f => func=THL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=hodina mr=za+N4 => func=THL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rok mr=za+N4 => func=THL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=náměstek afun=Atr => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=velikost afun=Atr => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=znění cas=6 => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=sto ch=0 => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Václav ch=0 => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=význam plemma=slovo => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rok plemma=věk => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=tisíc ppos=N => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=původ pch=0 => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Praha func=ID => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=Aidid => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=Novák => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=Čekan => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=Kohl => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=Evropa => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: pos=C plemma=rok => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=6 plemma=úvěr => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: mr=V func=LOC => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=stále ppos=N => func=RHEM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=program mr=s+výjimka+N2 => func=RESTR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv mr=mimo+N2 => func=RESTR
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=odpovídat func=AIM => func=RESL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=věc ch=2 => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=sociální plemma=zabezpečení => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=stránka mr=po+N6 => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: pos=A plemma=osamostatnění => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N mr=bez+na+ohled+N4 => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: cas=3 plemma=uvést => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: ch=0 mr=k+N => func=REG
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=soutěž func=LOC => func=REG
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=tedy pspos=B => func=PREC
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=droga afun=Atr => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=káva afun=Atr => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rozdíl afun=Atr => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=vražda afun=Atr => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=člověk afun=Obj => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=množství afun=Atr => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=vodoměr cas=2 => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=jenž cas=4 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=tragedie ch=1 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=akcie ch=0 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=věc ch=0 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=výpověď plemma=podání => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=daň plemma=odpočet => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Kč plemma=být => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=výrobek plemma=porovnatelnost => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=7 plemma=###### => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=vztah plemma=narovnání => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=být plemma=dosáhnout => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=inflace pafun=Adv => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=zásada ppos=N => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nemovitost pch=1 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=svoboda pch=1 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=budova mr=N2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Němec func=APP => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Sb plemma=dodržovat => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=doručovat => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Sb plemma=zopakovat => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=Vicariová => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=těšit => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj plemma=připlatit => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj plemma=podlehnout => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=vinkulace => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=obhájce => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=koupě => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=zpracování => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=získávání => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=novelizace => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=certifikace => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=V plemma=zjistit => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=V plemma=důvod => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=formulace => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=správce => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=strach => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=kontrola => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: pos=N plemma=plán => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: spos=B mr=o+že+V => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 plemma=schůzka => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=obnovení => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=výslech => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: ch=0 plemma=otvírání => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=zákaz mr=N2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=sloužit mr=N3 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=výzkum mr=N2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=výroba mr=N2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=dodavatel mr=N2 => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: plemma=cena mr=P => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: plemma=správa mr=N2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=návštěva func=APP => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: mr=na+N4 func=TWHEN => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=3 afun=ExD => func=PAR
+GOOD:4 BAD:0 SCORE:4 RULE: cas=- pch=0 func=PAR => func=RSTR
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=1 afun=ExD => func=PAR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=zjišťovat => func=PAR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=6 plemma=sirotek => func=ORIG
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=obdržet func=DIR1 => func=ORIG
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=cena mr=za+N4 => func=MEANS
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv plemma=podepřít => func=MEANS
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 plemma=vymezit => func=MEANS
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=kartón => func=MAT
+GOOD:4 BAD:1 SCORE:3 RULE: pos=N plemma=seznam => func=MAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=tuna => func=MAT
+GOOD:4 BAD:1 SCORE:3 RULE: pos=N plemma=škála => func=MAT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=přebytek => func=MAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=naopak afun=ExD => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=dojem plemma=působit => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=postupný pch=2 => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv mr=forma+v+N2 => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=daleko plemma=být => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=sedět => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: pch=1 mr=kolem+N2 => func=LOC
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=IG afun=Atr => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=cesta afun=ExD => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=porovnatelnost plemma=zásada => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=balírna => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=trojice => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=seskupení => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=automobilka => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=list => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=teorie mr=N2 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=kauza mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=cyklus mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=městečko mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=projekt mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ale mr=N7 => func=GRAD
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=4 afun=ExD => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=tisíc plemma=pojistit => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=2 plemma=###### => func=EXT
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=relativně pvoi=- => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=chybět func=MANN => func=EXT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atv plemma=brát => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj plemma=podotknout => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=prozradit func=PAT => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=daleko afun=ExD => func=DPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=role plemma=sehrát => func=DPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=trh plemma=přístup => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=škola mr=na+N4 => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=soud mr=k+N3 => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=projít mr=N7 => func=DIR2
+GOOD:3 BAD:0 SCORE:3 RULE: spos=Q ppos=A => func=DIFF
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=snížit mr=proti+N3 => func=CPR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=pozornost ch=2 => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=potřeba plemma=cítit => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=služba plemma=poskytovat => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=smlouva plemma=uzavírat => func=CPHR
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=souhlas mr=N4 => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=- plemma=vztah => func=CONJ
+GOOD:5 BAD:2 SCORE:3 RULE: afun=AuxX plemma=být => func=CONJ
+GOOD:3 BAD:0 SCORE:3 RULE: pafun=Pred func=CONTRA => func=CONJ
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=úrok plemma=poskytovat => func=COND
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nikoliv ppos=N => func=CM
+GOOD:3 BAD:0 SCORE:3 RULE: afun=AuxZ plemma=trio => func=CM
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=stíhání => func=CAUS
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=odsouzený => func=CAUS
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=akceptovat func=BEN => func=CAUS
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=film mr=N2 => func=AUTH
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=skutečnost afun=Adv => func=ATT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=IRA afun=Atr => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=listina plemma=článek => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=SR plemma=ÚNMS => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ODS func=RSTR => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=svaz => func=APP
+GOOD:4 BAD:0 SCORE:4 RULE: mr=N1 func=APP => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: cas=X plemma=člen => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=typ mr=N2 => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nákup cas=4 => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ochrana pafun=Sb => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=cena mr=pro+N4 => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=hnutí => func=AIM
+GOOD:4 BAD:1 SCORE:3 RULE: pos=V mr=aby+k+V => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=lze => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=peníze mr=na+N4 => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=SDL afun=Adv => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=pověřit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb pafun=Atv => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=vystavit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 plemma=soutěžit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=nutit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=přesvědčovat => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=uvalit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=3 plemma=připisovat => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: cas=3 plemma=pomoc => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ČR afun=ExD => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=umělec cas=2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=NKÚ plemma=kontrola => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=průmysl plemma=výrobek => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=agentura plemma=průzkum => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=jeho plemma=poslání => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=IVVM mr=N => func=ACT
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=domácnost mr=N2 => func=ACT
+GOOD:5 BAD:2 SCORE:3 RULE: afun=Atr plemma=vystoupení => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=stárnutí => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=doporučení => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=konání => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=P plemma=zápas => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=zasedání => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=dohled => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=doprovod => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=pokračování => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=tvrzení => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=protest => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=vzestup => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: spos=U plemma=gól => func=ACT
+GOOD:4 BAD:1 SCORE:3 RULE: cas=X plemma=činnost => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=hrozba => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=námitka => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=utkání => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=převis => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=zásah mr=N2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=zpráva mr=N2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=prohlášení mr=N2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=návrat mr=N2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=těšit mr=P4 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=být mr=P2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=pobyt func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=odchod func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=onemocnění func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=působení func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=zahynout func=PAT => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=odjezd func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=souhlas func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=start func=APP => func=ACT
+GOOD:4 BAD:1 SCORE:3 RULE: plemma=žádost func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=dohoda func=APP => func=ACT
+GOOD:4 BAD:1 SCORE:3 RULE: plemma=existence func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv mr=s+N => func=ACMP
+GOOD:3 BAD:0 SCORE:3 RULE: afun=ExD mr=s+P7 => func=ACMP
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=###### mr=s+N7 => func=ACMP
+GOOD:4 BAD:1 SCORE:3 RULE: pafun=Obj mr=s+že+V => func=ACMP
+GOOD:7 BAD:4 SCORE:3 RULE: lemma=případ pvoi=A mr=v+N6 => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv cas=4 plemma=plánovat => func=TOWH
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rok cas=2 plemma=splatnost => func=THL
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=rok pafun=Atr mr=z+N2 => func=TFRWH
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=koruna ch=1 func=APP => func=RSTR
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=ministr pch=1 func=APP => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: ch=0 plemma=muž pafun=Sb => func=RSTR
+GOOD:4 BAD:1 SCORE:3 RULE: plemma=###### pch=1 mr=A2 => func=RSTR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=i pch=2 mr=J => func=RHEM
+GOOD:3 BAD:0 SCORE:3 RULE: pos=V ppos=D mr=aby+V => func=RESL
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj cas=6 plemma=získat => func=REG
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=stejně ch=0 pafun=Pred => func=PREC
+GOOD:4 BAD:1 SCORE:3 RULE: lemma=cena cas=2 ch=2 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=jenž cas=2 pch=1 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr pos=A plemma=být => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=AtrObj cas=4 pafun=Obj => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Obj cas=2 pch=0 => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb ch=2 plemma=očekávat => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Obj ch=0 plemma=věnovat => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=zajímat pafun=Obj => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=povést pspos=p => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=C cas=4 func=TWHEN => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N ch=0 plemma=schopnost => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=princip pafun=Sb => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=prognóza pafun=Sb => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=potíž pafun=Obj => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 ch=1 plemma=vycházet => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: pafun=Pnom ppos=A func=RSTR => func=PAT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=ExD plemma=stát pafun=Atr => func=PAR
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Atr pvoi=A func=DIR1 => func=ORIG
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr spos=B func=EFF => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv ppos=A mr=N1 => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 plemma=řešit pafun=Obj => func=MANN
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 plemma=rozdíl pafun=Obj => func=LOC
+GOOD:5 BAD:2 SCORE:3 RULE: afun=Adv spos=f pspos=p => func=INTT
+GOOD:5 BAD:2 SCORE:3 RULE: lemma=Praha ch=1 func=RSTR => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=význam mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=film mr=N1 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=značka pch=0 => func=ID
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Coord pafun=Obj mr=o+N4 => func=GRAD
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj cas=- plemma=zaplatit => func=EXT
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Obj cas=4 plemma=vědět => func=EFF
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Obj plemma=napsat pch=2 => func=EFF
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Atr plemma=cena mr=za+N4 => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N cas=4 plemma=změna => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: pos=V plemma=vědět pspos=p => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 pch=1 func=COMPL => func=EFF
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv pafun=Obj mr=za+N4 => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: ch=0 pspos=B mr=na+N => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: pafun=Obj pch=1 mr=k+P3 => func=DIR3
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=ten afun=Adv func=BEN => func=CPR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Adv ppos=A mr=N2 => func=CPR
+GOOD:3 BAD:0 SCORE:3 RULE: ch=1 ppos=D func=RSTR => func=CPR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=pokuta afun=Obj ch=2 => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=opatření afun=Obj pafun=Sb => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=zájem ch=2 plemma=mít => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=povinnost ch=2 pafun=Pred => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=požadavek ch=2 pch=2 => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj ch=2 plemma=učinit => func=CPHR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=nebo pch=0 mr=N1 => func=CONJ
+GOOD:6 BAD:3 SCORE:3 RULE: afun=AuxC ch=2 pafun=Pred => func=CONJ
+GOOD:3 BAD:0 SCORE:3 RULE: pafun=Pred pspos=f mr=při+N6 => func=COND
+GOOD:5 BAD:2 SCORE:3 RULE: afun=Atr ch=1 mr=proti+N3 => func=BEN
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=- afun=AuxG ch=2 => func=APPS
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=, plemma=dosáhnout pspos=p => func=APPS
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=1993 pafun=Adv pch=1 => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=skupina pafun=Obj mr=N2 => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N plemma=část pafun=ExD => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N pafun=Pnom func=RSTR => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=část pch=2 => func=APP
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=sdružení pafun=Obj => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 plemma=být func=DIR3 => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: cas=3 plemma=být func=PAT => func=AIM
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=republika cas=4 func=DIR3 => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj cas=4 plemma=seznámit => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Obj ch=0 plemma=upozornit => func=ADDR
+GOOD:4 BAD:1 SCORE:3 RULE: afun=Atr ch=2 mr=N3 => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=nutit pafun=Pnom => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Sb plemma=informovat pspos=s => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: ch=0 plemma=obvinit func=PAT => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: plemma=vést pafun=Pred mr=P4 => func=ADDR
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=osoba afun=Atr pspos=p => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: lemma=KB ch=0 mr=N => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=odkaz pafun=Obj => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=Atr plemma=boj mr=N2 => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: afun=ExD ppos=V mr=C => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: pos=N ch=0 plemma=derby => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=4 ch=1 func=ID => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=výstava pafun=Sb => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=2 plemma=informace func=APP => func=ACT
+GOOD:3 BAD:0 SCORE:3 RULE: cas=7 pafun=Sb func=RSTR => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=úvod => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=prvně => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=náhle => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=předem => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=game => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=předtím => func=TWHEN
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=listopad => func=TWHEN
+GOOD:3 BAD:0 SCORE:3 RULE: mr=od+N2 func=TWHEN => func=TSIN
+GOOD:4 BAD:1 SCORE:3 RULE: ppos=N mr=N2 func=TWHEN => func=RSTR
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=únor => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: mr=od+C => func=TSIN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dennodenně => func=THO
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=trvale => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pořád => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=José => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Kinský => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=báze => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Gaussův => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Matěj => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Miloš => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=John => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Eduard => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Milan => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=02 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=fax => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pan => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=P => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=V => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=A => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výhradně => func=RHEM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zvláště => func=RHEM
+GOOD:2 BAD:0 SCORE:2 RULE: mr=kromě+A2 => func=RESTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zdravotně => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=komerčně => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=intelektově => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=volejbal => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jazykově => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=uctivě => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: mr=k+v+vztah+N3 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: mr=ohledně+N2 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=odboj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=skandál => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=předpověď => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=předání => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=přihláška => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=napětí => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=schéma => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=standard => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=prospěch => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=slib => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=váha => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dotace => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jistota => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=exportér => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=o+P6 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=na+Z => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=od+N1 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=od => func=OPER
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stěží => func=MOD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pravděpodobnost => func=MOD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=každopádně => func=MOD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=takhle => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=esperanto => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zvolna => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jakkoliv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pomalu => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=načerno => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zdarma => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=úspěšně => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dopředu => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nikde => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=km => func=LOC
+GOOD:3 BAD:1 SCORE:2 RULE: mr=v+C6 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: mr=poblíž+N2 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=grunge => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=oštěp => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=odnětí => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Mrázovka => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=OK => func=FPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Teleshopping => func=FPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=víceméně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mimořádně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=extrémně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=středně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=naprosto => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zdaleka => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=natolik => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=silně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nadměrně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=maximálně => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=za+C4 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mínit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=léčit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=to => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nahoru => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nikam => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=led => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=domů => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Špilberk => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=odkud => func=DIR1
+GOOD:2 BAD:0 SCORE:2 RULE: mr=z+C2 => func=DIR1
+GOOD:2 BAD:0 SCORE:2 RULE: mr=o+D => func=DIFF
+GOOD:2 BAD:0 SCORE:2 RULE: mr=než+N1 => func=CPR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zřetel => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: spos=e => func=CNCS
+GOOD:2 BAD:0 SCORE:2 RULE: mr=třebaže+V => func=CNCS
+GOOD:2 BAD:0 SCORE:2 RULE: mr=byť+V => func=CNCS
+GOOD:3 BAD:1 SCORE:2 RULE: mr=i+kdyby+V => func=CNCS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=potažmo => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=případně => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=příkaz => func=CAUS
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=Stahuljakův => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=koneckonců => func=ATT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=CKP => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rozmyšlená => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: mr=v+zájem+N2 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=podtitulek => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Havlův => func=ACT
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=Agassi => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=porodnost => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kamión => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=bez+P2 => func=ACMP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=podzim afun=Adv => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=století afun=Adv => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=víkend cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dějiny cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pokus cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=věk cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=moment cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=už plemma=obchodovat => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=měsíc plemma=dozvědět => func=TWHEN
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=budoucnost mr=v+N6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=život mr=v+N6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=republika mr=za+N2 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hodina func=LOC => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok func=EXT => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj mr=když+V => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD mr=v+N4 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=D plemma=žijící => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=vystoupení => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 mr=za+N2 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=říjen plemma=otevřít => func=TTILL
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=dokud+V => func=TTILL
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=ExD mr=od+N2 => func=TSIN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=čas plemma=vypořádání => func=TPAR
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 mr=přes+N4 => func=TPAR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=červenec plemma=stanovit => func=TOWH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=den mr=na+N4 => func=TOWH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok func=EFF => func=TOWH
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=odročit mr=na+N4 => func=TOWH
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=program func=TFHL => func=TOWH
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=ročně pafun=Obj => func=THO
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=obvykle ppos=V => func=THO
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=týdně ppos=V => func=THO
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pololetí cas=4 => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dlouhodobý plemma=soustředění => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=neustále pch=2 => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=řada func=TWHEN => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=chybět => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok plemma=rozložit => func=TFHL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=měsíc mr=na+N4 => func=TFHL
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=přijmout mr=na+N4 => func=TFHL
+GOOD:2 BAD:0 SCORE:2 RULE: pch=1 mr=po+N4 => func=TFHL
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=za+N => func=SUBS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Martin afun=Adv => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=syn afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Pavel afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Viktor afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=klid afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=šéf afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=délka afun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tón cas=6 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok plemma=dítě => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=1 plemma=generálka => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=první ppos=N => func=RSTR
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=Brno func=ID => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=bod func=APP => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Kč func=APP => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Mucha => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Ratzenberger => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Senna => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Kroupa => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Melber => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Volkman => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Ježek => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Fernandezová => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Bruguera => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Vojnovič => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=DECpc => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Cartney => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=čin => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Sosa => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Novotná => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=poplatek => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=Schicht => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=pacient => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atv ppos=P => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=ulice => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=P func=PAR => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: spos=r plemma=###### => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=teze => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=Praha => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 plemma=obligace => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 mr=nad+N7 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ne afun=Atr => func=RHEM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ani func=PREC => func=RHEM
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=mít mr=mimo+N4 => func=RESTR
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=###### mr=než+V => func=RESTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=srovnání afun=Adv => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=význam afun=Adv => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zdraví cas=6 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=smysl cas=6 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=l cas=4 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=otázka plemma=sdělit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dotaz plemma=říci => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=částka plemma=pojistit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=skupina plemma=cena => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=být plemma=uklidnit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=extremistický => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=sebeuvědomování => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr mr=ohledně+N => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: spos=g plemma=snížit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=zvolit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=výrok => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 plemma=soutěžit => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 plemma=váha => func=REG
+GOOD:3 BAD:1 SCORE:2 RULE: plemma=být mr=případ+v+N2 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tak afun=AuxO => func=PREC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tak plemma=jet => func=PREC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tak plemma=skončit => func=PREC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tak plemma=zvýšit => func=PREC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dále plemma=požádat => func=PREC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=seskupení afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=silný afun=Atv => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=distribuce afun=ExD => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=teplo afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=metoda afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=úspěch afun=Adv => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=žádost afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výsledek afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=certifikace afun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zboží afun=Sb => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=závazek afun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=obrátit spos=s => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hudba cas=7 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=vítěz cas=3 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=třída cas=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stadión cas=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=případ cas=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=deficit ch=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=síť ch=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=podmínka ch=0 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=bezdomovec plemma=vytlačit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=posuzovat plemma=případ => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hra plemma=vstupovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Němec plemma=být => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=cena plemma=zjišťovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hodně plemma=přihlásit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=procento plemma=přispívat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=účet plemma=vedení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=obchod plemma=vypořádání => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=co plemma=vědět => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ukončení pafun=Sb => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=přístup pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nacházet pafun=Pred => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=doklad pafun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=otázka pafun=Atr => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=práce pafun=Sb => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=změna pafun=Atr => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=období pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mlčení ppos=V => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=požadavek ppos=N => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=záměr pspos=f => func=PAT
+GOOD:4 BAD:2 SCORE:2 RULE: lemma=majetek pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=podnikání pch=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=organizace pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=plán pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jeho pch=-1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zdroj mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dílna func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=lahev func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=prostředek func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ten func=ID => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=relativizovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=urychlovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=vyřešit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=řadit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=líbit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=připočítávat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=unikat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=vyhovět => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=přijatelný => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=důvěřovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=připadnout => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=vystavit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=dotaz => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=přecházet => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=posílení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=pořadatelství => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=denunciace => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=opuštění => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=znevažování => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=prezentace => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=zaplacení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=zastupitel => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=zastavení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=slovakizace => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=využití => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=dostavba => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=výpočet => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=zjišťování => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=měření => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=dodržení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=páchání => func=PAT
+GOOD:4 BAD:1 SCORE:3 RULE: spos=A ppos=N func=PAT => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=pašování => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=obviňování => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=provozování => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=blízko => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr mr=o+zdali+V => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=poučit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=hlas => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=pilot => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=hledání => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=odstřelovat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=dojem => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=portrét => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=partnerství => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=obměna => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=obava => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=navýšení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=snímek => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=vyplývat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=ohrožení => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: spos=s plemma=myšlenka => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: spos=s plemma=počítat => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=projevovat => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: cas=7 plemma=zkušenost => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=X plemma=majitel => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=vinit => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=distribuce => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=výkon => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 plemma=odrážet => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 func=PAR => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 plemma=evakuace => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=konflikt mr=s+N7 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=znalec mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=realizovat mr=N1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=operace mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=soud mr=s+N7 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=popis mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=riziko mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=řízení mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=výměna mr=N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=nasazení func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=integrace func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=vyústit func=DIR3 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=tvůrce func=APP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=proces func=ACMP => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=patřit func=ADDR => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Sb mr=zda+V => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Adv mr=na+P4 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Pred mr=na+N2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: ppos=N mr=na+P4 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=N2 func=CAUS => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=d afun=Atr => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=věřit afun=ExD => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=36 plemma=###### => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=7 => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=Stahuljak => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=věřitel cas=2 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AdvAtr plemma=naučit => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=zbohatnout => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=založit mr=na+N6 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=stavět mr=na+N6 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=vědět func=DIR1 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=změna func=DIR1 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: ppos=V mr=od+P2 => func=ORIG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=těžko pafun=Pred => func=MOD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=asi ppos=A => func=MOD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=% plemma=úročit => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=bombardovat => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=oživený => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=infikovaný => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=zprostředkovaný => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=osvědčený => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=soutěžit => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=lišit => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=ředění => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 plemma=spojení => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=přesvědčit mr=na+N4 => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=informovat func=CNCS => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=nabízet func=EFF => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=brankář cas=2 => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jenž plemma=počet => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ten plemma=řada => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=kilogram => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=čtvrt => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=hromada => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=spektrum => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=zásoba => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=třetina => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=soubor => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=trocha mr=N2 => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=izolace afun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=duch afun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pořádek afun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zbytečný afun=Atr => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=metoda afun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=opakovaný cas=6 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=meziroční cas=6 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tisíc cas=X => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=služba plemma=získat => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jak plemma=###### => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=oprávněný pafun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stejně pafun=Pnom => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nijak pspos=f => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jak pspos=A => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=slavnostní pch=2 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=celkem pch=1 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=vyplacený => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=ozbrojování => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=odpovědět => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=po+P6 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr mr=titul+z+N2 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=znít => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=poškození => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=vypořádání => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 plemma=vyrovnání => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Open afun=ExD => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=byt cas=7 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=počet plemma=nepoměr => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=soud mr=před+N7 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=rozsvítit => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=citovaný => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=veletrh => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AtrAdv mr=N2 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 func=MAT => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: mr=v+N6 func=ACT => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=převýchova afun=Adv => func=INTT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Indycar afun=Atr => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=klika afun=Atr => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Hradiště afun=Atr => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=klub afun=ExD => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kapitalizmus plemma=fáze => func=ID
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=transformace plemma=proces => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=parlament plemma=instituce => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=20 plemma=program => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mít plemma=rčení => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr spos=i => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=pár => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=nadace => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: cas=1 plemma=titul => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: cas=1 plemma=jméno => func=ID
+GOOD:3 BAD:1 SCORE:2 RULE: cas=1 plemma=článek => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: cas=1 pafun=AtrAdv => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=stroj mr=N1 => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=organizace mr=N => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=- ch=0 => func=FPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=procento cas=6 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=procento plemma=tvořit => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výrazně pafun=Atr => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=prakticky pafun=Adv => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=málo pspos=p => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nadměrný pch=2 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=část mr=z+N2 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxC ppos=A => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr mr=nad+C => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=C plemma=bilance => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: spos=v pch=0 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=prodat mr=za+N4 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=zabírat func=PAT => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=starý func=RSTR => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: ppos=D mr=P4 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=schopnost plemma=spojit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=skupina plemma=rozdělit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mít plemma=vědět => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atv plemma=vnímat => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=podotýkat => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=oprávněný => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=psát => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=opatřit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=koordinovat => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=nazvat => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=zaměňovat => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=zvolit => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=pokračovat mr=V => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=zaplatit mr=za+P4 => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=odpovědět func=MEANS => func=EFF
+GOOD:3 BAD:1 SCORE:2 RULE: pspos=B mr=A7 => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=následek afun=Obj => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=názor afun=Pnom => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=vazba cas=2 => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pravda plemma=dát => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=život pspos=f => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=či plemma=###### => func=DISJ
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=řád cas=3 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kniha cas=3 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=náměstí cas=4 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=konec plemma=dotáhnout => func=DIR3
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=tam pvoi=- => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Slovensko mr=na+N4 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=obrátit => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hranice mr=přes+N4 => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=procházet => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=projet => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=hranice => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hranice mr=od+N2 => func=DIR1
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=procento mr=o+N4 => func=DIFF
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=o+C => func=DIFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Tbilisi afun=ExD => func=DENOM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=takže ch=2 => func=CSQ
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=titul+z+N2 => func=CRIT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=příkaz afun=Atr => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=příležitost afun=Obj => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stížnost plemma=podat => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=žádost plemma=podat => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zkušenost plemma=získat => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=problém plemma=mít => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=platnost pch=2 => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=vyvolávat => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=/ plemma=číslo => func=CONJ
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jako pch=0 => func=CONJ
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxG pafun=Adv => func=CONJ
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=ovlivnit mr=# => func=CONJ
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=říci spos=s => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=klid cas=6 => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=případ plemma=připisovat => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=být func=INTT => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: spos=s func=FPHR => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atv cas=6 => func=COMPL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=například plemma=skupina => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stejně ppos=N => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=také pch=0 => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxZ plemma=faktor => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=AIDS afun=Adv => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=doporučení afun=Adv => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=příčina afun=Adv => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=což afun=Adv => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=bývávat => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=stíhat => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=exportovat func=BEN => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=počítat func=BEN => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=firma afun=ExD => func=BEN
+GOOD:2 BAD:0 SCORE:2 RULE: spos=P plemma=zůstat => func=BEN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=satira => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=grafika => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=slovník mr=od+N2 => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=hra func=APP => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=, plemma=cítit => func=APPS
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxY mr=N2 => func=APPS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ČSOB afun=Atr => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zelený afun=ExD => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pspos=p func=APP => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ODA afun=Atr => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=reprezentant plemma=cena => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=středisko plemma=cena => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ministr plemma=náměstek => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zvýšení plemma=procento => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=1993 plemma=červenec => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=1992 plemma=prosinec => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=1992 plemma=říjen => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zákon plemma=paragraf => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=série ppos=N => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Evropa mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=obligace mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kvalifikace mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=NKÚ func=RSTR => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=SSSR func=RSTR => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ČSSD func=RSTR => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=fórum => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=hladina => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=příslušník => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=předseda => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=tempo => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=míra => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: spos=U plemma=případ => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: spos== plemma=sezóna => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: cas=X plemma=země => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: cas=X plemma=vedení => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=rodič => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=minuta => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 plemma=pátek => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=etapa mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=strana mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=člen mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=generace func=PAT => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=stav func=PAT => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=ministr func=PAT => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zpracování cas=4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=měření cas=4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=úraz cas=4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=odvolání mr=k+N3 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=index mr=pro+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=vstup mr=pro+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výkon mr=pro+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=udělení mr=pro+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=soutěž mr=pro+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AtrAdv pos=V => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=potřebný => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: spos=6 plemma=vydělat => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=rámec => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=středisko => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=stačit => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 pafun=Atv => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=poskytnout mr=na+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=podpora mr=na+N4 => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=potřebovat func=DIR3 => func=AIM
+GOOD:3 BAD:1 SCORE:2 RULE: plemma=vynakládat func=PAT => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=přijmout func=BEN => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Pnom mr=aby+na+V => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: mr=na+N4 func=THL => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=nicméně ch=2 => func=ADVS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zákazník cas=3 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=podnikatel cas=3 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Sparta pafun=Adv => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=klient mr=s+N7 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=země mr=s+N7 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=firma mr=s+N7 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stát mr=s+N7 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=věnovaný => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=koalice => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: spos=P plemma=požádat => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=stmelení => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=čtvrtfinále => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=promluvit => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=zvítězit => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=dohodnout => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=ujistit => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=motivovat => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=zavazovat => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 plemma=obviňovat => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=navrácení => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=předat => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=poskytnout => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=X plemma=obvinit => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=ptát => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 pspos=i => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kampaň afun=ExD => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=program afun=Pnom => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Schumpeterův cas=1 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Rus cas=2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=komise cas=7 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jakost cas=2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=emise ch=2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zeď plemma=pád => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=FS plemma=schůze => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=soud plemma=chod => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=LN plemma=otázka => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kandidát plemma=###### => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Tengův plemma=smrt => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hodnota plemma=změna => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=trh plemma=otevření => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=já plemma=zajímat => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=firma plemma=nabídka => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=sazba plemma=pohyb => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výrobek plemma=stávat => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=informace plemma=únik => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jeho plemma=vyústění => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=jeho plemma=snímek => func=ACT
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=OSN pafun=Adv => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=spotřebitel pafun=Sb => func=ACT
+GOOD:5 BAD:3 SCORE:2 RULE: lemma=můj pafun=Pnom => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Kotas pch=1 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rodič mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=muž mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=mít => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=líbit => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=přiletět => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=neúčast => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=nástup => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=narození => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=fungování => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=příjezd => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=navštívit => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=počínání => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=projevit => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=stačit => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=ukazovat => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=P plemma=mrzet => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=převaha => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=souboj => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=úbytek => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: spos=U plemma=návštěva => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=posílit => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=3 plemma=jít => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=odpor => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=2 plemma=výpadek => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=2 plemma=přestup => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 plemma=odliv => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=přání mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=postoj mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=příkaz mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=styk mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=odpověď mr=N2 => func=ACT
+GOOD:3 BAD:1 SCORE:2 RULE: plemma=aktivita mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=být mr=P3 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=dopad func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=přihrávka func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=rozhovor func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=zahájení func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=startovat func=PAT => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=úmrtí func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=spolupráce func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=uzavřený func=LOC => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=snížení func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=podnikání func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=dojít func=PAT => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=dostat func=ADDR => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: mr=N2 func=MANN => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N mr=včetně+N2 => func=ACMP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zápas afun=Adv cas=6 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok afun=ExD pafun=Pnom => func=TWHEN
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=kolo afun=Adv pch=2 => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=případ cas=6 pspos=s => func=TWHEN
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=už pafun=Adv pspos=p => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=skončit mr=když+V => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=C pafun=Atr func=LOC => func=TWHEN
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 mr=za+N2 func=PAT => func=TWHEN
+GOOD:3 BAD:1 SCORE:2 RULE: pos=N plemma=být func=DIR3 => func=TTILL
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=upravovat pch=0 => func=TOWH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pár afun=Adv pspos=B => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=půl pos=N func=TWHEN => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=doba pspos=p func=TFHL => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=dovoz mr=za+N4 => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Pred pspos=s mr=N4 => func=THL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=den afun=Atr cas=4 => func=TFHL
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=věk afun=Atr cas=6 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=hodnota cas=6 ppos=N => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Praha ch=1 pafun=ExD => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=rok plemma=splatnost pafun=Adv => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr ch=2 plemma=strana => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=názor pafun=Pnom => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=náměstí pafun=Atr => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj ppos=N mr=P4 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=dílo pch=0 => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: spos=g ch=1 plemma=###### => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=###### mr=V func=MANN => func=RSTR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=strana afun=Adv pafun=Obj => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=strana afun=Adv pspos=s => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=KB ch=1 plemma=být => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv cas=3 plemma=říci => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 ch=0 plemma=projevovat => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 pspos=B mr=k+vzhledem+N3 => func=REG
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zbraň afun=Atr ch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=peníze afun=Atr pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tenis ch=0 pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=daň ch=0 pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=život ch=2 pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=kolo pafun=Atr pch=0 => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=proces pspos=B pch=2 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr pos=N pspos=G => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj spos=5 pspos=p => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb cas=4 pspos=p => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb ch=0 plemma=vytáhnout => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=dělit pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=udržet pafun=Adv => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=najít pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=psát pafun=Obj => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb plemma=projednávat pspos=B => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=ošetření pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=přijetí pch=1 => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: afun=Obj plemma=být mr=V => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Pred pafun=Pred pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr pch=1 mr=zda+V => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD pch=1 func=CPHR => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=2 plemma=podmínka => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=vítěz pafun=Atr => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: pos=N plemma=požadavek pafun=Obj => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: pos=N plemma=vyžadovat pspos=B => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=obraz ch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=říci pch=1 => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: cas=4 ch=1 plemma=zaplatit => func=PAT
+GOOD:3 BAD:1 SCORE:2 RULE: cas=2 plemma=obraz func=AUTH => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=###### pch=2 func=PAR => func=PAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=: ppos=N mr=Z => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Pnom pos=V pspos=s => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv cas=1 pafun=Adv => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD plemma=stávat pafun=Atr => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=prohra pch=1 => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=2 plemma=sekce => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=C plemma=porážka pch=2 => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: ppos=V mr=V func=CPR => func=PAR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Coord pos=Z func=PAT => func=OPER
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr pafun=Obj mr=za+N2 => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 pafun=ExD func=ACT => func=MEANS
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=0 plemma=minimum => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=0 plemma=díl => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=okruh pafun=Obj => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=ha pch=1 => func=MAT
+GOOD:3 BAD:1 SCORE:2 RULE: ch=1 plemma=polovina pch=0 => func=MAT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=doprovod afun=Adv ch=1 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=význam afun=Adv ch=1 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=forma afun=Adv pafun=Pred => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=stav afun=Adv pafun=Obj => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD pos=D func=PAT => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj cas=7 plemma=naplnit => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv cas=6 plemma=podíl => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: pos=A plemma=rozhodnutí pafun=Adv => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: cas=7 plemma=daný pch=0 => func=MANN
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=mít plemma=mít func=PAT => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr ch=2 mr=rámec+v+N2 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=0 plemma=vystupovat => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 pafun=Obj mr=nad+N7 => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=stát pspos=f func=TWHEN => func=LOC
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=obraz mr=N1 => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=systém mr=N => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=společnost mr=N => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=0 plemma=téma => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=báseň pafun=AtrAtr => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=pořad pafun=Adv => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=typ pafun=Atr => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=automobil func=RSTR => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=klub mr=N func=RSTR => func=ID
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=zůstat mr=po+N6 => func=HER
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ani afun=Coord pspos=f => func=GRAD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ale pafun=Adv ppos=N => func=GRAD
+GOOD:2 BAD:0 SCORE:2 RULE: pos=T ch=2 ppos=V => func=GRAD
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výše afun=Adv ch=2 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=spíše afun=ExD pafun=Atr => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=částka cas=4 pvoi=- => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=polovina ch=1 plemma=tvořit => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=co ch=1 ppos=A => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=spíše ch=1 pch=2 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=výrazný pafun=Obj pch=2 => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxZ pafun=Pnom ppos=C => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=D pafun=ExD func=RSTR => func=EXT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=předpokládat pafun=Sb => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: spos=f ch=2 plemma=oznámit => func=EFF
+GOOD:4 BAD:2 SCORE:2 RULE: spos=B plemma=domnívat mr=že+V => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: pspos=s mr=na+N2 func=PAT => func=EFF
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=vidět pafun=Adv => func=DPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=či plemma=být mr=V => func=DISJ
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=či pafun=Adv pch=1 => func=DISJ
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=já plemma=přijít pch=1 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=vrátit pafun=Pred mr=k+N3 => func=DIR3
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv ch=1 plemma=kráčet => func=DIR2
+GOOD:2 BAD:0 SCORE:2 RULE: pos=V plemma=velký pch=0 => func=DIFF
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=záruka afun=Obj ch=2 => func=CPHR
+GOOD:3 BAD:1 SCORE:2 RULE: lemma=informace cas=4 ch=2 => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=názor cas=4 pch=1 => func=CPHR
+GOOD:3 BAD:1 SCORE:2 RULE: afun=Obj ch=2 plemma=zaznamenat => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj ch=2 plemma=nést => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj ch=2 plemma=přijít => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=zaujmout pafun=Atr => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=podat pafun=Pred => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=vyvolat pafun=Pred => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj plemma=vyslovovat pch=2 => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=mít pafun=Obj mr=N2 => func=CPHR
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxX pspos=B mr=N4 => func=CONJ
+GOOD:3 BAD:1 SCORE:2 RULE: afun=Atr pch=0 mr=při+N6 => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: cas=6 plemma=stačit func=TWHEN => func=COND
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 pch=1 mr=při+N6 => func=COND
+GOOD:4 BAD:2 SCORE:2 RULE: lemma=také afun=AuxZ ppos=N => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dokonce pafun=Obj ppos=N => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv pch=0 func=PREC => func=CM
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv plemma=snížit mr=pro+N4 => func=CAUS
+GOOD:2 BAD:0 SCORE:2 RULE: ch=0 pch=0 mr=proti+N3 => func=BEN
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Sb pch=1 mr=proti+N3 => func=BEN
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=studie pafun=Atr func=APP => func=AUTH
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=tak afun=Adv ppos=N => func=ATT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=AuxX ch=2 plemma=###### => func=APPS
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=televize afun=Atr cas=X => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=republika afun=Atr func=PAT => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=armáda cas=2 ch=1 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=Rusko ch=0 mr=N2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=ministerstvo pch=2 func=PAT => func=APP
+GOOD:3 BAD:1 SCORE:2 RULE: afun=Atr plemma=listopad pafun=Adv => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Adv mr=N2 func=PAT => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=jednotka pch=2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 pafun=Sb mr=A2 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=práce pch=0 mr=P4 => func=APP
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=provoz cas=4 pch=1 => func=AIM
+GOOD:3 BAD:1 SCORE:2 RULE: pos=N plemma=podmínka pafun=Sb => func=AIM
+GOOD:4 BAD:2 SCORE:2 RULE: spos=f pafun=Obj mr=aby+V => func=AIM
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Obj ch=0 plemma=přimět => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N plemma=klást mr=na+N4 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: cas=1 plemma=přirovnávat pspos=s => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Obj pspos=p mr=N3 => func=ADDR
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=světlo afun=Atr cas=2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=žena afun=Atr pafun=Pred => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=dítě afun=Pnom pafun=Pred => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=země afun=Atr pafun=Pred => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=člověk afun=Atr pafun=Pred => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=zaměstnanec afun=Atr ppos=V => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=pracovník afun=Atr pspos=p => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=člen afun=Atr func=PAT => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=banka cas=2 func=PAT => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=růst ch=1 func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: lemma=strana pafun=Obj pch=1 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=ExD pos=A func=TWHEN => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Sb spos=l plemma=být => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=zvýšení pch=0 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=produkce mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr plemma=mít mr=V => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: afun=Atr pspos=p mr=A2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pos=N ch=0 plemma=podpora => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: spos=S cas=3 pch=2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=1 plemma=akce mr=N2 => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=2 plemma=vedení func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: ch=2 plemma=postup func=APP => func=ACT
+GOOD:3 BAD:1 SCORE:2 RULE: plemma=zájem pafun=Sb func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=argument pch=0 func=APP => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: plemma=být pch=1 func=MEANS => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=AtvV ppos=V func=PAT => func=ACT
+GOOD:2 BAD:0 SCORE:2 RULE: pafun=Pred pspos=p mr=C2 => func=ACT
