@@ -39,11 +39,11 @@ sub parser_start {
     $parser->expand_entities(0);
   }
   my $doc;
-  print STDERR "parsing file $file\n";
+  # print STDERR "parsing file $file\n";
   eval {
       $doc=$parser->parse_file($file);
   };
-  print STDERR "$@\ndone\n";
+  # print STDERR "$@\ndone\n";
   die "$@\n" if $@;
   $doc->indexElements() if ref($doc) and $doc->can('indexElements');
   return ($parser,$doc);

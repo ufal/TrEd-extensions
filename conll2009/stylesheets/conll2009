@@ -1,52 +1,64 @@
 context: .*
 rootstyle:#{NodeLabel-skipempty:1}#{skipHiddenLevels:1}#{skipHiddenParents:1}
 rootstyle:<?
-   %Conll2009::fillcolors = qw(A0 lightblue ACT lightblue AUTH lightblue arg0-agt lightblue C-A0 lightblue R-A0 lightblue GA lightblue GA2 lightblue
+   %Conll2009::fillcolors = qw(A0 blue ACT blue AUTH blue arg0-agt blue C-A0 blue R-A0 blue GA blue GA2 blue
                       A1 orange PAT orange arg1-pat orange C-A1 orange WO orange
                       A2 violet EFF violet arg1-tem violet NO violet
-                      A3 darkcyan ORIG darkcyan TO darkcyan
-                      A4 lightgreen ADDR lightgreen argM-fin lightgreen arg2-fin lightgreen NI lightgreen
+                      A3 darkgreen ORIG darkgreen TO darkgreen
+                      A4 darkred ADDR darkred argM-fin darkred arg2-fin darkred NI darkred
                       A5 red arg4-des red arg2-efi red DE red
                       A6 green NoGap green
                       DIR1 brown DIR2 brown DIR3 brown LOC brown argM-loc brown arg2-loc brown AM-LOC brown NO brown
-                      TWHEN cyan THL cyan TTILL cyan TSIN cyan TPAR cyan THO cyan TFHL cyan TFRWH cyan TOWH cyan argM-tmp cyan AM-TMP cyan TMP cyan
-                      COMPL green COMPL2 green
+                      TWHEN darkcyan THL darkcyan TTILL darkcyan TSIN darkcyan TPAR darkcyan THO darkcyan TFHL darkcyan TFRWH darkcyan TOWH darkcyan argM-tmp darkcyan AM-TMP darkcyan TMP darkcyan
+                      COMPL darkcyan COMPL2 darkcyan
                      );
 ?>
 
 style:<? $this==$root ? '#{Node-hide:1}' : '' ?>
-node:${form}
-node:#{darkblue}${deprel}<? 
-  join'',map {' #{'.($Conll2009::fillcolors{$_->{label}} || 'gray').'}'. 
+node:${form}<? $${pred} ? ' (#{purple(}${pred}#{)})' : ''?>
+node:#{darkblue}${deprel}<? $${pos} ? ' ' : '' ?>#{gray}${pos}
+node:<? 
+  join' ',map {'#{'.($Conll2009::fillcolors{$_->{label}} || 'gray').'}'. 
                $_->{label} } ListV($this->{apreds}); 
 ?>
-node:#{brown}${lemma}<? $${pos} ? ' ' : '' ?>#{gray}${pos}<? $${pred} ? ' ' : '' ?>#{purple}${pred}
+xxnode:#{brown}${lemma}<? $${pos} ? ' ' : '' ?>
+node:
+
 text:${form}
 
 
 style: <?
-  my ($coords,$fill,$main_fill,$hint,$arr,$smth,$dash);
+  my ($coords,$fill,$main_fill,$hint,$arr,$smth,$dash,$ashape);
   foreach my $apred (ListV($this->{apreds})) {
     my ($ref,$label) = ($apred->{'target.rf'}, $apred->{'label'});
     my $color = $Conll2009::fillcolors{$label} || 'gray';
     if (!$main_fill and $ref eq $this->parent->{'xml:id'}) {
        $main_fill=$color;
        $hint=$label.$hint;
+       $arr='first'.$arr;
+       $ashape='10,16,4'.$ashape;
        next;
     }
     my $T = qq{[! PML::GetNodeByID('$ref') !]};
+    my $X="(x$T-xn)";
+    my $Y="(y$T-yn)";
+    my $D="sqrt($X**2+$Y**2)";
+
    $coords .=  ($ref eq $${xml:id})
                    ?  qq[&n,n,(n+x$T)/2-60,(n+y$T)/2-30,(n+x$T)/2-60,(n+y$T)/2+30,x$T,y$T]
-                   :  qq[&n,n,(n+x$T)/2-60,(n+y$T)/2+60,x$T,y$T];
+                   : qq[&xn,yn,(x$T+xn)/2 - $Y*(35/$D+0.12),(y$T+yn)/2 + $X*(35/$D+0.12),x$T,y$T];
+
     $fill .= '&'.$color;
     $hint.='&'.$label;
     $arr .= '&first';
+    $ashape .= '&10,16,4';
     $smth .= '&1';
     $dash .= '&5,3';
   }
   $main_fill||='black';
-  "#{Line-coords:n,n,p,p$coords}#{Line-fill:$main_fill$fill}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}#{Line-hint:$hint}"
+  "#{Line-coords:n,n,p,p$coords}#{Line-fill:$main_fill$fill}#{Line-arrowshape:$ashape}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}#{Line-hint:$hint}"
 ?>
+
 
 
 hint:<? join "\n",grep /\S/,split /\|/,$${feat} ?>

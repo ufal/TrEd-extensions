@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="5586">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="5587">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>show_valency</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Highlight Valency in PDT Trees</title>
-  <version>1.7</version>
+  <version>1.20</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>PDT 2.0-specific mode derived from PML_T_View. It
   highlights obligatory nodes according to assigned valency frames.

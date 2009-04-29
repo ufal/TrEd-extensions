@@ -14,12 +14,12 @@ sub parser_start {
   $parser->keep_blanks(-1);
   $parser->indent(3);
   my $doc;
-  print STDERR "parsing file $file\n";
+  # print STDERR "parsing file $file\n";
   eval {
     $doc = $parser->parse_file($file);
   };
   die "$@\n" if $@;
-  print STDERR "done\n";
+  # print STDERR "done\n";
   return ($parser,$doc);
 }
 
@@ -32,13 +32,13 @@ sub doc_reload {
   my ($self)=@_;
   my $parser=$self->parser();
   return unless $parser;
-  print STDERR "parsing file ",$self->file,"\n";
+  # print STDERR "parsing file ",$self->file,"\n";
   eval {
     my $doc=$parser->parse_file($self->file);
     $self->set_doc($doc);
 
   };
-  print STDERR "$@\ndone\n";
+  # print STDERR "$@\ndone\n";
 }
 
 sub save {

@@ -95,7 +95,7 @@ apreds='<member name="apreds" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
     </structure>
   </list>
 </member>
-<member role="#ID" name="xml:id" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
+<member role="#ID" name="xml:id" as_attribute="1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
   <cdata format="ID"/>
 </member>'
 apreds=$(echo "$apreds" | tr '\n' ' ')
