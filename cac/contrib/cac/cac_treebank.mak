@@ -7,8 +7,8 @@ BEGIN { import TredMacro; }
 use vars qw(%ORIGA_INFO %ORIGT_INFO %ORIGS_INFO @ORIGT_INFO);
 
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  if ($grp->{FSFile}->FS->exists->{x_origt} and
-	$grp->{FSFile}->FS->exists->{x_origa}) {
+  if ($grp->{FSFile}->FS->exists('x_origt') and
+	$grp->{FSFile}->FS->exists('x_origa')) {
     return 'AcademicTreebank';
   }
   return;
