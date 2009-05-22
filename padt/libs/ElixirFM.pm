@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 840 2009-04-13 21:28:15Z smrz $
+# $Id: ElixirFM.pm 848 2009-04-30 18:18:24Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 840 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 848 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -715,7 +715,9 @@ sub morphs {
 
     my (@fields) = $_[0];
 
-    my $morphs = [ undef, [], [] ];
+    my $morphs = [ $_[0], [], [] ];
+
+    return $morphs if $_[0] eq '';
 
     @fields = split /(?<!\") \>\| |(?<=\") \>\>\| /, $fields[-1];
 
@@ -1076,7 +1078,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 840 $        $Date: 2009-04-13 23:28:15 +0200 (Mon, 13 Apr 2009) $
+    $Revision: 848 $        $Date: 2009-04-30 20:18:24 +0200 (Thu, 30 Apr 2009) $
 
 
 =head1 SYNOPSIS

@@ -2,7 +2,7 @@
 #
 # Encoding of Arabic: ArabTeX Notation by Klaus Lagally ############################ 2003/06/19
 
-# $Id: ArabTeX.pm 717 2008-10-02 22:28:12Z smrz $
+# $Id: ArabTeX.pm 842 2009-04-20 19:18:56Z smrz $
 
 package Encode::Arabic::ArabTeX;
 
@@ -14,7 +14,7 @@ use warnings;
 use Scalar::Util 'blessed';
 use Carp;
 
-our $VERSION = do { q $Revision: 717 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 842 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
 use Encode::Encoding;
@@ -2379,7 +2379,7 @@ Encode::Arabic::ArabTeX - Interpreter of the ArabTeX notation of Arabic
 
 =head1 REVISION
 
-    $Revision: 717 $             $Date: 2008-10-03 00:28:12 +0200 (Fri, 03 Oct 2008) $
+    $Revision: 842 $             $Date: 2009-04-20 21:18:56 +0200 (Mon, 20 Apr 2009) $
 
 
 =head1 SYNOPSIS
