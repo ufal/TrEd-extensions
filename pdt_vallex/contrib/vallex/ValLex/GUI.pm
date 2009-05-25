@@ -100,11 +100,11 @@ sub InfoDialog {
 }
 
 sub close_ValencyLexicon {
-  if ($chooserDialog) {
+  if (ref $chooserDialog) {
     $chooserDialog->destroy_dialog();
     undef $chooserDialog;
   }
-  if ($vallexEditor) {
+  if (ref $vallexEditor) {
     $vallexEditor->destroy();
     undef $vallexEditor;
   }
@@ -565,7 +565,7 @@ sub DisplayFrame {
   my $top=ToplevelFrame();
   if (ref($chooserDialog) and
       scalar(@{$chooserDialog->subwidget('framelists')}) !=
-      scalar(@{$field}/2)) {
+      int(@{$field}/2)) {
     $chooserDialog->destroy_dialog();
     undef $chooserDialog;
   }

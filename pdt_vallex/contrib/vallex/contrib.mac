@@ -8,7 +8,7 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   my $resuming = ($hook eq 'file_resumed_hook');
   my $current = CurrentContext();
   if (PML::SchemaName() eq 'valency_lexicon') {
-    SetCurrentStylesheet('Vallex') if $resuming;
+    SetCurrentStylesheet('PML_Vallex') if $resuming;
     return 'PML_Vallex';
   }
   return;
@@ -16,11 +16,13 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
 
 
 {
-  use lib TredMacro::CallerDir();
-  package ValLex::GUI; # so that it can get deleted
-  BEGIN {
-    require ValLex::GUI;
-  }
+
+package ValLex::GUI; # so that it gets deleted
+use lib TredMacro::CallerDir();
+BEGIN {
+  require ValLex::GUI;
+}
+
 }
 
 #include "non_gui.mak"

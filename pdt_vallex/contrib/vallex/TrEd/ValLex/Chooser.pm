@@ -46,7 +46,6 @@ sub create_toplevel {
 
   my $d = $top->Toplevel(-title => $title);
   $d->withdraw;
-  $d->focusmodel('active');
   $d->bind('all','<Tab>',[sub { shift->focusNext; }]);
   my $top = $d->Frame();
   my $bot = $d->Frame();
@@ -102,6 +101,8 @@ sub create_toplevel {
   $chooser->widget->focus;
 #  $d->resizable(0,0);
   $d->Popup;
+  $d->focusmodel('active');
+
   return $chooser;
 }
 
