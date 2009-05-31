@@ -51,23 +51,26 @@ style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :
 
 node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
                                       and $this->{comment} ne ''
-   ?><? $this->{'#name'} =~ /^(?:Component|Token|Partition)$/
+   ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
-                ? ( '#{purple}' . ( join ", ", @{$this->{'core'}{'reflex'}} ) . ' ' .
+                ? ( '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ? @{$this->{'core'}{'reflex'}} : () ) . ' ' .
                     '#{gray}${idx} #{darkmagenta}' .
                     ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
                 : (
-                $this->{'#name'} =~ /^(?:Element|Paragraph)$/
-                    ? ( $this->{apply} > 0
-                        ? '#{black}${idx} #{gray}${lookup} #{red}${input}'
-                        : '#{black}${idx} #{gray}${lookup} #{black}${input}'
-                    )
-                    : ( $this->{apply} > 0
-                        ? '  #{red}${input}'
-                        : '  #{black}${input}'
-                    ) ) ) ?>
+                $this->{'#name'} =~ /^(?:Component|Partition)$/
+                    ? $this->{'form'}
+                    : (
+                    $this->{'#name'} =~ /^(?:Element|Paragraph)$/
+                        ? ( $this->{apply} > 0
+                            ? '#{black}${idx} #{gray}${lookup} #{red}${input}'
+                            : '#{black}${idx} #{gray}${lookup} #{black}${input}'
+                        )
+                        : ( $this->{apply} > 0
+                            ? '  #{red}${input}'
+                            : '  #{black}${input}'
+                        ) ) ) ) ?>
 
 node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Token'
                                         and $this->{comment} ne ''
@@ -275,7 +278,9 @@ sub annotate_morphology_click {
 #bind switch_either_context Shift+space menu Switch Either Context
 sub switch_either_context {
 
-    $Redraw = 'win' if $_[0] eq __PACKAGE__;
+    $Redraw = 'win' unless $Redraw eq 'file' or $Redraw eq 'tree';
+
+    ChangingFile(0);
 
     my $quick = $_[0];
     my @refs;
@@ -323,9 +328,6 @@ sub switch_either_context {
             $this = $refs[2] if defined $refs[2];
         }
     }
-
-    $Redraw = 'win';
-    ChangingFile(0);
 }
 
 #bind move_to_prev_paragraph Shift+Prior menu Move to Prev Paragraph
@@ -760,7 +762,7 @@ sub elixir_resolve {
 
         my $reply = Exec::ElixirFM::elixir 'resolve', join " ", map { $_->{'input'} } $root->children();
 
-        foreach (ElixirFM::unpretty($reply, 'resolve')) {
+        foreach (ElixirFM::unpretty $reply) {
 
             NextTree();
 
@@ -771,7 +773,7 @@ sub elixir_resolve {
 
         my $reply = Exec::ElixirFM::elixir 'resolve', $root->{'input'};
 
-        foreach (ElixirFM::unpretty($reply, 'resolve')) {
+        foreach (ElixirFM::unpretty $reply) {
 
             morphotrees($root, $_);
         }
@@ -863,7 +865,8 @@ sub morphotrees {
 #bind annotate_morphology to space menu Annotate Morphology
 sub annotate_morphology {
 
-    $Redraw = 'none' if $_[0] eq __PACKAGE__;
+    $Redraw = 'win' unless $Redraw eq 'file' or $Redraw eq 'tree';
+
     ChangingFile(0);
 
     # indicated below when the file or the redraw mode actually change
@@ -885,7 +888,8 @@ sub annotate_morphology {
     }
 
     my ($quick, @tips) = @_;
-    my (@children, $diff, $reflect);
+
+    my (@children, $diff, $done, $word);
 
     my $node = $this;
 
@@ -904,81 +908,58 @@ sub annotate_morphology {
 
             $diff = $node->{'apply'} == 0 ? 1 : $node == $this ? -1 : 0;
 
-            unless ($diff == 0) {
+            $done = $node;
+
+            $node->{'apply'} += $diff;
+
+            while ($node = $node->parent()) {
+
+                if ($node->{'#name'} eq 'Partition') {
+
+                    @children = grep { $_->{'apply'} < 1 } $node->children();
+
+                    if ($diff == -1) {
+
+                        last if not @children or not $node->{'apply'} == 1;
+                    }
+                    else {
+
+                        last if @children or $node->{'apply'} == 1;
+                    }
+                }
 
                 $node->{'apply'} += $diff;
+            }
 
-                $reflect = reflect_choice($node, $diff);
+            unless ($diff == 0) {
+
+                $word = reflect_choice($done, $diff);
+
+                unless ($node) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
+
+                    $word->{'apply'} = $root->{'apply'};
+
+                    $word->{'hide'} = $paragraph_hide_mode eq 'hidden' && $word->{'apply'} > 0 ? 'hide' : '';
+                }
 
                 $Redraw = 'file';
+
                 ChangingFile(1);
             }
 
-            if ($diff == -1) {
-
-                while ($node = $node->parent()) {
-
-                    if ($node->{'#name'} eq 'Partition') {
-
-                        @children = grep { $_->{'apply'} < 1 } $node->children();
-
-                        last unless @children and $node->{'apply'} > 0;
-                    }
-
-                    $node->{'apply'}--;
-                }
-
-                unless ($node) {    # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
-
-                    $reflect->{'apply'} = $root->{'apply'};
-                    $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply'} > 0 ? 'hide' : '';
-                }
-            }
-            else {
-
-                $node->{'apply'} = 1;
-
-                while ($node = $node->parent()) {
-
-                    if ($node->{'#name'} eq 'Partition') {
-
-                        @children = grep { $_->{'apply'} < 1 } $node->children();
-
-                        last if @children or $node->{'apply'} == 1 or $diff == 0;
-                    }
-
-                    $node->{'apply'} += $diff;
-                }
+            unless ($diff == -1) {
 
                 if (@children) {
 
                     $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
 
-                    if (defined $this->{'tips'} and $this->{'tips'} == 0) {
-
-                        my $myRedraw = $Redraw;
-
-                        remove_inherited_restrict();
-
-                        $Redraw = $myRedraw if $myRedraw eq 'file';
-                    }
+                    remove_inherited_restrict() if defined $this->{'tips'} and $this->{'tips'} == 0;
 
                     annotate_morphology($quick eq 'click' ? $quick : undef);
                 }
                 else {
 
-                    unless ($node or $diff == 0) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
-
-                        $reflect->{'apply'} = $root->{'apply'};
-                        $reflect->{'hide'} = $paragraph_hide_mode eq 'hidden' && $reflect->{'apply'} > 0 ? 'hide' : '';
-                    }
-
-                    unless (defined $quick and $quick eq 'click') {
-
-                        NextTree();
-
-                        $Redraw = 'win' if $Redraw eq 'none';
-                    }
+                    NextTree() unless defined $quick and $quick eq 'click';
                 }
             }
         }
@@ -1015,112 +996,65 @@ sub reflect_choice {
     my ($leaf, $diff) = @_;
     my ($roox, $thix) = ($root, $this);
 
-    switch_either_context('quick');
-
-    main::save_undo($grp, main::prepare_undo($grp)) if TredMacro::GUI();
-
-    my $reflect = $this;
     my $twig = $leaf->parent();
 
-    my $node = get_the_node($reflect, $twig->{'ord'});
+    $leaf->{'id'} = '';
+    $twig->{'id'} = '';
 
-    if ($diff == -1) {
+    switch_either_context('quick');
 
-        my $clip = get_the_node($node, $leaf->{'ord'});
+    # main::save_undo($grp, main::prepare_undo($grp)) if TredMacro::GUI();
 
-        CutNode($clip);
-        CutNode($node) and $diff-- unless $node->children();
+    my $clip = $this;
 
-        $node = $root;
+    my $word = CopyNode($clip);
 
-        do {
+    PasteNodeBefore($word, $clip);
 
-            $node->{'ord'} += $diff if $node->{'ord'} > $clip->{'ord'};
+    CutNode($clip);
+
+    $this = $word;
+
+    my @lexeme = grep { $_->{'apply'} > 0 } map { $_->children() }
+                 grep { $_->{'apply'} > 0 } map { $_->children() } $roox->children();
+
+    for (my $i = @lexeme; $i > 0; $i--) {
+
+        $lexeme[$i - 1]->{'id'} = $roox->{'id'} . 'l' . $i;
+
+        my $node = CopyNode($lexeme[$i - 1]);
+
+        PasteNode($node, $word);
+
+        $node->{'id'} = $word->{'id'} . 'l' . $i;
+        $node->{'ref'} = $lexeme[$i - 1]->{'ord'};
+
+        my @token = grep { $_->{'apply'} > 0 } $lexeme[$i - 1]->children();
+
+        for (my $j = @token; $j > 0; $j--) {
+
+            $token[$j - 1]->{'id'} = $lexeme[$i - 1]->{'id'} . 't' . $j;
+
+            my $done = CopyNode($token[$j - 1]);
+
+            PasteNode($done, $node);
+
+            $done->{'id'} = $node->{'id'} . 't' . $j;
+            $done->{'ref'} = $token[$j - 1]->{'ord'};
         }
-        while $node = $node->following();
     }
-    else {
 
-        unless ($node->{'ref'} eq $twig->{'ord'}) {
+    my $ord = $word->{'ord'};
 
-            $node->{$_} = $twig->{$_} for qw 'form comment score idx';
-            $node->{'ref'} = $twig->{'ord'};
-            $node->{'apply'} = 1;
+    $this->{'ord'} = ++$ord while $this = $this->following();
 
-            $node->{'id'} = $node->parent()->{'id'} . 'l' . $node->{'ref'};
-        }
-
-        $node = get_the_node($node, $leaf->{'ord'});
-
-        unless ($node->{'ref'} eq $leaf->{'ord'}) {
-
-            $node->{$_} = $leaf->{$_} for qw 'form comment score tag gloss';
-            $node->{'ref'} = $leaf->{'ord'};
-            $node->{'apply'} = 1;
-
-            $node->{'id'} = $node->parent()->{'id'} . 'f' . $node->{'ref'};
-        }
-    }
+    $this = $word;
 
     switch_either_context();
 
     ($root, $this) = ($roox, $thix);
 
-    return $reflect;
-}
-
-
-sub get_the_node {
-
-    my ($parent, $id) = @_;
-
-    my (@children, $node, $find, $i);
-
-    if (@children = $parent->children()) {
-
-        for ($i = -1; $i >= -@children; $i--) {
-
-            last if $children[$i]->{'ref'} <= $id;
-        }
-
-        if ($i < -@children) {
-
-            $node = $find = $children[0];
-
-            while ($node = $node->following($children[0])) {
-
-                $find = $node if $node->{'ord'} < $find->{'ord'};
-            }
-
-            $node = CutNode(NewLBrother($find));
-            PasteNode($node, $parent);
-            DetermineNodeType($node);
-        }
-        elsif ($children[$i]->{'ref'} == $id) {
-
-            $node = $children[$i];
-        }
-        else {
-
-            $node = $find = $children[$i];
-
-            while ($node = $node->following($children[$i])) {
-
-                $find = $node if $node->{'ord'} > $find->{'ord'};
-            }
-
-            $node = CutNode(NewRBrother($find));
-            PasteNode($node, $parent);
-            DetermineNodeType($node);
-        }
-    }
-    else {
-
-        $node = NewSon($parent);
-        DetermineNodeType($node);
-    }
-
-    return $node;
+    return $word;
 }
 
 
@@ -1139,7 +1073,8 @@ sub restrict_hide {
 
     return unless $root->{'#name'} eq 'Element';
 
-    $Redraw = 'tree';   # be careful in annotate_morphology()
+    $Redraw = 'tree' unless $Redraw eq 'file';
+
     ChangingFile(1);
 
     my ($restrict, $context) = @_;

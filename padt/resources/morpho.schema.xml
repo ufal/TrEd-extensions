@@ -92,7 +92,7 @@
 
     <type name="Partition.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
@@ -112,7 +112,7 @@
 
     <type name="Component.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
@@ -132,7 +132,7 @@
 
     <type name="Lexeme.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
@@ -156,7 +156,7 @@
 
     <type name="Token.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
             <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
