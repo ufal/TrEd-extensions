@@ -29,7 +29,6 @@
     <type name="Paragraph.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="input" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
@@ -49,7 +48,6 @@
     <type name="Word.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="input" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
@@ -69,7 +67,6 @@
     <type name="Element.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="input" type="String.type"/>
             <member name="lookup" type="String.type"/>
             <member name="form" type="String.type"/>
@@ -93,7 +90,6 @@
     <type name="Partition.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="apply" type="String.type"/>
@@ -113,7 +109,6 @@
     <type name="Component.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="apply" type="String.type"/>
@@ -133,7 +128,6 @@
     <type name="Lexeme.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
@@ -157,7 +151,6 @@
     <type name="Token.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>

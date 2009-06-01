@@ -55,7 +55,10 @@ node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
-                ? ( '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ? @{$this->{'core'}{'reflex'}} : () ) . ' ' .
+                ? ( ( $root->{'#name'} eq 'Element'
+                        ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
+                                                            @{$this->{'core'}{'reflex'}} : () ) . ' '
+                        : '' ) .
                     '#{gray}${idx} #{darkmagenta}' .
                     ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
                 : (
@@ -283,7 +286,8 @@ sub switch_either_context {
     ChangingFile(0);
 
     my $quick = $_[0];
-    my @refs;
+
+    my $node = $this;
 
     if ($root->{'#name'} eq 'Paragraph') {
 
@@ -297,8 +301,6 @@ sub switch_either_context {
         }
         else {
 
-            $refs[0] = $this->{'ref'};
-
             if ($this->{'#name'} eq 'Lexeme') {
 
                 GotoTree($this->parent()->{'ref'});
@@ -308,24 +310,26 @@ sub switch_either_context {
                 GotoTree($this->parent()->parent()->{'ref'});
             }
 
-            $this = ($root->descendants())[$refs[0] - 1];
+            ($node) = grep { $_->{'id'} eq $node->{'ref'} } map { $_, $_->children() }
+                      grep { $_->{'apply'} > 0 } map { $_->children() }
+                      grep { $_->{'apply'} > 0 } map { $_->children() } $root->children();
+
+            $this = $node if defined $node;
         }
     }
     else {
 
-        ($refs[0]) = $root->{'idx'} =~ /([0-9]+)$/;
-
-        $refs[1] = $this->{'ord'} unless $quick eq 'quick';
+        my ($refs) = $root->{'id'} =~ /([0-9]+)$/;
 
         GotoTree($root->{'ref'});
 
-        $this = ($root->children())[$refs[0] - 1];
+        $this = ($root->children())[$refs - 1];
 
-        unless ($quick eq 'quick') {
+        if ($quick ne 'quick' and $node->{'#name'} =~ /^(?:Lexeme|Token)$/) {
 
-            ($refs[2]) = grep { $_->{'ref'} eq $refs[1] } $this->descendants();
+            ($node) = grep { $_->{'ref'} eq $node->{'id'} } $this->descendants();
 
-            $this = $refs[2] if defined $refs[2];
+            $this = $node if defined $node;
         }
     }
 }
@@ -1027,7 +1031,7 @@ sub reflect_choice {
         PasteNode($node, $word);
 
         $node->{'id'} = $word->{'id'} . 'l' . $i;
-        $node->{'ref'} = $lexeme[$i - 1]->{'ord'};
+        $node->{'ref'} = $lexeme[$i - 1]->{'id'};
 
         my @token = grep { $_->{'apply'} > 0 } $lexeme[$i - 1]->children();
 
@@ -1040,15 +1044,9 @@ sub reflect_choice {
             PasteNode($done, $node);
 
             $done->{'id'} = $node->{'id'} . 't' . $j;
-            $done->{'ref'} = $token[$j - 1]->{'ord'};
+            $done->{'ref'} = $token[$j - 1]->{'id'};
         }
     }
-
-    my $ord = $word->{'ord'};
-
-    $this->{'ord'} = ++$ord while $this = $this->following();
-
-    $this = $word;
 
     switch_either_context();
 
