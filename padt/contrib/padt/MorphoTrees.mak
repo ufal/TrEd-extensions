@@ -937,7 +937,7 @@ sub annotate_morphology {
 
             unless ($diff == 0) {
 
-                $word = reflect_choice($done, $diff);
+                $word = reflect_choice($done);
 
                 unless ($node) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
 
@@ -997,13 +997,12 @@ sub annotate_morphology {
 
 sub reflect_choice {
 
-    my ($leaf, $diff) = @_;
-    my ($roox, $thix) = ($root, $this);
-
-    my $twig = $leaf->parent();
+    my ($leaf, $twig) = ($_[0], $_[0]->parent());
 
     $leaf->{'id'} = '';
     $twig->{'id'} = '';
+
+    my ($roox, $thix) = ($root, $this);
 
     switch_either_context('quick');
 
@@ -1033,6 +1032,10 @@ sub reflect_choice {
         $node->{'id'} = $word->{'id'} . 'l' . $i;
         $node->{'ref'} = $lexeme[$i - 1]->{'id'};
 
+        delete $node->{'restrict'};
+        delete $node->{'inherit'};
+        delete $node->{'tips'};
+
         my @token = grep { $_->{'apply'} > 0 } $lexeme[$i - 1]->children();
 
         for (my $j = @token; $j > 0; $j--) {
@@ -1045,6 +1048,10 @@ sub reflect_choice {
 
             $done->{'id'} = $node->{'id'} . 't' . $j;
             $done->{'ref'} = $token[$j - 1]->{'id'};
+
+            delete $done->{'restrict'};
+            delete $done->{'inherit'};
+            delete $done->{'tips'};
         }
     }
 
