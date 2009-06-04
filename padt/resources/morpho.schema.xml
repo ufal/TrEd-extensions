@@ -187,4 +187,82 @@
         </structure>
     </type>
 
+    <type name="Entity.type">
+        <sequence content_pattern="(Verb|Noun|Adj|Pron|Num|Adv|Prep|Conj|Part|Intj|Xtra|Ynit|Zero|Grph)?">
+            <element name="Verb">
+                <structure>
+                    <member name="form" required="1">
+                        <list type="Form.type" ordered="1"/>
+                    </member>
+                    <member name="pfirst">
+                        <list type="Pattern.type" ordered="1"/>
+                    </member>
+                    <member name="imperf">
+                        <list type="Pattern.type" ordered="1"/>
+                    </member>
+                    <member name="second">
+                        <list type="Pattern.type" ordered="1"/>
+                    </member>
+                    <member name="tense" type="Tense.type"/>
+                    <member name="voice" type="Voice.type"/>
+                    <member name="masdar">
+                        <list type="Morphs.type" ordered="1"/>
+                    </member>
+                </structure>
+            </element>
+            <element name="Noun">
+                <structure>
+                    <member name="plural" type="Plural.type"/>
+                    <member name="gender" type="Gender.type"/>
+                    <member name="number" type="Number.type"/>
+                    <member name="derive" type="Derive.type"/>
+                    <member name="except" type="Except.type"/>
+                </structure>
+            </element>
+            <element name="Adj" >
+                <structure>
+                    <member name="plural" type="Plural.type"/>
+                    <member name="femini" type="Femini.type"/>
+                    <member name="number" type="Number.type"/>
+                </structure>
+            </element>
+            <element name="Pron">
+                <container/>
+            </element>
+            <element name="Num">
+                <structure>
+                    <member name="plural" type="Plural.type"/>
+                    <member name="femini" type="Femini.type"/>
+                </structure>
+            </element>
+            <element name="Adv">
+                <container/>
+            </element>
+            <element name="Prep">
+                <container/>
+            </element>
+            <element name="Conj">
+                <container/>
+            </element>
+            <element name="Part">
+                <container/>
+            </element>
+            <element name="Intj">
+                <container/>
+            </element>
+            <element name="Xtra">
+                <container/>
+            </element>
+            <element name="Ynit">
+                <container/>
+            </element>
+            <element name="Zero">
+                <container/>
+            </element>
+            <element name="Grph">
+                <container/>
+            </element>
+        </sequence>
+    </type>
+
 </pml_schema>
