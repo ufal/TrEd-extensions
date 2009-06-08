@@ -28,12 +28,16 @@
 
     <type name="Paragraph.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="input" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
             <member name="comment" type="String.type"/>
-            <member name="par" type="String.type"/>
+            <member name="ref">
+                <structure>
+                    <member name="fst" type="Order.type"/>
+                    <member name="snd" type="Order.type"/>
+                </structure>
+            </member>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
@@ -47,12 +51,11 @@
 
     <type name="Word.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="input" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
             <member name="comment" type="String.type"/>
-            <member name="ref" type="String.type"/>
+            <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
@@ -66,13 +69,12 @@
 
     <type name="Element.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="input" type="String.type"/>
-            <member name="lookup" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
             <member name="comment" type="String.type"/>
-            <member name="ref" type="String.type"/>
+            <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -89,7 +91,7 @@
 
     <type name="Partition.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="apply" type="String.type"/>
@@ -108,7 +110,7 @@
 
     <type name="Component.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="apply" type="String.type"/>
@@ -127,13 +129,12 @@
 
     <type name="Lexeme.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
             <member name="comment" type="String.type"/>
-            <member name="ref" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -150,13 +151,12 @@
 
     <type name="Token.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID"><cdata format="ID"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="gloss" type="String.type"/>
-            <member name="ref" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="inherit" type="String.type"/>
@@ -174,6 +174,14 @@
 
     <type name="String.type">
         <cdata format="any"/>
+    </type>
+
+    <type name="Order.type">
+        <cdata format="nonNegativeInteger"/>
+    </type>
+
+    <type name="ID.type">
+        <cdata format="ID"/>
     </type>
 
     <import schema="elixir.schema.xml"/>

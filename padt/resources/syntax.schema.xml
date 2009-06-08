@@ -27,8 +27,8 @@
 
     <type name="Tree.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
+            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="afun" required="1">
                 <choice>
                     <value>AuxS</value>
@@ -50,8 +50,8 @@
 
     <type name="Node.type">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
+            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="afun" type="Afun.type" required="1"/>
             <member name="comment" type="String.type"/>
             <member name="parallel" type="Parallel.type"/>
@@ -61,6 +61,7 @@
             <member name="clause" type="Clause.type"/>
             <member name="afunaux" type="String.type"/>
             <member name="m" type="M.type"/>
+            <member name="morpho" type="Morpho.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
@@ -138,9 +139,6 @@
 
     <type name="M.type">
         <structure>
-            <!--<member name="id" role="#ID" required="1" as_attribute="1"><cdata format="ID"/></member>-->
-            <member name="token" type="Token.type"/>
-            <member name="lexeme" type="Lexeme.type"/>
             <member name="form" type="String.type"/>
             <member name="lemma" type="String.type"/>
             <member name="morph" type="String.type"/>
@@ -148,36 +146,49 @@
             <member name="comment" type="String.type"/>
             <member name="lookup" type="String.type"/>
             <member name="input" type="String.type"/>
-            <member name="ref" type="String.type" required="1"/>
+            <member name="ref" type="String.type"/>
             <member name="tag" type="String.type"/>
         </structure>
     </type>
 
+    <type name="Morpho.type">    
+        <structure>
+            <member name="Word" type="Word.type"/>    
+            <member name="Lexeme" type="Lexeme.type"/>    
+            <member name="Token" type="Token.type"/>
+        </structure>
+    </type>
+    
     <import schema="morpho.schema.xml"/>
+
+    <type name="Word.type">
+        <structure>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="idx" type="String.type"/>
+            <member name="comment" type="String.type"/>
+        </structure>
+    </type>
 
     <type name="Lexeme.type">
         <structure>
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1"><cdata format="nonNegativeInteger"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
             <member name="comment" type="String.type"/>
-            <member name="ref" type="String.type"/>
         </structure>
     </type>
 
     <type name="Token.type">
         <structure>
-            <member name="id" as_attribute="1" required="1" role="#ID"><cdata format="ID"/></member>
-            <member name="ord" required="1"><cdata format="nonNegativeInteger"/></member>
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>
             <member name="comment" type="String.type"/>
             <member name="gloss" type="String.type"/>
-            <member name="ref" type="String.type"/>
         </structure>
     </type>
 

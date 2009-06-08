@@ -1,0 +1,215 @@
+#!/usr/bin/ntred
+
+package TredMacro;
+
+use Encode;
+
+# use File::Basename;
+
+use strict;
+
+
+our ($root, $this);
+
+our ($indent, $order);
+
+
+sub escape ($) {
+
+    my $text = $_[0];
+
+    $text =~ s/\&/\&amp;/g;
+    $text =~ s/\</\&lt;/g;
+    $text =~ s/\>/\&gt;/g;
+
+    return $text;
+}
+
+
+sub render ($) {
+
+    return encode "utf8", escape $_[0];
+}
+
+
+sub autostart {
+
+    my $file = FileName();
+
+    # my ($name, undef) = File::Basename::fileparse($file);
+
+    open F, '>', $file . ".syntax.xml";
+
+    select F;
+
+    local $\ = "\n";
+
+    local $indent = '';
+
+    local $order = 0;
+
+    print '<?xml version="1.0" encoding="utf-8"?>';
+    print '';
+    print '<Analytic xmlns="http://ufal.mff.cuni.cz/pdt/pml/">';
+    print ' <head>';
+    print '  <schema href="syntax.schema.xml" />';
+    # print '  <references>';
+    # print '   <reffile id="m" name="morpho" href="../morpho/' . $name . '"/>';
+    # print '  </references>';
+    print ' </head>';
+    print ' <meta>';
+    print '  <revision>$' . 'Revision: ' . '$</revision>';
+    print '  <date>$' . 'Date: ' . '$</date>';
+    print ' </meta>';
+    print ' <data>';
+
+    {
+        local $indent = $indent . '  ';
+
+        do {
+
+            pretty_para($root) if $root->{'#name'} eq 'Paragraph';
+        }
+        while NextTree();
+    }
+
+    print ' </data>';
+    print '</Analytic>';
+
+    close F;
+}
+
+
+sub pretty_para {
+
+    my $root = $_[0];
+
+    my $id = {};
+
+    @{$id}{'p'} = $root->{'id'} =~ /^m-p([0-9]+)$/;
+
+    print $indent . '<Tree id="s-' . 'p' . $id->{'p'} . '">';
+
+    {
+        local $indent = $indent . ' ';
+
+        print $indent . '<ord>' . $order++ . '</ord>';
+        print $indent . '<afun>' . 'AuxS' . '</afun>';
+
+        print $indent . '<m>';
+
+        {
+            local $indent = $indent . ' ';
+
+            foreach my $attr (qw 'form lemma morph gloss comment tag') {
+
+                print $indent . '<' . $attr . '>' . (render $root->{$attr}) . '</' . $attr . '>'
+
+                    if exists $root->{$attr};
+            }
+        }
+
+        print $indent . '</m>';
+
+        my @child = $root->children();
+
+        if (@child) {
+
+            print $indent . '<with>';
+
+            {
+                local $indent = $indent . ' ';
+
+                pretty_word($_) foreach @child;
+            }
+
+            print $indent . '</with>';
+        }
+    }
+
+    print $indent . '</Tree>';
+}
+
+
+sub pretty_word {
+
+    my $word = $_[0];
+
+    my $id = {};
+
+    @{$id}{'p', 'w'} = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)$/;
+
+    my @child = $word->children();
+
+    if (@child) {
+
+        foreach my $child (@child) {
+
+            pretty_node($_) foreach $child->children();
+        }
+    }
+    else {
+
+        print $indent . '<Node id="s-' . 'p' . $id->{'p'} . 'w' . $id->{'w'} . '">';
+
+        {
+            local $indent = $indent . ' ';
+
+            print $indent . '<ord>' . $order++ . '</ord>';
+            print $indent . '<afun>' . '???' . '</afun>';
+
+            print $indent . '<m>';
+
+            {
+                local $indent = $indent . ' ';
+
+                foreach my $attr (qw 'form lemma morph gloss comment tag') {
+
+                    print $indent . '<' . $attr . '>' . (render $word->{$attr}) . '</' . $attr . '>'
+
+                        if exists $word->{$attr};
+                }
+            }
+
+            print $indent . '</m>';
+        }
+
+        print $indent . '</Node>';
+    }
+}
+
+
+sub pretty_node {
+
+    my $node = $_[0];
+
+    my $id = {};
+
+    @{$id}{'p', 'w', 'l', 't'} = $node->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
+
+    print $indent . '<Node id="s-' . 'p' . $id->{'p'} . 'w' . $id->{'w'} . 'l' . $id->{'l'} . 't' . $id->{'t'} . '">';
+
+    {
+        local $indent = $indent . ' ';
+
+        print $indent . '<ord>' . $order++ . '</ord>';
+        print $indent . '<afun>' . '???' . '</afun>';
+
+        print $indent . '<m>';
+
+        {
+            local $indent = $indent . ' ';
+
+            foreach my $attr (qw 'form lemma morph gloss comment tag') {
+
+                print $indent . '<' . $attr . '>' . (render $node->{$attr}) . '</' . $attr . '>'
+
+                    if exists $node->{$attr};
+            }
+        }
+
+        print $indent . '</m>';
+    }
+
+    print $indent . '</Node>';
+}

@@ -67,12 +67,12 @@ node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$
                     : (
                     $this->{'#name'} =~ /^(?:Element|Paragraph)$/
                         ? ( $this->{apply} > 0
-                            ? '#{black}${idx} #{gray}${lookup} #{red}${input}'
-                            : '#{black}${idx} #{gray}${lookup} #{black}${input}'
+                            ? '#{black}${idx} #{red}${form}'
+                            : '#{black}${idx} #{black}${form}'
                         )
                         : ( $this->{apply} > 0
-                            ? '  #{red}${input}'
-                            : '  #{black}${input}'
+                            ? '  #{red}${form}'
+                            : '  #{black}${form}'
                         ) ) ) ) ?>
 
 node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Token'
@@ -175,10 +175,10 @@ sub get_value_line_hook {
 
         ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
-        $words = [ [ $tree->{'idx'} . " " . $tree->{'input'}, $tree, '-foreground => darkmagenta' ],
+        $words = [ [ $tree->{'idx'} . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
                    map {
                             [ " " ],
-                            [ $_->{'input'}, (
+                            [ $_->{'form'}, (
 
                                 $paragraph_hide_mode eq 'hidden'
 
@@ -196,15 +196,15 @@ sub get_value_line_hook {
 
         my $para = $fsfile->tree($tree->{'ref'} - 1);
 
-        my $last = (split /[^0-9]+/, $para->{'par'})[1];
+        my $last = $para->{'ref'}{'snd'};
         my $next = 1;
 
         $nodes = [ map { $fsfile->tree($_) } $tree->{'ref'} .. ( $tree->{'ref'} == $last ? $grp->{FSFile}->lastTreeNo : $last - 2 ) ];
 
-        $words = [ [ $para->{'idx'} . " " . $para->{'input'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
+        $words = [ [ $para->{'idx'} . " " . $para->{'form'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
                    map {
                             [ " " ],
-                            [ $_->{'input'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
+                            [ $_->{'form'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
 
                         } grep { $_->{'#name'} eq 'Element' } @{$nodes} ];
     }
@@ -293,7 +293,7 @@ sub switch_either_context {
 
         if ($this->{'#name'} eq 'Paragraph') {
 
-            GotoTree((split /[^0-9]+/, $root->{'par'})[0]);
+            GotoTree($this->{'ref'}{'fst'});
         }
         elsif ($this->{'#name'} eq 'Word') {
 
@@ -310,9 +310,7 @@ sub switch_either_context {
                 GotoTree($this->parent()->parent()->{'ref'});
             }
 
-            ($node) = grep { $_->{'id'} eq $node->{'ref'} } map { $_, $_->children() }
-                      grep { $_->{'apply'} > 0 } map { $_->children() }
-                      grep { $_->{'apply'} > 0 } map { $_->children() } $root->children();
+            ($node) = PML::GetNodeByID(join 'e', split 'w', $node->{'id'});
 
             $this = $node if defined $node;
         }
@@ -325,11 +323,9 @@ sub switch_either_context {
 
         $this = ($root->children())[$refs - 1];
 
-        if ($quick ne 'quick' and $node->{'#name'} =~ /^(?:Lexeme|Token)$/) {
+        if ($quick ne 'quick' and $node->{'#name'} =~ /^(?:Lexeme|Token)$/ and exists $node->{'id'}) {
 
-            ($node) = grep { $_->{'ref'} eq $node->{'id'} } $this->descendants();
-
-            $this = $node if defined $node;
+            $this = PML::GetNodeByID(join 'w', split 'e', $node->{'id'});
         }
     }
 }
@@ -342,7 +338,7 @@ sub move_to_prev_paragraph {
         GotoTree($root->{'ref'});
     }
 
-    GotoTree((split /[^0-9]+/, $root->{'par'})[0]);
+    GotoTree($root->{'ref'}{'fst'});
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -356,7 +352,7 @@ sub move_to_next_paragraph {
         GotoTree($root->{'ref'});
     }
 
-    GotoTree((split /[^0-9]+/, $root->{'par'})[1]);
+    GotoTree($root->{'ref'}{'snd'});
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -764,7 +760,7 @@ sub elixir_resolve {
 
     if ($root->{'#name'} eq 'Paragraph') {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', join " ", map { $_->{'input'} } $root->children();
+        my $reply = Exec::ElixirFM::elixir 'resolve', join " ", map { $_->{'form'} } $root->children();
 
         foreach (ElixirFM::unpretty $reply) {
 
@@ -775,7 +771,7 @@ sub elixir_resolve {
     }
     else {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', $root->{'input'};
+        my $reply = Exec::ElixirFM::elixir 'resolve', $root->{'form'};
 
         foreach (ElixirFM::unpretty $reply) {
 
@@ -879,7 +875,7 @@ sub annotate_morphology {
 
         if ($this->{'#name'} eq 'Paragraph') {
 
-            GotoTree((split /[^0-9]+/, $this->{'par'})[1]);
+            GotoTree($this->{'ref'}{'snd'});
         }
         else {
 
@@ -999,14 +995,20 @@ sub reflect_choice {
 
     my ($leaf, $twig) = ($_[0], $_[0]->parent());
 
-    $leaf->{'id'} = '';
-    $twig->{'id'} = '';
+    my $hash = PML::GetNodeHash();
+
+    if (exists $leaf->{'id'} and $leaf->{'id'} ne '') {
+
+        delete $hash->{$leaf->{'id'}};
+        delete $hash->{$twig->{'id'}};
+
+        $leaf->{'id'} = '';
+        $twig->{'id'} = '';
+    }
 
     my ($roox, $thix) = ($root, $this);
 
     switch_either_context('quick');
-
-    # main::save_undo($grp, main::prepare_undo($grp)) if TredMacro::GUI();
 
     my $clip = $this;
 
@@ -1025,16 +1027,20 @@ sub reflect_choice {
 
         $lexeme[$i - 1]->{'id'} = $roox->{'id'} . 'l' . $i;
 
+        $hash->{$lexeme[$i - 1]->{'id'}} = $lexeme[$i - 1];
+
         my $node = CopyNode($lexeme[$i - 1]);
-
-        PasteNode($node, $word);
-
-        $node->{'id'} = $word->{'id'} . 'l' . $i;
-        $node->{'ref'} = $lexeme[$i - 1]->{'id'};
 
         delete $node->{'restrict'};
         delete $node->{'inherit'};
+        delete $node->{'hide'};
         delete $node->{'tips'};
+
+        $node->{'id'} = $word->{'id'} . 'l' . $i;
+
+        $hash->{$node->{'id'}} = $node;
+
+        PasteNode($node, $word);
 
         my @token = grep { $_->{'apply'} > 0 } $lexeme[$i - 1]->children();
 
@@ -1042,16 +1048,19 @@ sub reflect_choice {
 
             $token[$j - 1]->{'id'} = $lexeme[$i - 1]->{'id'} . 't' . $j;
 
+            $hash->{$token[$j - 1]->{'id'}} = $token[$j - 1];
+
             my $done = CopyNode($token[$j - 1]);
-
-            PasteNode($done, $node);
-
-            $done->{'id'} = $node->{'id'} . 't' . $j;
-            $done->{'ref'} = $token[$j - 1]->{'id'};
 
             delete $done->{'restrict'};
             delete $done->{'inherit'};
-            delete $done->{'tips'};
+            delete $done->{'hide'};
+
+            $done->{'id'} = $node->{'id'} . 't' . $j;
+
+            $hash->{$done->{'id'}} = $done;
+
+            PasteNode($done, $node);
         }
     }
 
