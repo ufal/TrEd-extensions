@@ -121,7 +121,7 @@ sub init_ValencyLexicon {
     my $info;
     eval {
       if ($^O eq "MSWin32") {
-	$vallex_file =~ s{/}{\\}g;
+	$vallex_file =~ s{/}{\\}g unless (ref($vallex_file) or $vallex_file=~m{^[[:alpha:]][[:alnum:]]+://});
 	#### we may leave this commented out since it does not work correctly under windows
 	#    my $info=InfoDialog($top,"First run, loading lexicon. Please, wait...");
       } else {
