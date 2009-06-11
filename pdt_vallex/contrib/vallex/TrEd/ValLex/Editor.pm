@@ -230,7 +230,13 @@ sub show_dialog {
   }
 
   if ($start_frame_editor) {
-    $d->afterIdle([$vallex => 'addframe_button_pressed']);
+    if ($^O eq 'MSWin32') {
+      $d->Popup;
+      $vallex->addframe_button_pressed;
+      $d->withdraw;
+    } else {
+      $d->afterIdle([$vallex => 'addframe_button_pressed']);
+    }
   }
   $d->Show();
   if ($can_edit and $vallex->data()->changed()) {

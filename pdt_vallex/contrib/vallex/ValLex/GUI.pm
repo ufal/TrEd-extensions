@@ -147,12 +147,33 @@ sub init_ValencyLexicon {
   return $ValencyLexicon;
 }
 
+sub _is_same_filename {
+  my ($f1,$f2)=@_;
+  return 1 if $f1 eq $f2;
+  my $u1 = UNIVERSAL::isa($f1,'URI') ? $f1 : IOBackend::make_URI($f1);
+  my $u2 = UNIVERSAL::isa($f2,'URI') ? $f2 : IOBackend::make_URI($f2);
+  return 1 if $u1 eq $u2;
+  return 1 if $u1->canonical eq $u2->canonical;
+  if (!ref($f1) and !ref($f2) and $^O ne 'MSWin32' and -f $f1 and -f $f2) {
+    return _is_same_file($f1,$f2);
+  }
+  return 0;
+}
+
+sub _is_same_file {
+  my ($f1,$f2) = @_;
+  return 1 if $f1 eq $f2;
+  my ($d1,$i1)=stat($f1);
+  my ($d2,$i2)=stat($f2);
+  return ($d1==$d2 and $i1!=0 and $i1==$i2) ? 1 : 0;
+}
+
 sub Init {
   my $opts_ref = shift;
   $vallex_file = $opts_ref->{-vallex_file} if ($opts_ref->{-vallex_file} ne "");
   if ( $ValencyLexicon ) {
     my $current_file = $ValencyLexicon->file;
-    if (File::Spec->rel2abs($current_file) eq File::Spec->rel2abs($vallex_file)) {
+    if (_is_same_filename($current_file) eq _is_same_filename($vallex_file)) {
       return $ValencyLexicon;
     } else {
       close_ValencyLexicon();

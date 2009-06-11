@@ -97,11 +97,14 @@ sub create_toplevel {
   $d->bind($d,'<Escape>'=> [$destroy_callback,$d]);
 
   $d->BindButtons;
-  $chooser->prepare($show_obsolete_ref, $field, $select_frame, $start_editor);
+  $chooser->prepare($show_obsolete_ref, $field, $select_frame,0);
   $chooser->widget->focus;
 #  $d->resizable(0,0);
   $d->Popup;
   $d->focusmodel('active');
+  if ($start_editor) {
+    $chooser->edit_button_pressed(1);
+  }
 
   return $chooser;
 }
