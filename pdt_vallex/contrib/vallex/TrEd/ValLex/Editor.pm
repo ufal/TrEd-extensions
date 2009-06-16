@@ -456,6 +456,7 @@ sub create_widget {
   $search_entry->bind('<KP_Enter>',[sub { my ($w,$self)=@_;
 					  $self->quick_search($w->get);
 					},$self]);
+
   $search_entry->bind('<F3>',[sub { my ($w,$self,$fl)=@_;
 				    my $h=$fl->widget();
 				    my $t = $h->infoAnchor();
@@ -549,6 +550,8 @@ sub create_widget {
   # Bind buttons
   $frame->BindButtons;
 
+  $frame->toplevel->bind('<Control-n>', [$self => 'search_next']);
+  $frame->toplevel->bind('<Control-f>', [$self => 'show_frame_search_dialog']);
   return $lexlist->widget(),{
 	     frame        => $frame,
 	     top_frame    => $top_frame,
@@ -897,30 +900,57 @@ sub show_frame_search_dialog {
   $f->Frame->pack(-pady => 10);
   $d->bind($d,"<Alt-r>", [sub { shift; $_[0]->flash(); $_[0]->invoke },$b1]);
   $d->bind($d,"<Alt-s>", [sub { shift; $_[0]->flash(); $_[0]->invoke },$b2]);
-  if (TrEd::ValLex::Widget::ShowDialog($d,$e) =~ /OK/) {
+  my $answer = TrEd::ValLex::Widget::ShowDialog($d,$e);
+  $d->destroy();
+  if ($answer =~ /OK/) {
+    $self->search_next() if defined( $params->[0] ) and length( $params->[0] );
+  }
+}
 
-    my ($word,$frame);
-    unless ($params->[2]) {
-      my $h=$self->subwidget('wordlist')->widget();
-      my $fl=$self->subwidget('framelist')->widget();
-      my $item=$h->infoAnchor();
-      $word=$h->infoData($item) if ($h->infoExists($item));
-      $item=$fl->infoAnchor();
-      $frame=$fl->infoData($item) if ($fl->infoExists($item));
-    }
+sub search_next {
+  my ($self)=@_;
+  my $params=$self->subwidget('search_params');
+  my ($expression,$is_regexp,$from_beginning) = @$params;
+  unless (defined($expression) and length($expression)) {
+    $self->show_frame_search_dialog();
+  }
+  my ($word,$frame);
+  unless ($from_beginning) {
+    my $h=$self->subwidget('wordlist')->widget();
+    my $fl=$self->subwidget('framelist')->widget();
+    my $item=$h->infoAnchor();
+    $word=$h->infoData($item) if ($h->infoExists($item));
+    $item=$fl->infoAnchor();
+    $frame=$fl->infoData($item) if ($fl->infoExists($item));
+  }
+  $self->widget()->toplevel->Busy(-recurse=>1);
+  eval {
     $frame =
-      $self->data()->searchFrameMatching($params->[0],
+      $self->data()->searchFrameMatching($expression,
 					 $self->subwidget('wordlist')->pos_filter(),
 					 $word,
 					 $frame,
-					 $params->[1]);
-    if ($frame) {
-      $word = $self->data()->getWordForFrame($frame);
-      $self->wordlist_item_changed($self->subwidget("wordlist")->focus($word));
-      $self->framelist_item_changed($self->subwidget("framelist")->focus($frame));
+					 $is_regexp);
+  };
+  $self->widget()->toplevel->Unbusy();
+  die $@ if $@;
+  if ($frame) {
+    $word = $self->data()->getWordForFrame($frame);
+    $self->wordlist_item_changed($self->subwidget("wordlist")->focus($word));
+    $self->framelist_item_changed($self->subwidget("framelist")->focus($frame));
+  } elsif (!$from_beginning) {
+    my $d=$self->widget()->toplevel->Dialog(-text=>
+					      "No more matches. Search from the beginning?",
+					    -bitmap=> 'question',
+					    -title=> 'Question',
+					    -buttons=> ['Yes','No']);
+    my $answer = $d->Show;
+    $d->destroy;
+    if ($answer eq 'Yes') {
+      local $params->[2] = 1;
+      $self->search_next();
     }
   }
-  $d->destroy();
 }
 
 sub show_frame_editor_dialog {
