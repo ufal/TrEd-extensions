@@ -445,33 +445,21 @@ sub create_widget {
   # Frame search entry
   $fsearch_frame->Label(-text => 'Search frame: ',-underline => 7)->pack(qw/-side left/);
   my $search_entry = $fsearch_frame->Entry(qw/-width 50 -background white -validate key/,
-					   -validatecommand => [\&quick_search,$self])
+					   -validatecommand => [\&quick_search,$self,undef,1])
     ->pack(qw/-side left -fill both -expand yes/);
   $top->toplevel->bind('<Alt-f>',sub { $search_entry->focus() });
   $search_entry->bind('<Up>',[$lexframelist->widget(),'UpDown', 'prev']);
   $search_entry->bind('<Down>',[$lexframelist->widget(),'UpDown', 'next']);
   $search_entry->bind('<Return>',[sub { my ($w,$self)=@_;
-					$self->quick_search($w->get);
+					$self->quick_search(undef,1,$w->get);
 				      },$self]);
   $search_entry->bind('<KP_Enter>',[sub { my ($w,$self)=@_;
-					  $self->quick_search($w->get);
+					  $self->quick_search(undef,1,$w->get);
 					},$self]);
 
-  $search_entry->bind('<F3>',[sub { my ($w,$self,$fl)=@_;
-				    my $h=$fl->widget();
-				    my $t = $h->infoAnchor();
-				    $h->UpDown('next');
-				    if ($t eq $h->infoAnchor()
-					  or
-					    !$self->quick_search($w->get)) {
-				      ($t) = $h->infoChildren("");
-				      $h->anchorSet($t);
-				      $h->selectionClear();
-				      $h->selectionSet($t);
-				      $h->see($t);
-				      $self->quick_search($w->get);
-				    }
-				  },$self,$lexframelist]);
+  $search_entry->bind('<F3>',[\&TrEd::ValLex::Chooser::_fsearch, $self,$lexframelist,1]);
+  $search_entry->bind('<Shift-F3>',[\&TrEd::ValLex::Chooser::_fsearch, $self,$lexframelist,-1]);
+  $search_entry->bind('<F4>',[\&TrEd::ValLex::Chooser::_fsearch, $self,$lexframelist,-1]);
 
 
   $fsearch_frame->pack(qw/-side top -pady 6 -fill x/);
@@ -1060,33 +1048,37 @@ sub obsolete_button_pressed {
 }
 
 sub quick_search {
-  my ($self,$value)=@_;
-  return defined($self->focus_by_text($value));
+  my ($self,$fl,$dir,$value)=@_;
+  $dir||=1;
+  $fl||=$self->subwidget('framelist');
+  return defined(TrEd::ValLex::Chooser::_focus_by_text($value,$fl,0,$dir));
 }
 
 
-sub focus_by_text {
-  my ($self,$text,$caseinsensitive)=@_;
-  my $h=$self->subwidget('framelist')->widget();
-#  use locale;
-  my $st = $h->infoAnchor();
-  my ($t) = ($st eq "") ? $h->infoChildren("") : $st;
-  while ($t ne "") {
-    my $item=$h->itemCget($t,0,'-text');
-    if (!$caseinsensitive and index($item,$text)>=0 or
-	$caseinsensitive and index(lc($item),lc($text))>=0) {
-      $h->anchorSet($t);
-      $h->selectionClear();
-      $h->selectionSet($t);
-      $h->see($t);
-      return $t;
-    }
-    $t=$h->infoNext($t);
-    last if $t eq $st;
-    ($t) = $h->infoChildren("") if ($t eq "" and $st);
-    last if $t eq $st;
-  }
-  return undef;
-}
+# sub focus_by_text {
+#   my ($self,$text,$fl,$caseinsensitive,$dir)=@_;
+#   my $h=$self->subwidget('framelist')->widget();
+# #  use locale;
+#   my $st = $h->infoAnchor();
+#   my ($t) = ($st eq "") ? 
+#     ( $dir<0 ? reverse($h->infoChildren("")) : $h->infoChildren("") )
+#       : $st;
+#   while ($t ne "") {
+#     my $item=$h->itemCget($t,0,'-text');
+#     if (!$caseinsensitive and index($item,$text)>=0 or
+# 	$caseinsensitive and index(lc($item),lc($text))>=0) {
+#       $h->anchorSet($t);
+#       $h->selectionClear();
+#       $h->selectionSet($t);
+#       $h->see($t);
+#       return $t;
+#     }
+#     $t=$h->infoNext($t);
+#     last if $t eq $st;
+#     ($t) = $h->infoChildren("") if ($t eq "" and $st);
+#     last if $t eq $st;
+#   }
+#   return undef;
+# }
 
 1;

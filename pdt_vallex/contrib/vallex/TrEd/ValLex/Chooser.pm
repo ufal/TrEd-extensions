@@ -413,32 +413,20 @@ sub create_widget {
     $fsearch_frame->Label(-text => 'Search frame: ',-underline => 7)->pack(qw/-side left/);
     $fsearch_frame->pack(qw/-side top -pady 6 -fill x/);
     my $search_entry = $fsearch_frame->Entry(qw/-width 50 -background white -validate key/,
-					     -validatecommand => [\&quick_search,$self,$lexframelist])
+					     -validatecommand => [\&quick_search,$self,$lexframelist,1])
       ->pack(qw/-side left -fill both -expand yes/);
     $top->toplevel->bind('<Alt-f>',sub { $search_entry->focus() }) if $i==0;
     $search_entry->bind('<Up>',[$lexframelist->widget(),'UpDown', 'prev']);
     $search_entry->bind('<Down>',[$lexframelist->widget(),'UpDown', 'next']);
-    $search_entry->bind('<F3>',[sub { my ($w,$self,$fl)=@_;
-				      my $h=$fl->widget();
-				      my $t = $h->infoAnchor();
-				      $h->UpDown('next');
-				      if ($t eq $h->infoAnchor()
-					  or
-					  !$self->quick_search($fl,$w->get)) {
-					($t) = $h->infoChildren("");
-					$h->anchorSet($t);
-					$h->selectionClear();
-					$h->selectionSet($t);
-					$h->see($t);
-					$self->quick_search($fl,$w->get);
-				      }
-				    },$self,$lexframelist]);
+    $search_entry->bind('<F3>',[\&_fsearch,$self,$lexframelist,1]);
+    $search_entry->bind('<Shift-F3>',[\&_fsearch,$self,$lexframelist,-1]);
+    $search_entry->bind('<F4>',[\&_fsearch,$self,$lexframelist,-1]);
 
     $search_entry->bind('<Return>',[sub { my ($w,$self,$fl)=@_;
-					  $self->quick_search($fl,$w->get);
+					  $self->quick_search($fl,1,$w->get);
 					},$self,$lexframelist]);
     $search_entry->bind('<KP_Enter>',[sub { my ($w,$self,$fl)=@_;
-					    $self->quick_search($fl,$w->get);
+					    $self->quick_search($fl,1,$w->get);
 					  },$self,$lexframelist]);
 
   }
@@ -472,18 +460,39 @@ sub create_widget {
 	       };
 }
 
-sub quick_search {
-  my ($self,$fl,$value)=@_;
-  return defined($self->focus_by_text($value,$fl));
+
+sub _fsearch {
+  my ($w,$self,$fl,$dir)=@_;
+  my $h=$fl->widget();
+  my $t = $h->infoAnchor();
+  $h->UpDown($dir < 0 ?  'prev' : 'next');
+  if ($t eq $h->infoAnchor()
+	or
+	  !$self->quick_search($fl,$dir,$w->get)) {
+    ($t) = $h->infoChildren("");
+    $h->anchorSet($t);
+    $h->selectionClear();
+    $h->selectionSet($t);
+    $h->see($t);
+    $self->quick_search($fl,$dir,$w->get);
+  }
 }
 
 
-sub focus_by_text {
-  my ($self,$text,$fl,$caseinsensitive)=@_;
+
+sub quick_search {
+  my ($self,$fl,$dir,$value)=@_;
+  $dir||=1;
+  return defined(_focus_by_text($value,$fl,0,$dir));
+}
+
+sub _focus_by_text {
+  my ($text,$fl,$caseinsensitive,$dir)=@_;
   my $h=$fl->widget();
-#  use locale;
   my $st = $h->infoAnchor();
-  my ($t) = ($st eq "") ? $h->infoChildren("") : $st;
+  my ($t) = ($st eq "") ? 
+    ( $dir<0 ? reverse($h->infoChildren("")) : $h->infoChildren("") )
+      : $st;
   while ($t ne "") {
     my $item=$h->itemCget($t,0,'-text');
     if (!$caseinsensitive and index($item,$text)>=0 or
@@ -494,9 +503,11 @@ sub focus_by_text {
       $h->see($t);
       return $t;
     }
-    $t=$h->infoNext($t);
+    $t=$dir<0 ? $h->infoPrev($t) : $h->infoNext($t);
     last if $t eq $st;
-    ($t) = $h->infoChildren("") if ($t eq "" and $st);
+    if ($t eq "" and $st) {
+      ($t) = $dir<0 ? reverse($h->infoChildren("")) : $h->infoChildren("");
+    }
     last if $t eq $st;
   }
   return undef;
