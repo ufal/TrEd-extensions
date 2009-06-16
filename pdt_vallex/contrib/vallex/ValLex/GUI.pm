@@ -191,25 +191,52 @@ sub ShowFrames {
     my %opts = @_;
     $opts_ref = \%opts;
   }
-  my $msg;
   Init($opts_ref) or return;
   my $frames = exists $opts_ref->{-frameid} ?
     $opts_ref->{-frameid} : ($opts_ref->{-node} ? $opts_ref->{-node}->attr(($opts_ref->{-frameid_attr} || $frameid_attr)) : undef);
-  my @frames;
-  @frames = $ValencyLexicon->by_id(join " ",split /\|/,$frames);
-  for my $f (@frames) {
-    $word=$ValencyLexicon->getWordForFrame($f);
-    unless (defined($msg)) {
-      $msg = ["Lexicon word item:",[qw(label)],"  ".$ValencyLexicon->getLemma($word)."\n\n",[qw(lemma)]];
+  my @matches;
+  if ($frames) {
+    @matches = map { [$ValencyLexicon->getWordForFrame($_),$_] } $ValencyLexicon->by_id(join " ",split /\|/,$frames);
+  } elsif ($opts_ref->{-search}) {
+    my ($frame,$word);
+    do {{
+      $frame =
+	$ValencyLexicon->searchFrameMatching($opts_ref->{-search},
+					     ($opts_ref->{-posfilter} || '*'),
+					     $word,
+					     $frame,
+					     1); # regular expression
+      if ($frame) {
+	$word = $ValencyLexicon->getWordForFrame($frame);
+	push @matches, [$word,$frame];
+	print "$frame, $word\n";
+      }
+    }} while ($frame);
+  }
+
+  my $prev_lemma;
+  my $msg=[];
+  for my $match (@matches) {
+    my ($word,$f)=@$match;
+
+    my $lemma = $ValencyLexicon->getLemma($word);
+    unless (defined($prev_lemma) and $lemma eq $prev_lemma) {
+      push @$msg,
+	  "=======================================\n",[];
+      push @$msg, $lemma."\n",[qw(lemma)], "\n",[];
+      $prev_lemma = $lemma;
     }
     my ($frame, $id, $elements, $status, $example, $auth, $note) = @{$ValencyLexicon->getFrame($f)};
     push @$msg,
-      $elements."\n\n",[qw(elements)],
-	"Frame_ID:",[qw(label)],"  $id\n\n",[qw(id)],
-	  "Examples:",[qw(label)],
-	    "\n".$example."\n\n",[qw(example)],
-	      ($note ne "" ? ("Note:",[qw(label)],"\n".$note."\n\n",[qw(note)]) : ()),
-		"---------------------------------------\n\n",[];
+      "($id) ",[qw(id)],
+      $elements."\n",[qw(elements)],
+	#"Frame_ID:",[qw(label)],
+	  #"Examples:",[qw(label)],
+	    #"\n".
+	      $example."\n",[qw(example)],
+	      ($note ne "" ? ("Note:",[qw(label)]," ".$note."\n",[qw(note)]) : ()),
+		"\n",[];
+		#		"---------------------------------------\n\n",[];
   }
   main::textDialog($grp,
 		   {

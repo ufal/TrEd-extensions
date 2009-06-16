@@ -378,16 +378,16 @@ sub getWordList {
 
 sub getFrame {
   my ($self,$frame)=@_;
-
-  my $id = $self->conv->decode($frame->getAttribute("id"));
-  my $status = $self->conv->decode($frame->getAttribute("status"));
+  my $conv = $self->conv;
+  my $id = $conv->decode($frame->getAttribute("id"));
+  my $status = $conv->decode($frame->getAttribute("status"));
   my $elements = $self->getFrameElementString($frame);
   my $example=$self->getFrameExample($frame);
   my $note=$self->getSubElementNote($frame);
   $note=~s/\n/;/g;
   my ($local_event)=$frame->getDescendantElementsByTagName("local_event");
   my $auth="NA";
-  $auth=$self->conv->decode($local_event->getAttribute("author")) if ($local_event);
+  $auth=$conv->decode($local_event->getAttribute("author")) if ($local_event);
   return [$frame,$id,$elements,$status,$example,$auth,$note];
 }
 

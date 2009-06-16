@@ -7,7 +7,12 @@ use base qw(TrEd::ValLex::Extended TrEd::ValLex::LibXMLData);
 
 sub by_id {
   my ($self,$id)=@_;
-  return wantarray ? $self->doc->findnodes("id('$id')") : $self->doc->findnodes("id('$id')")->[0];
+  my $p = $self->parser;
+  if ($p && $p->validation()) {
+    return wantarray ? $self->doc->findnodes("id('$id')") : $self->doc->findnodes("id('$id')")->[0];
+  } else {
+    return $self->SUPER::by_id($id);
+  }
 }
 
 sub word {
