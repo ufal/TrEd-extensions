@@ -898,6 +898,7 @@ sub show_frame_search_dialog {
 			   -variable => \$params->[2]
 			 )->pack(qw/-pady 5/);
   $f->Frame->pack(-pady => 10);
+  $f->Label(-text => "Note: Ctrl+F brings this dialog back, Ctrl+N finds next match")->pack(qw/-expand yes -fill x/);
   $d->bind($d,"<Alt-r>", [sub { shift; $_[0]->flash(); $_[0]->invoke },$b1]);
   $d->bind($d,"<Alt-s>", [sub { shift; $_[0]->flash(); $_[0]->invoke },$b2]);
   my $answer = TrEd::ValLex::Widget::ShowDialog($d,$e);
