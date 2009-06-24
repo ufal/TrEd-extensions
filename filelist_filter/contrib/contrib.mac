@@ -1,0 +1,190 @@
+#-*- cperl -*-
+
+#ifndef filelist_filter
+#define filelist_filter
+
+{
+package FilelistFilter;
+BEGIN { import TredMacro; }
+use strict;
+use File::Spec;
+
+#binding-context TredMacro
+#bind FilelistFilter->create_filelist_filter to key F10 menu * File-list Filter
+
+my %filter=(
+  '='  => sub { ($_[0]->[ $_[1] ] eq  $_[2])   ? 1 : 0 },
+  '~'  => sub { ($_[0]->[ $_[1] ] =~  $_[2])   ? 1 : 0 },
+  '~*' => sub { ($_[0]->[ $_[1] ] =~ /$_[2]/i) ? 1 : 0 },
+  '!=' => sub { ($_[0]->[ $_[1] ] ne  $_[2])   ? 1 : 0 },
+  '!~'  => sub { ($_[0]->[ $_[1] ] !~  $_[2])   ? 1 : 0 },
+  '!~*' => sub { ($_[0]->[ $_[1] ] !~ /$_[2]/i) ? 1 : 0 },
+);
+
+sub create_filelist_filter {
+  ChangingFile(0);
+  my $top = ToplevelFrame();
+  $top->Unbusy();
+  my $index_f = $TredMacroPreserve::filelist_filter::index_f;
+  my $resp;
+  {
+    my @buttons = (($index_f ? ("Use last input") : ()), "Choose input file", "Cancel");
+    my $message =
+      "This function is used to create a file list by selecting file names from ".
+	"a given input file. The input file must consist of one or more TAB-separated columns, ".
+	  "the last of which is a filename, URL, or a node address. ".
+	    "The selection will be based on the values in the other columns.".
+	      ($index_f ? "\n\nLast input file: $index_f" : ""),
+    my $d = $top->DialogBox(-title => "Filter to filelist",
+			    -buttons => \@buttons);
+    $d->add('Label', -text => $message, -justify => 'left',
+	    -font => 'C_default',
+	    -wraplength => '340p')->pack(-expand => 1, -fill => 'x');
+    $d->BindReturn($d,1);
+    $d->BindEscape();
+    $d->bind('all','<Tab>',[sub { shift->focusNext; }]);
+    $resp = $d->Show;
+    $d->destroy;
+  }
+  return if $resp eq 'Cancel';
+  if ($resp eq "Choose input file") {
+    $TredMacroPreserve::filelist_filter::index_f = $index_f = main::get_open_filename($top,
+								     -filetypes => [[ "Text files", "*.txt *.csv *.lst *.out *.log" ],
+										    ["All files",        '*']],
+								     -title => 'Open index file-list',
+								    );
+    return unless defined($index_f) and length($index_f);
+  }
+    open(my $fh, '<:utf8', $index_f) or die "Cannot open $index_f: $!";
+
+  my @filter = @{$TredMacroPreserve::filelist_filter::filter||[]};
+  my @f;
+  $TredMacroPreserve::filelist_filter::filter = \@f;
+
+  my @colnum;
+  my @op;
+  my $base_dir = $TredMacroPreserve::filelist_filter::base_dir;
+  {
+    require Tk::DialogBox;
+    require Tk::Frame;
+    require Tk::Balloon;
+
+    my $d = $top->DialogBox(-title => 'Filter filelist', -buttons=>[qw(OK Cancel)]);
+    my $b = $d->Balloon();
+    my $last_col=0;
+    my $line = <$fh>; chomp($line);
+    my @cols = split /\t/,$line;
+    unless (File::Spec->file_name_is_absolute($cols[-1])) {
+      my $f=$d->add('LabFrame',-label=>'Base directory',
+		    -labelside=>'left')->pack(-side => 'top',-expand => 1, -fill => 'x');
+      $f->Subwidget('border')->configure(-relief => 'flat');
+      my $e = $f->Entry(-textvariable=>\$base_dir)->pack(-side=>'left',-expand => 1, -fill => 'x');
+      $f->Button(-text => '...',
+			 -command => sub {
+			   $base_dir = $d->chooseDirectory(-title => 'Base directory',
+							   -initialdir => $base_dir,
+							   #-mustexist=>1
+							  )
+			     || $base_dir;
+			 }
+			)->pack(-side=>'right');
+
+      $b->attach($e, -balloonmsg => 'Set base directory for relative filenames');
+    }
+
+    my $F = $d->add('LabFrame',-label=>'Filters', -labelside=>'acrosstop')->pack(-side => 'top',-expand => 1, -fill => 'x');
+    my $add_filter = sub {
+      my $c = $last_col++;
+      my $f=$F->LabFrame(-label=>'Column #', -labelside=>'left')->pack(-side => 'top',-expand => 1, -fill => 'x');
+      $f->Subwidget('border')->configure(-relief => 'flat');
+      $filter[$c]{colnum}||= ($c+1) % @cols;
+      my $ce = $f->Entry(-textvariable=>\$filter[$c]{colnum},
+			-width=>2,
+			-relief=>'flat',
+			-validate => 'all',
+			-validatecommand=>sub{ $_[0] =~ /^-?\d*$/},
+		       )->pack(-side=>'left');
+      $b->attach($ce, -balloonmsg => "The column number can be negative to count from the right\n".
+		   "(the rightmost column is -1 and should be the filename/URL/node address)");
+      my @opts=qw(= ~ ~* != !~ !~*);
+      my $o = $f->Optionmenu(
+	             -options => \@opts,
+		     -textvariable => \$filter[$c]{op},
+		     -relief       => 'flat')->pack(-side=>'left');
+
+      # tilda is used in a special way in menu, we must repair it:
+      $o->menu->entryconfigure($_,-underline=>-1, -label=>$opts[$_]) for 0..$#opts;
+      my $e = $f->Entry(-textvariable=>\$filter[$c]{value})->pack(-expand => 1, -fill => 'x',-side=>'left');
+      $f->Button(-text=>'x',-command=>sub{ $f->packForget(); $f->destroy })->pack(-side=>'left') if $c>0;
+      $e->focus if ($c == 0);
+    };
+    my $count = scalar(@filter)||1;
+    $add_filter->() for (1..$count);
+    $d->add('Button',-text=>'Add filter',
+	    -command=>$add_filter,
+	   )->pack(-side => 'top');
+
+    {
+      my $f=$d->add('LabFrame',-label=>'Input file preview', -labelside=>'acrosstop')->pack(-side => 'top',-expand => 1, -fill => 'both');
+      my $t = $f->Scrolled('ROText',-background=>'#f4f4f4', -height=>15,-scrollbars=>'oe')->pack(-expand => 1, -fill => 'both');
+      my $line;
+      for (1..10) {
+	$line = <$fh> || last;
+	$t->insert('end',$line);
+      }
+      if ($line) {
+	$t->insert('end','...show more lines...','more');
+	$t->tagConfigure('more',-foreground=>'darkblue',-underline => 1,-justify=>'center');
+	$t->tagBind('more','<1>',sub{
+		      for (1..50) {
+			$line = <$fh> || last;
+			$t->insert('end - 1 line',$line);
+		      }
+		      if (!$line) {
+			$t->tagConfigure('more',-elide => 1);
+		      }
+		    });
+      }
+    }
+
+    while (1) {
+      my $resp = $d->Show();
+      @f = grep { defined($_->{value}) && length($_->{value}) } @filter;
+      last unless $resp eq 'OK';
+      $TredMacroPreserve::filelist_filter::base_dir = $base_dir;
+      seek($fh,0,"SEEK_SET");
+      my(undef,undef,$basename)=File::Spec->splitpath($index_f);
+      my @list;
+      my $line;
+      my @cols;
+      for (@f) {
+	$_->{colnum}-- if $_->{colnum}>=0;
+      }
+      while ($line=<$fh>) {
+	chomp $line;
+	@cols = split(/\t/,$line);
+	unless (first { !$filter{$_->{op}}->(\@cols,$_->{colnum},$_->{value}) } @f) {
+	  my $file = $cols[-1];
+	  $file = File::Spec->rel2abs($file, $base_dir) if defined($base_dir) and length($base_dir);
+	  push @list, $file;
+	}
+      }
+      close $index_f;
+      if (@list) {
+	my $fl = Filelist->new($basename.'['.join(",",map{'$'.$_->{colnum}.$_->{op}.$_->{value} } @f).']');
+	$fl->add_arrayref(0,\@list);
+	AddNewFileList($fl);
+	SetCurrentFileList($fl->name);
+	$this = CurrentNodeInOtherWindow($grp);
+      } else {
+	next unless
+	  QuestionQuery("No match","No rows match the given filter!","Change filter","Cancel") eq "Cancel";
+      }
+      last;
+    }
+    $d->destroy;
+  }
+}
+
+}
+#endif filelist_filter

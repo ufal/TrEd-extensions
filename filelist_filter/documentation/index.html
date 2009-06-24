@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Create a file-list by filtering text file columns</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="css/blue.css" rel="stylesheet" />
+  </head>
+  <body>
+    <img src="../icons/view_filter.png" alt="filelist_filter icon" align="right" />
+    <h1>Documentation of <tt>filelist_filter</tt> TrEd extension</h1>
+    <h2>(Create a file-list by filtering text file columns)</h2>
+    <h3>Description</h3>
+    <p>
+      This extensions adds a function to TrEd
+      allowing the user to create a file list by filtering
+      a given input text file (e.g. a PML-TQ query result) that consists of one or more TAB-separated columns
+      the last of which is a file name, URL, or a node address.
+      The filtering is be based on the values in the other columns.
+    </p>
+    <p>A typical use case is when you have a result of some query over a treebank
+    and you want to view only parts of the resulting set that match certain constraints.
+    </p>
+    <p>For example, consider the following <a href="http://ufal.mff.cuni.cz/~pajas/pmltq">PML-TQ</a> query (over <a href="http://ufal.mff.cuni.cz/pdt/pdt20">PDT 2.0</a>):</p>
+    <pre class="programlisting">t-node $V := [ gram/sempos='v', echild t-node $N := [ gram/sempos ~ '^n' ] ]
+>> $V.t_lemma, $N.functor, address($N) sort by $1, $2</pre>
+    <p>The query selects verbs effectively governing a noun and produces a text file with three columns:
+    the verb's lemma, the noun's functor and an address of the noun (file name followed by a tree and node number).
+    </p>
+    <p>The user can now use this extension to create. a file list
+    which lists the locations of nouns with functor <tt>CPHR</tt> or <tt>DPHR</tt> governed by
+    a verb with t-lemma <tt>být</tt> (<i>to be</i>).
+    </p>
+    <h3>Usage</h3>
+    <a href="screenshot.png" target="_blank"><img src="screenshot.png" width="400pt" alt="filelist_filter icon" align="right" /></a>
+    <ol>
+      <li>
+	<p>Create an input file with one or more TAB-separated columns per line,
+	the last of which is a file name, URL, or a node address
+	(e.g. using a PML-TQ query similar to that above and saving the result
+	to a file).
+	</p>
+      </li>
+      <li><p>Press F10 or select <span style="font-variant: small-caps">Macros->TredMacro->* File-list Filter</span> from menu</p></li>
+      <li><p>Select the input file</p></li>
+      <li><p>If the last column of the input file contains relative file names, select a base directory.</p></li>
+      <li><p>Create column filters. You can filter by equality or regular expression on a column value.
+      You can use negative column numbers to count columns from the right.
+      </p></li>
+      <li>Confirm to create the filelist. The filelist is opened immediately and available
+      in the Session menu for later use. It can be deleted using the <span style="font-variant: small-caps">File->File List</span> dialog.
+      </li>
+    </ol>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="2448">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>filelist_filter</pkgname>
+  <icon>icons/view_filter.png</icon>
+  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <title>Create a file-list by filtering text file columns</title>
+  <version>1.0</version>
+  <copyright year="2009">Petr Pajas</copyright>
+  <description>
+    Add a function Macros->TredMacro->File-list Filter (F10) that
+    can be used to create a file list by filtering
+    an input text file (e.g. a PML-TQ query result) consisting of one or more TAB-separated columns
+    the last of which is a filename, URL, or a node address.
+    The selection is be based on the values in the other columns.
+  </description>
+</tred_extension>
