@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="2448">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="91428">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
@@ -10,7 +10,7 @@
   <version>1.0</version>
   <copyright year="2009">Petr Pajas</copyright>
   <description>
-    Add a function Macros->TredMacro->File-list Filter (F10) that
+    Add a function Macros-&gt;TredMacro-&gt;File-list Filter (F10) that
     can be used to create a file list by filtering
     an input text file (e.g. a PML-TQ query result) consisting of one or more TAB-separated columns
     the last of which is a filename, URL, or a node address.

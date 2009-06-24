@@ -10,7 +10,7 @@ use strict;
 use File::Spec;
 
 #binding-context TredMacro
-#bind FilelistFilter->create_filelist_filter to key F10 menu * File-list Filter
+#bind FilelistFilter->create_filelist_filter to key F10 menu __* File-list Filter
 
 my %filter=(
   '='  => sub { ($_[0]->[ $_[1] ] eq  $_[2])   ? 1 : 0 },
@@ -126,7 +126,7 @@ sub create_filelist_filter {
 
     {
       my $f=$d->add('LabFrame',-label=>'Input file preview', -labelside=>'acrosstop')->pack(-side => 'top',-expand => 1, -fill => 'both');
-      my $t = $f->Scrolled('ROText',-background=>'#f4f4f4', -height=>15,-scrollbars=>'oe')->pack(-expand => 1, -fill => 'both');
+      my $t = $f->Scrolled('ROText',-background=>'#FFFFEC', -height=>15,-scrollbars=>'oe')->pack(-expand => 1, -fill => 'both');
       my $line;
       for (1..10) {
 	$line = <$fh> || last;
@@ -140,6 +140,7 @@ sub create_filelist_filter {
 			$line = <$fh> || last;
 			$t->insert('end - 1 line',$line);
 		      }
+		      $t->see('end');
 		      if (!$line) {
 			$t->tagConfigure('more',-elide => 1);
 		      }
@@ -157,13 +158,10 @@ sub create_filelist_filter {
       my @list;
       my $line;
       my @cols;
-      for (@f) {
-	$_->{colnum}-- if $_->{colnum}>=0;
-      }
       while ($line=<$fh>) {
 	chomp $line;
 	@cols = split(/\t/,$line);
-	unless (first { !$filter{$_->{op}}->(\@cols,$_->{colnum},$_->{value}) } @f) {
+	unless (first { !$filter{$_->{op}}->(\@cols,(($_->{colnum}>0)?$_->{colnum}-1:$_->{colnum}),$_->{value}) } @f) {
 	  my $file = $cols[-1];
 	  $file = File::Spec->rel2abs($file, $base_dir) if defined($base_dir) and length($base_dir);
 	  push @list, $file;
