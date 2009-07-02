@@ -21,6 +21,39 @@ my %filter=(
   '!~*' => sub { ($_[0]->[ $_[1] ] !~ /$_[2]/i) ? 1 : 0 },
 );
 
+my $folder_files = [];
+my $folder_index;
+
+sub open_file_or_folder ($$) {
+  my ($index_f,$input_type) = @_;
+  my $fh;
+  if($input_type eq 'file'){
+    open($fh, '<:utf8', $index_f) or die "Cannot open $index_f: $!";
+  }else{ # folder
+    $folder_index = 0;
+    open($fh, '<:utf8', $folder_files->[0]) or die "Cannot open $folder_files->[0]: $!";
+  }
+  return $fh;
+}
+
+sub get_line {
+  my ($fh,$input_type) = @_;
+  my $line;
+  if ($input_type eq 'file'){
+    $line = <$fh>;
+  } else { # folder
+    writeln("fh:$fh\ttype:$input_type\tindex:$folder_index\tfile:$folder_files->[$folder_index]");
+    unless($line = <$fh>){
+      if(++$folder_index < @{$folder_files}){
+        open($fh, '<:utf8', $folder_files->[$folder_index]) or die "Cannot open $folder_files->[$folder_index]: $!";
+        $line = get_line($fh,$input_type);
+      }
+    }
+  }
+  writeln "LINE:$line";
+  return $line;
+}
+
 sub create_filelist_filter {
   ChangingFile(0);
   my $top = ToplevelFrame();
@@ -28,13 +61,20 @@ sub create_filelist_filter {
   my $index_f = $TredMacroPreserve::filelist_filter::index_f;
   my $resp;
   {
-    my @buttons = (($index_f ? ("Use last input") : ()), "Choose input file", "Cancel");
+    my $last_type;
+    if($index_f){
+      $last_type = -f $index_f ? 'file' : 'folder';
+    }
+    my @buttons = (($index_f ? ("Use last input $last_type") : ()),
+                   "Choose input file",
+                   "Choose input folder",
+                   "Cancel");
     my $message =
       "This function is used to create a file list by selecting file names from ".
-	"a given input file. The input file must consist of one or more TAB-separated columns, ".
+	"a given input file or folder. The input file(s) must consist of one or more TAB-separated columns, ".
 	  "the last of which is a filename, URL, or a node address. ".
 	    "The selection will be based on the values in the other columns.".
-	      ($index_f ? "\n\nLast input file: $index_f" : ""),
+	      ($index_f ? "\n\nLast input $last_type: $index_f" : ""),
     my $d = $top->DialogBox(-title => "Filter to filelist",
 			    -buttons => \@buttons);
     $d->add('Label', -text => $message, -justify => 'left',
@@ -54,8 +94,16 @@ sub create_filelist_filter {
 								     -title => 'Open index file-list',
 								    );
     return unless defined($index_f) and length($index_f);
+  } elsif ($resp eq 'Choose input folder') {
+        $TredMacroPreserve::filelist_filter::index_f = 
+          $index_f = $top->chooseDirectory(-title => 'Open directory');
+        return unless defined($index_f) and length($index_f);
+      }
+  my $input_type = -f $index_f ? 'file' : 'folder';
+  if($input_type eq 'folder'){
+    $folder_files = [ glob(File::Spec->catfile($index_f,'*')) ];
   }
-    open(my $fh, '<:utf8', $index_f) or die "Cannot open $index_f: $!";
+  my $fh = open_file_or_folder($index_f,$input_type);
 
   my @filter = @{$TredMacroPreserve::filelist_filter::filter||[]};
   my @f;
@@ -70,9 +118,10 @@ sub create_filelist_filter {
     require Tk::Balloon;
 
     my $d = $top->DialogBox(-title => 'Filter filelist', -buttons=>[qw(OK Cancel)]);
+    $d->BindEscape();
     my $b = $d->Balloon();
     my $last_col=0;
-    my $line = <$fh>; chomp($line);
+    my $line = get_line($fh,$input_type); chomp($line);
     my @cols = split /\t/,$line;
     unless (File::Spec->file_name_is_absolute($cols[-1])) {
       my $f=$d->add('LabFrame',-label=>'Base directory',
@@ -129,7 +178,7 @@ sub create_filelist_filter {
       my $t = $f->Scrolled('ROText',-background=>'#FFFFEC', -height=>15,-scrollbars=>'oe')->pack(-expand => 1, -fill => 'both');
       my $line;
       for (1..10) {
-	$line = <$fh> || last;
+	$line = get_line($fh,$input_type) or last;
 	$t->insert('end',$line);
       }
       if ($line) {
@@ -137,10 +186,11 @@ sub create_filelist_filter {
 	$t->tagConfigure('more',-foreground=>'darkblue',-underline => 1,-justify=>'center');
 	$t->tagBind('more','<1>',sub{
 		      for (1..50) {
-			$line = <$fh> || last;
+			$line = get_line($fh,$input_type) or last;
 			$t->insert('end - 1 line',$line);
 		      }
 		      $t->see('end');
+                      writeln ("ELIDE $line");
 		      if (!$line) {
 			$t->tagConfigure('more',-elide => 1);
 		      }
@@ -153,12 +203,16 @@ sub create_filelist_filter {
       @f = grep { defined($_->{value}) && length($_->{value}) } @filter;
       last unless $resp eq 'OK';
       $TredMacroPreserve::filelist_filter::base_dir = $base_dir;
-      seek($fh,0,"SEEK_SET");
+      if($input_type eq 'file'){
+        seek($fh,0,"SEEK_SET");
+      }else{
+        $fh = open_file_or_folder($index_f,'folder');
+      }
       my(undef,undef,$basename)=File::Spec->splitpath($index_f);
       my @list;
       my $line;
       my @cols;
-      while ($line=<$fh>) {
+      while ($line = get_line($fh,$input_type)) {
 	chomp $line;
 	@cols = split(/\t/,$line);
 	unless (first { !$filter{$_->{op}}->(\@cols,(($_->{colnum}>0)?$_->{colnum}-1:$_->{colnum}),$_->{value}) } @f) {
