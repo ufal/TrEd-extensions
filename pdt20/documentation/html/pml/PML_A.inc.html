@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Generated documentation for pml/PML_A.inc</title>
+	<meta name="description" content="Pod documentation for "></meta>
+	<meta name="inputfile" content="/export/home/pajas/projects/tred-extensions/pdt20/documentation/.pod/pml/PML_A.inc.pod"></meta>
+	<meta name="outputfile" content="&lt;standard output&gt;"></meta>
+	<meta name="created" content="Thu Jan 29 10:06:04 2009"></meta>
+	<meta name="generator" content="Pod::Xhtml 1.59"></meta>
+<link rel="stylesheet" href="../css/blue.css"></link></head>
+<body><h1>Generated documentation for pml/PML_A.inc</h1>
+<div class="pod">
+<h1 id="PML_A">PML_A</h1><p><a href="../../.index.html" class="toplink">back</a></p>
+<div id="PML_A_CONTENT">
+<p>PML_A.mak - Miscellaneous macros for the analytic layer of Prague
+Dependency Treebank (PDT) 2.0.</p>
+<dl>
+	<dt>TectogrammaticalTree()</dt>
+	<dd>
+		<p>This function is only available in TrEd (i.e. in GUI). After a
+previous call to <code>AnalyticalTree</code>, it switches current view back to
+a tectogrammatical tree which refers to the current analytical tree.</p>
+	</dd>
+	<dt>GetCoordMembers($node,$no_recurse)</dt>
+	<dd>
+		<p>If the given node is coordination or apposition (i.e. its <code>afun</code> is <code>Coord</code>
+or <code>Apos</code>) return a list of the corresponding coordination members
+(nodes with <code>is_member</code> flag set). Otherwise return the node itself.</p>
+		<p>Unless <code>$no_recurse</code> is true, the function is recursively applied to
+those members that are themselves <code>Coord</code> or <code>Apos</code>.</p>
+		<p>This function differs from <a class="pod_xhtml_bounce_url" href="ExpandCoord.html">ExpandCoord</a> in handling coordination
+members below <code>AuxP</code> and <code>AuxC</code>. While this function returns the
+nodes with the <code>is_member</code> flag (i.e. the nodes below <code>AuxP</code> and
+<code>AuxC</code>), <a class="pod_xhtml_bounce_url" href="ExpandCoord.html">ExpandCoord</a> returns the <code>AuxP</code> and <code>AuxC</code> nodes above
+them.</p>
+	</dd>
+	<dt>GetMember($node)</dt>
+	<dd>
+		<p>This is a helper function used to identify and reach the actual
+coordination or apposition members (carrying <code>is_member</code> flag) from
+child nodes of a <code>Coord</code> or <code>Apos</code>.</p>
+		<p>Given a node, return it if its <code>is_member</code> attribute is 1.
+If its <code>afun</code> is <code>AuxC</code> or <code>AuxP</code>, recurse to the child nodes.
+In all other cases return an empty list.</p>
+	</dd>
+	<dt>ExpandCoord($node,$keep?)</dt>
+	<dd>
+		<p>If the given node is coordination or apposition (according to its
+Analytical function - attribute <code>afun</code>) expand it to a list of
+coordinated nodes. Otherwise return the node itself. If the argument
+<code>keep</code> is true, include the coordination/apposition node in the list
+as well.</p>
+		<p>This function differs from <a class="pod_xhtml_bounce_url" href="GetCoordMembers.html">GetCoordMembers</a> in handling coordination
+members below <code>AuxP</code> and <code>AuxC</code>. Unlike the latter, it returns the
+<code>AuxP</code> and <code>AuxC</code> nodes above the actual coordination members.</p>
+	</dd>
+	<dt>IsMember($node)</dt>
+	<dd>
+		<p>This is a helper function used to identify coordination or apposition
+members among child nodes of a Coord or Apos. It returns 1 if the
+given node has <code>is_member</code>=1 or if it has <code>afun</code>=<code>AuxC</code> or <code>AuxP</code>
+and a child node for which IsMember (recursively called) returns 1. If
+neither of these two conditions is met, the function returns 0.</p>
+	</dd>
+	<dt>GetSentenceString($tree?)</dt>
+	<dd>
+		<p>Return string representation of the given tree (suitable for
+Analytical trees).</p>
+	</dd>
+	<dt id="gen-1">DiveAuxCP($node)</dt>
+	<dd>
+		<p>You can use this function as a <code>through</code> argument to GetEParents and
+GetEChildren. It skips all the prepositions and conjunctions when
+looking for nodes which is what you usually want.</p>
+	</dd>
+	<dt>GetEParents($node,$through)</dt>
+	<dd>
+		<p>Return linguistic parent of a given node as appears in an analytic
+tree. The argument <code>$through</code> should supply a function accepting one
+node as an argument and returning true if the node should be skipped
+on the way to parent or 0 otherwise. The most common <a href="#gen-1"><code>DiveAuxCP</code></a> is
+provided in this package.</p>
+	</dd>
+	<dt>GetEChildren($node,$dive)</dt>
+	<dd>
+		<p>Return a list of nodes linguistically dependant on a given
+node. <code>$dive</code> is a function which is called to test whether a given
+node should be used as a terminal node (in which case it should return
+false) or whether it should be skipped and its children processed
+instead (in which case it should return true). Most usual treatment is
+provided in <a href="#gen-1"><code>DiveAuxCP</code></a>. If <code>$dive</code> is skipped, a function returning 0
+for all arguments is used.</p>
+	</dd>
+	<dt>ANodeToALexRf(a_node,t_node,t_file)</dt>
+	<dd>
+		<p>Adds given a-node's <code>id</code> to <code>a/lex.rf</code> of the given t-node and
+adjusts <code>t_lemma</code> of the t-node accordingly. The third argument
+t_file specifies the <code>FSFile</code> object to which the given t-node
+belongs.</p>
+	</dd>
+	<dt>ANodeToAAuxRf(a_node,t_node,t_file)</dt>
+	<dd>
+		<p>Appends given a-node's <code>id</code> to <code>a/aux.rf</code> of the given t-node. The
+third argument t_file specifies the <code>FSFile</code> object to which the
+given t-node belongs.</p>
+	</dd>
+	<dt>CreateStylesheets()</dt>
+	<dd>
+		<p>Creates default stylesheet for PML analytical files unless already
+defined. Most of the colors it uses can be redefined in the tred
+config file <code>.tredrc</code> by adding a line of the form</p>
+<pre>  CustomColorsomething = ...
+
+</pre>
+		<p>The stylesheet is named <a href="#PML_A"><code>PML_A</code></a> and it has the following display
+features:</p>
+		<p>
+			<dl>
+				<dt>1.</dt>
+				<dd>
+					<p>sentence is displayed in <code>CustomColorsentence</code>. If the form was
+changed (e.g. because of a typo), the original form is displayed in
+<code>CustomColorspell</code> with overstrike.</p>
+				</dd>
+				<dt>2.</dt>
+				<dd>
+					<p>analytical function is displayed in <code>CustomColorafun</code>. If the
+node's <code>is_member</code> is set to 1, the type of the structure is
+indicated by <code>Co</code> (coordination) or <code>Ap</code> (apposition) in
+<code>CustomColorcoappa</code>. For <code>is_parenthesis_root</code>, <code>Pa</code> is displayed
+in the same color.</p>
+				</dd>
+			</dl>
+		</p>
+	</dd>
+</dl>
+
+</div>
+</div></body>
+</html>

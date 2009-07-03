@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Generated documentation for pml/PML_T.inc</title>
+	<meta name="description" content="Pod documentation for "></meta>
+	<meta name="inputfile" content="/export/home/pajas/projects/tred-extensions/pdt20/documentation/.pod/pml/PML_T.inc.pod"></meta>
+	<meta name="outputfile" content="&lt;standard output&gt;"></meta>
+	<meta name="created" content="Thu Jan 29 10:06:16 2009"></meta>
+	<meta name="generator" content="Pod::Xhtml 1.59"></meta>
+<link rel="stylesheet" href="../css/blue.css"></link></head>
+<body><h1>Generated documentation for pml/PML_T.inc</h1>
+<div class="pod">
+<h1 id="PML_T">PML_T</h1><p><a href="../../.index.html" class="toplink">back</a></p>
+<div id="PML_T_CONTENT">
+<p>PML_T.mak - Miscellaneous macros for the tectogrammatic layer of Prague
+Dependency Treebank (PDT) 2.0.</p>
+<dl>
+	<dt>AFile($fsfile?)</dt>
+	<dd>
+		<p>Return analytical file associated with a given (tectogrammatical)
+file. If no file is given, the current file is assumed.</p>
+	</dd>
+	<dt id="gen-1">GetANodeIDs($node?)</dt>
+	<dd>
+		<p>Returns a list of IDs of analytical nodes referenced from a given
+tectogrammatical node. If no node is given, the function applies to
+<code>$this</code>.</p>
+	</dd>
+	<dt>GetANodeREFs($node?)</dt>
+	<dd>
+		<p>Returns a list of PMLREFs of analytical nodes referenced from a given
+tectogrammatical node. If no node is given, the function applies to
+<code>$this</code>. This function is similar to <a href="#gen-1"><code>GetANodeIDs()</code></a> but it doesn't
+strip the file-ref part of the reference.</p>
+	</dd>
+	<dt id="gen-2">GetANodes($node?,$fsfile?)</dt>
+	<dd>
+		<p>Returns a list of analytical nodes referenced from a given
+tectogrammatical node. This combines references from a/tree.rf
+(root-node), a/aux.rf and a/lex.rf (non-root nodes). If no node is
+given, the function applies to <code>$this</code>. If the node belongs to other
+file than the current file, the optional second argument must
+specify the corresponding FSFile object.</p>
+	</dd>
+	<dt>GetALexNode($node?)</dt>
+	<dd>
+		<p>Returns an analytical node referenced from a/lex.rf attribute of a
+given tectogrammatical node. If no node is given, the function applies
+to <code>$this</code>.</p>
+	</dd>
+	<dt>GetAAuxNodes($node?)</dt>
+	<dd>
+		<p>Returns a list of analytical nodes referenced from a/aux.rf attribute
+of a given tectogrammatical node. If no node is given, the function
+applies to <code>$this</code>.</p>
+	</dd>
+	<dt id="gen-3">GetANodeByID($id_or_ref,$fsfile?)</dt>
+	<dd>
+		<p>Looks up an analytical node by its ID (or PMLREF - i.e. the ID
+preceded by a file prefix of the form <code>a#</code>). This function only works
+if the current file is a tectogrammatical file and the requested node
+belongs to an analytical file associated with it.</p>
+	</dd>
+	<dt>GetANodesHash()</dt>
+	<dd>
+		<p>Return a reference to a hash indexing analytical nodes of the
+analytical file associated with the current tectogrammatical file. If
+such a hash was not yet created, it is created upon the first call to
+this function (or other functions calling it, such as <a href="#gen-2"><code>GetANodes</code></a> or
+<a href="#gen-3"><code>GetANodeByID</code></a>.</p>
+	</dd>
+	<dt>ClearANodesHash()</dt>
+	<dd>
+		<p>Clear the internal hash indexing analytical nodes of the analytical
+file associated with the current tectogrammatical file.</p>
+	</dd>
+	<dt>AnalyticalTree()</dt>
+	<dd>
+		<p>This function is only available in TrEd (i.e. in GUI). It switches
+current view to an analytical tree associated with a currently
+displayed tectogrammatical tree.</p>
+	</dd>
+	<dt>DrawCorefArrows()</dt>
+	<dd>
+		<p>Called from <code>node_style_hook</code>. Draws coreference arrows using
+following properties: textual arrows in CustomColor <code>arrow_textual</code>,
+grammatical in &lt;arrow_grammatical&gt; (and dashed in Full stylesheet),
+complement arrow in <code>arrow_compl</code> (and dot-dashed in Full
+stylesheet), segment arrow in <code>arrow_segm</code> and exophora arrow in
+<code>arrow_exoph</code>.</p>
+	</dd>
+	<dt>IsCoord($node?)</dt>
+	<dd>
+		<p>Check if the given node is a coordination according to its TGTS
+functor (attribute <code>functor</code>)</p>
+	</dd>
+	<dt>ExpandCoord($node,$keep?)</dt>
+	<dd>
+		<p>If the given node is coordination or aposition (according to its TGTS
+functor - attribute <code>functor</code>) expand it to a list of coordinated
+nodes. Otherwise return the node itself. If the argument <code>keep</code> is
+true, include the coordination/aposition node in the list as well.</p>
+	</dd>
+	<dt>GetSentenceString($tree?)</dt>
+	<dd>
+		<p>Return string representation of the given tree (suitable for
+Tectogrammatical trees).</p>
+	</dd>
+	<dt>GetEParents($node)</dt>
+	<dd>
+		<p>Return linguistic parents of a given node as appear in a TG tree.</p>
+	</dd>
+	<dt>GetEChildren($node?)</dt>
+	<dd>
+		<p>Return a list of nodes linguistically dependant on a given node.</p>
+	</dd>
+	<dt>GetEDescendants($node?)</dt>
+	<dd>
+		<p>Return a list of all nodes linguistically subordinated to a given node
+(not including the node itself).</p>
+	</dd>
+	<dt>GetEAncestors($node?)</dt>
+	<dd>
+		<p>Return a list of all nodes linguistically superordinated to (ie
+governing) a given node (not including the node itself).</p>
+	</dd>
+	<dt>GetESiblings($node?)</dt>
+	<dd>
+		<p>Return linguistic siblings of a given node as appears in a
+tectogrammatic tree. This doesn't include the node itself, neither
+those children of the node's linguistic parent that are in
+coordination with the node.</p>
+	</dd>
+	<dt>GetNearestNonMember($node?)</dt>
+	<dd>
+		<p>If the node is not a member of a coordination, return the node.  If it
+is a member of a coordination, return the node representing the
+highest coordination $node is a member of.</p>
+	</dd>
+	<dt>IsFiniteVerb($node?)</dt>
+	<dd>
+		<p>If the node is the head of a finite complex verb form (based on
+<code>m/tag</code> of the referenced analytical nodes), return 1, else return 0.</p>
+	</dd>
+	<dt>IsPassive($node?)</dt>
+	<dd>
+		<p>If the node is the head of a passive-only verb form, (based on
+<code>m/tag</code> of the referenced analytical nodes), return 1, else return 0.</p>
+	</dd>
+	<dt>IsInfinitive($node?)</dt>
+	<dd>
+		<p>If the node is the head of an infinitive complex verb form, (based on
+<code>m/tag</code> of the referenced analytical nodes), return 1, else return 0.</p>
+	</dd>
+	<dt>IsModalVerbLemma($lemma)</dt>
+	<dd>
+		<p>Return 1 if trlemma is a member of the list of all possible modal verb
+lemmas (morfological lemma suffixes (/[-`_].*/) are ignored).</p>
+	</dd>
+	<dt>ModalVerbLemma($lemma)</dt>
+	<dd>
+		<p>Deprecated alias for  IsModalVerbLemma</p>
+	</dd>
+	<dt>CreateStylesheets()</dt>
+	<dd>
+		<p>Creates default stylesheets for PML tectogrammatic files unless
+already defined. Most of the colors they use can be redefined in the
+tred config file <code>.tredrc</code> by adding a line of the form</p>
+<pre>  CustomColorsomething = ...
+
+</pre>
+		<p>Default values can be found in <code>PML.mak</code>. The stylesheets are named
+<code>PML_T_Compact</code> and <code>PML_T_Full</code>. Compact stylesheet is suitable to
+be used on screen because it pictures many features by means of
+colours whilst the Full stylesheet is better for printing because it
+lists the values of almost all the attributes.</p>
+		<p>The stylesheets have the following features (if the stylesheet is not
+mentioned, the description talks about the Compact one):</p>
+		<p>
+			<dl>
+				<dt>1.</dt>
+				<dd>
+					<p><code>t_lemma</code> is displayed on the first line. If the node's
+<code>is_parenthesis</code> is set to 1, the <code>t_lemma</code> is displayed in
+CustomColor <code>parenthesis</code> in the Compact stylesheet. If the node's
+<code>sentmod</code> is non-empty, its value is displayed in CustomColor
+<code>detail</code> after a dot. If there is a coreference leading to a
+different sentence, the <code>t_lemma</code> of the refered node is displayed in
+CustomColor <code>coref</code>, too.</p>
+				</dd>
+				<dt>2.</dt>
+				<dd>
+					<p>Node's functor is displayed in CustomColor <code>func</code>. If the node's
+<code>subfunctor</code> or <code>is_state</code> are defined, they are indicated in
+CustomColor <code>subfunc</code>. In the Full stylesheet, <code>is_member</code> is also
+displayed as "M" in CustomColor <code>coappa</code> and <code>is_parenthesis</code> as "P"
+in CustomColor <code>parenthesis</code>.</p>
+				</dd>
+				<dt>3.</dt>
+				<dd>
+					<p>For nodes of all types other than complex, <code>nodetype</code> is displayed
+in CustomColor <code>nodetype</code>. For complex nodes, their <code>gram/sempos</code> is
+displayed in CustomColor <code>complex</code>. In the Full stylesheet, all the
+non-empty values of grammatemes are listed in CustomColor <code>detail</code>,
+and for ambiguous values the names of the attributes are displayed in
+CustomColor <code>detailheader</code>.</p>
+				</dd>
+				<dt>4.</dt>
+				<dd>
+					<p>Generated nodes are displayed as squares, non-generated ones as
+ovals.</p>
+				</dd>
+				<dt>5. </dt>
+				<dd>
+					<p>Current node is displayed as bigger and with outline in CustomColor
+<code>current</code>.</p>
+				</dd>
+				<dt>6.</dt>
+				<dd>
+					<p>Edges from nodes to roots or from nodes with <code>functor</code> <code>PAR,
+PARTL, VOCAT, RHEM, CM, FPHR,</code> and <code>PREC</code> to their parents are thin,
+dashed and have the CustomColor <code>line_normal</code>. Edges from
+coordination heads with <code>is_member</code> are thin and displayed in
+CustomColor <code>line_member</code>. Edges from other nodes with <code>is_member</code>
+to their coordination parents are displayed with the lower half thick
+in CustomColor <code>line_normal</code> and upper half thin in CustomColor
+<code>line_member</code>. Edges from nodes without <code>is_member</code> to their
+coordination parents are displayed thin in CustomColor <code>line_comm</code>.
+Edges from coordination nodes without <code>is_member</code> to their parents
+are displayed with the lower half thin in CustomColor <code>line_member</code>
+and upper half thick in CustomColor <code>line_normal</code>. All other edges
+are displayed half-thick in CustomColor <code>line_normal</code>.</p>
+				</dd>
+				<dt>7.</dt>
+				<dd>
+					<p>The attribute <code>tfa</code> is reflected by the colour of the node.
+CustomColors <code>tfa_c, tfa_f, tfa_c</code>, and <code>tfa_no</code> are used. In the
+Full stylesheet, the value is also displayed before the functor in
+<code>tfa_text</code>.</p>
+				</dd>
+				<dt>8.</dt>
+				<dd>
+					<p>Attributes <code>gram, is_dsp_root, is_name_of_person,</code> and <code>quot</code> are
+listed in the hint box when the mouse cursor is over the node. In the
+Full stylesheet, they are diplayed at the last line in CustomColor
+<code>detail</code> (see 3).</p>
+				</dd>
+			</dl>
+		</p>
+	</dd>
+	<dt>DeleteNode(node?)</dt>
+	<dd>
+		<p>Deletes $node or $this, attaches all its children to its parent and
+recounts deepord. Cannot be used for the root.</p>
+	</dd>
+	<dt>DeleteSubtree(node?)</dt>
+	<dd>
+		<p>Deletes $node or $this and its whole subtree and recounts
+deepord. Cannot be used for the root.</p>
+	</dd>
+	<dt>NewNode(node?,id?)</dt>
+	<dd>
+		<p>Add new node as a son of the given node or current node, initializes
+the new node using InitNode. If id is specified, it is assigned to the
+new node. Otherwise, a unique ID is computed and assigned to the node
+using NewID. Not all the required attributes are being set!</p>
+	</dd>
+	<dt>InitNode(node,obj?)</dt>
+	<dd>
+		<p>Initialize already existing FSNode object as a t-node by associating
+it with t-node PML schema type. If the node belongs to a different
+file than the current one, the FSFile or some already initialized node
+of that file must be specified as the second argument. Returns the
+initialized node.</p>
+	</dd>
+	<dt>NewID(node?)</dt>
+	<dd>
+		<p>Tries to compute a new unique ID based on the ID's in the tree to
+which the given node belongs. If no node is specified, the
+global variable $root is used. Returns the computed ID.</p>
+	</dd>
+	<dt>OpenValFrameList(node?,options...)</dt>
+	<dd>
+		<p>Open a window with a list of possible valency frames for a given node,
+highlighting frames currently assigned to the node. All given options
+are passed to the approporiate ValLex::GUI method. Most commonly used are
+<code>-no_assign =&gt; 1</code> to suppress the Assign button,
+<code>-assign_func =&gt; sub { my ($node,$frame_ids,$frame_text)=@_; ... }</code>
+to specify a custom code for assigning the selected frame_ids to a node,
+<code>-lemma</code> and <code>-pos</code> to override t_lemma and sempos of the node,
+<code>-frameid</code> to frames currently assigned to the node, <code>-noadd =</code> 1&gt; to
+forbid adding new words to the lexicon (also implied by <code>-no-assign</code>.</p>
+	</dd>
+	<dt>OpenValLexicon(options...)</dt>
+	<dd>
+		<p>Open valency lexicon editor/browser GUI. All given options are passed
+to the approporiate ValLex::GUI method. Most commonly used are <code>-lemma</code>
+and <code>-pos</code> to override t_lemma and sempos of the node and <code>-frameid</code>
+to frames currently assigned to the node.</p>
+	</dd>
+</dl>
+
+</div>
+</div></body>
+</html>

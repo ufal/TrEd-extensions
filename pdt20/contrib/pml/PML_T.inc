@@ -627,7 +627,7 @@ Return a list of nodes linguistically dependant on a given node.
 =cut
 
 sub _FilterEChildren { # node suff from
-  my ($node,$suff,$from)=(shift,shift,shift);
+  my ($node,$suff,$from)=@_;
   my @sons;
   $node=$node->firstson;
   while ($node) {
@@ -1067,7 +1067,6 @@ sub switch_context_hook {
   if ($cur_stylesheet eq STYLESHEET_FROM_FILE() or
       $cur_stylesheet =~ /^PML_(?:\w+_)?[^T](?:_|\b)/){
     SetCurrentStylesheet('PML_T_Compact');
-    Redraw() if GUI();
   }
   undef $PML::arf;
   return;

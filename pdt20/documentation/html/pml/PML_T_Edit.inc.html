@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Generated documentation for pml/PML_T_Edit.inc</title>
+	<meta name="description" content="Pod documentation for "></meta>
+	<meta name="inputfile" content="/export/home/pajas/projects/tred-extensions/pdt20/documentation/.pod/pml/PML_T_Edit.inc.pod"></meta>
+	<meta name="outputfile" content="&lt;standard output&gt;"></meta>
+	<meta name="created" content="Thu Jan 29 10:06:13 2009"></meta>
+	<meta name="generator" content="Pod::Xhtml 1.59"></meta>
+<link rel="stylesheet" href="../css/blue.css"></link></head>
+<body><h1>Generated documentation for pml/PML_T_Edit.inc</h1>
+<div class="pod">
+<h1 id="PML_T_Edit">PML_T_Edit</h1><p><a href="../../.index.html" class="toplink">back</a></p>
+<div id="PML_T_Edit_CONTENT">
+<p>PML_T_Edit.mak - Miscellaneous macros for editing the tectogrammatic layer
+of Prague Dependency Treebank (PDT) 2.0.</p>
+<dl>
+	<dt>AddCoref(node,target,coref)</dt>
+	<dd>
+		<p>If the node does not refer to target by the coref of type <code>$coref</code>,
+make the reference, else delete the reference.</p>
+	</dd>
+	<dt>MouseEditLinks(ask,@_ of value_line_click_hook)</dt>
+	<dd>
+		<p>Enables changes of <code>a/aur.rf</code> and <code>a/lex.rf</code> by clicking on the
+words of the sentence (value line).
+  1. Alt + left click: makes the word the <code>a/lex.rf</code> of the current node.
+  2. Ctrl + left click: creates new son of the current node from the word.
+  3. Shift + left click: adds the word to <code>a/aux.rf</code> or removes it from linked a-nodes.</p>
+		<p>If ask is set to 1, asks for attributes for a new node.</p>
+	</dd>
+	<dt>RememberNode()</dt>
+	<dd>
+		<p>Remembers current node to be used later, e.g. with
+<code>text_arrow_to_remembered</code>.</p>
+	</dd>
+	<dt>MarkForARf()</dt>
+	<dd>
+		<p>Enter analytical layer with current node remembered. By calling
+<code>PML_A_Edit::AddThisToA...</code> you can make links between the layers.</p>
+	</dd>
+</dl>
+
+</div>
+</div></body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Generated documentation for pml/PML_A2T.mak</title>
+	<meta name="description" content="Pod documentation for "></meta>
+	<meta name="inputfile" content="/export/home/pajas/projects/tred-extensions/pdt20/documentation/.pod/pml/PML_A2T.mak.pod"></meta>
+	<meta name="outputfile" content="&lt;standard output&gt;"></meta>
+	<meta name="created" content="Thu Jan 29 10:06:09 2009"></meta>
+	<meta name="generator" content="Pod::Xhtml 1.59"></meta>
+<link rel="stylesheet" href="../css/blue.css"></link></head>
+<body><h1>Generated documentation for pml/PML_A2T.mak</h1>
+<div class="pod">
+<h1 id="PML_A2T">PML_A2T</h1><p><a href="../../.index.html" class="toplink">back</a></p>
+<div id="PML_A2T_CONTENT">
+<p>PML_A2T.mak - Helper macros for writing an a- to t-layer
+transformations over the Prague Dependency Treebank (PDT) 2.0 data</p>
+<dl>
+	<dt>CreateTFile($a_file?)</dt>
+	<dd>
+		<p>Creates and returns empty t-file (FSFile object) linked with a given
+a-file.  It associates the newly created file with <code>tdata_schema.xml</code>
+PML schema. If no a_file is given, current file is used. Initially,
+the newly created t-file contains no trees. Trees can be added using
+<a href="#gen-1"><code>AddNewTTree</code></a>.</p>
+	</dd>
+	<dt id="gen-1">AddNewTTree($t_file?)</dt>
+	<dd>
+		<p>Creates a new t-tree linked with the current a-tree and appends the
+newly created t-tree to a given t-file. Initially the t-tree consists
+of the root node alone. More nodes can be added e.g. using
+<code>PML_T::NewNode($parent)</code> and linked to a-nodes using
+<code>PML_A::AddANodeToALexRf</code> and <code>PML_A::AddANodeToAAuxRf</code>.</p>
+		<p>If no t-file is given, the t-file currently associated with the
+current a-file is used (if any). See also more generic macro
+<a href="#gen-2"><code>InitTTree</code></a>.</p>
+	</dd>
+	<dt id="gen-2">InitTTree($t_file,$t_root,$a_root)</dt>
+	<dd>
+		<p>Initialize a given t-root node based on a given a-root node.  Empty
+t-root node to be used with this function can be created using either
+NewTree or NewTreeAfter macros, or by a direct call to
+<code>$t_file-</code>new_tree($file_position)&gt;.</p>
+	</dd>
+</dl>
+
+</div>
+</div></body>
+</html>
