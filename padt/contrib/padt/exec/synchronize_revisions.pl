@@ -7,20 +7,11 @@
 our $VERSION = do { q $Revision: 487 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
-BEGIN {
-
-    our $libDir = `btred --lib`;
-
-    chomp $libDir;
-
-    eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
-}
-
 $dirsep = $^O eq 'MSWin32' ? '\\' : '/';
 
 $copy = $^O eq 'MSWin32' ? 'copy' : 'cp -p';
 
-$execDir = join $dirsep, $libDir, qw 'contrib padt exec', '';
+$execDir = join $dirsep, $ENV{'HOME'}, qw '.tred.d extensions padt contrib padt exec', '';
 
 @ARGV = glob join " ", @ARGV;
 
@@ -67,7 +58,7 @@ foreach $file (@ARGV) {
 
     system $copy . ' ' . $file[3] . ' ' . $file[2];
 
-    system 'perl -X ' . $execDir . 'SyntaxFS.pl ' . $file[0];
+    system 'btred -QI ' . $execDir . 'morpho_syntax.ntred ' . $file[0];
 
     system $copy . ' ' . $file[1] . ' ' . $file[3];
 

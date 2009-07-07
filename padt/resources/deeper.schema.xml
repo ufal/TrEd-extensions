@@ -30,7 +30,7 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="func" required="1"><constant>SENT</constant></member>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="m" type="M.type"/>
             <member name="s" type="S.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
@@ -47,7 +47,7 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="func" type="Functor.type" required="1"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="context" type="Context.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
@@ -77,7 +77,7 @@
         <structure>
             <!--<member name="id" role="#ID" required="1" as_attribute="1" type="ID.type"/>-->
             <member name="afun" type="Afun.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
             <member name="coref" type="Coref.type"/>

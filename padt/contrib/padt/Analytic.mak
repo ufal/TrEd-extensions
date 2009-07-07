@@ -427,7 +427,9 @@ sub CreateStylesheets {
 
 style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
-node:<? $this->{m}{form} =~ /^./ ? '${m/form}' : '#{custom6}${m/input}' ?>
+node:<? exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
+        exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
+        '#{custom2}${form}' . " #" . (split /[^0-9]+/, $this->{'id'})[1] ?>
 
 node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
                                   ? '#{custom3}${afunaux}'
@@ -435,15 +437,90 @@ node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
                             ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
                                               qw 'parallel paren arabfa coref clause' ) || () ) ?>
 
-node:<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne ''
-       ?>#{custom2}${m/tag}
+node:<? exists $this->{'morpho'}{'Token'} ? (
+        exists $this->{'morpho'}{'Token'}{'note'} &&
+               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
+        ) . '#{custom2}${morpho/Token/tag}' : '' ?>
 
-hint:<? join "\n", 'tag: ${m/tag}',
-                   'lemma: ${m/lemma}',
-                   'morph: ${m/morph}',
-                   'gloss: ${m/gloss}',
-                   'comment: ${m/comment}' ?>
+hint:<? exists $this->{'morpho'}{'Token'} ? join "\n", 'tag: ${morpho/Token/tag}',
+                                                       'lemma: ${morpho/Lexeme/form}',
+                                                       'morphs: ${morpho/Token/morphs}',
+                                                       'gloss: ${morpho/Token/gloss}',
+                                                       'note: ${morpho/Token/note}' : '' ?>
 >>
+}
+
+sub morpho_structure {
+
+    my $node = $this->root();
+
+    unless (exists $node->{'form'} or not exists $node->{'m'}{'tag'}) {
+
+        $node->{'form'} = $node->{'m'}{'tag'};
+
+        delete $node->{'m'};
+    }
+
+    while ($node = $node->following()) {
+
+        next if exists $node->{'morpho'} or not exists $node->{'m'};
+
+        $node->{'morpho'} = new Fslib::Struct;
+
+        if (exists $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '') {
+
+            $node->{'morpho'}{'Word'} = new Fslib::Struct;
+
+            $node->{'morpho'}{'Word'}{'form'} = $node->{'m'}{'input'};
+        }
+
+        if (exists $node->{'m'}{'lemma'} and $node->{'m'}{'lemma'} ne '') {
+
+            $node->{'morpho'}{'Lexeme'} = new Fslib::Struct;
+
+            $node->{'morpho'}{'Lexeme'}{'form'} = $node->{'m'}{'lemma'};
+        }
+
+        if (exists $node->{'m'}{'form'} and $node->{'m'}{'form'} ne '') {
+
+            $node->{'morpho'}{'Token'} = new Fslib::Struct;
+
+            $node->{'morpho'}{'Token'}{'form'} = $node->{'m'}{'form'};
+
+            if (exists $node->{'m'}{'morph'} and $node->{'m'}{'morph'} ne '') {
+
+                $node->{'morpho'}{'Token'}{'morphs'} = $node->{'m'}{'morph'};
+            }
+
+            if (exists $node->{'m'}{'tag'} and $node->{'m'}{'tag'} ne '') {
+
+                $node->{'morpho'}{'Token'}{'tag'} = $node->{'m'}{'tag'};
+            }
+
+            if (exists $node->{'m'}{'gloss'} and $node->{'m'}{'gloss'} ne '') {
+
+                $node->{'morpho'}{'Token'}{'gloss'} = $node->{'m'}{'gloss'};
+            }
+        }
+
+        if (exists $node->{'m'}{'note'} and $node->{'m'}{'note'} ne '') {
+
+            if (exists $node->{'morpho'}{'Token'}) {
+
+                $node->{'morpho'}{'Token'}{'note'} = $node->{'m'}{'note'};
+            }
+            elsif (exists $node->{'morpho'}{'Word'}) {
+
+                $node->{'morpho'}{'Word'}{'note'} = $node->{'m'}{'note'};
+            }
+            else {
+
+                warn "Problems with " . ThisAddress($node) . "\n" and next;
+            }
+        }
+
+        delete $node->{'m'};
+    }
 }
 
 sub switch_context_hook {
@@ -523,10 +600,11 @@ sub get_value_line_hook {
 
     $views->{$_->{'ord'}} = $_ foreach GetVisibleNodes($root);
 
-    $words = [ [ $nodes->[0]->{'m'}{'input'} . " " . $nodes->[0]->{'m'}{'tag'}, $nodes->[0], '-foreground => darkmagenta' ],
+    $words = [ [ $nodes->[0]->{'form'} . " #" . (split /[^0-9]+/, $nodes->[0]->{'id'})[1], $nodes->[0], '-foreground => darkmagenta' ],
                map {
 
-                   show_value_line_node($views, $_, 'm/input', not $_->{'m'}{'tag'})
+                   show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
+                                                    not exists $_->{'morpho'}{'Token'})
 
                } @{$nodes}[1 .. $#{$nodes}] ];
 
@@ -541,7 +619,8 @@ sub show_value_line_node {
 
     if (HiddenVisible()) {
 
-        return  unless defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
+        return  unless exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                   $node->{'morpho'}{'Word'}{'form'} ne '';
 
         return  [ " " ],
                 [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
@@ -553,7 +632,8 @@ sub show_value_line_node {
                 [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ]
                                 if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
-        return  unless exists $view->{$node->{'ord'}} and defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
+        return  unless exists $view->{$node->{'ord'}} and exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                      $node->{'morpho'}{'Word'}{'form'} ne '';
 
         return  [ " " ],
                 [ $node->attr($text), $node, $warn ? '-foreground => red' : () ];
@@ -564,7 +644,8 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 'ord') until !$node or defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
+    $node = PrevNodeLinear($node, 'ord') until !$node or exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                     $node->{'morpho'}{'Word'}{'form'} ne '';
 
     return $node;
 }
@@ -682,7 +763,9 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{'clause'} ne "" || $this->{'m'}{'tag'} =~ /^V/ && $this->{'afun'} !~ /^Aux/
+    return $this->{'clause'} ne "" || exists $this->{'morpho'}{'Token'} &&
+                                             $this->{'morpho'}{'Token'}{'tag'} =~ /^V/ &&
+                                             $this->{'afun'} !~ /^Aux/
                                    || $this->{'afun'} =~ /^Pred[ECMP]?$/;
 }
 
@@ -773,7 +856,8 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{'afun'} eq 'Atr' and $_[0]->{'m'}{'tag'} =~ /^A/
+            return $_[0] if $_[0]->{'afun'} eq 'Atr' and exists $_[0]->{'morpho'}{'Token'} and
+                                                                $_[0]->{'morpho'}{'Token'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -823,7 +907,8 @@ sub referring_Msd {
 
     $head = $head->parent() if $this->{'afun'} eq 'Atr';                            # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or $head->{'m'}{'tag'} =~ /^[VNA]/;     # the verb, governing masdar or participle
+    $head = $head->parent() until not $head or exists $head->{'morpho'}{'Token'} and
+                                                      $head->{'morpho'}{'Token'}{'tag'} =~ /^[VNA]/;    # the verb, governing masdar or participle
 
     return $head;
 }
@@ -834,22 +919,22 @@ sub referring_Msd {
 
 sub enable_attr_hook {
 
-    return 'stop' unless $_[0] =~ /^(?:afun|parallel|paren|arabfa|coref|clause|comment|err1|err2)$/;
+    return 'stop' unless $_[0] =~ /^(?:afun|parallel|paren|arabfa|coref|clause|note|err1|err2)$/;
 }
 
-#bind edit_comment to exclam menu Annotate: Edit annotator's comment
-sub edit_comment {
+#bind edit_note to exclam menu Annotate: Edit Annotation Note
+sub edit_note {
 
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $comment = $grp->{FSFile}->FS->exists('comment') ? 'comment' : undef;
+    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
 
-    unless (defined $comment) {
+    unless (defined $note) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "No attribute for annotator's comment in this file",
+            -message => "No attribute for annotator's note in this file",
             -title => 'Sorry',
             -type => 'OK',
         );
@@ -857,13 +942,13 @@ sub edit_comment {
         return;
     }
 
-    my $value = $this->{$comment};
+    my $value = $this->{$note};
 
-    $value = main::QueryString($grp->{framegroup}, "Enter comment", $comment, $value);
+    $value = main::QueryString($grp->{framegroup}, "Enter note", $note, $value);
 
     if (defined $value) {
 
-        $this->{$comment} = $value;
+        $this->{$note} = $value;
 
         $Redraw = 'tree';
         ChangingFile(1);
@@ -875,15 +960,18 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${morpho/Token/tag}');
 
-    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{afun} ne 'AuxS' and $this->{m}{comment} ne '' ?>};
+    my $code = q {<? exists $this->{'morpho'}{'Token'} ? (
+        exists $this->{'morpho'}{'Token'}{'note'} &&
+               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
+        ) . '#{custom2}${morpho/Token/tag}' : '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
-    my @filter = grep { $_ !~ /^(?:\Q${type}\E\s*)?(?:\Q${code}\E)?\Q${pattern}\E$/ } @{$style};
+    my @filter = grep { $_ !~ /^(?:\Q${type}\E\s*)?(?:\Q${code}\E|\Q${pattern}\E)$/ } @{$style};
 
-    SetStylesheetPatterns([ $hint, $cntxt, [ @filter, @{$style} == @filter ? $type . ' ' . $code . $pattern : () ] ]);
+    SetStylesheetPatterns([ $hint, $cntxt, [ @filter, @{$style} == @filter ? $type . ' ' . $code : () ] ]);
 
     ChangingFile(0);
 }
@@ -1279,18 +1367,14 @@ sub synchronize_file {
 
     ChangingFile(0);
 
-    my $reply = main::userQuery($grp, "\nDo you wish to synchronize this file's annotations?$fill",
+    my $reply = GUI() ? main::userQuery($grp, "\nDo you wish to synchronize this file's annotations?$fill",
             -bitmap=> 'question',
             -title => "Synchronizing",
-            -buttons => ['Yes', 'No']);
+            -buttons => ['Yes', 'No']) : 'Yes';
 
     return unless $reply eq 'Yes';
 
-    print "Synchronizing currently disabled!\n";
-
-    return;
-
-    print "Synchronizing ...\n";
+    warn "Synchronizing ...\n";
 
     my ($level, $name, $path, @file) = inter_with_level 'morpho';
 
@@ -1298,38 +1382,59 @@ sub synchronize_file {
 
     unless (-f $file[1]) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
-                        "Make sure you are working with complete data!$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
+                            "Make sure you are working with complete data!$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!\n";
+        }
 
         return;
     }
 
     if (-f $file[2]) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!$fill\n" .
-                        "Please remove " . ( path '..', "$level", $name . '.syntax.xml' ) . ".$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!$fill\n" .
+                            "Please remove " . ( path '..', "$level", $name . '.syntax.xml' ) . ".$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!\n";
+        }
 
         return;
     }
 
     if (GetFileSaveStatus()) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "The current file has been modified. Either save it, or reload it discarding the changes.\n";
+        }
 
         return;
     }
@@ -1341,24 +1446,42 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'perl -X ' . ( escape CallerDir('exec') . '/SyntaxFS.pl' ) .
-                  ' ' . ( expace $file[1] );
-
-    system 'btred -QI ' . ( escape CallerDir('exec') . '/syntax_pretty.ntred' ) .
-                    ' -s fs -a xml ' . ( espace $file[4] );
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/morpho_syntax.ntred' ) .
+                    ' ' . ( espace $file[1] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_syntax.btred' ) .
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_syntax.ntred' ) .
                     ' ' . ( espace $file[0] );
 
-    print "... succeeded.\n";
+    warn "... succeeded.\n";
 
-    main::reloadFile($grp);
+    if (GUI()) {
 
-    GotoTree($tree);
+        main::reloadFile($grp);
 
-    $this = $this->following() until $this->{'ord'} == $node;
+        GotoTree($tree);
+
+        $this = $this->following() until $this->{'ord'} == $node;
+    }
+}
+
+#bind open_level_first_prime to Alt+1
+sub open_level_first_prime {
+
+    open_level_first();
+}
+
+#bind open_level_second_prime to Alt+2
+sub open_level_second_prime {
+
+    open_level_second();
+}
+
+#bind open_level_third_prime to Alt+3
+sub open_level_third_prime {
+
+    open_level_third();
 }
 
 #bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File

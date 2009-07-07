@@ -31,7 +31,7 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="ref">
                 <structure>
                     <member name="fst" type="Order.type"/>
@@ -54,7 +54,7 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
@@ -73,7 +73,7 @@
             <member name="input" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
@@ -93,7 +93,7 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -112,7 +112,7 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -134,7 +134,7 @@
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -155,7 +155,7 @@
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="gloss" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>

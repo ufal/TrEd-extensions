@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.0.0</revision>
+    <revision>1.1.0</revision>
     <description>PADT Surface Syntax</description>
 
     <root name="Analytic" type="Trees.type"/>
@@ -36,9 +36,9 @@
                     <value>???</value>
                 </choice>
             </member>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="afunaux" type="String.type"/>
-            <member name="m" type="M.type"/>
+            <member name="form" type="String.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
@@ -53,14 +53,13 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="afun" type="Afun.type" required="1"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
             <member name="arabfa" type="String.type"/>
             <member name="coref" type="Coref.type"/>
             <member name="clause" type="Clause.type"/>
             <member name="afunaux" type="String.type"/>
-            <member name="m" type="M.type"/>
             <member name="morpho" type="Morpho.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
@@ -137,28 +136,14 @@
         </choice>
     </type>
 
-    <type name="M.type">
+    <type name="Morpho.type">
         <structure>
-            <member name="form" type="String.type"/>
-            <member name="lemma" type="String.type"/>
-            <member name="morph" type="String.type"/>
-            <member name="gloss" type="String.type"/>
-            <member name="comment" type="String.type"/>
-            <member name="lookup" type="String.type"/>
-            <member name="input" type="String.type"/>
-            <member name="ref" type="String.type"/>
-            <member name="tag" type="String.type"/>
+            <member name="Token" type="Token.type"/>
+            <member name="Lexeme" type="Lexeme.type"/>
+            <member name="Word" type="Word.type"/>
         </structure>
     </type>
 
-    <type name="Morpho.type">    
-        <structure>
-            <member name="Word" type="Word.type"/>    
-            <member name="Lexeme" type="Lexeme.type"/>    
-            <member name="Token" type="Token.type"/>
-        </structure>
-    </type>
-    
     <import schema="morpho.schema.xml"/>
 
     <type name="Word.type">
@@ -166,7 +151,7 @@
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
         </structure>
     </type>
 
@@ -177,7 +162,7 @@
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
             <member name="idx" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
         </structure>
     </type>
 
@@ -187,7 +172,7 @@
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>
-            <member name="comment" type="String.type"/>
+            <member name="note" type="String.type"/>
             <member name="gloss" type="String.type"/>
         </structure>
     </type>

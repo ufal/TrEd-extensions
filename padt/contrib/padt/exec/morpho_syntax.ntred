@@ -2,142 +2,85 @@
 
 package TredMacro;
 
+use PMLInstance;
+
 use Encode;
 
-# use File::Basename;
+use File::Basename;
 
 use strict;
 
 
 our ($root, $this);
 
-our ($indent, $order);
-
-
-sub escape ($) {
-
-    my $text = $_[0];
-
-    $text =~ s/\&/\&amp;/g;
-    $text =~ s/\</\&lt;/g;
-    $text =~ s/\>/\&gt;/g;
-
-    return $text;
-}
-
-
-sub render ($) {
-
-    return encode "utf8", escape $_[0];
-}
+our ($syntax, $schema, $order);
 
 
 sub autostart {
 
-    my $file = FileName();
+    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.morpho.xml');
 
-    # my ($name, undef) = File::Basename::fileparse($file);
+    my $data = '<?xml version="1.0" encoding="utf-8"?>
+                <Analytic xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+                  <head>
+                    <schema href="syntax.schema.xml" />
+                  </head>
+                  <meta>
+                    <revision>$' . 'Revision: ' . '$</revision>
+                    <date>$' . 'Date: ' . '$</date>
+                  </meta>
+                  <data/>
+                </Analytic>';                                   # "
 
-    open F, '>', $file . ".syntax.xml";
+    $syntax = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.xml' })->convert_to_fsfile();
 
-    select F;
+    $schema = $syntax->metaData('schema');
 
-    local $\ = "\n";
+    my $index;
 
-    local $indent = '';
+    do {
 
-    local $order = 0;
-
-    print '<?xml version="1.0" encoding="utf-8"?>';
-    print '';
-    print '<Analytic xmlns="http://ufal.mff.cuni.cz/pdt/pml/">';
-    print ' <head>';
-    print '  <schema href="syntax.schema.xml" />';
-    # print '  <references>';
-    # print '   <reffile id="m" name="morpho" href="../morpho/' . $name . '"/>';
-    # print '  </references>';
-    print ' </head>';
-    print ' <meta>';
-    print '  <revision>$' . 'Revision: ' . '$</revision>';
-    print '  <date>$' . 'Date: ' . '$</date>';
-    print ' </meta>';
-    print ' <data>';
-
-    {
-        local $indent = $indent . '  ';
-
-        do {
-
-            pretty_para($root) if $root->{'#name'} eq 'Paragraph';
-        }
-        while NextTree();
+        pretty_para($root, $syntax->new_tree($index++)) if $root->{'#name'} eq 'Paragraph';
     }
+    while NextTree();
 
-    print ' </data>';
-    print '</Analytic>';
-
-    close F;
+    $syntax->writeFile();
 }
 
 
 sub pretty_para {
 
-    my $root = $_[0];
+    my ($root, $tree) = @_;
 
-    my $id = {};
+    my @id = $root->{'id'} =~ /^m-p([0-9]+)$/;
 
-    @{$id}{'p'} = $root->{'id'} =~ /^m-p([0-9]+)$/;
+    $tree->set_type_by_name($schema, 'Tree.type');
 
-    print $indent . '<Tree id="s-' . 'p' . $id->{'p'} . '">';
+    $tree->{'#name'} = 'Tree';
 
-    {
-        local $indent = $indent . ' ';
+    $tree->{'ord'} = $order = 0;
 
-        print $indent . '<ord>' . $order++ . '</ord>';
-        print $indent . '<afun>' . 'AuxS' . '</afun>';
+    $tree->{'id'} = sprintf 's-p%d', @id;
 
-        print $indent . '<m>';
+    $tree->{'afun'} = 'AuxS';
 
-        {
-            local $indent = $indent . ' ';
+    $tree->{'form'} = $root->{'form'} if exists $root->{'form'};
 
-            foreach my $attr (qw 'form lemma morph gloss comment tag') {
+    pretty_word($_, $tree) foreach $root->children();
 
-                print $indent . '<' . $attr . '>' . (render $root->{$attr}) . '</' . $attr . '>'
+    # my @log;
 
-                    if exists $root->{$attr};
-            }
-        }
+    # $tree->validate_subtree(\@log);
 
-        print $indent . '</m>';
-
-        my @child = $root->children();
-
-        if (@child) {
-
-            print $indent . '<with>';
-
-            {
-                local $indent = $indent . ' ';
-
-                pretty_word($_) foreach @child;
-            }
-
-            print $indent . '</with>';
-        }
-    }
-
-    print $indent . '</Tree>';
+    # warn join "\n", @log if @log;
 }
 
 
 sub pretty_word {
 
-    my $word = $_[0];
+    my ($word, $tree) = @_;
 
-    my $id = {};
-
-    @{$id}{'p', 'w'} = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)$/;
+    my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)$/;
 
     my @child = $word->children();
 
@@ -145,71 +88,84 @@ sub pretty_word {
 
         foreach my $child (@child) {
 
-            pretty_node($_) foreach $child->children();
+            pretty_node($_, $tree) foreach $child->children();
         }
     }
     else {
 
-        print $indent . '<Node id="s-' . 'p' . $id->{'p'} . 'w' . $id->{'w'} . '">';
+        my $node = new FSNode;
 
-        {
-            local $indent = $indent . ' ';
+        $node->set_type_by_name($schema, 'Node.type');
 
-            print $indent . '<ord>' . $order++ . '</ord>';
-            print $indent . '<afun>' . '???' . '</afun>';
+        $node->{'#name'} = 'Node';
 
-            print $indent . '<m>';
+        $node->{'ord'} = ++$order;
 
-            {
-                local $indent = $indent . ' ';
+        $node->{'id'} = sprintf 's-p%dw%d', @id;
 
-                foreach my $attr (qw 'form lemma morph gloss comment tag') {
+        $node->{'afun'} = '???';
 
-                    print $indent . '<' . $attr . '>' . (render $word->{$attr}) . '</' . $attr . '>'
+        $node->{'morpho'} = new Fslib::Struct;
 
-                        if exists $word->{$attr};
-                }
-            }
+        $node->{'morpho'}{'Word'} = new Fslib::Struct;
 
-            print $indent . '</m>';
+        foreach (qw 'form note') {
+
+            $node->{'morpho'}{'Word'}{$_} = $word->{$_} if exists $word->{$_};
         }
 
-        print $indent . '</Node>';
+        PasteNode($node, $tree, $syntax->FS);
     }
 }
 
 
 sub pretty_node {
 
-    my $node = $_[0];
+    my ($word, $tree) = @_;
 
-    my $id = {};
+    my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
 
-    @{$id}{'p', 'w', 'l', 't'} = $node->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
+    my $node = new FSNode;
 
-    print $indent . '<Node id="s-' . 'p' . $id->{'p'} . 'w' . $id->{'w'} . 'l' . $id->{'l'} . 't' . $id->{'t'} . '">';
+    $node->set_type_by_name($schema, 'Node.type');
 
-    {
-        local $indent = $indent . ' ';
+    $node->{'#name'} = 'Node';
 
-        print $indent . '<ord>' . $order++ . '</ord>';
-        print $indent . '<afun>' . '???' . '</afun>';
+    $node->{'ord'} = ++$order;
 
-        print $indent . '<m>';
+    $node->{'id'} = sprintf 's-p%dw%dl%dt%d', @id;
 
-        {
-            local $indent = $indent . ' ';
+    $node->{'afun'} = '???';
 
-            foreach my $attr (qw 'form lemma morph gloss comment tag') {
+    $node->{'morpho'} = new Fslib::Struct;
 
-                print $indent . '<' . $attr . '>' . (render $node->{$attr}) . '</' . $attr . '>'
+    $node->{'morpho'}{'Token'} = new Fslib::Struct;
 
-                    if exists $node->{$attr};
-            }
-        }
+    foreach (qw 'morphs tag form gloss note') {
 
-        print $indent . '</m>';
+        $node->{'morpho'}{'Token'}{$_} = $word->{$_} if exists $word->{$_};
     }
 
-    print $indent . '</Node>';
+    $word = $word->parent();
+
+    $node->{'morpho'}{'Lexeme'} = new Fslib::Struct;
+
+    foreach (qw 'root core form note') {
+
+        $node->{'morpho'}{'Lexeme'}{$_} = $word->{$_} if exists $word->{$_};
+    }
+
+    if ($id[2] == 1) {
+
+        $word = $word->parent();
+
+        $node->{'morpho'}{'Word'} = new Fslib::Struct;
+
+        foreach (qw 'form note') {
+
+            $node->{'morpho'}{'Word'}{$_} = $word->{$_} if exists $word->{$_};
+        }
+    }
+
+    PasteNode($node, $tree, $syntax->FS);
 }

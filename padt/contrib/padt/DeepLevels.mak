@@ -632,7 +632,7 @@ hint:<? join "\n", 'tag: ${m/tag}',
                    'lemma: ${m/lemma}',
                    'morph: ${m/morph}',
                    'gloss: ${m/gloss}',
-                   'comment: ${m/comment}' ?>
+                   'note: ${m/note}' ?>
 >>
 }
 
@@ -1060,22 +1060,22 @@ sub referring_Msd {
 
 sub enable_attr_hook {
 
-    return 'stop' unless $_[0] =~ /^(?:func|context|comment)$/;
+    return 'stop' unless $_[0] =~ /^(?:func|context|note)$/;
 }
 
-#bind edit_comment to exclam menu Annotate: Edit annotator's comment
-sub edit_comment {
+#bind edit_note to exclam menu Annotate: Edit Annotation Note
+sub edit_note {
 
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $comment = $grp->{FSFile}->FS->exists('comment') ? 'comment' : undef;
+    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
 
-    unless (defined $comment) {
+    unless (defined $note) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "No attribute for annotator's comment in this file",
+            -message => "No attribute for annotator's note in this file",
             -title => 'Sorry',
             -type => 'OK',
         );
@@ -1083,13 +1083,13 @@ sub edit_comment {
         return;
     }
 
-    my $value = $this->{$comment};
+    my $value = $this->{$note};
 
-    $value = main::QueryString($grp->{framegroup}, "Enter comment", $comment, $value);
+    $value = main::QueryString($grp->{framegroup}, "Enter note", $note, $value);
 
     if (defined $value) {
 
-        $this->{$comment} = $value;
+        $this->{$note} = $value;
 
         $Redraw = 'tree';
         ChangingFile(1);
@@ -1103,7 +1103,7 @@ sub default_ar_attrs {
 
     my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
 
-    my $code = q {<? '#{custom6}${m/comment} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m}{comment} ne '' ?>};
+    my $code = q {<? '#{custom6}${m/note} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m}{note} ne '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -1537,6 +1537,24 @@ sub synchronize_file {
     GotoTree($tree);
 
     $this = $this->following() until $this->{'ord'} == $node;
+}
+
+#bind open_level_first_prime to Alt+1
+sub open_level_first_prime {
+
+    open_level_first();
+}
+
+#bind open_level_second_prime to Alt+2
+sub open_level_second_prime {
+
+    open_level_second();
+}
+
+#bind open_level_third_prime to Alt+3
+sub open_level_third_prime {
+
+    open_level_third();
 }
 
 #bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File

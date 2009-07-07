@@ -49,8 +49,8 @@ style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :
              $this->{score} > 0 ? '#{Line-fill:orange}' :
                  defined $this->{apply} ? '#{Line-fill:black}' : '' ?>
 
-node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
-                                      and $this->{comment} ne ''
+node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
+                                      and $this->{note} ne ''
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
@@ -75,8 +75,8 @@ node:<? '#{magenta}${comment} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$
                             : '  #{black}${form}'
                         ) ) ) ) ?>
 
-node:<? '#{goldenrod}${comment} << ' if $this->{'#name'} eq 'Token'
-                                        and $this->{comment} ne ''
+node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token'
+                                        and $this->{note} ne ''
    ?>#{darkred}${tag}<? $this->{inherit} eq '' ? '#{red}' : '#{orange}'
    ?>${restrict}
 
@@ -697,19 +697,19 @@ sub invoke_redo {
     ChangingFile(0);
 }
 
-#bind edit_comment to exclam menu Edit Annotation Comment
-sub edit_comment {
+#bind edit_note to exclam menu Edit Annotation Note
+sub edit_note {
 
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $comment = $grp->{FSFile}->FS->exists('comment') ? 'comment' : undef;
+    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
 
-    unless (defined $comment) {
+    unless (defined $note) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no 'comment' attribute in this file's format!$fill",
+            -message => "There is no 'note' attribute in this file's format!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -723,7 +723,7 @@ sub edit_comment {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "This node must be annotated in order to receive comments!$fill",
+            -message => "This node must be annotated in order to receive notes!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -733,13 +733,13 @@ sub edit_comment {
 
     switch_either_context() if $switch;
 
-    my $value = $this->{$comment};
+    my $value = $this->{$note};
 
-    $value = main::QueryString($grp->{framegroup}, "Enter the comment", $comment, $value);
+    $value = main::QueryString($grp->{framegroup}, "Enter the note", $note, $value);
 
     if (defined $value) {
 
-        $this->{$comment} = $value;
+        $this->{$note} = $value;
 
         $Redraw = 'tree';
         ChangingFile(1);
@@ -747,7 +747,7 @@ sub edit_comment {
 
     switch_either_context() if $switch;
 
-    $this->{$comment} = $value if defined $value;
+    $this->{$note} = $value if defined $value;
 }
 
 # ##################################################################################################
@@ -822,10 +822,12 @@ sub morphotrees {
 
                     next unless exists $data->[1]{$_};
 
-                    $data->[1]{$_} = [ ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_} ];
+                    $data->[1]{$_} = new Fslib::List ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_};
                 }
 
-                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element ($data->[0], new Fslib::Struct ($data->[1]))];
+                $data->[1]{'derive'} = '------F---' if exists $data->[1]{'derive'} and $data->[1]{'derive'} eq 'True';
+
+                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element $data->[0], new Fslib::Struct $data->[1]];
 
                 $node->{'form'} = $_->{'data'}{'info'}[4];
 
@@ -1226,6 +1228,201 @@ sub remove_inherited_restrict {
 #
 # ##################################################################################################
 
+#bind restrict_verb v menu Restrict Verb
+sub restrict_verb {
+    restrict_hide('V---------');
+}
+
+#bind restrict_noun n menu Restrict Noun
+sub restrict_noun {
+    restrict_hide('N---------');
+}
+
+#bind restrict_adj a menu Restrict Adjective
+sub restrict_adj {
+    restrict_hide('A---------');
+}
+
+#bind restrict_pron s menu Restrict Pronoun
+sub restrict_pron {
+    restrict_hide('S---------');
+}
+
+#bind restrict_num q menu Restrict Numeral
+sub restrict_num {
+    restrict_hide('Q---------');
+}
+
+#bind restrict_adv D menu Restrict Adverb
+sub restrict_adv {
+    restrict_hide('D---------');
+}
+
+#bind restrict_prep p menu Restrict Preposition
+sub restrict_prep {
+    restrict_hide('P---------');
+}
+
+#bind restrict_conj c menu Restrict Conjunction
+sub restrict_conj {
+    restrict_hide('C---------');
+}
+
+#bind restrict_part f menu Restrict Particle
+sub restrict_part {
+    restrict_hide('F---------');
+}
+
+#bind restrict_intj j menu Restrict Interjection
+sub restrict_intj {
+    restrict_hide('I---------');
+}
+
+#bind restrict_xtra x menu Restrict Xtra
+sub restrict_xtra {
+    restrict_hide('X---------');
+}
+
+#bind restrict_ynit y menu Restrict Ynit
+sub restrict_ynit {
+    restrict_hide('Y---------');
+}
+
+#bind restrict_zero z menu Restrict Zero
+sub restrict_zero {
+    restrict_hide('Z---------');
+}
+
+#bind restrict_grph g menu Restrict Grph
+sub restrict_grph {
+    restrict_hide('G---------');
+}
+
+#bind restrict_perfect P menu Restrict Verb Perfect
+sub restrict_perfect {
+    restrict_hide('-P--------');
+}
+
+#bind restrict_imperfect Ctrl+i menu Restrict Verb Imperfect
+sub restrict_imperfect {
+    restrict_hide('-I--------');
+}
+
+#bind restrict_imperative Ctrl+c menu Restrict Verb Imperative
+sub restrict_imperative {
+    restrict_hide('-C--------');
+}
+
+#bind restrict_three V menu Restrict Numeral Three
+sub restrict_three {
+    restrict_hide('-V--------');
+}
+
+#bind restrict_ten X menu Restrict Numeral Ten
+sub restrict_ten {
+    restrict_hide('-X--------');
+}
+
+#bind restrict_teen Y menu Restrict Numeral Teen
+sub restrict_teen {
+    restrict_hide('-Y--------');
+}
+
+#bind restrict_twenty l menu Restrict Numeral Twenty
+sub restrict_twenty {
+    restrict_hide('-L--------');
+}
+
+#bind restrict_thousand m menu Restrict Numeral Thousand
+sub restrict_thousand {
+    restrict_hide('-M--------');
+}
+
+#bind restrict_demo M menu Restrict Pronoun Demonstrative
+sub restrict_demo {
+    restrict_hide('-D--------');
+}
+
+#bind restrict_relative R menu Restrict Pronoun Relative
+sub restrict_relative {
+    restrict_hide('-R--------');
+}
+
+#bind restrict_indicative I menu Restrict Mood Indicative
+sub restrict_indicative {
+    restrict_hide('--I-------');
+}
+
+#bind restrict_subjunctive S menu Restrict Mood Subjunctive
+sub restrict_subjunctive {
+    restrict_hide('--S-------');
+}
+
+#bind restrict_jussive J menu Restrict Mood Jussive
+sub restrict_jussive {
+    restrict_hide('--J-------');
+}
+
+#bind restrict_energetic E menu Restrict Mood Energetic
+sub restrict_energetic {
+    restrict_hide('--E-------');
+}
+
+#bind restrict_active Ctrl+a menu Restrict Voice Active
+sub restrict_active {
+    restrict_hide('---A------');
+}
+
+#bind restrict_passive Ctrl+v menu Restrict Voice Passive
+sub restrict_passive {
+    restrict_hide('---P------');
+}
+
+#bind restrict_first Ctrl+1 menu Restrict Person First
+sub restrict_first {
+    restrict_hide('-----1----');
+}
+
+#bind restrict_second Ctrl+2 menu Restrict Person Second
+sub restrict_second {
+    restrict_hide('-----2----');
+}
+
+#bind restrict_third Ctrl+3 menu Restrict Person Third
+sub restrict_third {
+    restrict_hide('-----3----');
+}
+
+#bind restrict_third_prime 3 menu Restrict Person Third ;)
+sub restrict_third_prime {
+    restrict_hide('-----3----');
+}
+
+#bind restrict_masculine Ctrl+m menu Restrict Gender Masculine
+sub restrict_masculine {
+    restrict_hide('------M---');
+}
+
+#bind restrict_feminine Ctrl+f menu Restrict Gender Feminine
+sub restrict_feminine {
+    restrict_hide('------F---');
+}
+
+#bind restrict_singular Ctrl+s menu Restrict Number Singular
+sub restrict_singular {
+    restrict_hide('-------S--');
+}
+
+#bind restrict_dual Ctrl+d menu Restrict Number Dual
+sub restrict_dual {
+    restrict_hide('-------D--');
+}
+
+#bind restrict_plural Ctrl+p menu Restrict Number Plural
+sub restrict_plural {
+    restrict_hide('-------P--');
+}
+
 #bind restrict_case_nom 1 menu Restrict Case Nominative
 sub restrict_case_nom {
     restrict_hide('--------1-');
@@ -1269,122 +1466,6 @@ sub restrict_state_c {
 #bind restrict_state_l L menu Restrict State Lifted
 sub restrict_state_l {
     restrict_hide('---------L');
-}
-
-#bind restrict_noun n menu Restrict Noun
-sub restrict_noun {
-    restrict_hide('N---------');
-}
-
-#bind restrict_adjective a menu Restrict Adjective
-sub restrict_adjective {
-    restrict_hide('A---------');
-}
-
-#bind restrict_verb v menu Restrict Verb
-sub restrict_verb {
-    restrict_hide('V---------');
-}
-
-#bind restrict_proper z menu Restrict Proper Name
-sub restrict_proper {
-    restrict_hide('Z---------');
-}
-
-#bind restrict_adverb D menu Restrict Adverb
-sub restrict_adverb {
-    restrict_hide('D---------');
-}
-
-#bind restrict_preposition p menu Restrict Preposition
-sub restrict_preposition {
-    restrict_hide('P---------');
-}
-
-#bind restrict_pronoun s menu Restrict Pronoun
-sub restrict_pronoun {
-    restrict_hide('S---------');
-}
-
-#bind restrict_particle f menu Restrict Particle
-sub restrict_particle {
-    restrict_hide('F---------');
-}
-
-#bind restrict_conjunction c menu Restrict Conjunction
-sub restrict_conjunction {
-    restrict_hide('C---------');
-}
-
-#bind restrict_third 3 menu Restrict Person Third ;)
-#bind restrict_third Ctrl+3 menu Restrict Person Third
-sub restrict_third {
-    restrict_hide('-----3----');
-}
-
-#bind restrict_second Ctrl+2 menu Restrict Person Second
-sub restrict_second {
-    restrict_hide('-----2----');
-}
-
-#bind restrict_first Ctrl+1 menu Restrict Person First
-sub restrict_first {
-    restrict_hide('-----1----');
-}
-
-#bind restrict_perfect P menu Restrict Verb Perfect
-sub restrict_perfect {
-    restrict_hide('-P--------');
-}
-
-#bind restrict_indicative I menu Restrict Verb Indicative
-sub restrict_indicative {
-    restrict_hide('--I-------');
-}
-
-#bind restrict_subjunctive S menu Restrict Verb Subjunctive
-sub restrict_subjunctive {
-    restrict_hide('--S-------');
-}
-
-#bind restrict_jussive J menu Restrict Verb Jussive
-sub restrict_jussive {
-    restrict_hide('--J-------');
-}
-
-#bind restrict_active Ctrl+c menu Restrict Voice Active
-sub restrict_active {
-    restrict_hide('---A------');
-}
-
-#bind restrict_passive Ctrl+t menu Restrict Voice Passive
-sub restrict_passive {
-    restrict_hide('---P------');
-}
-
-#bind restrict_plural Ctrl+p menu Restrict Illusory Plural
-sub restrict_plural {
-    restrict_hide('-------P--');
-}
-
-#bind restrict_dual Ctrl+d menu Restrict Illusory Dual
-sub restrict_dual {
-    restrict_hide('-------D--');
-}
-
-#bind restrict_singular Ctrl+s menu Restrict Illusory Singular
-sub restrict_singular {
-    restrict_hide('-------S--');
-}
-
-#bind restrict_masculine Ctrl+m menu Restrict Illusory Masculine
-sub restrict_masculine {
-    restrict_hide('------M---');
-}
-
-#bind restrict_feminine Ctrl+f menu Restrict Illusory Feminine
-sub restrict_feminine {
-    restrict_hide('------F---');
 }
 
 # ##################################################################################################
@@ -1462,6 +1543,24 @@ sub synchronize_file {
     open_level_second();
 
     Analytic::synchronize_file();
+}
+
+#bind open_level_first_prime to Alt+1
+sub open_level_first_prime {
+
+    open_level_first();
+}
+
+#bind open_level_second_prime to Alt+2
+sub open_level_second_prime {
+
+    open_level_second();
+}
+
+#bind open_level_third_prime to Alt+3
+sub open_level_third_prime {
+
+    open_level_third();
 }
 
 #bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
