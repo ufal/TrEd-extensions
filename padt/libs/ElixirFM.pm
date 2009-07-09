@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 848 2009-04-30 18:18:24Z smrz $
+# $Id: ElixirFM.pm 860 2009-06-20 23:26:55Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 848 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 860 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -21,6 +21,8 @@ use XML::Parser;
 # ##################################################################################################
 
 use subs 'foldr', 'foldl';
+
+no warnings 'recursion';
 
 sub foldr (&$@) {
 
@@ -47,7 +49,7 @@ sub nub (&@) {
     return grep { my $r = $fun->($_); exists $nub{$r} ? 0 : ++$nub{$r} } @lst;
 }
 
-sub tuples (@) {
+sub tuples {
 
     my @data = @_;
 
@@ -63,7 +65,7 @@ sub tuples (@) {
     return @pair;
 }
 
-sub concat (@) {
+sub concat {
 
     return map { ref $_ eq 'ARRAY' ? @{$_} : $_ } @_;
 }
@@ -528,9 +530,11 @@ sub parse {
 
 sub unpretty {
 
-    my ($data, $mode) = (@_, '');
+    my ($data, $mode) = @_;
 
     my @data;
+
+    $mode = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /[>]\s*$/ ? 'lookup' : '' unless defined $mode;
 
     if ($mode eq 'resolve') {
 
@@ -648,7 +652,7 @@ sub unpretty {
 
                     {
                         'clip'  =>  ( join '', split ' ', $clip ),
-                        'root'  =>  ElixirFM::parse($root)->[2],
+                        'root'  =>  parse($root)->[2],
                         'ents'  =>  [ @ents ],
                     }
 
@@ -667,13 +671,28 @@ sub unpretty {
 
             my @data = split /\n/, $_;
 
-            [
-                map {
+            foldl {
 
-                    [ split /\t/, $_ ]
+                my $data = shift @{$_[1]};
 
-                } @data
-            ]
+                if ($data eq ' ' x 10) {
+
+                    push @{$_[0][-1]}, $_[1];
+                }
+                else {
+
+                    push @{$_[0]}, [$data, $_[1]];
+                }
+
+                return $_[0];
+
+            } [],
+
+            map {
+
+                [ split /\t/, $_ ]
+
+            } @data
 
         } @data;
     }
@@ -1078,7 +1097,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 848 $        $Date: 2009-04-30 20:18:24 +0200 (Thu, 30 Apr 2009) $
+    $Revision: 860 $        $Date: 2009-06-21 01:26:55 +0200 (Sun, 21 Jun 2009) $
 
 
 =head1 SYNOPSIS
