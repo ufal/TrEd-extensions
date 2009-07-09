@@ -59,21 +59,18 @@ node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
                         ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
                                                             @{$this->{'core'}{'reflex'}} : () ) . ' '
                         : '' ) .
-                    '#{gray}${idx} #{darkmagenta}' .
+                    '#{darkmagenta}' .
                     ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
                 : (
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
                     : (
                     $this->{'#name'} =~ /^(?:Element|Paragraph)$/
-                        ? ( $this->{apply} > 0
-                            ? '#{black}${idx} #{red}${form}'
-                            : '#{black}${idx} #{black}${form}'
-                        )
-                        : ( $this->{apply} > 0
-                            ? '  #{red}${form}'
-                            : '  #{black}${form}'
-                        ) ) ) ) ?>
+                        ? '#{black}' . MorphoTrees::idx($this)
+                        : ' ' ) .
+                      ( $this->{apply} > 0
+                            ? ' #{red}${form}'
+                            : ' #{black}${form}' ) ) ) ?>
 
 node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token'
                                         and $this->{note} ne ''
@@ -82,6 +79,15 @@ node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token'
 
 hint:<? '${gloss}' if $this->{'#name'} eq 'Token' ?>
 >>
+}
+
+sub idx {
+
+    my $node = $_[0] || $this;
+
+    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
+
+    return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
 sub switch_context_hook {
@@ -175,7 +181,7 @@ sub get_value_line_hook {
 
         ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
-        $words = [ [ $tree->{'idx'} . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
+        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
                    map {
                             [ " " ],
                             [ $_->{'form'}, (
@@ -201,7 +207,7 @@ sub get_value_line_hook {
 
         $nodes = [ map { $fsfile->tree($_) } $tree->{'ref'} .. ( $tree->{'ref'} == $last ? $grp->{FSFile}->lastTreeNo : $last - 2 ) ];
 
-        $words = [ [ $para->{'idx'} . " " . $para->{'form'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
+        $words = [ [ idx($para) . " " . $para->{'form'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
                    map {
                             [ " " ],
                             [ $_->{'form'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
@@ -310,14 +316,12 @@ sub switch_either_context {
                 GotoTree($this->parent()->parent()->{'ref'});
             }
 
-            ($node) = PML::GetNodeByID(join 'e', split 'w', $node->{'id'});
-
-            $this = $node if defined $node;
+            $this = PML::GetNodeByID(join 'e', split 'w', $node->{'id'});
         }
     }
     else {
 
-        my ($refs) = $root->{'id'} =~ /([0-9]+)$/;
+        my (undef, $refs) = idx($root);
 
         GotoTree($root->{'ref'});
 
@@ -1653,49 +1657,19 @@ sub switch_the_levels {
 
     my $file = $_[0];
 
-    my ($tree, $node, @child, $hits);
+    my (@child, $hits);
 
     switch_either_context() unless $root->{'#name'} eq 'Paragraph';
 
-    $tree = substr $root->{'idx'}, 1;
-    $node = 0;
-
-    unless ($this == $root) {
-
-        $this = $this->parent() until $this->{'#name'} eq 'Word';
-
-        @child = $root->children();
-
-        foreach $hits (@child) {
-
-            last if $hits == $this;
-            $node++;
-        }
-
-        if ($node == @child) {
-
-            $node = 0;
-        }
-        else {
-
-            $node++;
-        }
-    }
+    my ($tree, $id) = (idx($root), join 's', split 'm', $this->{'id'});
 
     if (Open($file)) {
 
         GotoTree($tree);
 
-        unless ($node == 0) {
-
-            do {
-
-                $this = $this->following();
-
-                ($hits) = $this->{'m'}{'ref'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
-            }
-            until $hits == $node;
-        }
+        $this = PML::GetNodeByID($id) ||
+                PML::GetNodeByID($id . 't1') ||
+                PML::GetNodeByID($id . 'l1t1') || $root;
     }
     else {
 

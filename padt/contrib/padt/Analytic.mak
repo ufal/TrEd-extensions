@@ -429,7 +429,7 @@ style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
 node:<? exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
         exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
-        '#{custom2}${form}' . " #" . (split /[^0-9]+/, $this->{'id'})[1] ?>
+        '#{custom2}${form} ' . Analytic::idx($this) ?>
 
 node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
                                   ? '#{custom3}${afunaux}'
@@ -448,6 +448,15 @@ hint:<? exists $this->{'morpho'}{'Token'} ? join "\n", 'tag: ${morpho/Token/tag}
                                                        'gloss: ${morpho/Token/gloss}',
                                                        'note: ${morpho/Token/note}' : '' ?>
 >>
+}
+
+sub idx {
+
+    my $node = $_[0] || $this;
+
+    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
+
+    return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
 sub morpho_structure {
@@ -600,7 +609,7 @@ sub get_value_line_hook {
 
     $views->{$_->{'ord'}} = $_ foreach GetVisibleNodes($root);
 
-    $words = [ [ $nodes->[0]->{'form'} . " #" . (split /[^0-9]+/, $nodes->[0]->{'id'})[1], $nodes->[0], '-foreground => darkmagenta' ],
+    $words = [ [ $nodes->[0]->{'form'} . " " . idx($nodes->[0]), $nodes->[0], '-foreground => darkmagenta' ],
                map {
 
                    show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
@@ -1505,24 +1514,13 @@ sub open_level_first {
         return;
     }
 
-    my ($tree, $node);
-
-    ($tree) = $root->{'m'}{'ref'} =~ /^\#[0-9]+\_([0-9]+)$/;
-
-    unless ($this == $root) {
-
-        ($node) = $this->{'m'}{'ref'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
-    }
-    else {
-
-        $node = 0;
-    }
+    my ($tree, $id) = (idx($root), join 'm', split 's', $this->{'id'});
 
     if (Open($file[1])) {
 
-        GotoTree($tree);
+        GotoTree($root->{'ref'}{'snd'}) while --$tree;
 
-        $this = ($this->children())[$node - 1] unless $node == 0;
+        $this = PML::GetNodeByID($id);
     }
     else {
 
@@ -1589,7 +1587,7 @@ sub open_level_third {
         move $file[2], $file[1];
     }
 
-    my ($tree, $node) = $this->{'m'}{'ref'} =~ /^\#([0-9]+)\/([0-9]+)(:?\_[0-9]+)?$/;
+    my ($tree, $node) = idx($this);
 
     if (Open($file[1])) {
 

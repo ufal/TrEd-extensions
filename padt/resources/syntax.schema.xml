@@ -150,7 +150,6 @@
         <structure>
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
-            <member name="idx" type="String.type"/>
             <member name="note" type="String.type"/>
         </structure>
     </type>
@@ -161,7 +160,6 @@
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
             <member name="form" type="String.type"/>
-            <member name="idx" type="String.type"/>
             <member name="note" type="String.type"/>
         </structure>
     </type>

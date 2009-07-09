@@ -80,9 +80,9 @@ sub migrate_annotation {
 
                     $this = $nodes->[0][$i];
 
-                    $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} : 
+                    $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} :
                             exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
-                    
+
                     warn ">< " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
                          "\t" . '...' . "\t" . $form . "\t" . $this->{'afunaux'} . "\n";
                 }
@@ -104,7 +104,7 @@ sub migrate_annotation {
 
                 $this = $nodes->[0][$i];
 
-                $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} : 
+                $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} :
                         exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
 
                 warn "<> " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
@@ -115,7 +115,7 @@ sub migrate_annotation {
 
             $this = $nodes->[0][$i];
 
-            $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} : 
+            $form = exists $this->{'morpho'}{'Token'} ? $this->{'morpho'}{'Token'}{'form'} :
                     exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
 
             warn "-- " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .

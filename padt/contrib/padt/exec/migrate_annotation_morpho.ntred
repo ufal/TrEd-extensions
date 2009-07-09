@@ -7,8 +7,6 @@
 our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
-## #include <contrib/padt/MorphoTrees.mak>
-
 package TredMacro;
 
 use Algorithm::Diff;
@@ -20,9 +18,7 @@ our $nodes;
 
 sub autostart {
 
-    my $anno = FSFile->create('encoding' => "utf8");
-
-    $anno->readFile(FileName() . ".anno.xml");
+    my $anno = PMLInstance->load({ 'filename' => FileName() . '.anno.xml' })->convert_to_fsfile();;
 
     $entities = [ [], [] ];
 
@@ -58,7 +54,7 @@ sub migrate_annotation {
 
     if (defined $nodes->[1][$_[1]]->{'restrict'} and $nodes->[1][$_[1]]->{'restrict'} ne '') {
 
-        MorphoTrees::restrict_hide($nodes->[1][$_[1]]->{'restrict'}, $nodes->[1][$_[1]]->{'inherit'} eq '' && 
+        MorphoTrees::restrict_hide($nodes->[1][$_[1]]->{'restrict'}, $nodes->[1][$_[1]]->{'inherit'} eq '' &&
                                                                      $nodes->[1][$_[1]]->{'#name'} ne 'Element' ? 'remove inherited' : () );
     }
     elsif ($nodes->[1][$_[1]]->{'#name'} eq 'Token' and $nodes->[1][$_[1]]->{'apply'} > 0) {
