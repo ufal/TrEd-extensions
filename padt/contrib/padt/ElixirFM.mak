@@ -656,9 +656,9 @@ node:<? $this->level() == 2
 
 node:<? $this->level() == 2
       ? '#{custom3}${reflex=' . (join ", ", @{$this->{'reflex'}}) . '}'
-      : join "\n", ( @{$this->{'reflex'}{'fst'}} ?
+      : join "\n", ( exists $this->{'reflex'}{'fst'} ?
         '#{custom2}${reflex=' . (join ", ", @{$this->{'reflex'}{'fst'}}) . '}' : () ),
-                   ( @{$this->{'reflex'}{'snd'}} ?
+                   ( exists $this->{'reflex'}{'snd'} ?
         '#{custom6}${reflex=' . (join ", ", @{$this->{'reflex'}{'snd'}}) . '}' : () ) ?>
 
 >>
@@ -734,67 +734,25 @@ sub get_nodelist_hook {
 sub get_value_line_hook {
 
     my ($fsfile, $index) = @_;
-    my ($nodes, $words);
-
-    my $tree = $fsfile->tree($index);
 
     return [];
 }
 
 sub highlight_value_line_tag_hook {
 
-    return $grp->{root} if $grp->{root}->{'type'} eq 'entity';
-
-    my $node = $grp->{currentNode};
-
-    $node = $node->parent() until !$node or $node->{'type'} eq 'word_node' or $node->{'type'} eq 'paragraph';
-
-    return $node;
 }
 
 sub value_line_doubleclick_hook {
-
-    return if $grp->{root}->{'type'} eq 'paragraph';
-
-    my ($index) = map { $_ =~ /^#([0-9]+)/ ? $1 : () } @_;
-
-    return 'stop' unless defined $index;
-
-    GotoTree($index);
-    Redraw();
-    main::centerTo($grp, $grp->{currentNode});
 
     return 'stop';
 }
 
 sub node_doubleclick_hook {
 
-    $grp->{currentNode} = $_[0];
-
-    if ($_[1] eq 'Shift') {
-
-        main::doEvalMacro($grp, __PACKAGE__ . '->switch_either_context');
-    }
-    else {
-
-        main::doEvalMacro($grp, __PACKAGE__ . '->annotate_morphology');
-    }
-
     return 'stop';
 }
 
 sub node_click_hook {
-
-    $grp->{currentNode} = $_[0];
-
-    if ($_[1] eq 'Shift') {
-
-        main::doEvalMacro($grp, __PACKAGE__ . '->switch_either_context');
-    }
-    else {
-
-        main::doEvalMacro($grp, __PACKAGE__ . '->annotate_morphology_click');
-    }
 
     return 'stop';
 }
