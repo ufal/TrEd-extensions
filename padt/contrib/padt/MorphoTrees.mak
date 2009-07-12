@@ -45,12 +45,11 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? $this->{apply} > 0 ? '#{Line-fill:red}' :
-             $this->{score} > 0 ? '#{Line-fill:orange}' :
-                 defined $this->{apply} ? '#{Line-fill:black}' : '' ?>
+style:<? $this->{'apply'} > 0 ? '#{Line-fill:red}' :
+             exists $this->{'score'} && @{$this->{'score'}} ? '#{Line-fill:orange}' :
+                 defined $this->{'apply'} ? '#{Line-fill:black}' : '' ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
-                                      and $this->{note} ne ''
+node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/ and $this->{'note'} ne ''
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
@@ -72,9 +71,8 @@ node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/
                             ? ' #{red}${form}'
                             : ' #{black}${form}' ) ) ) ?>
 
-node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token'
-                                        and $this->{note} ne ''
-   ?>#{darkred}${tag}<? $this->{inherit} eq '' ? '#{red}' : '#{orange}'
+node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token' and $this->{'note'} ne ''
+   ?>#{darkred}${tag}<? $this->{'inherit'} eq '' ? '#{red}' : '#{orange}'
    ?>${restrict}
 
 hint:<? '${gloss}' if $this->{'#name'} eq 'Token' ?>

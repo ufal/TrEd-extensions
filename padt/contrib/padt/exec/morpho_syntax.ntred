@@ -29,7 +29,7 @@ sub autostart {
                     <revision>$' . 'Revision: ' . '$</revision>
                     <date>$' . 'Date: ' . '$</date>
                   </meta>
-                  <data/>
+                  <data />
                 </Analytic>';                                   # "
 
     $syntax = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.xml' })->convert_to_fsfile();

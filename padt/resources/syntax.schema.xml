@@ -36,8 +36,8 @@
                     <value>???</value>
                 </choice>
             </member>
+            <member name="score" type="Score.type"/>
             <member name="note" type="String.type"/>
-            <member name="afunaux" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
@@ -53,13 +53,13 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="afun" type="Afun.type" required="1"/>
+            <member name="score" type="Score.type"/>
             <member name="note" type="String.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
             <member name="arabfa" type="String.type"/>
             <member name="coref" type="Coref.type"/>
             <member name="clause" type="Clause.type"/>
-            <member name="afunaux" type="String.type"/>
             <member name="morpho" type="Morpho.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">

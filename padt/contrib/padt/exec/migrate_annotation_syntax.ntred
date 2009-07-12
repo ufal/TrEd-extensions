@@ -12,7 +12,7 @@ package TredMacro;
 use Algorithm::Diff;
 
 
-our @annotes = qw "afun afunaux arabfa clause coref note parallel paren";
+our @annotes = qw "afun score arabfa clause coref note parallel paren";
 
 our $mapping;
 
@@ -56,7 +56,7 @@ sub migrate_annotation {
                 $this = $nodes->[0][$i];
 
                 warn "-> " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
-                     "\t" . $_ . "\t" . $this->{$_} . "\t" . $mapping->{$this}->{$_} . "\n"
+                             "\t" . $_ . "\t" . $this->{$_} . "\t" . $mapping->{$this}->{$_} . "\n"
                     if defined $this->{$_} and $this->{$_} ne $mapping->{$this}->{$_} and ( $_ ne 'afun' or $this->{'afun'} ne '???' );
 
                 $nodes->[0][$i]->{$_} = $mapping->{$nodes->[0][$i]}->{$_};
@@ -75,7 +75,10 @@ sub migrate_annotation {
                 }
                 elsif ($nodes->[0][$i]->{'#name'} ne 'Tree') {
 
-                    $nodes->[0][$i]->{'afunaux'} = $nodes->[0][$i]->{'afun'};
+                    $nodes->[0][$i]->{'score'} = new Fslib::Alt;
+
+                    unshift @{$nodes->[0][$i]->{'score'}}, new Fslib::Container $nodes->[0][$i]->{'afun'};
+
                     $nodes->[0][$i]->{'afun'} = '???';
 
                     $this = $nodes->[0][$i];
@@ -84,7 +87,7 @@ sub migrate_annotation {
                             exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
 
                     warn ">< " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
-                         "\t" . '...' . "\t" . $form . "\t" . $this->{'afunaux'} . "\n";
+                                 "\t" . '...' . "\t" . $form . "\n";
                 }
             }
             else {
@@ -99,7 +102,10 @@ sub migrate_annotation {
                     CutPaste($nodes->[0][$i], $mapping->{$parent});
                 }
 
-                $nodes->[0][$i]->{'afunaux'} = $nodes->[0][$i]->{'afun'};
+                $nodes->[0][$i]->{'score'} = new Fslib::Alt;
+
+                unshift @{$nodes->[0][$i]->{'score'}}, new Fslib::Container $nodes->[0][$i]->{'afun'};
+
                 $nodes->[0][$i]->{'afun'} = '???';
 
                 $this = $nodes->[0][$i];
@@ -108,7 +114,7 @@ sub migrate_annotation {
                         exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
 
                 warn "<> " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
-                     "\t" . '...' . "\t" . $form . "\t" . $this->{'afunaux'} . "\n";
+                             "\t" . '...' . "\t" . $form . "\n";
             }
         }
         else {
@@ -119,7 +125,7 @@ sub migrate_annotation {
                     exists $this->{'morpho'}{'Word'} ? $this->{'morpho'}{'Word'}{'form'} : $this->{'form'};
 
             warn "-- " . "\t" . ThisAddress() . "\t" . ( defined $this->{'afun'} ? $this->{'afun'} : '???' ) .
-                 "\t" . '...' . "\t" . $form . "\t" . $this->{'afunaux'} . "\n";
+                         "\t" . '...' . "\t" . $form . "\n";
         }
     }
 }

@@ -10,7 +10,12 @@ use 5.008;
 
 use strict;
 
-our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+use List::Util 'reduce';
+
+use File::Spec;
+use File::Copy;
+
+our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
 #
@@ -43,13 +48,9 @@ sub AfunAssign {
     }
     else {
 
-        $this->{'afunaux'} = $this->{'afun'} unless $this->{'afun'} eq '???';
-
         $this->{'afun'} = $afun;
         $this->{'parallel'} = $parallel;
         $this->{'paren'} = $paren;
-
-        $this->{'afunaux'} = '' if $this->{'afun'} eq '???';
 
         $this = $this->following();
 
@@ -431,11 +432,11 @@ node:<? exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
         exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
         '#{custom2}${form} ' . Analytic::idx($this) ?>
 
-node:<? join '#{custom1}_', ( $this->{afun} eq '???' && $this->{afunaux} ne ''
-                                  ? '#{custom3}${afunaux}'
-                                  : '#{custom1}${afun}' ),
-                            ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
-                                              qw 'parallel paren arabfa coref clause' ) || () ) ?>
+node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'} && @{$this->{'score'}}
+                        ? '#{custom3}' . join " ", map { $_->{'#content'} } @{$this->{'score'}}
+                        : '#{custom1}${afun}' ),
+                    map { '#{custom1}${' . $_ . '}' } grep { $this->attr($_) ne '' }
+                        qw 'parallel paren arabfa coref clause' ?>
 
 node:<? exists $this->{'morpho'}{'Token'} ? (
         exists $this->{'morpho'}{'Token'}{'note'} &&
@@ -566,7 +567,7 @@ sub request_auto_afun_node {
     else {
 
         $node->{'afun'} = '???';    # it might have been empty
-        $node->{'afunaux'} = get_auto_afun($node);
+        $node->{'score'} = get_auto_afun($node);
 
         $Redraw = 'tree';
     }
@@ -584,7 +585,7 @@ sub request_auto_afun_subtree {
         if ($node->{'afun'} eq '???' or $node->{'afun'} eq '') {
 
             $node->{'afun'} = '???';    # it might have been empty
-            $node->{'afunaux'} = get_auto_afun($node);
+            $node->{'score'} = get_auto_afun($node);
         }
     }
 
@@ -668,7 +669,7 @@ sub node_release_hook {
 
     return unless $hooks_request_mode;
 
-    while ($done->{'afun'} eq '???' and $done->{'afunaux'} eq '') {
+    until ($done->{'afun'} ne '???' or exists $done->{'score'} and @{$done->{'score'}} > 0) {
 
         unshift @line, $done;
 
@@ -686,7 +687,7 @@ sub node_moved_hook {
 
     my @line;
 
-    while ($done->{'afun'} eq '???' and $done->{'afunaux'} eq '') {
+    until ($done->{'afun'} ne '???' or exists $done->{'score'} and @{$done->{'score'}} > 0) {
 
         unshift @line, $done;
 
@@ -794,7 +795,7 @@ sub theClauseHead ($;&) {
 
         if ($head->{'afun'} =~ /^(?:Coord|Apos)$/) {
 
-            @children = grep { $_->{parallel} =~ /^(?:Co|Ap)$/ } $head->children();
+            @children = grep { $_->{'parallel'} =~ /^(?:Co|Ap)$/ } $head->children();
 
             if (grep { $_->{'afun'} eq 'Atv' } @children) {
 
@@ -814,13 +815,13 @@ sub theClauseHead ($;&) {
 
             $main = $head;                      # {Pred} <- [Pnom] = [Pnom] and there exist [Verb] <- [Verb]
 
-            if ($main->{parallel} =~ /^(?:Co|Ap)$/) {
+            if ($main->{'parallel'} =~ /^(?:Co|Ap)$/) {
 
                 do {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{parallel} =~ /^(?:Co|Ap)$/ and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
 
                 $main = $head unless $main and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
             }
@@ -880,14 +881,14 @@ sub referring_Ref {
 
         unless ($ante) {
 
-            $head = $head->parent() while $head->{parallel} =~ /^(?:Co|Ap)$/;
+            $head = $head->parent() while $head->{'parallel'} =~ /^(?:Co|Ap)$/;
 
             $ante = $head;
 
             $ante = $ante->following($head) while $ante and $ante->{'afun'} ne 'Ante' and $ante != $this;
         }
 
-        $ante = $ante->parent() while $ante and $ante->{parallel} =~ /^(?:Co|Ap)$/;
+        $ante = $ante->parent() while $ante and $ante->{'parallel'} =~ /^(?:Co|Ap)$/;
 
         if ($ante) {
 
@@ -896,7 +897,7 @@ sub referring_Ref {
             return $ante if $this != $ante;
         }
 
-        $head = $head->parent() while $head->{parallel} =~ /^(?:Co|Ap)$/;
+        $head = $head->parent() while $head->{'parallel'} =~ /^(?:Co|Ap)$/;
 
         $head = $head->parent();
 
@@ -912,9 +913,9 @@ sub referring_Msd {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    my $head = $this->parent();                                     # the token itself might feature the critical tags
+    my $head = $this->parent();                                                         # the token itself might feature the critical tags
 
-    $head = $head->parent() if $this->{'afun'} eq 'Atr';                            # constructs like <_hAfa 'a^sadda _hawfiN>
+    $head = $head->parent() if $this->{'afun'} eq 'Atr';                                # constructs like <_hAfa 'a^sadda _hawfiN>
 
     $head = $head->parent() until not $head or exists $head->{'morpho'}{'Token'} and
                                                       $head->{'morpho'}{'Token'}{'tag'} =~ /^[VNA]/;    # the verb, governing masdar or participle
@@ -928,7 +929,7 @@ sub referring_Msd {
 
 sub enable_attr_hook {
 
-    return 'stop' unless $_[0] =~ /^(?:afun|parallel|paren|arabfa|coref|clause|note|err1|err2)$/;
+    return 'stop' if $_[0] =~ /^morpho(?!\w)/;
 }
 
 #bind edit_note to exclam menu Annotate: Edit Annotation Note
@@ -1027,15 +1028,15 @@ sub accept_auto_afun {
 
     my $node = $this;
 
-    unless ($this->{'afun'} eq '???' and $this->{'afunaux'} ne '') {
+    if ($this->{'afun'} ne '???' or exists $this->{'score'} and @{$this->{'score'}} > 0) {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = $this->{'afunaux'};
-        $this->{'afunaux'} = '';
+        $this->{'afun'} = $this->{'score'}[0]{'#content'};
+        shift @{$this->{'score'}};
 
         $Redraw = 'tree';
     }
@@ -1052,7 +1053,7 @@ sub unset_afun {
     else {
 
         $this->{'afun'} = '???';
-        $this->{'afunaux'} = '';
+        shift @{$this->{'score'}};
 
         $Redraw = 'tree';
     }
@@ -1069,7 +1070,7 @@ sub unset_request_afun {
     else {
 
         $this->{'afun'} = '???';
-        $this->{'afunaux'} = get_auto_afun($this);
+        $this->{'score'} = get_auto_afun($this);
 
         $Redraw = 'tree';
     }
@@ -1078,8 +1079,6 @@ sub unset_request_afun {
 # ##################################################################################################
 #
 # ##################################################################################################
-
-use List::Util 'reduce';
 
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
@@ -1301,9 +1300,6 @@ sub infer_clause_head {
 # ##################################################################################################
 #
 # ##################################################################################################
-
-use File::Spec;
-use File::Copy;
 
 sub path (@) {
 

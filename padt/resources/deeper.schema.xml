@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>0.1.1</revision>
+    <revision>1.0.0</revision>
     <description>PADT Deep Syntax</description>
 
     <root name="DeepLevels" type="Trees.type"/>
@@ -29,10 +29,12 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
-            <member name="func" required="1"><constant>SENT</constant></member>
+            <member name="func" required="1">
+                <constant>SENT</constant>
+            </member>
+            <member name="score" type="Score.type"/>
             <member name="note" type="String.type"/>
-            <member name="m" type="M.type"/>
-            <member name="s" type="S.type"/>
+            <member name="form" type="String.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
@@ -47,15 +49,15 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="ord" required="1" role="#ORDER" type="Order.type"/>
             <member name="func" type="Functor.type" required="1"/>
+            <member name="score" type="Score.type"/>
             <member name="note" type="String.type"/>
             <member name="context" type="Context.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
-            <member name="arabfa" type="String.type"/>
             <member name="coref" type="String.type"/>
             <member name="clause" type="Clause.type"/>
-            <member name="m" type="M.type"/>
-            <member name="s" type="S.type"/>
+            <member name="morpho" type="Morpho.type"/>
+            <member name="syntax" type="Syntax.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
@@ -73,18 +75,18 @@
         </choice>
     </type>
 
-    <type name="S.type">
+    <type name="Syntax.type">
         <structure>
-            <!--<member name="id" role="#ID" required="1" as_attribute="1" type="ID.type"/>-->
+            <!--<member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>-->
+            <member name="ord" type="Order.type"/>
             <member name="afun" type="Afun.type"/>
             <member name="note" type="String.type"/>
             <member name="parallel" type="Parallel.type"/>
             <member name="paren" type="Paren.type"/>
+            <member name="arabfa" type="String.type"/>
             <member name="coref" type="Coref.type"/>
             <member name="clause" type="Clause.type"/>
-            <member name="afunaux" type="String.type"/>
             <member name="parent" type="String.type"/>
-            <member name="ord" type="String.type"/>
         </structure>
     </type>
 

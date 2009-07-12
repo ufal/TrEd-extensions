@@ -10,7 +10,12 @@ use 5.008;
 
 use strict;
 
-our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+use List::Util 'reduce';
+
+use File::Spec;
+use File::Copy;
+
+our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
 #
@@ -284,7 +289,7 @@ sub context_C { ContextAssign('C') }
 
 ##bind assign_parallel to key 1 menu Arabic: Suffix Parallel
 sub assign_parallel {
-  $this->{parallel}||='';
+  $this->{'parallel'}||='';
   EditAttribute($this,'parallel');
 }
 
@@ -615,25 +620,36 @@ sub CreateStylesheets {
     return << '>>';
 
 style:<? ( DeepLevels::isClauseHead() ? '#{Line-fill:gold}' : '' ) .
-         ( $this->{context} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :
-           $this->{context} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :
-           $this->{context} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
+         ( $this->{'context'} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :
+           $this->{'context'} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :
+           $this->{'context'} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
 
-node:<? $this->{'m'}{'form'} =~ /^./ ? $this->{'m'}{'lemma'} =~ /^([^\_]+)/ ? $1 : '${m/form}'
-                                     : '#{custom6}${m/input}' ?>
+node:<? exists $this->{'morpho'}{'Lexeme'} ? '${morpho/Lexeme/form}' :
+        exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
+        exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
+        '#{custom2}${form} ' . DeepLevels::idx($this) ?>
 
-node:<? join '#{custom5}_', ( $this->{func} eq '???' && $this->{s}{afun} ne ''
-                                  ? '#{custom3}${s/afun}'
+node:<? join '#{custom5}_', ( $this->{'func'} eq '???' && exists $this->{'syntax'}{'afun'}
+                                  ? '#{custom3}${syntax/afun}'
                                   : '#{custom5}${func}' ),
                             ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
-                                              qw 'parallel paren s/coref /clause' ) || () ) ?>
+                                              qw 'parallel paren syntax/coref syntax/clause' ) || () ) ?>
 
-hint:<? join "\n", 'tag: ${m/tag}',
-                   'lemma: ${m/lemma}',
-                   'morph: ${m/morph}',
-                   'gloss: ${m/gloss}',
-                   'note: ${m/note}' ?>
+hint:<? exists $this->{'morpho'}{'Token'} ? join "\n", 'tag: ${morpho/Token/tag}',
+                                                       'lemma: ${morpho/Lexeme/form}',
+                                                       'morphs: ${morpho/Token/morphs}',
+                                                       'gloss: ${morpho/Token/gloss}',
+                                                       'note: ${morpho/Token/note}' : '' ?>
 >>
+}
+
+sub idx {
+
+    my $node = $_[0] || $this;
+
+    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
+
+    return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
 sub switch_context_hook {
@@ -655,29 +671,58 @@ sub hide_node {
 sub get_value_line_hook {
 
     my ($fsfile, $index) = @_;
-    my ($nodes, $words);
+    my ($nodes, $words, $views);
 
     ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
-    $nodes = [ sort { $a->{'s'}{'ord'} <=> $b->{'s'}{'ord'} } @{$nodes} ];
+    $views->{$_->{'ord'}} = $_ foreach GetVisibleNodes($root);
 
-    $words = [ [ $nodes->[0]->{'origf'}, $nodes->[0], '-foreground => darkmagenta' ],
+    $words = [ [ $nodes->[0]->{'form'} . " " . idx($nodes->[0]), $nodes->[0], '-foreground => darkmagenta' ],
                map {
-                        [ " " ],
-                        [ $_->{'m'}{'input'}, $_, $_->{'m'}{'tag'} ? () : '-foreground => red' ],
-               }
-               grep { defined $_->{'m'}{'input'} and $_->{'m'}{'input'} ne '' } @{$nodes}[1 .. $#{$nodes}] ];
+
+                   show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
+                                                    not exists $_->{'morpho'}{'Token'})
+
+               } @{$nodes}[1 .. $#{$nodes}] ];
 
     @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
 
     return $words;
 }
 
+sub show_value_line_node {
+
+    my ($view, $node, $text, $warn) = @_;
+
+    if (HiddenVisible()) {
+
+        return  unless exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                   $node->{'morpho'}{'Word'}{'form'} ne '';
+
+        return  [ " " ],
+                [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+                                                                                    : '-foreground => gray' ];
+    }
+    else {
+
+        return  [ " " ],
+                [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ]
+                                if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
+
+        return  unless exists $view->{$node->{'ord'}} and exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                      $node->{'morpho'}{'Word'}{'form'} ne '';
+
+        return  [ " " ],
+                [ $node->attr($text), $node, $warn ? '-foreground => red' : () ];
+    }
+}
+
 sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 's/ord') until !$node or defined $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '';
+    $node = PrevNodeLinear($node, 'syntax/ord') until !$node or exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                            $node->{'morpho'}{'Word'}{'form'} ne '';
 
     return $node;
 }
@@ -715,7 +760,7 @@ sub node_release_hook {
 
         return unless $hooks_request_mode;
 
-        while ($done->{'s'}{'afun'} eq '???' and $done->{'s'}{'afunaux'} eq '') {
+        while ($done->{'syntax'}{'afun'} eq '???' and $done->{'syntax'}{'afunaux'} eq '') {
 
             unshift @line, $done;
 
@@ -822,7 +867,7 @@ sub node_moved_hook {
 
     my @line;
 
-    while ($done->{'s'}{'afun'} eq '???' and $done->{'s'}{'afunaux'} eq '') {
+    while ($done->{'syntax'}{'afun'} eq '???' and $done->{'syntax'}{'afunaux'} eq '') {
 
         unshift @line, $done;
 
@@ -846,7 +891,7 @@ sub node_style_hook {
 
     my ($node, $styles) = @_;
 
-    if ($node->{'s'}{'coref'} eq 'Ref') {
+    if ($node->{'syntax'}{'coref'} eq 'Ref') {
 
         my $T = << 'TARGET';
 [!
@@ -873,7 +918,7 @@ COORDS
     }
 
 
-    if ($node->{'s'}{'coref'} eq 'Msd') {
+    if ($node->{'syntax'}{'coref'} eq 'Msd') {
 
         my $T = << 'TARGET';
 [!
@@ -908,8 +953,10 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{'s'}{'clause'} ne "" || $this->{'m'}{'tag'} =~ /^V/ && $this->{'s'}{'afun'} !~ /^Aux/
-                                        || $this->{'s'}{'afun'} =~ /^Pred[ECMP]?$/;
+    return $this->{'syntax'}{'clause'} ne "" || exists $this->{'morpho'}{'Token'} &&
+                                                       $this->{'morpho'}{'Token'}{'tag'} =~ /^V/ &&
+                                                       $this->{'syntax'}{'afun'} !~ /^Aux/
+                                             || $this->{'syntax'}{'afun'} =~ /^Pred[ECMP]?$/;
 }
 
 sub theClauseHead ($;&) {
@@ -924,13 +971,13 @@ sub theClauseHead ($;&) {
 
     while ($head) {
 
-        $effect = $head->{'s'}{'afun'};
+        $effect = $head->{'syntax'}{'afun'};
 
-        if ($head->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/) {
+        if ($head->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/) {
 
             @children = grep { $_->{'parallel'} =~ /^(?:Co|Ap)$/ } $head->children();
 
-            if (grep { $_->{'s'}{'afun'} eq 'Atv' } @children) {
+            if (grep { $_->{'syntax'}{'afun'} eq 'Atv' } @children) {
 
                 $effect = 'Atv';
             }
@@ -938,13 +985,13 @@ sub theClauseHead ($;&) {
 
                 $effect = 'Pred';
             }
-            elsif (grep { $_->{'s'}{'afun'} eq 'Pnom'} @children) {
+            elsif (grep { $_->{'syntax'}{'afun'} eq 'Pnom'} @children) {
 
                 $effect = 'Pnom';
             }
         }
 
-        if ($head->{'s'}{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
+        if ($head->{'syntax'}{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
 
             $main = $head;                      # {Pred} <- [Pnom] = [Pnom] and there exist [Verb] <- [Verb]
 
@@ -954,16 +1001,16 @@ sub theClauseHead ($;&) {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/;
 
-                $main = $head unless $main and $main->{'s'}{'afun'} =~ /^(?:Coord|Apos)$/;
+                $main = $head unless $main and $main->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/;
             }
 
             if ($main->parent() and isPredicate($main->parent())) {
 
                 return $main->parent();
             }
-            elsif ($head->{'s'}{'afun'} eq 'Pnom') {
+            elsif ($head->{'syntax'}{'afun'} eq 'Pnom') {
 
                 return $head;
             }
@@ -999,7 +1046,8 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{'s'}{'afun'} eq 'Atr' and $_[0]->{'m'}{'tag'} =~ /^A/
+            return $_[0] if $_[0]->{'syntax'}{'afun'} eq 'Atr' and exists $_[0]->{'morpho'}{'Token'} and
+                                                                          $_[0]->{'morpho'}{'Token'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -1009,18 +1057,18 @@ sub referring_Ref {
 
         my $ante = $head;
 
-        $ante = $ante->following($head) while $ante and $ante->{'s'}{'afun'} ne 'Ante' and $ante != $this;
+        $ante = $ante->following($head) while $ante and $ante->{'syntax'}{'afun'} ne 'Ante' and $ante != $this;
 
         unless ($ante) {
 
-            $head = $head->parent() while $head->{parallel} =~ /^(?:Co|Ap)$/;
+            $head = $head->parent() while $head->{'parallel'} =~ /^(?:Co|Ap)$/;
 
             $ante = $head;
 
-            $ante = $ante->following($head) while $ante and $ante->{'s'}{'afun'} ne 'Ante' and $ante != $this;
+            $ante = $ante->following($head) while $ante and $ante->{'syntax'}{'afun'} ne 'Ante' and $ante != $this;
         }
 
-        $ante = $ante->parent() while $ante and $ante->{parallel} =~ /^(?:Co|Ap)$/;
+        $ante = $ante->parent() while $ante and $ante->{'parallel'} =~ /^(?:Co|Ap)$/;
 
         if ($ante) {
 
@@ -1029,7 +1077,7 @@ sub referring_Ref {
             return $ante if $this != $ante;
         }
 
-        $head = $head->parent() while $head->{parallel} =~ /^(?:Co|Ap)$/;
+        $head = $head->parent() while $head->{'parallel'} =~ /^(?:Co|Ap)$/;
 
         $head = $head->parent();
 
@@ -1045,11 +1093,12 @@ sub referring_Msd {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    my $head = $this->parent();                                     # the token itself might feature the critical tags
+    my $head = $this->parent();                                                         # the token itself might feature the critical tags
 
-    $head = $head->parent() if $this->{'s'}{'afun'} eq 'Atr';       # constructs like <_hAfa 'a^sadda _hawfiN>
+    $head = $head->parent() if $this->{'syntax'}{'afun'} eq 'Atr';                      # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or $head->{'m'}{'tag'} =~ /^[VNA]/;    # the verb, masdar or participle
+    $head = $head->parent() until not $head or exists $head->{'morpho'}{'Token'} and
+                                                      $head->{'morpho'}{'Token'}{'tag'} =~ /^[VNA]/;    # the verb, governing masdar or participle
 
     return $head;
 }
@@ -1101,15 +1150,18 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${morpho/Token/tag}');
 
-    my $code = q {<? '#{custom6}${m/note} << ' if $this->{s}{afun} ne 'AuxS' and $this->{m}{note} ne '' ?>};
+    my $code = q {<? exists $this->{'morpho'}{'Token'} ? (
+        exists $this->{'morpho'}{'Token'}{'note'} &&
+               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
+        ) . '#{custom2}${morpho/Token/tag}' : '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
-    my @filter = grep { $_ !~ /^(?:\Q${type}\E\s*)?(?:\Q${code}\E)?\Q${pattern}\E$/ } @{$style};
+    my @filter = grep { $_ !~ /^(?:\Q${type}\E\s*)?(?:\Q${code}\E|\Q${pattern}\E)$/ } @{$style};
 
-    SetStylesheetPatterns([ $hint, $cntxt, [ @filter, @{$style} == @filter ? $type . ' ' . $code . $pattern : () ] ]);
+    SetStylesheetPatterns([ $hint, $cntxt, [ @filter, @{$style} == @filter ? $type . ' ' . $code : () ] ]);
 
     ChangingFile(0);
 }
@@ -1156,15 +1208,15 @@ sub accept_auto_afun {
 
     my $node = $this;
 
-    unless ($this->{'s'}{'afun'} eq '???' and $this->{'s'}{'afunaux'} ne '') {
+    unless ($this->{'syntax'}{'afun'} eq '???' and $this->{'syntax'}{'afunaux'} ne '') {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'s'}{'afun'} = $this->{'s'}{'afunaux'};
-        $this->{'s'}{'afunaux'} = '';
+        $this->{'syntax'}{'afun'} = $this->{'syntax'}{'afunaux'};
+        $this->{'syntax'}{'afunaux'} = '';
 
         $Redraw = 'tree';
     }
@@ -1205,8 +1257,6 @@ sub unset_context {
 # ##################################################################################################
 #
 # ##################################################################################################
-
-use List::Util 'reduce';
 
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
@@ -1384,9 +1434,6 @@ sub infer_clause_head {
 #
 # ##################################################################################################
 
-use File::Spec;
-use File::Copy;
-
 sub path (@) {
 
     return File::Spec->join(@_);
@@ -1455,14 +1502,14 @@ sub synchronize_file {
 
     ChangingFile(0);
 
-    my $reply = main::userQuery($grp, "\nDo you wish to synchronize this file's annotations?$fill",
+    my $reply = GUI() ? main::userQuery($grp, "\nDo you wish to synchronize this file's annotations?$fill",
             -bitmap=> 'question',
             -title => "Synchronizing",
-            -buttons => ['Yes', 'No']);
+            -buttons => ['Yes', 'No']) : 'Yes';
 
     return unless $reply eq 'Yes';
 
-    print "Synchronizing ...\n";
+    warn "Synchronizing ...\n";
 
     my ($level, $name, $path, @file) = inter_with_level 'syntax';
 
@@ -1470,50 +1517,62 @@ sub synchronize_file {
 
     unless (-f $file[1]) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
-                        "Make sure you are working with complete data!$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
+                            "Make sure you are working with complete data!$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!\n";
+        }
 
         return;
     }
 
     if (-f $file[2]) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!$fill\n" .
-                        "Please remove " . ( path '..', "$level", $name . '.deeper.xml' ) . ".$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!$fill\n" .
+                            "Please remove " . ( path '..', "$level", $name . '.deeper.xml' ) . ".$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!\n";
+        }
 
         return;
     }
 
     if (GetFileSaveStatus()) {
 
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
+        if (GUI()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+        }
+        else {
+
+            warn "The current file has been modified. Either save it, or reload it discarding the changes.\n";
+        }
 
         return;
     }
-
-    ToplevelFrame()->messageBox (
-        -icon => 'warning',
-        -message => "This function is not implemented yet.$fill",
-        -title => 'Error',
-        -type => 'OK',
-    );
-
-    return;
 
     my ($tree, $node);
 
@@ -1522,21 +1581,24 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'perl -X ' . ( escape CallerDir('exec') . '/DeeperFS.pl' ) .
-                  ' ' . ( expace $file[1] );
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/syntax_deeper.ntred' ) .
+                    ' ' . ( espace $file[1] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_deeper.btred' ) .
+    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_deeper.ntred' ) .
                     ' ' . ( espace $file[0] );
 
-    print "... succeeded.\n";
+    warn "... succeeded.\n";
 
-    main::reloadFile($grp);
+    if (GUI()) {
 
-    GotoTree($tree);
+        main::reloadFile($grp);
 
-    $this = $this->following() until $this->{'ord'} == $node;
+        GotoTree($tree);
+
+        $this = $this->following() until $this->{'ord'} == $node;
+    }
 }
 
 #bind open_level_first_prime to Alt+1
