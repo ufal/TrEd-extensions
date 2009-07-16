@@ -15,6 +15,8 @@ use ElixirFM;
 use File::Spec;
 use File::Copy;
 
+use File::Basename;
+
 our $VERSION = join '.', '1.1', q $Revision: 838 $ =~ /(\d+)/;
 
 # ##################################################################################################
@@ -948,16 +950,14 @@ sub path (@) {
 
 sub inter_with_level ($) {
 
-    require File::Basename;
-
     my $level = $_[0];
 
     my (@file, $path, $name);
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.xml');
-    (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
+    ($name, $path, undef) = fileparse($thisfile, '.xml');
+    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
     return $level, $name, $path, @file;
 }

@@ -15,6 +15,8 @@ use List::Util 'reduce';
 use File::Spec;
 use File::Copy;
 
+use File::Basename;
+
 our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
@@ -877,12 +879,6 @@ sub node_moved_hook {
     request_auto_afun_node($_) foreach @line;
 }
 
-# bind padt_auto_parse_tree to Ctrl+Shift+F2 menu Arabic: Parse the current sentence and build a tree
-sub padt_auto_parse_tree {
-  require Arab_parser;
-  Arab_parser::parse_sentence($grp,$root);
-}
-
 sub root_style_hook {
 
 }
@@ -1462,16 +1458,14 @@ sub expace ($) {
 
 sub inter_with_level ($) {
 
-    require File::Basename;
-
     my $level = $_[0];
 
     my (@file, $path, $name);
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.deeper.xml');
-    (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
+    ($name, $path, undef) = fileparse($thisfile, '.deeper.xml');
+    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
     $file[0] = path $path . 'deeper', $name . '.deeper.xml';
     $file[1] = path $path . "$level", $name . ".$level.xml";

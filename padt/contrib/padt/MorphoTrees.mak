@@ -12,12 +12,14 @@ use strict;
 
 use ElixirFM;
 
-use Exec::ElixirFM;
+use Exec::ElixirFM ();
 
 use Encode::Arabic ':modes';
 
 use File::Spec;
 use File::Copy;
+
+use File::Basename;
 
 our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
@@ -759,6 +761,8 @@ sub edit_note {
 #bind elixir_resolve to Ctrl+r menu ElixirFM Resolve
 
 sub elixir_resolve {
+
+    import Exec::ElixirFM;
 
     if ($root->{'#name'} eq 'Paragraph') {
 
@@ -1502,16 +1506,14 @@ sub expace ($) {
 
 sub inter_with_level ($) {
 
-    require File::Basename;
-
     my $level = $_[0];
 
     my (@file, $path, $name);
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = File::Basename::fileparse($thisfile, '.morpho.xml');
-    (undef, $path, undef) = File::Basename::fileparse((substr $path, 0, -1), '');
+    ($name, $path, undef) = fileparse($thisfile, '.morpho.xml');
+    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
     $file[0] = path $path . 'morpho', $name . '.morpho.xml';
     $file[1] = path $path . "$level", $name . ".$level.xml";
