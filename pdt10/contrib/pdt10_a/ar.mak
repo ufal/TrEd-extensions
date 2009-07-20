@@ -1,7 +1,7 @@
 ## This is macro file for Tred                                   -*-cperl-*-
 ## It should be used for analytical trees editing
 ## author: Petr Pajas
-## Time-stamp: <2008-04-15 14:21:15 pajas>
+## Time-stamp: <2009-07-14 09:48:08 pajas>
 ## $Id$
 
 #encoding iso-8859-2
@@ -9,8 +9,13 @@
 package Analytic;
 BEGIN { import TredMacro; }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  return (($fsfile and $fsfile->FS->exists('afun') and $fsfile->FS->exists('AID')) ? 1 : 0);
+}
+
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  if( $grp->{FSFile}->FS->exists('afun') and $grp->{FSFile}->FS->exists('AID') ) {
+  if( detect() ) {
     if (CurrentContext() eq 'Analytic_Correction') {
       return 'Analytic_Correction';
     } else {
@@ -19,6 +24,10 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   }
   return;
 };
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
 
 my $_CatchError;
 

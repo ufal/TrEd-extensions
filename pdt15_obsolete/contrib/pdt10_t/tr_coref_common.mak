@@ -1,6 +1,6 @@
 ## -*- cperl -*-
 ## author: Petr Pajas
-## Time-stamp: <2008-02-06 14:00:47 pajas>
+## Time-stamp: <2009-07-14 10:13:18 pajas>
 
 #ifndef tr_coref_common
 #define tr_coref_common
@@ -9,12 +9,22 @@ package Coref;
 
 BEGIN { import TredMacro; }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  return ($fsfile and $fsfile->FS and $fsfile->FS->hide eq 'TR') ? 1 : 0;
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
+
 ########################## Default patterns ##########################
 
 #bind default_tr_attrs to F8 menu Display default attributes
 sub default_tr_attrs {
   if ($grp->{FSFile}) {
-    SetDisplayAttrs('mode:Coref',
+    SetDisplayAttrs('context:Coref',
+		    'mode:Coref',
 		    '<? "#{red}" if $${commentA} ne "" ?>${trlemma}<? ".#{custom1}\${aspect}" if $${aspect} =~/PROC|CPL|RES/ ?><? " #{red}(\${corinfo})" if $${corinfo} =~/\S/ ?>',
                     '${func}<? "_#{custom2}\${reltype}\${memberof}" if "$${memberof}$${reltype}" =~ /CO|AP|PA/ ?><? ".#{custom3}\${gram}" if $${gram} ne "???" and $${gram} ne ""?>',
 		    'text:<? "#{-foreground:green}#{-underline:1}" if $${NG_matching_node} eq "true" ?><? "#{-tag:NG_TOP}#{-tag:LEMMA_".$${trlemma}."}" if ($${NG_matching_node} eq "true" and $${NG_matching_edge} ne "true") ?>${origf}',

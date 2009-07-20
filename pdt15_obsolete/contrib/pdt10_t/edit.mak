@@ -11,6 +11,15 @@ BEGIN {
   import Coref qw(switch_context_hook node_style_hook);
 }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  return ($fsfile and $fsfile->FS and $fsfile->FS->hide eq 'TR') ? 1 : 0;
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
+
 my %menu_prevstate;
 
 sub node_release_hook {

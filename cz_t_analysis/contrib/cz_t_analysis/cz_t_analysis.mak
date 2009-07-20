@@ -37,7 +37,7 @@ Bind(
   __PACKAGE__.'->analyze_sentence'  => {
     # key => 'F9',
     context=>'TredMacro',
-    menu=>'Analyze Czech Text',
+    menu=>'__* Analyze Czech Text',
     changing_file => 0,
   }
 );

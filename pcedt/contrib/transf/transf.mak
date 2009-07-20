@@ -6,12 +6,24 @@ package Transfer;
 
 BEGIN { import TredMacro; }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  if ($fsfile ane $fsfile->FS->exists->{x_TNT} and $fsfile->FS->hide eq 'X_hide') {
+    return 1;
+  }
+  return;
+}
+
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  if ($grp->{FSFile}->FS->exists->{x_TNT} and $grp->{FSFile}->FS->hide eq 'X_hide') {
+  if (detect()) {
     return 'Transfer';
   }
   return;
 };
+
+sub allow_switch_context_hook {
+  return detect() ? 1 : 'stop';
+}
 
 
 #bind default_tr_attrs to F8 menu Display default attributes

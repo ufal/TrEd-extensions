@@ -1,13 +1,18 @@
 ## -*- cperl -*-
 ## author: Petr Pajas
-## Time-stamp: <2009-04-03 11:31:47 pajas>
+## Time-stamp: <2009-07-14 10:11:03 pajas>
 
 package Tectogrammatic;
 
 BEGIN { import TredMacro; }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  return ($fsfile and $fsfile->FS and $fsfile->FS->hide eq 'TR') ? 1 : 0;
+}
+
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  if ($grp->{FSFile} and $grp->{FSFile}->FS and $grp->{FSFile}->FS->hide eq 'TR') {
+  if (detect()) {
     if (CurrentContext() eq 'TR_Correction' or CurrentContext() eq 'TFA') {
       return CurrentContext();
     } else {
@@ -16,6 +21,10 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   }
   return;
 };
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
 
 sub patterns_forced {
   return (grep { $_ eq 'force' } GetPatternsByPrefix('patterns',STYLESHEET_FROM_FILE()) ? 1 : 0)

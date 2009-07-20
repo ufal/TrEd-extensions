@@ -3,6 +3,14 @@ package TFA; # package for the annotation of topic-focus articulation
 
 BEGIN { import TredMacro; }
 
+sub detect {
+  my $fsfile = CurrentFile();
+  return ($fsfile and $fsfile->FS and $fsfile->FS->hide eq 'TR') ? 1 : 0;
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
 
 #bind ShiftLeft to Ctrl+Left menu Move node to the left
 #bind ShiftRight to Ctrl+Right menu Move node to the right
