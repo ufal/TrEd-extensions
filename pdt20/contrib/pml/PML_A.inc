@@ -7,6 +7,14 @@
 
 BEGIN { import PML; }
 
+sub detect {
+  return ((SchemaName() =~ /^a(?:edit)?data$/) ? 1 : 0);
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
+
 =pod
 
 =head1 PML_A
@@ -441,6 +449,7 @@ in the same color.
 sub CreateStylesheets {
   unless(StylesheetExists('PML_A')){
     SetStylesheetPatterns(<<'EOF','PML_A',1);
+context: PML.*_A\b.*
 text:<? $${m/w/token}eq$${m/form} ? 
   '#{'.CustomColor('sentence').'}${m/w/token}' : 
   '#{-over:1}#{'.CustomColor('spell').'}['.
@@ -491,9 +500,6 @@ sub get_status_line_hook {
 	 ];
 }
 
-sub allow_switch_context_hook {
-  return 'stop' if SchemaName() !~ /^a(?:edit)?data$/;
-}
 sub switch_context_hook {
   CreateStylesheets();
   my $cur_stylesheet = GetCurrentStylesheet();

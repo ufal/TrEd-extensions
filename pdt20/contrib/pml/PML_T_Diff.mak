@@ -63,18 +63,33 @@ sub pre_switch_context_hook {
   return;
 }
 
+sub node_style_hook {
+  my ($node,$styles)=@_;
+  if ($node->{_diff_dep_}) {
+    AddStyle($styles,'Line',-fill => 'red',-dash => '- -');
+  }
+  if ($node->{_diff_attrs_}) {
+    AddStyle($styles,"Oval",-fill=>'darkorange');
+    AddStyle($styles,"Node",-addwidth=>4,-addheight=>4);
+    AddStyle($styles,"Text[$_]",-fill=>'orange') for split / /,$node->{_diff_attrs_};
+  }
+  if ($node->{_diff_in_}) {
+    AddStyle($styles,'Oval',-fill => 'cyan');
+    AddStyle($styles,'Line',-fill => 'cyan', -dash=>'- -');
+  }
+}
+
 # insert add_diff_patterns as menu Add diff patterns
 sub add_diff_patterns {
   return unless $grp->{FSFile};
   my $pat = GetStylesheetPatterns(GetCurrentStylesheet());
 
   SetStylesheetPatterns(join("\n",$pat,
-'style:<? #diff ?><? "#{Line-fill:red}#{Line-dash:- -}" if $${_diff_dep_} ?>',
-'style:<? #diff ?><? join "",map{"#{Text[$_]-fill:orange}"} split  " ",$${_diff_attrs_} ?>',
-'style:<? #diff ?><? "#{Oval-fill:darkorange}#{Node-addwidth:4}#{Node-addheight:4}" if $${_diff_attrs_} ?>',
-'style:<? #diff ?><? "#{Oval-fill:cyan}#{Line-fill:cyan}#{Line-dash:- -}" if $${_diff_in_} ?>',
-'style:<? #diff ?><? "#{Line-fill:black}#{Line-dash:- -}" if $${_diff_attrs_}=~/ TR/ ?>',
-'<? #diff ?>${_group_}',
+#'style:<? #diff ?><? "#{Line-fill:red}#{Line-dash:- -}" if $${_diff_dep_} ?>',
+#'style:<? #diff ?><? join "",map{"#{Text[$_]-fill:orange}"} split  " ",$${_diff_attrs_} ?>',
+#'style:<? #diff ?><? "#{Oval-fill:darkorange}#{Node-addwidth:4}#{Node-addheight:4}" if $${_diff_attrs_} ?>',
+#'style:<? #diff ?><? "#{Oval-fill:cyan}#{Line-fill:cyan}#{Line-dash:- -}" if $${_diff_in_} ?>',
+'node: <? #diff ?>${_group_}',
 'hint:#diff in:${_diff_attrs_}'));
 }
 
@@ -245,7 +260,8 @@ sub diff_trees {
 	  }
 	  $G{$g}->{$names[$i]}=$node;
 	  $node->{"_group_"}=$g;
-	  $parent_grp= $node->parent->{_group_};
+	  my $parent =$node->parent;
+	  $parent_grp =  $parent && $parent->{_group_};
 	  for (my $j=$i+1; $j < @names; $j++) {
 	    if (exists ($G{$parent_grp}->{$names[$j]})) {
 	      $son=$G{$parent_grp}->{$names[$j]}->firstson;
@@ -434,8 +450,9 @@ sub DiffTRFiles_select_attrs {
 }
 
 sub DiffTRFiles_with_summary {
+  my ($class)=@_;
   require Tk::ROText;
-  my @summary=TR_Diff->DiffTRFiles(1);
+  my @summary=$class->DiffTRFiles(1);
 
   my $top=ToplevelFrame();
 

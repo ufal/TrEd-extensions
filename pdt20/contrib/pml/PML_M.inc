@@ -7,6 +7,15 @@
 
 BEGIN { import PML; }
 
+sub detect {
+  return ((SchemaName() =~ /^m(?:edit)?data$/) ? 1 : 0);
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
+
+
 =pod
 
 =head1 PML_M
@@ -99,9 +108,6 @@ sub enable_attr_hook{
 }#enable_attr_hook
 
 
-sub allow_switch_context_hook {
-  return 'stop' if SchemaName() !~ /^m(?:edit)?data$/;
-}
 sub switch_context_hook {
   CreateStylesheets();
   my $cur_stylesheet = GetCurrentStylesheet();

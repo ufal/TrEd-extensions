@@ -3,18 +3,6 @@
 #ifndef pdt_vallex
 #define pdt_vallex
 
-push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  my ($hook)=@_;
-  my $resuming = ($hook eq 'file_resumed_hook');
-  my $current = CurrentContext();
-  if (PML::SchemaName() eq 'valency_lexicon') {
-    SetCurrentStylesheet('PML_Vallex') if $resuming;
-    return 'PML_Vallex';
-  }
-  return;
-};
-
-
 {
 
 package ValLex::GUI; # so that it gets deleted

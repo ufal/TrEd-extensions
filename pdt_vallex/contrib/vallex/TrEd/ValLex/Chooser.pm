@@ -285,6 +285,7 @@ sub reuse {
   }
 }
 
+my $hide_obsolete=0;
 sub create_widget {
   my ($self, $data, $field, $top,
       $count,
@@ -335,7 +336,6 @@ sub create_widget {
 						 $self
 						]);
   $editframes_button->pack(qw/-padx 5 -side left/);
-  my $hide_obsolete=0;
   my $hide_obsolete_button=
     $fbutton_frame->
       Checkbutton(-text => 'Hide obsolete',

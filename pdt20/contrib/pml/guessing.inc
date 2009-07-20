@@ -6,7 +6,7 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   my ($hook)=@_;
   my $resuming = ($hook eq 'file_resumed_hook');
   my $current = CurrentContext();
-  if (PML::SchemaName() eq 'tdata') {
+  if (PML_T::detect()) {
     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
     if ($current eq 'PML_A_Edit') {
       return 'PML_T_Edit';
@@ -15,7 +15,10 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
     } else {
       return 'PML_T_View';
     }
-  } elsif (PML::SchemaName() eq 'adata') {
+  } elsif (PML::SchemaName() eq 'aeditdata') {
+    SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
+    return 'PML_A_Edit';
+  } elsif (PML_A::detect()) {
     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
     if ($current eq 'PML_T_Edit') {
       return 'PML_A_Edit';
@@ -25,10 +28,7 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
       return 'PML_A_View';
     }
     return 1;
-  } elsif (PML::SchemaName() eq 'aeditdata') {
-    SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
-    return 'PML_A_Edit';
-  } elsif (PML::SchemaName() eq 'mdata') {
+  } elsif (PML_M::detect()) {
     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
     if ($current =~ /^PML.*_M_/) {
       return $current;

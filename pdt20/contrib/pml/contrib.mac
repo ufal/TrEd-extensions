@@ -5,14 +5,13 @@ package PML;
 
 #ifdef TRED
 #include "colors.inc"
-#include "guessing.inc"
 #endif TRED
 
 #binding-context PML_M
 #include "PML_M.mak"
 
 #binding-context PML_A_View
-#include "PML_A_View.mak"
+##include "PML_A_View.mak"
 
 #binding-context PML_A_Edit
 #include "PML_A_Edit.mak"
@@ -28,5 +27,9 @@ package PML;
 
 #binding-context PML_T_FV
 #include "PML_T_FV.mak"
+
+#ifdef TRED
+#include "guessing.inc"
+#endif TRED
 
 #endif pdt20

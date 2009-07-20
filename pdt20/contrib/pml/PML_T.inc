@@ -23,6 +23,14 @@ Dependency Treebank (PDT) 2.0.
 
 =cut
 
+sub detect {
+  return ((SchemaName() eq 'tdata') ? 1 : 0);
+}
+
+sub allow_switch_context_hook {
+  return 'stop' unless detect();
+}
+
 
 =item AFile($fsfile?)
 
@@ -474,6 +482,7 @@ sub _get_frame {
   my $lexicon = $ValLex::GUI::ValencyLexicon;
   if (ref $lexicon){
     my $frame = $lexicon->by_id($rf);
+    ($frame) = $lexicon->valid_frames_for($frame);
     return $ValLex::GUI::ValencyLexicon->serialize_frame($frame) if $frame;
   }
   'Valency lexicon not found or not loaded!';
@@ -886,6 +895,7 @@ C<detail> (see 3).
 sub CreateStylesheets{
   unless(StylesheetExists('PML_T_Compact')){
     SetStylesheetPatterns(<<'EOF','PML_T_Compact',1);
+context: PML.*_T\b.*
 node:<? '#{customparenthesis}' if $${is_parenthesis}
   ?><? $${nodetype}eq'root' ? '${id}' : '${t_lemma}'
   ?><? '#{customdetail}.${sentmod}'if$${sentmod}
@@ -971,6 +981,7 @@ EOF
     SetStylesheetPatterns(<<'EOF','PML_T_Full',1);
 full:1
 
+context: PML.*_T\b.*
 node:<? $${nodetype}eq'root' ? '${id}' : '${t_lemma}'
   ?><? '#{customdetail}.${sentmod}'if$${sentmod}
   ?><? ('#{customcoref}'.$PML_T::coreflemmas_hash{$${id}})
@@ -1058,9 +1069,6 @@ sub ToggleANodes {
   ChangingFile(0);
 }#ToggleANodes
 
-sub allow_switch_context_hook {
-  return 'stop' if SchemaName() ne 'tdata';
-}
 sub switch_context_hook {
   CreateStylesheets();
   my $cur_stylesheet = GetCurrentStylesheet();
