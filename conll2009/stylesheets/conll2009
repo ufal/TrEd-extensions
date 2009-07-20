@@ -1,4 +1,4 @@
-context: .*
+context: Conll2009
 rootstyle:#{NodeLabel-skipempty:1}#{skipHiddenLevels:1}#{skipHiddenParents:1}
 rootstyle:<?
    %Conll2009::fillcolors = qw(A0 blue ACT blue AUTH blue arg0-agt blue C-A0 blue R-A0 blue GA blue GA2 blue

@@ -18,12 +18,25 @@ BEGIN { import PML_A; }
 
 =head1 PML_CAC_A_Edit
 
-PML_CAC_A_Edit.mak - Miscellaneous macros for editing the analytic layer of
-Prague Dependency Treebank (PDT) 2.0.
+PML_CAC_A_Edit.mak - Miscellaneous macros for editing the analytic
+layer of Czech Academic Corpus.
 
 =over 4
 
 =cut
+
+sub cac_file_detected {
+  if (((PML::SchemaName()||'') eq 'adata') and
+      ((PML::SchemaDescription()||'') =~ /\bCAC\b/)) {
+    return 1;
+  }
+  return;
+}
+
+sub allow_switch_context_hook {
+  return cac_file_detected() ? 1 : 'stop';
+}
+
 sub get_status_line_hook {
   my $statusline=&PML_A::get_status_line_hook;
   push @{$statusline->[0]},

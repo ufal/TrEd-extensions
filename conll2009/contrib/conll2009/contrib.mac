@@ -3,17 +3,6 @@
 #ifndef conll2009
 #define conll2009
 
-push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-  my ($hook)=@_;
-  my $resuming = ($hook eq 'file_resumed_hook');
-  my $current = CurrentContext();
-  if (PML::SchemaName() eq 'conll2009') {
-    SetCurrentStylesheet('conll2009') if $resuming;
-    return 'Conll2009';
-  }
-  return;
-};
-
 {
 package Conll2009;
 
@@ -23,8 +12,23 @@ package Conll2009;
 BEGIN { import TredMacro; }
 use strict;
 
+sub detect {
+  return (((PML::SchemaName()||'') eq 'conll2009') ? 1 : 0);
+}
+
+push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
+  my ($hook)=@_;
+  my $resuming = ($hook eq 'file_resumed_hook');
+  my $current = CurrentContext();
+  if (detect()) {
+    SetCurrentStylesheet('conll2009') if $resuming;
+    return 'Conll2009';
+  }
+  return;
+};
+
 sub allow_switch_context_hook {
-  return 'stop' if PML::SchemaName() ne 'conll2009';
+  return 'stop' unless detect();
 }
 sub switch_context_hook {
   SetCurrentStylesheet('conll2009');
