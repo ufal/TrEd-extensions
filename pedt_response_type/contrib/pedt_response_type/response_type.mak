@@ -18,6 +18,10 @@ BEGIN {
 
 # init caches
 
+sub allow_switch_context_hook {
+  return 'stop' unless PML_En_T::detect();
+}
+
 sub get_value_line_hook {
   PML_T::get_value_line_hook(@_);
 }

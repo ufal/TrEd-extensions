@@ -1,6 +1,10 @@
 #ifndef response
 #define response
 
+
+### pre-requisite
+#include <contrib/pedt/contrib.mac>
+
 #binding-context Response_Type
 #include "response_type.mak"
 
