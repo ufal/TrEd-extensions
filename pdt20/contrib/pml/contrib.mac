@@ -11,7 +11,7 @@ package PML;
 #include "PML_M.mak"
 
 #binding-context PML_A_View
-##include "PML_A_View.mak"
+#include "PML_A_View.mak"
 
 #binding-context PML_A_Edit
 #include "PML_A_Edit.mak"
