@@ -34,7 +34,9 @@ sub cycle_mode {
   ChangingFile(0);
 }
 
-sub allow_switch_context_hook { 1 }
+sub allow_switch_context_hook {
+  return 'stop' unless PML_T::detect();
+}
 
 sub FindVallex {
   if (FileMetaData('refnames')) {
