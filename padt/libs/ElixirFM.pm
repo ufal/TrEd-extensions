@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 860 2009-06-20 23:26:55Z smrz $
+# $Id: ElixirFM.pm 874 2009-08-07 00:11:06Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 860 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 874 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -976,7 +976,7 @@ sub mergeSuffix {
 
             return "aw" . $x if $x =~ /^u/;
 
-            return "a^gIy" if $x eq "a^gIy";
+            return "a^g" if $x =~ /^a?\^g$/;
         }
 
         return "ay" . showSuffix($_[1]);
@@ -1097,7 +1097,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 860 $        $Date: 2009-06-21 01:26:55 +0200 (Sun, 21 Jun 2009) $
+    $Revision: 874 $        $Date: 2009-08-07 02:11:06 +0200 (Fri, 07 Aug 2009) $
 
 
 =head1 SYNOPSIS
