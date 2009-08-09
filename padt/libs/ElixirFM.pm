@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 874 2009-08-07 00:11:06Z smrz $
+# $Id: ElixirFM.pm 875 2009-08-09 10:50:31Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 874 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 875 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -421,10 +421,10 @@ sub parse {
         'Init'  => sub {
                             my $expat = shift;
 
-                            $expat->{Lists} = [];
-                            $expat->{Tree} = [];
+                            $expat->{'Lists'} = [];
+                            $expat->{'Tree'} = [];
 
-                            $expat->{Curlist} = [ '', {}, $expat->{Tree} ];
+                            $expat->{'Curlist'} = [ '', {}, $expat->{'Tree'} ];
                     },
 
         'Start' => sub {
@@ -432,25 +432,25 @@ sub parse {
                             my $name = shift;
                             my $elem = [ $name, { @_ }, [] ];
 
-                            push @{ $expat->{Curlist}[-1] }, $elem;
-                            push @{ $expat->{Lists} }, $expat->{Curlist};
+                            push @{ $expat->{'Curlist'}[-1] }, $elem;
+                            push @{ $expat->{'Lists'} }, $expat->{'Curlist'};
 
-                            $expat->{Curlist} = $elem;
+                            $expat->{'Curlist'} = $elem;
                     },
 
         'End'   => sub {
                             my $expat = shift;
                             my $name = shift;
 
-                            my $elem = $expat->{Curlist};
+                            my $elem = $expat->{'Curlist'};
 
-                            my $hash = $expat->{Curlist}[1];
-                            my $list = $expat->{Curlist}[-1];
+                            my $hash = $expat->{'Curlist'}[1];
+                            my $list = $expat->{'Curlist'}[-1];
 
 
                             if (@{$list} == 1 and not ref $list->[0]) {
 
-                                $expat->{Curlist}[-1] = $list->[0];
+                                $expat->{'Curlist'}[-1] = $list->[0];
                             }
                             else {
 
@@ -492,17 +492,17 @@ sub parse {
                                         }
                                     }
 
-                                    $expat->{Curlist}[-1] = [];
+                                    $expat->{'Curlist'}[-1] = [];
                                 }
                             }
 
-                            $expat->{Curlist} = pop @{ $expat->{Lists} };
+                            $expat->{'Curlist'} = pop @{ $expat->{'Lists'} };
                     },
 
         'Char'  => sub {
                             my $expat = shift;
                             my $text = shift;
-                            my $list = $expat->{Curlist}[-1];
+                            my $list = $expat->{'Curlist'}[-1];
 
                             if (@{$list} > 0 and not ref $list->[-1]) {
 
@@ -517,15 +517,124 @@ sub parse {
         'Final' => sub {
                             my $expat = shift;
 
-                            delete $expat->{Curlist};
-                            delete $expat->{Lists};
+                            delete $expat->{'Curlist'};
+                            delete $expat->{'Lists'};
 
-                            return $expat->{Tree}[0];
+                            return $expat->{'Tree'}[0];
                     },
 
         };
 
     return $parser->parse($_[0]);
+}
+
+sub unpretty_resolve {
+
+    my ($data, @node) = split /[:]{1}/, $_[0];
+
+    return  $data =~ /[()]/
+
+        ?   {
+                'data'  =>  {
+
+                    'info'  =>  [ map { [ split /[\n ]*\t/, $_ ] } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t)/, $data ],
+                    'type'  =>  2,
+                },
+
+                'node'  =>  [
+
+                    map {
+
+                        my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+
+                        $i .= '    ';
+
+                        s/^[\t\n ]+//;
+                        s/[\t\n ]+$//;
+
+                        my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+
+                        {
+                            'data'  =>  {
+
+                                'info'  =>  [ join ' ', split ' ', $data ],
+                                'type'  =>  1,
+                            },
+
+                            'node'  =>  [
+
+                                map {
+
+                                    {
+                                        'data'  =>  {
+
+                                            'info'  =>  [ split /[\n ]*\t/, $_ ],
+                                            'type'  =>  0,
+                                        },
+
+                                        'node'  =>  [
+
+                                        ],
+                                    }
+
+                                } @node
+                            ],
+                        }
+
+                    } @node
+                ],
+            }
+
+        :   {
+                'data'  =>  {
+
+                    'info'  =>  [ join ' ', split ' ', $data ],
+                    'type'  =>  2,
+                },
+
+                'node'  =>  [
+
+                    map {
+
+                        my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+
+                        $i .= '    ';
+
+                        s/^[\t\n ]+//;
+                        s/[\t\n ]+$//;
+
+                        my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+
+                        {
+                            'data'  =>  {
+
+                                'info'  =>  [ split /[\n ]*\t/, $data ],
+                                'type'  =>  1,
+                            },
+
+                            'node'  =>  [
+
+                                map {
+
+                                    {
+                                        'data'  =>  {
+
+                                            'info'  =>  [ split /[\n ]*\t/, $_ ],
+                                            'type'  =>  0,
+                                        },
+
+                                        'node'  =>  [
+
+                                        ],
+                                    }
+
+                                } @node
+                            ],
+                        }
+
+                    } @node
+                ],
+            };
 }
 
 sub unpretty {
@@ -568,58 +677,7 @@ sub unpretty {
 
                                 map {
 
-                                    my ($data, @node) = split /[:]{1}/, $_;
-
-                                    {
-                                        'data'  =>  {
-
-                                            'info'  =>  [ join ' ', split ' ', $data ],
-                                            'type'  =>  2,
-                                        },
-
-                                        'node'  =>  [
-
-                                            map {
-
-                                                my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
-
-                                                $i .= '    ';
-
-                                                s/^[\t\n ]+//;
-                                                s/[\t\n ]+$//;
-
-                                                my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
-
-                                                {
-                                                    'data'  =>  {
-
-                                                        'info'  =>  [ split /[\n ]*\t/, $data ],
-                                                        'type'  =>  1,
-                                                    },
-
-                                                    'node'  =>  [
-
-                                                        map {
-
-                                                            {
-                                                                'data'  =>  {
-
-                                                                    'info'  =>  [ split /[\n ]*\t/, $_ ],
-                                                                    'type'  =>  0,
-                                                                },
-
-                                                                'node'  =>  [
-
-                                                                ],
-                                                            }
-
-                                                        } @node
-                                                    ],
-                                                }
-
-                                            } @node
-                                        ],
-                                    }
+                                    unpretty_resolve($_);
 
                                 } @node
                             ],
@@ -1097,7 +1155,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 874 $        $Date: 2009-08-07 02:11:06 +0200 (Fri, 07 Aug 2009) $
+    $Revision: 875 $        $Date: 2009-08-09 12:50:31 +0200 (Sun, 09 Aug 2009) $
 
 
 =head1 SYNOPSIS
