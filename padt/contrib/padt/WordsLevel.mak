@@ -82,13 +82,17 @@ sub create_words {
 
     DeleteSubtree($_) foreach $unit->children();
 
-    foreach my $word (reverse words $unit->{'form'}) {
+    my @words = words $unit->{'form'};
+
+    for (my $i = @words; $i > 0; $i--) {
 
         my $node = NewSon($unit);
 
         DetermineNodeType($node);
 
-        $node->{'form'} = $word;
+        $node->{'form'} = $words[$i - 1];
+
+        $node->{'id'} = $unit->{'id'} . 'w' . $i;
     }
 }
 
@@ -547,7 +551,7 @@ WordsLevel - Context for Accessing the Words Level in the TrEd Environment
 
 =head1 DESCRIPTION
 
-ElixirFM ...
+WordsLevel ...
 
 
 =head1 SEE ALSO
