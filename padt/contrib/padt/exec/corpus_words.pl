@@ -20,13 +20,13 @@ while (my $document = decode "utf8", <>) {
 
     $data = {};
 
-    $document =~ s/\n (&HT;[^\n]*)(?=\n &HT;|\n<\/HEADLINE>)//g and warn "$ARGV\t$1\n";
+    $document =~ s/(&HT;(\s*\x{0640}+)?)//g and warn "$ARGV\n\tDeleting $1\n";
 
-    $document =~ s/(&[A-Z][A-Za-z0-9]+;)//g and warn "$ARGV\t$1\n";
+    $document =~ s/(&[A-Z][A-Za-z0-9]+;)//g and warn "$ARGV\n\tDeleting $1\n";
 
-    $document =~ s/ & //g and warn "$ARGV\t&\n";
-    
-    $document =~ /(&(?!amp;|lt;|gt;))/ and warn "$ARGV\t$1\n";
+    $document =~ s/ & //g and warn "$ARGV\n\tDeleting &\n";
+
+    $document =~ /(&(?!amp;|lt;|gt;))/ and warn "$ARGV\n\tVerify $1\n";
 
     $document =~ s/<seg id=([0-9]+)>/<seg id="$1">/g;
 
@@ -86,9 +86,9 @@ while (my $document = decode "utf8", <>) {
     $source->purge();
 
     open X, '>', $ARGV . '.words.xml';
-    
+
     select X;
-    
+
     my $meta = "    " . '<revision>$' . 'Revision: ' . '$</revision>' . "\n" .
                "    " . '<date>$' . 'Date: ' . '$</date>' . "\n" .
                "    " . '<document>' . $data->{'document'} . '</document>';
@@ -106,16 +106,18 @@ $meta
  <data>
 <?xml?>
 
-    my @id = ();
-        
+    my @id = (0);
+
     foreach my $para (@{$data->{'para'}}) {
+
+        warn "$ARGV\n\tIgnoring empty paragraph after index $id[0]\n" and next unless exists $para->{'form'} and exists $para->{'unit'};
 
         local $\ = "\n";
 
         $id[0]++;
-        
+
         @id = @id[0 .. 0];
-        
+
         printf '<Para id="w-p%d">', @id;
         print  '<form>' . $para->{'form'} . '</form>';
         print  '<with>';
@@ -125,7 +127,7 @@ $meta
             $id[1]++;
 
             @id = @id[0 .. 1];
-            
+
             printf '<Unit id="w-p%du%d">', @id;
             print  '<form>' . (encode "utf8", join " ", split " ", $unit->{'form'}) . '</form>';
             print  '</Unit>';
@@ -230,8 +232,8 @@ sub process_text {
     my ($meta, $text, $mode) = @_;
 
     push @{$data->{'para'}}, {} unless $mode or @{$data->{'para'}} and not keys %{$data->{'para'}[-1]};
-    
-    die "$ARGV\n\tUnexpected structure of the document\n"  if exists $data->{'para'}[-1]{'form'} 
+
+    die "$ARGV\n\tUnexpected structure of the document\n"  if exists $data->{'para'}[-1]{'form'}
                                                                  and $data->{'para'}[-1]{'form'} ne ''
                                                                  and $data->{'para'}[-1]{'form'} ne $meta;
 
