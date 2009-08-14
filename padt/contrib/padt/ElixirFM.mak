@@ -607,6 +607,9 @@ node:<? $this->level() == 2
         ( $this->{'limits'}{'fst'} ?
           "\n" . '#{custom7}${limits=limited} #{custom3}${limits="' .
           $this->{'limits'}{'fst'} . '"}' : '' ) .
+        ( ElixirFM::entity($this)->[1]{'except'} ?
+          "\n" . '#{custom7}${entity=excepts} #{custom3}${entity="' .
+          ElixirFM::entity($this)->[1]{'except'} . '"}' : '' ) .
         ( ElixirFM::entity($this)->[1]{'derive'} ?
           "\n" . '#{custom7}${entity=derives} #{custom3}${entity="' .
           ElixirFM::entity($this)->[1]{'derive'} . '"}' : '' )
