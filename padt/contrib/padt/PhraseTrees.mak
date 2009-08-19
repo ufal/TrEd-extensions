@@ -105,6 +105,8 @@ sub get_value_line_hook {
     if ($main::treeViewOpts->{reverseNodeOrder}) {
 
         $words = [ [ '#' . ($index + 1), $nodes->[0], '-foreground => darkmagenta'],
+                   [ " " ],
+
                    map {
 
                        show_value_line_node($views, $_, 'origf', $_->{'tag_2'} eq '-' x 10)
@@ -116,6 +118,8 @@ sub get_value_line_hook {
     else {
 
         $words = [ [ '#' . ($index + 1), $nodes->[0], '-foreground => darkmagenta'],
+                   [ " " ],
+
                    map {
 
                        show_value_line_node($views, $_, 'morph', $_->{'tag_1'} eq '-NONE-')
@@ -134,20 +138,20 @@ sub show_value_line_node {
 
         return  unless defined $node->{'origf'} and $node->{'origf'} ne '';
 
-        return  [ " " ],
-                [ $node->{$text}, $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
-                                                                                : '-foreground => gray' ];
+        return  [ $node->{$text}, $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+                                                                                : '-foreground => gray' ],
+                [ " " ];
     }
     else {
 
-        return  [ " " ],
-                [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ]
-                                if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
+        return  [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ],
+                [ " " ]
+                        if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
         return  unless exists $view->{$node->{'ord'}} and defined $node->{'origf'} and $node->{'origf'} ne '';
 
-        return  [ " " ],
-                [ $node->{$text}, $node, $warn ? '-foreground => red' : () ];
+        return  [ $node->{$text}, $node, $warn ? '-foreground => red' : () ],
+                [ " " ];
     }
 }
 

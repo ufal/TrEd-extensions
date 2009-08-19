@@ -88,21 +88,19 @@ sub pretty_entry {
 
     my $merged = ElixirFM::merge($root->parent()->{'root'}, $morphs);
 
+    my $imperf = $entity->[1]{'imperf'} || [];
+    my $pfirst = $entity->[1]{'pfirst'} || [];
+    my $second = $entity->[1]{'second'} || [];
+    my $masdar = $entity->[1]{'masdar'} || [];
+
     my $plural = $entity->[1]{'plural'} || [];
     my $femini = $entity->[1]{'femini'} || [];
-    my $masdar = $entity->[1]{'masdar'} || [];
+
+    my $except = $entity->[1]{'except'} || '';
 
     my $derive = $entity->[1]{'derive'} || '';
 
     $derive = "otherwise" if $derive eq '------F---';
-
-    my $except = $entity->[1]{'except'} || '';
-
-    # my $form   = $entity->[1]{'form'}   || [];
-
-    my $imperf = $entity->[1]{'imperf'} || [];
-    my $pfirst = $entity->[1]{'pfirst'} || [];
-    my $second = $entity->[1]{'second'} || [];
 
     return sprintf "    %-25s %-9s %-22s %s%s",
 
@@ -115,17 +113,13 @@ sub pretty_entry {
                    (@{$imperf} > 0 ? map { '   `imperf`     ' . $_ } @{$imperf} : ()),
                    (@{$pfirst} > 0 ? map { '   `pfirst`     ' . $_ } @{$pfirst} : ()),
                    (@{$second} > 0 ? map { '   `second`     ' . $_ } @{$second} : ()),
-
                    (@{$masdar} > 0 ? map { '   `masdar`     ' . $_ } @{$masdar} : ()),
 
                    (@{$plural} > 0 ? map { '   `plural`     ' . $_ } @{$plural} : ()),
-
                    (@{$femini} > 0 ? map { '   `femini`     ' . $_ } @{$femini} : ()),
 
-                   ($except ne '' ? "\n" . '    `excepts` ' . $except : ()),
-
                    ($domain ne '' ? "\n" . '    `limited` ' . $domain : ()),
-
+                   ($except ne '' ? "\n" . '    `excepts` ' . $except : ()),
                    ($derive ne '' ? "\n" . '    `derives` ' . $derive : ()));
 }
 

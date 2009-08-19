@@ -182,8 +182,10 @@ sub get_value_line_hook {
         ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
         $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
+
+                   [ " " ],
+
                    map {
-                            [ " " ],
                             [ $_->{'form'}, (
 
                                 $paragraph_hide_mode eq 'hidden'
@@ -194,7 +196,9 @@ sub get_value_line_hook {
                                       : ( $_->{'apply'} > 0
                                             ? ( $_, '-foreground => red' )
                                             : ( $_, '-foreground => black' ) )
-                                ) ]
+                                ) ],
+
+                            [ " " ],
 
                         } grep { $_->{'#name'} eq 'Word' } @{$nodes} ];
     }
@@ -208,9 +212,11 @@ sub get_value_line_hook {
         $nodes = [ map { $fsfile->tree($_) } $tree->{'ref'} .. ( $tree->{'ref'} == $last ? $grp->{FSFile}->lastTreeNo : $last - 2 ) ];
 
         $words = [ [ idx($para) . " " . $para->{'form'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
+                   [ " " ],
+
                    map {
-                            [ " " ],
                             [ $_->{'form'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
+                            [ " " ],
 
                         } grep { $_->{'#name'} eq 'Element' } @{$nodes} ];
     }
@@ -762,27 +768,126 @@ sub edit_note {
 
 sub elixir_resolve {
 
+    my $mode = 'trees';
+
     import Exec::ElixirFM;
 
     if ($root->{'#name'} eq 'Paragraph') {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', join " ", map { $_->{'form'} } $root->children();
+        my $reply = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], join " ", map { $_->{'form'} } $root->children();
 
         foreach (ElixirFM::unpretty $reply) {
 
             NextTree();
 
-            morphotrees($root, $_);
+            if ($mode eq 'trees') {
+
+                morphotrees($root, $_);
+            }
+            else {
+
+                morpholists($root, $_);
+            }
         }
     }
     else {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', $root->{'form'};
+        my $reply = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], $root->{'form'};
 
         foreach (ElixirFM::unpretty $reply) {
 
-            morphotrees($root, $_);
+            if ($mode eq 'trees') {
+
+                morphotrees($root, $_);
+            }
+            else {
+
+                morpholists($root, $_);
+            }
         }
+    }
+}
+
+sub morpholists {
+
+    warn join " ", $grp->{'FSFile'}->listMetaData();
+
+    my ($done, $data) = @_;
+
+    foreach (reverse @{$data->{'node'}}) {
+
+        my $node = NewSon($done);
+
+        DetermineNodeType($node);
+
+        my $done = $node;
+
+        foreach (reverse @{$_->{'node'}}) {
+
+            my $node = NewSon($done);
+
+            DetermineNodeType($node);
+
+            my @form = ();
+
+            my $done = $node;
+
+            foreach (reverse @{$_->{'node'}}) {
+
+                my $node = NewSon($done);
+
+                DetermineNodeType($node);
+            if (0) {
+                $node->{'root'} = substr $_->{'data'}{'info'}[5], 1, -1;
+
+                $node->{'core'} = new Fslib::Struct;
+
+                $node->{'core'}{'morphs'} = $_->{'data'}{'info'}[6];
+
+                $node->{'core'}{'reflex'} = new Fslib::List @{eval $_->{'data'}{'info'}[2]};
+
+                my $data = ElixirFM::parse($_->{'data'}{'info'}[1]);
+
+                foreach ('plural', 'femini', 'form', 'pfirst', 'imperf', 'second', 'masdar') {
+
+                    next unless exists $data->[1]{$_};
+
+                    $data->[1]{$_} = new Fslib::List ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_};
+                }
+
+                $data->[1]{'derive'} = '------F---' if exists $data->[1]{'derive'} and $data->[1]{'derive'} eq 'True';
+
+                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element $data->[0], new Fslib::Struct $data->[1]];
+            }
+                $node->{'form'} = $_->{'data'}{'info'}[4];
+
+                my $done = $node;
+
+                # foreach (()) {
+                foreach (reverse @{$_->{'node'}}) {
+
+                    my $node = NewSon($done);
+
+                    DetermineNodeType($node);
+
+                    $node->{'tag'} = $_->{'data'}{'info'}[0];
+
+                    $node->{'form'} = $_->{'data'}{'info'}[1];
+
+                    $node->{'morphs'} = $_->{'data'}{'info'}[3];
+
+                    unshift @form, $node->{'form'};
+                }
+            }
+
+            demode "arabtex", "noneplus";
+
+            $node->{'form'} = join " ", ElixirFM::nub { $_[0] } sort map { decode "arabtex", $_ } @form;
+
+            demode "arabtex", "default";
+        }
+
+        $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
     }
 }
 

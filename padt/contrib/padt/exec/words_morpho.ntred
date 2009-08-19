@@ -1,0 +1,118 @@
+#!/usr/bin/ntred
+
+package TredMacro;
+
+use PMLInstance;
+
+use Encode;
+
+use File::Basename;
+
+use strict;
+
+
+our ($root, $this);
+
+our ($morpho, $schema, $order, $index);
+
+
+sub autostart {
+
+    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.words.xml');
+
+    my $data = '<?xml version="1.0" encoding="utf-8"?>
+                <MorphoTrees xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+                  <head>
+                    <schema href="morpho.schema.xml" />
+                  </head>
+                  <meta>
+                    <revision>$' . 'Revision: ' . '$</revision>
+                    <date>$' . 'Date: ' . '$</date>
+                  </meta>
+                  <data />
+                </MorphoTrees>';                                   # "
+
+    $morpho = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.morpho.xml' })->convert_to_fsfile();
+
+    $schema = $morpho->metaData('schema');
+
+    do {
+
+        pretty_para($root);
+    }
+    while NextTree();
+
+    $morpho->writeFile();
+}
+
+
+sub pretty_para {
+
+    my $node = $_[0];
+
+    pretty_unit($_) foreach $node->children();
+}
+
+
+sub pretty_unit {
+
+    my $unit = $_[0];
+
+    my $tree = $morpho->new_tree($index++);
+
+    my @id = $unit->{'id'} =~ /^w-p([0-9]+)u([0-9]+)$/;
+
+    $tree->set_type_by_name($schema, 'Unit.type');
+
+    $tree->{'#name'} = 'Unit';
+
+    $tree->{'id'} = sprintf 'm-p%du%d', @id;
+
+    $tree->{'form'} = $unit->parent()->{'form'};
+
+    pretty_word($_, $tree) foreach reverse $unit->children();
+
+    pretty_element($_) foreach $unit->children();
+}
+
+
+sub pretty_word {
+
+    my ($word, $tree) = @_;
+
+    my @id = $word->{'id'} =~ /^w-p([0-9]+)u([0-9]+)w([0-9]+)$/;
+
+    my $node = new FSNode;
+
+    $node->set_type_by_name($schema, 'Word.type');
+
+    $node->{'#name'} = 'Word';
+
+    $node->{'id'} = sprintf 'm-p%du%dw%d', @id;
+
+    $node->{'ref'} = $index + $id[2];
+
+    $node->{'form'} = $word->{'form'};
+    
+    PasteNode($node, $tree, $morpho->FS);
+}
+
+
+sub pretty_element {
+
+    my $word = $_[0];
+
+    my $tree = $morpho->new_tree($index++);
+
+    my @id = $word->{'id'} =~ /^w-p([0-9]+)u([0-9]+)w([0-9]+)$/;
+
+    $tree->set_type_by_name($schema, 'Element.type');
+
+    $tree->{'#name'} = 'Element';
+
+    $tree->{'id'} = sprintf 'm-p%du%de%d', @id;
+
+    $tree->{'ref'} = $index - $id[2];
+    
+    $tree->{'form'} = $word->{'form'};
+}

@@ -613,6 +613,8 @@ sub get_value_line_hook {
     $views->{$_->{'ord'}} = $_ foreach GetVisibleNodes($root);
 
     $words = [ [ $nodes->[0]->{'form'} . " " . idx($nodes->[0]), $nodes->[0], '-foreground => darkmagenta' ],
+               [ " " ],
+
                map {
 
                    show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
@@ -634,21 +636,21 @@ sub show_value_line_node {
         return  unless exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
                                                                    $node->{'morpho'}{'Word'}{'form'} ne '';
 
-        return  [ " " ],
-                [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
-                                                                                    : '-foreground => gray' ];
+        return  [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+                                                                                    : '-foreground => gray' ],
+                [ " " ];
     }
     else {
 
-        return  [ " " ],
-                [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ]
-                                if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
+        return  [ '.....', $view->{$node->{'ord'} - 1}, '-foreground => magenta' ],
+                [ " " ]
+                        if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
         return  unless exists $view->{$node->{'ord'}} and exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
                                                                                                       $node->{'morpho'}{'Word'}{'form'} ne '';
 
-        return  [ " " ],
-                [ $node->attr($text), $node, $warn ? '-foreground => red' : () ];
+        return  [ $node->attr($text), $node, $warn ? '-foreground => red' : () ],
+                [ " " ];
     }
 }
 

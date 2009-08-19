@@ -10,80 +10,26 @@ use XML::Twig;
 
 use Encode;
 
+use File::Basename;
+
 
 $/ = undef;
 
 our $data;
 
 
-while (my $document = decode "utf8", <>) {
+while (my $text = decode "utf8", <>) {
 
     $data = {};
 
-    $document =~ s/(&HT;(\s*\x{0640}+)?)//g and warn "$ARGV\n\tDeleting $1\n";
+    if ($text =~ /^\s*</ and $text =~ />\s*$/ and $ARGV !~ /\.txt$/) {
 
-    $document =~ s/(&[A-Z][A-Za-z0-9]+;)//g and warn "$ARGV\n\tDeleting $1\n";
+        read_data_xml($text);
+    }
+    else {
 
-    $document =~ s/ & //g and warn "$ARGV\n\tDeleting &\n";
-
-    $document =~ /(&(?!amp;|lt;|gt;))/ and warn "$ARGV\n\tVerify $1\n";
-
-    $document =~ s/<seg id=([0-9]+)>/<seg id="$1">/g;
-
-    my $source = XML::Twig->new(
-
-            'ignore_elts'   => {
-
-                            'HEADER'    => 1,
-                            'FOOTER'    => 1,
-
-                               },
-
-            'twig_roots'    => {
-
-                            'DOC/DOCNO' => 1,
-
-                            'HEADLINE'  => 1,
-                            'hl'        => 1,
-
-                            'DATELINE'  => 1,
-
-                            'P'         => 1,
-                            'p'         => 1,
-
-                               },
-
-            'twig_handlers' => {
-
-                            'DOC/DOCNO' =>  \&parse_docno,
-
-                            'HEADLINE'  =>  \&parse_headline,
-                            'hl'        =>  \&parse_headline,
-
-                            'DATELINE'  =>  \&parse_dateline,
-
-                            'P/seg'     =>  \&parse_seg,
-                            'p/seg'     =>  \&parse_seg,
-
-                            'P'         =>  \&parse_p,
-                            'p'         =>  \&parse_p,
-
-                               },
-
-            'start_tag_handlers'    => {
-
-                            'DOC'       =>  \&setup_doc,
-
-                            'P'         =>  \&setup_p,
-                            'p'         =>  \&setup_p,
-
-                                       },
-
-            );
-
-    $source->parse($document);
-
-    $source->purge();
+        read_data_txt($text);
+    }
 
     open X, '>', $ARGV . '.words.xml';
 
@@ -143,6 +89,93 @@ $meta
 <?xml?>
 
     close X;
+}
+
+
+sub read_data_txt {
+
+    my $text = $_[0];
+
+    $data->{'document'} = fileparse($ARGV, qr/\.[a-z]+/);
+
+    $data->{'para'} = [ map {
+
+                            { 'form' => 'TEXT', 'unit' => [ map { { 'form' => $_ } } split /\n/, $_ ] }
+
+                        }
+
+                        grep { /\S/ } split /\n([^\n\S]*\n)+/, $text ];
+}
+
+
+sub read_data_xml {
+
+    my $text = $_[0];
+
+    $text =~ s/(&HT;(\s*\x{0640}+)?)//g and warn "$ARGV\n\tDeleting $1\n";
+
+    $text =~ s/(&[A-Z][A-Za-z0-9]+;)//g and warn "$ARGV\n\tDeleting $1\n";
+
+    $text =~ s/ & //g and warn "$ARGV\n\tDeleting &\n";
+
+    $text =~ /(&(?!amp;|lt;|gt;))/ and warn "$ARGV\n\tVerify $1\n";
+
+    $text =~ s/<seg id=([0-9]+)>/<seg id="$1">/g;
+
+    my $source = XML::Twig->new(
+
+            'ignore_elts'   => {
+
+                            'HEADER'    => 1,
+                            'FOOTER'    => 1,
+
+                               },
+
+            'twig_roots'    => {
+
+                            'DOC/DOCNO' => 1,
+
+                            'HEADLINE'  => 1,
+                            'hl'        => 1,
+
+                            'DATELINE'  => 1,
+
+                            'P'         => 1,
+                            'p'         => 1,
+
+                               },
+
+            'twig_handlers' => {
+
+                            'DOC/DOCNO' =>  \&parse_docno,
+
+                            'HEADLINE'  =>  \&parse_headline,
+                            'hl'        =>  \&parse_headline,
+
+                            'DATELINE'  =>  \&parse_dateline,
+
+                            'P/seg'     =>  \&parse_seg,
+                            'p/seg'     =>  \&parse_seg,
+
+                            'P'         =>  \&parse_p,
+                            'p'         =>  \&parse_p,
+
+                               },
+
+            'start_tag_handlers'    => {
+
+                            'DOC'       =>  \&setup_doc,
+
+                            'P'         =>  \&setup_p,
+                            'p'         =>  \&setup_p,
+
+                                       },
+
+            );
+
+    $source->parse($text);
+
+    $source->purge();
 }
 
 

@@ -151,38 +151,21 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-             exists $this->{'score'} && @{$this->{'score'}} ? '#{Line-fill:orange}' :
-                 defined $this->{'apply'} ? '#{Line-fill:black}' : '' ?>
+style:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{Line-fill:red}' : '' ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/ and $this->{'note'} ne ''
-   ?><? $this->{'#name'} eq 'Token'
-            ? ( ElixirFM::orph($this->{'form'}, "\n") )
-            : (
-            $this->{'#name'} eq 'Lexeme'
-                ? ( ( $root->{'#name'} eq 'Element'
-                        ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
-                                                            @{$this->{'core'}{'reflex'}} : () ) . ' '
-                        : '' ) .
-                    '#{darkmagenta}' .
-                    ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
-                : (
-                $this->{'#name'} =~ /^(?:Component|Partition)$/
-                    ? $this->{'form'}
-                    : (
-                    $this->{'#name'} =~ /^(?:Element|Paragraph)$/
-                        ? '#{black}' . WordsLevel::idx($this)
-                        : ' ' ) .
-                      ( $this->{apply} > 0
-                            ? ' #{red}${form}'
-                            : ' #{black}${form}' ) ) ) ?>
+node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom2}' . $this->{'form'} : '' ?>
 
-node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token' and $this->{'note'} ne ''
-   ?>#{darkred}${tag}<? $this->{'inherit'} eq '' ? '#{red}' : '#{orange}'
-   ?>${restrict}
-
-hint:<? '${gloss}' if $this->{'#name'} eq 'Token' ?>
+node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom3}' . $this->{'note'} : '' ?>
 >>
+}
+
+sub idx {
+
+    my $node = $_[0] || $this;
+
+    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
+
+    return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
 sub switch_context_hook {
@@ -245,8 +228,6 @@ sub get_nodelist_hook {
 
     ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
 
-    ($current) = $current->children() if $current->level() == 0 and not $show_hidden;
-
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
     return [[@{$nodes}], $current];
@@ -255,17 +236,36 @@ sub get_nodelist_hook {
 sub get_value_line_hook {
 
     my ($fsfile, $index) = @_;
+    my ($nodes, $words, $views);
 
-    return [];
+    ($nodes, undef) = $fsfile->nodes($index, $this, 1);
+
+    $words = [ [ $nodes->[0]->{'form'} . " " . idx($nodes->[0]), $nodes->[0], '-foreground => darkmagenta' ],
+
+               [ " " ],
+
+               map {
+
+                    $_->parent() == $root ? [ '.....', $_, '-foreground => magenta' ]
+
+                                          : [ $_->{'form'}, $_, $_->parent() ],
+
+                    [ " ", defined $_->following($_->parent()) ? $_->parent() : () ],
+
+               } grep { not $_->children() } @{$nodes}[1 .. $#{$nodes}] ];
+
+    @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
+
+    return $words;
 }
 
 sub highlight_value_line_tag_hook {
 
+    return $grp->{currentNode};
 }
 
 sub value_line_doubleclick_hook {
 
-    return 'stop';
 }
 
 sub node_doubleclick_hook {

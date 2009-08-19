@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 875 2009-08-09 10:50:31Z smrz $
+# $Id: ElixirFM.pm 878 2009-08-16 16:09:39Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 875 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 878 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -96,11 +96,7 @@ sub phor {
 
 sub cling {
 
-    my $text = $_[0];
-
-    $text =~ tr[ ][]d;
-
-    return $text;
+    return join defined $_[1] ? $_[1] : "", split " ", $_[0];
 }
 
 sub nice {
@@ -537,7 +533,7 @@ sub unpretty_resolve {
         ?   {
                 'data'  =>  {
 
-                    'info'  =>  [ map { [ split /[\n ]*\t/, $_ ] } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t)/, $data ],
+                    'info'  =>  [ map { [ split /[\n ]*\t/, $_ ] } grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $data ],
                     'type'  =>  2,
                 },
 
@@ -916,8 +912,6 @@ sub interlocks {
         @root = (@root, ('_____')[@root .. 0]);
 
         $pattern = $root[0];
-
-        $pattern .= 'w' if $pattern =~ /A$/ and @{$s} and $s->[0] eq "Iy";
     }
     elsif ($pattern =~ /[FCL]/) {
 
@@ -1043,7 +1037,7 @@ sub mergeSuffix {
     if ($_[0] eq 'I') {
 
         return "iyaT" if $_[1] =~ /^[Aa]T$/;
-        return "awIy" if $_[1] eq "Iy";     # "Iy"
+        return "awIy" if $_[1] eq "Iy";
 
         return "Un"   if $_[1] eq "Un";
         return "In"   if $_[1] eq "In";
@@ -1077,7 +1071,7 @@ sub mergeSuffix {
     if ($_[0] eq 'A') {
 
         return "AT"   if $_[1] =~ /^[Aa]T$/;
-        return "awIy" if $_[1] eq "Iy";     # "AwIy"
+        return "awIy" if $_[1] eq "Iy";
 
         return "awn"  if $_[1] eq "Un";
         return "ayn"  if $_[1] eq "In";
@@ -1155,7 +1149,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 875 $        $Date: 2009-08-09 12:50:31 +0200 (Sun, 09 Aug 2009) $
+    $Revision: 878 $        $Date: 2009-08-16 18:09:39 +0200 (Sun, 16 Aug 2009) $
 
 
 =head1 SYNOPSIS

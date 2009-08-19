@@ -18,9 +18,32 @@
                 </structure>
             </member>
             <member name="data" required="1">
-                <sequence role="#TREES" content_pattern="(Paragraph, Element*)*">
+                <sequence role="#TREES" content_pattern="((Unit|Paragraph), Element*)*">
+                    <element name="Unit" type="Unit.type"/>
                     <element name="Paragraph" type="Paragraph.type"/>
                     <element name="Element" type="Element.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Unit.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="ref">
+                <structure>
+                    <member name="fst" type="Order.type"/>
+                    <member name="snd" type="Order.type"/>
+                </structure>
+            </member>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Word" type="Word.type"/>
                 </sequence>
             </member>
         </structure>
@@ -68,7 +91,6 @@
     <type name="Element.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="input" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
             <member name="ref" type="Order.type"/>
