@@ -42,7 +42,7 @@ sub get_subdocument {
   my ($fsfile,$which)=@_;
   return undef unless ref($fsfile->metaData('refnames')) and ref($fsfile->appData('ref'));
   my $refid = $fsfile->metaData('refnames')->{$which};
-  return $fsfile->appData('ref')->{$refid};
+  return defined($refid) && $fsfile->appData('ref')->{$refid};
 }
 
 sub get_document_a {
@@ -64,8 +64,11 @@ sub get_nodelist_hook {
   my $brf = $root->{'tree_b.rf'};
   my $a_root = PML::GetNodeByID($arf, get_document_a());
   my $b_root = PML::GetNodeByID($brf, get_document_b());
-  push @nodes, sort {$a->{order}<=>$b->{order}} $a_root, $a_root->descendants;
-  my @b_nodes = sort {$a->{order}<=>$b->{order}} ($b_root, $b_root->descendants);
+  push @nodes, sort {$a->{order}<=>$b->{order}} ($a_root, $a_root->descendants)
+    if $a_root;
+  my @b_nodes;
+  @b_nodes = sort {$a->{order}<=>$b->{order}} ($b_root, $b_root->descendants)
+    if $b_root;
   %b_node=();
   @b_node{@b_nodes}=();
   push @nodes, @b_nodes;
