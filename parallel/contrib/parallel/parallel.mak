@@ -12,7 +12,7 @@ BEGIN { import TredMacro; }
 #include <contrib/support/arrows.inc>
 use warnings;
 
-# detect files with the expected PML schema
+## detect files with the expected PML schema
 sub detect {
   return (((PML::SchemaName()||'') eq 'parallel') ? 1 : 0);
 }
@@ -37,7 +37,7 @@ sub toggle_arrow_style {
   $straight_arrows = !$straight_arrows;
 }
 
-
+## get document_a or document_b
 sub get_subdocument {
   my ($fsfile,$which)=@_;
   return undef unless ref($fsfile->metaData('refnames')) and ref($fsfile->appData('ref'));
@@ -53,15 +53,15 @@ sub get_document_b {
   return get_subdocument($_[0]||$grp->{FSFile},'document_b');
 }
 
-
 our %b_node;
 
+## give TrEd a list of nodes to display (nodes from document_a followed by nodes from document_b)
 sub get_nodelist_hook {
   my ($fsfile,$tree_no,$current,$show_hidden)=@_;
   my $root = $fsfile->tree($tree_no);
   my @nodes;
-  my $arf = $root->{'tree_a.rf'};
-  my $brf = $root->{'tree_b.rf'};
+  my $arf = $root->{'tree_a.rf'}; $arf=~s/^.*#//;
+  my $brf = $root->{'tree_b.rf'}; $brf=~s/^.*#//;
   my $a_root = PML::GetNodeByID($arf, get_document_a());
   my $b_root = PML::GetNodeByID($brf, get_document_b());
   push @nodes, sort {$a->{order}<=>$b->{order}} ($a_root, $a_root->descendants)
@@ -75,6 +75,7 @@ sub get_nodelist_hook {
   return [ \@nodes, $current ];
 }
 
+# positioning, node style options, and alignment arrows
 our %alignments;
 sub node_style_hook {
   my ($node,$styles) = @_;
@@ -82,7 +83,6 @@ sub node_style_hook {
     AddStyle($styles,'Node',
 	     -shape => 'rectangle',
 	     -segment=>'0/0',
-	     # ($node->{order}==1 ? ( -addbeforeskip => '200' ) : () )
 	    );
   } else {
     AddStyle($styles,'Node',
@@ -129,16 +129,20 @@ sub root_style_hook {
   DrawArrows_init();
 }
 sub after_redraw_hook {
-#  %b_node=();
   %alignments=();
   DrawArrows_cleanup();
 }
 
+# drag and drop creates/removes alignment arrows
 sub node_release_hook {
   my ($node,$target)=@_;
+
+  # source mode and target node must be from document_a and document_b respectively 
+  # or vice versa
   if (exists($b_node{$node}) xor exists($b_node{$target})) {
     my @ab = exists($b_node{$target}) ? qw(a b) : qw(b a);
     my @ids = ($node->{'xml:id'}, $target->{'xml:id'});
+    # try to find an existing alignment first
     for my $alignment ($root->children) {
       my @refs = map $alignment->{"$_.rf"}, @ab;
       s{^.*#}{} for (@refs);
@@ -146,10 +150,11 @@ sub node_release_hook {
 	# these two nodes are already aligned
 	DeleteLeafNode($alignment);
 	Redraw_FSFile_Tree();
+	ChangingFile(1);
 	return 'stop';
       }
     }
-    # no alignment exists yet
+    # no alignment exists yet, creating a new one
     my $doc_name2doc_id = FileMetaData('refnames');
     my $alignment = FSNode->new({
       "$ab[0].rf" => $doc_name2doc_id->{"document_$ab[0]"}."#$ids[0]",
@@ -157,13 +162,10 @@ sub node_release_hook {
     },1);
     PasteNode($alignment,$root);
     Redraw_FSFile_Tree();
+    ChangingFile(1);
     return 'stop';
   }
   return;
 }
-
-# we declare the following module so that it can get reloaded
-# when macros are reloaded
-package PMLTQ::Relation::AlignedToIterator;
 
 1;
