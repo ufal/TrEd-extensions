@@ -449,7 +449,7 @@ in the same color.
 sub CreateStylesheets {
   unless(StylesheetExists('PML_A')){
     SetStylesheetPatterns(<<'EOF','PML_A',1);
-context: PML.*_A\b.*
+context: PML.*_A.*
 text:<? $${m/w/token}eq$${m/form} ? 
   '#{'.CustomColor('sentence').'}${m/w/token}' : 
   '#{-over:1}#{'.CustomColor('spell').'}['.
@@ -470,6 +470,10 @@ node:<?
     ($p and $p->{afun}=~/^(Ap)os|(Co)ord/ ? "_#{customcoappa}\${is_member=$1$2}" : "_#{customerror}\${is_member=ERR}")
   } else { "" }
 ?><? $${is_parenthesis_root} ? '#{customcoappa}_${is_parenthesis_root=Pa}' : '' ?>
+
+hint: m/lemma: ${m/lemma}
+m/tag: ${m/tag}<? 
+  $${m/form_change} ? "\n".'m/form_change: ${m/form_change}' : '' ?>
 EOF
   }
 }
