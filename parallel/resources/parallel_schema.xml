@@ -4,8 +4,8 @@
  <reference name="document_a" readas="trees"/>
  <reference name="document_b" readas="trees"/>
 
- <root name="parallel" type="parallel.type"/>
- <type name="parallel.type">
+ <root name="tree_alignment" type="tree-alignment.type"/>
+ <type name="tree-alignment.type">
   <structure>
    <member name="body" required="1" type="body.type"/>
   </structure>
