@@ -896,6 +896,7 @@ sub CreateStylesheets{
   unless(StylesheetExists('PML_T_Compact')){
     SetStylesheetPatterns(<<'EOF','PML_T_Compact',1);
 context: PML.*_T\b.*
+rootstyle: #{NodeLabel-skipempty:1}
 node:<? '#{customparenthesis}' if $${is_parenthesis}
   ?><? $${nodetype}eq'root' ? '${id}' : '${t_lemma}'
   ?><? '#{customdetail}.${sentmod}'if$${sentmod}
@@ -982,6 +983,7 @@ EOF
 full:1
 
 context: PML.*_T\b.*
+rootstyle: #{NodeLabel-skipempty:1}
 node:<? $${nodetype}eq'root' ? '${id}' : '${t_lemma}'
   ?><? '#{customdetail}.${sentmod}'if$${sentmod}
   ?><? ('#{customcoref}'.$PML_T::coreflemmas_hash{$${id}})

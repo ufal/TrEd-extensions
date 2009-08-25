@@ -450,6 +450,7 @@ sub CreateStylesheets {
   unless(StylesheetExists('PML_A')){
     SetStylesheetPatterns(<<'EOF','PML_A',1);
 context: PML.*_A.*
+rootstyle: #{NodeLabel-skipempty:1}
 text:<? $${m/w/token}eq$${m/form} ? 
   '#{'.CustomColor('sentence').'}${m/w/token}' : 
   '#{-over:1}#{'.CustomColor('spell').'}['.
