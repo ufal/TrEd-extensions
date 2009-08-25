@@ -8,18 +8,49 @@ package FilelistFilter;
 BEGIN { import TredMacro; }
 use strict;
 use File::Spec;
+use File::Path;
+
+require Tk::DialogBox;
+require Tk::Frame;
+require Tk::Balloon;
+
 
 #binding-context TredMacro
 #bind FilelistFilter->create_filelist_filter to key F10 menu __* File-list Filter
 
 my %filter=(
-  '='  => sub { ($_[0]->[ $_[1] ] eq  $_[2])   ? 1 : 0 },
-  '~'  => sub { ($_[0]->[ $_[1] ] =~  $_[2])   ? 1 : 0 },
-  '~*' => sub { ($_[0]->[ $_[1] ] =~ /$_[2]/i) ? 1 : 0 },
-  '!=' => sub { ($_[0]->[ $_[1] ] ne  $_[2])   ? 1 : 0 },
-  '!~'  => sub { ($_[0]->[ $_[1] ] !~  $_[2])   ? 1 : 0 },
-  '!~*' => sub { ($_[0]->[ $_[1] ] !~ /$_[2]/i) ? 1 : 0 },
+  '='  => sub {
+    my ($c,$v)=@_;
+    $v=~s/(['\\])/\\$1/g;
+    qq{(\$cols[ $c ] eq '$v')}
+  },
+  '~'  => sub {
+    my ($c,$v)=@_;
+    my $qr = qr/$v/;
+    qq{(\$cols[ $c ] =~ m($qr))}
+  },
+  '~*'  => sub {
+    my ($c,$v)=@_;
+    my $qr = qr/$v/i;
+    qq{(\$cols[ $c ] =~ m($qr))}
+  },
+  '!='  => sub {
+    my ($c,$v)=@_;
+    $v=~s/(['\\])/\\$1/g;
+    qq{!(\$cols[ $c ] eq '$v')}
+  },
+  '!~'  => sub {
+    my ($c,$v)=@_;
+    my $qr = qr/$v/;
+    qq{!(\$cols[ $c ] =~ m($qr))}
+  },
+  '!~*'  => sub {
+    my ($c,$v)=@_;
+    my $qr = qr/$v/i;
+    qq{!(\$cols[ $c ] =~ m($qr))}
+  },
 );
+
 
 my $folder_files = [];
 my $folder_index;
@@ -42,16 +73,90 @@ sub get_line {
   if ($input_type eq 'file'){
     $line = <$fh>;
   } else { # folder
-    writeln("fh:$fh\ttype:$input_type\tindex:$folder_index\tfile:$folder_files->[$folder_index]");
     unless($line = <$fh>){
       if(++$folder_index < @{$folder_files}){
         open($fh, '<:utf8', $folder_files->[$folder_index]) or die "Cannot open $folder_files->[$folder_index]: $!";
+        writeln('OPEN: ',$folder_files->[$folder_index]);
         $line = get_line($fh,$input_type);
       }
     }
   }
-  writeln "LINE:$line";
   return $line;
+}
+
+sub get_mask {
+  my $dir = $_[0];
+  if(-f File::Spec->catfile($dir,'mask')){
+    open my $mask_fh,'<:utf8',File::Spec->catfile($dir,'mask');
+    my $mask=<$mask_fh>;
+    close $mask_fh;
+    return $mask;
+  }
+}
+
+sub generate_indexes {
+  my ($folder,$num) = @_;
+  my $query_file = File::Spec->catfile($folder,'.tred_filter_index',"query$num",'query.pml');
+  my $query_fsfile = Open($query_file);
+  my $query = CurrentFile()->tree(0);
+  my $fl = GetFileList('tred filter index fl');
+  SetCurrentFileList('tred filter index fl');
+  my $first = 1;
+  my $evaluator;
+  my $out_filter;
+  my $filename;
+
+  my ($counter,$label);
+  my $count = $fl->file_count;
+  my $top = ToplevelFrame();
+  my $g = $top->Toplevel(-title => "Generating indexes");
+  # TODO : Interrupt
+  $g->Label(-justify => 'left',
+            -textvariable => \$label)->pack(-pady=>5,-padx=>10,-fill=>'x');
+  $g->transient($top);
+  $g->Popup;
+
+  my $lasttime;
+  foreach my $fname ($fl->files){
+    $counter++;
+    $label = "Progress: $counter/$count";
+    my $now = time; #once in a second
+    if ($now - $lasttime >= 1){
+          $g->update;
+          $lasttime = $now;
+        }
+    $filename = $fname;
+    Open($filename);
+    if($first){
+      if(! -d File::Spec->catdir($folder,'.tred_filter_index',"index$num")){
+        mkdir File::Spec->catdir($folder,'.tred_filter_index',"index$num");
+      }
+      $evaluator =
+        Tree_Query::BtredEvaluator->new($query, {current_file => 1});
+      $first = 0;
+      my $fh;
+      $out_filter =
+        {init => sub{
+           my (undef,undef,$basename) = File::Spec->splitpath($filename);
+           open $fh,'>:utf8',File::Spec->catfile($folder,'.tred_filter_index',"index$num",$basename.'.idx');
+         },
+         process_row => sub{
+           print $fh (join("\t",@{ $_[1] }),"\n");
+         },
+         finish => sub{
+           close($fh);
+         }
+        };
+    }
+    $evaluator->init_filters($out_filter);
+    while($evaluator->find_next_match){
+      $evaluator->run_filters;
+    }
+    $evaluator->flush_filters;
+    $evaluator->reset;
+    CloseFile();
+  }
+  $g->destroy;
 }
 
 sub create_filelist_filter {
@@ -95,10 +200,22 @@ sub create_filelist_filter {
 								    );
     return unless defined($index_f) and length($index_f);
   } elsif ($resp eq 'Choose input folder') {
-        $TredMacroPreserve::filelist_filter::index_f = 
-          $index_f = $top->chooseDirectory(-title => 'Open directory');
-        return unless defined($index_f) and length($index_f);
+    my $init_dir;
+    if (CurrentFile()) {
+      $init_dir = File::Spec->catdir((File::Spec->splitpath(FileName()))[0,1]);
+      for (File::Spec->catdir($init_dir,'.tred_filter_index')) {
+	$init_dir = $_ if -d $_;
       }
+    } else {
+      $init_dir = Cwd::get_cwd();
+    }
+    
+    $TredMacroPreserve::filelist_filter::index_f = 
+      $index_f = $top->chooseDirectory(-title => 'Open directory',
+				       -initialdir => $init_dir,
+				      );
+    return unless defined($index_f) and length($index_f);
+  }
   my $input_type = -f $index_f ? 'file' : 'folder';
   if($input_type eq 'folder'){
     $folder_files = [ glob(File::Spec->catfile($index_f,'*')) ];
@@ -113,9 +230,6 @@ sub create_filelist_filter {
   my @op;
   my $base_dir = $TredMacroPreserve::filelist_filter::base_dir;
   {
-    require Tk::DialogBox;
-    require Tk::Frame;
-    require Tk::Balloon;
 
     my $d = $top->DialogBox(-title => 'Filter filelist', -buttons=>[qw(OK Cancel)]);
     $d->BindEscape();
@@ -190,7 +304,6 @@ sub create_filelist_filter {
 			$t->insert('end - 1 line',$line);
 		      }
 		      $t->see('end');
-                      writeln ("ELIDE $line");
 		      if (!$line) {
 			$t->tagConfigure('more',-elide => 1);
 		      }
@@ -212,10 +325,25 @@ sub create_filelist_filter {
       my @list;
       my $line;
       my @cols;
+      my $code;
+      my $filter_sub;
+      eval {
+	$code  = q`sub { `.
+	  join (' and ', map $filter{$_->{op}}->((($_->{colnum}>0)?$_->{colnum}-1:$_->{colnum}),$_->{value}), @f).
+	    q`}`;
+	print STDERR $code,"\n";
+	$filter_sub = eval($code);
+	die $@ if $@;
+      };
+      if ($@) {
+	ErrorMessage("Error while compiling the following generated code:$code\n",$@);
+	print "Continuing\n";
+	next;
+      }
       while ($line = get_line($fh,$input_type)) {
 	chomp $line;
 	@cols = split(/\t/,$line);
-	unless (first { !$filter{$_->{op}}->(\@cols,(($_->{colnum}>0)?$_->{colnum}-1:$_->{colnum}),$_->{value}) } @f) {
+	if ($filter_sub->()) {
 	  my $file = $cols[-1];
 	  $file = File::Spec->rel2abs($file, $base_dir) if defined($base_dir) and length($base_dir);
 	  push @list, $file;
@@ -237,6 +365,237 @@ sub create_filelist_filter {
     $d->destroy;
   }
 }
+
+my $folder;
+my $mask;
+
+sub get_queries {
+  my $folder = $_[0];
+  my $queries;
+  foreach my $dir (glob File::Spec->catdir($folder,'.tred_filter_index','query*')){
+    if(-f File::Spec->catfile($dir,'name')
+       and -f File::Spec->catfile($dir,'mask')
+       and -f File::Spec->catfile($dir,'query.pml')){
+      my $fh;
+      open $fh,File::Spec->catfile($dir,'name');
+      my $name = <$fh>;
+      open $fh,File::Spec->catfile($dir,'mask');
+      $mask = <$fh>;
+      push @$queries,[$name,$mask,$dir];
+    }else{ # remove invalid folders
+      rmtree($dir);
+      my $num = $dir;
+      $num =~ /.*query([0-9]+)/;
+      $num = $1;
+      $num = File::Spec->catdir($folder,'.tred_filter_index',"index$num");
+      rmtree($num) if -d $num;
+    }
+  }
+  return $queries;
+}
+
+
+sub edit_query {
+  my $num = $_[0];
+  my $fl = Filelist->new("tred filter index fl");
+  writeln("$num,$folder,$mask,",File::Spec->catfile($folder,$mask));
+  $fl->add(0,File::Spec->catfile($folder,$mask));
+  AddNewFileList($fl);
+  my $query_file = File::Spec->catfile($folder,'.tred_filter_index',"query$num",'query.pml');
+  my $search = Tree_Query->NewQuery({
+                 query_file => $query_file,
+                 new_search => {filelist => $fl->name},
+                 tree_no => 1,
+	         no_select => 1
+               });
+  if ($search) {
+    my $toolbar = GetUserToolbar($search->identify);
+    my $b = $toolbar->Button(
+              -text => 'Finish and Generate Indexes',
+	      -command => MacroCallback
+                             ([sub {
+                                 my ($search_ident)=@_;
+                                 generate_indexes($folder,$num);
+                                 Tree_Query->DestroySearch($search_ident);
+                                 for my $win (TrEdWindows()) {
+                                   if (CurrentFile($win) && IOBackend::is_same_filename(CurrentFile($win)->filename(), $query_file)) {
+                                     CloseFileInWindow($win);
+                                     CloseWindow($win);
+                                   }
+                                 }
+                               },$search->identify]),
+              -font    =>'C_normal',
+	      -takefocus=>0,
+            )->pack(-side=>'right',-padx => 5);
+  }
+}
+
+DeclareMinorMode 'Filter_Index_Updater' => {
+  abbrev => 'flt_idx_up',
+  configure => sub {
+    my $top = ToplevelFrame();
+    unless(CurrentFile()){
+      QuestionQuery('Filter Index Updater'
+                    ,'No opened file! Open a file and try again.'
+                    ,'Ok');
+      return;
+    }
+
+    if(ref FileName()){
+      QuestionQuery('Filter Index Updater'
+                    ,'Cannot operate on URI.! Open a file and try again.'
+                    ,'Ok');
+      return;
+    }
+
+    my ($v,$p,undef) = File::Spec->splitpath(FileName());
+    $folder = File::Spec->catpath($v,$p);
+
+    my $queries = get_queries($folder);
+    foreach my $q (@$queries){
+      $q->[2] =~ /.*query([0-9]+)/;
+      push @$q,$1;
+    }
+    @$queries = sort { $a->[3] <=> $b->[3] } @$queries;
+    my $queries_show = [map "$_->[0] ($_->[1])",@$queries];
+    my @buttons = ('Add');
+    if(@$queries){
+      push @buttons,'Edit','Remove';
+    }
+    push @buttons,'Cancel';
+
+    my $selected = [ $queries_show->[0] ];
+    my $response;
+    my $selection = ListQuery('Configure Filter Index Updater'
+              ,'browse'
+              ,$queries_show
+              ,$selected
+              ,{label => {-text => "Working folder: $folder"}
+                ,dialog => {-buttons => \@buttons
+                           # Fake button for the ListQuery to send back the selection
+                           ,-command => sub { $response = $_[0]; $_[0] = 'OK'; }}});
+
+    return if $response eq 'Cancel';
+
+    if($response eq 'Remove'){
+      if(QuestionQuery('Remove index',
+                      "Do you really want to remove $queries_show->[$selection->[0]]",
+                      'Yes','No') eq 'Yes'){
+        my $num = $queries->[ $selection->[0] ]->[3];
+        rmtree(File::Spec->catdir($folder,'.tred_filter_index',"query$num"));
+        rmtree(File::Spec->catdir($folder,'.tred_filter_index',"index$num"))
+          if -d File::Spec->catdir($folder,'.tred_filter_index',"index$num");
+      }
+
+    }elsif($response eq 'Add'){
+      my $name;
+      my $d = $top->DialogBox(-title => 'Add New Query'
+                              ,-buttons=>['OK','Cancel']);
+      my $f = $d->Frame()->pack(-side => 'top',-expand=>1,-fill=>'x');
+      $f->Label(-text => 'New query details')->pack(-side => 'top');
+      $f->Label(-text => "Working folder: $folder")->pack(-side => 'top');
+      $f = $d->Frame()->pack(-side => 'top',-expand=>1,-fill=>'x');
+      $f->Label(-text => 'Name:')->pack(-side => 'left');
+      $f->Entry(-textvariable => \$name)->pack(-side => 'left',-expand=>1,-fill=>'x');
+      $f = $d->Frame()->pack(-side => 'top',-expand=>1,-fill=>'x');
+      $f->Label(-text => 'Mask:')->pack(-side => 'left');
+      $f->Entry(-textvariable => \$mask)->pack(-side => 'left',-expand=>1,-fill=>'x');
+
+      my $resp = $d->Show;
+      $d->destroy;
+      if($resp eq 'OK' and $mask and $name){
+        my $num = @$queries ? $queries->[-1]->[3] + 1 : 0; # new query number is the last + 1
+        if(! -d File::Spec->catdir($folder,'.tred_filter_index')){
+          mkdir File::Spec->catdir($folder,'.tred_filter_index');
+        }
+        if(! -d File::Spec->catdir($folder,'.tred_filter_index',"query$num")){
+          mkdir File::Spec->catdir($folder,'.tred_filter_index',"query$num");
+        }
+        if(-d File::Spec->catdir($folder,'.tred_filter_index',"index$num")){
+          rmtree File::Spec->catdir($folder,'.tred_filter_index',"query$num");
+        }
+        open my $mask_fh,'>:utf8',File::Spec->catfile($folder,'.tred_filter_index',"query$num",'mask');
+        print $mask_fh $mask;
+        close $mask_fh;
+        open my $name_fh,'>:utf8',File::Spec->catfile($folder,'.tred_filter_index',"query$num",'name');
+        print $name_fh $name;
+        close $name_fh;
+
+        edit_query($num);
+
+      }elsif($resp eq 'OK'){
+        QuestionQuery('Add query'
+                      ,'Name or mask not specified!',
+                     ,'OK');
+      }
+
+    }elsif($response eq 'Edit'){
+      my $num = $queries->[ $selection->[0] ]->[3];
+      $mask = $queries->[ $selection->[0] ]->[1];
+      edit_query($num);
+    }
+  },
+  post_hooks => {
+    after_save_hook => sub {
+      # only files matching mask
+      my $filename = FileName();
+      my ($v,$p,undef) = File::Spec->splitpath($filename);
+      my $dir = File::Spec->catpath($v,$p);
+      my $indexdir = File::Spec->catfile($dir,'.tred_filter_index');
+      if(-d $indexdir){
+        foreach my $query_dir (glob File::Spec->catdir($dir,'.tred_filter_index','query*')){
+          if(-f File::Spec->catfile($query_dir,'mask')
+             and -f File::Spec->catfile($query_dir,'query.pml')){
+            $query_dir =~ /.*query([0-9]+)/;
+            my $num = $1;
+            writeln $num;
+            mkdir File::Spec->catdir($indexdir,"index$num")
+              unless -d File::Spec->catdir($indexdir,"index$num");
+
+            $mask = get_mask($query_dir);
+            my $mask_re = $mask;
+            $mask_re =~ s/([^[:alnum:]*?])/\\$1/g;
+            $mask_re =~ s/\?/./g;
+            $mask_re =~ s/\*/.*/g;
+            if(File::Spec->case_tolerant){
+              next if $filename !~ /$mask_re/i;
+            }else{
+              next if $filename !~ /$mask_re/;
+            }
+
+            my $sentence = CurrentTreeNumber();
+            my $query_file = File::Spec->catfile($query_dir,'query.pml');
+            my $query_fsfile = FSFile->newFSFile($query_file,['PMLBackend']);
+            my $query = $query_fsfile->tree(0);
+            my $evaluator;
+            my $out_filter;
+            $evaluator =
+              Tree_Query::BtredEvaluator->new($query, {current_file => 1});
+            my $fh;
+            $out_filter =
+              {init => sub{
+                 my (undef,undef,$basename) = File::Spec->splitpath($filename);
+                 open $fh,'>:utf8',File::Spec->catfile($indexdir,"index$num",$basename.'.idx');
+               },
+               process_row => sub{
+                 print $fh (join("\t",@{ $_[1] }),"\n");
+               },
+               finish => sub{
+                 close($fh);
+               }
+              };
+            $evaluator->init_filters($out_filter);
+            while($evaluator->find_next_match){
+              $evaluator->run_filters;
+            }
+            $evaluator->flush_filters;
+            GotoTree($sentence);
+          }
+        }
+      }
+    }
+  }
+};
 
 }
 #endif filelist_filter
