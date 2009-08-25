@@ -7,16 +7,15 @@
       reversed_relation => 'aligned_to',
       start_node_type => 'node',
       target_node_type => 'node',
-      test_code => '',
       iterator_class => __PACKAGE__,
       iterator_weight => 2,
       test_code => 'grep($_->[0]==$end, @{'.__PACKAGE__.'::_get_aligned_nodes($start,$start_fsfile)})',
   };
 
-  use base qw(SimpleListIterator);
+  use base qw(PMLTQ::Relation::SimpleListIterator);
   sub get_node_list  {
     my ($self,$node)=@_;
-    my $fsfile = $self->[SimpleListIterator::FILE];
+    my $fsfile = $self->start_file;
     return _get_aligned_nodes($node,$fsfile);
   }
   sub _get_aligned_nodes {
@@ -24,7 +23,7 @@
     my $map;
     my $id = $node->{'xml:id'};
     my @ret;
-    for my $p_fs (@{$fsfile->appData('fs-part-of')}) {
+    for my $p_fs (grep { PML::SchemaName($_) eq 'tree_alignment' } @{$fsfile->appData('fs-part-of')}) {
       my $map = $p_fs->appData('alignment_map');
       unless (ref($map)) {
 	# generate alignment map (this map should be invalidated/updated on any change)

@@ -2,6 +2,21 @@
 
 package Parallel_Treebank;
 
+=head1 Parallel_Treebank
+
+=head2 DESCRIPTION
+
+This annotation context provides simple functionality for visualizing
+node-to-node alignments of trees in TrEd.
+
+Instead of the alignment document, the aligned trees are rendered side
+by side and the alignment links are visualized as arrows.
+
+To create or remove an alignment link, simply drag node from one tree
+to a node in the other tree.
+
+=cut
+
 #binding-context Parallel_Treebank
 sub NoOp {}
 
@@ -14,7 +29,7 @@ use warnings;
 
 ## detect files with the expected PML schema
 sub detect {
-  return (((PML::SchemaName()||'') eq 'parallel') ? 1 : 0);
+  return (((PML::SchemaName()||'') eq 'tree_alignment') ? 1 : 0);
 }
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   my $current = CurrentContext();
@@ -46,11 +61,11 @@ sub get_subdocument {
 }
 
 sub get_document_a {
-  return get_subdocument($_[0]||$grp->{FSFile},'document_a');
+  return get_subdocument($_[0]||CurrentFile(),'document_a');
 }
 
 sub get_document_b {
-  return get_subdocument($_[0]||$grp->{FSFile},'document_b');
+  return get_subdocument($_[0]||CurrentFile(),'document_b');
 }
 
 our %b_node;
@@ -60,10 +75,10 @@ sub get_nodelist_hook {
   my ($fsfile,$tree_no,$current,$show_hidden)=@_;
   my $root = $fsfile->tree($tree_no);
   my @nodes;
-  my $arf = $root->{'tree_a.rf'}; $arf=~s/^.*#//;
-  my $brf = $root->{'tree_b.rf'}; $brf=~s/^.*#//;
-  my $a_root = PML::GetNodeByID($arf, get_document_a());
-  my $b_root = PML::GetNodeByID($brf, get_document_b());
+  my $arf = $root->{'tree_a.rf'} || return; $arf=~s/^.*#//;
+  my $brf = $root->{'tree_b.rf'} || return; $brf=~s/^.*#//;
+  my $a_root = PML::GetNodeByID($arf, get_document_a($fsfile));
+  my $b_root = PML::GetNodeByID($brf, get_document_b($fsfile));
   push @nodes, sort {$a->{order}<=>$b->{order}} ($a_root, $a_root->descendants)
     if $a_root;
   my @b_nodes;
@@ -73,6 +88,16 @@ sub get_nodelist_hook {
   @b_node{@b_nodes}=();
   push @nodes, @b_nodes;
   return [ \@nodes, $current ];
+}
+
+## let TrEd's stylesheet editor offer attributes of nodes in document_a and _b instead
+## of the alignment document
+sub get_node_attrs_hook {
+  return [
+    uniq(
+      PML::Schema(get_document_a())->attributes,
+      PML::Schema(get_document_b())->attributes,
+    ) ];
 }
 
 # positioning, node style options, and alignment arrows
