@@ -34,7 +34,7 @@ sub create_toplevel {
       $frame_browser_wordlist_item_style,
       $frame_browser_framelist_item_style,
       $frame_editor_styles,
-      $show_obsolete_ref,
+      $hide_obsolete_ref,
       $data,
       $field,
       $select_frame,
@@ -64,10 +64,11 @@ sub create_toplevel {
 			       [],
 			       #undef,
 			       $bot,
+			       $hide_obsolete_ref,
 			       -width => '25c');
   $chooser->set_reusable_assign_callback($assign_callback);
   $chooser->subwidget_configure($confs) if ($confs);
-  ${$chooser->subwidget('hide_obsolete')}=$$show_obsolete_ref;
+  # ${$chooser->subwidget('hide_obsolete')}=$$hide_obsolete_ref;
   if (defined $assign_callback) {
     my $ab = $bot->Button(-text => 'Confirm',
 			  -underline => 1,
@@ -97,7 +98,7 @@ sub create_toplevel {
   $d->bind($d,'<Escape>'=> [$destroy_callback,$d]);
 
   $d->BindButtons;
-  $chooser->prepare($show_obsolete_ref, $field, $select_frame,0);
+  $chooser->prepare($hide_obsolete_ref, $field, $select_frame,0);
   $chooser->widget->focus;
 #  $d->resizable(0,0);
   $d->Popup;
@@ -138,7 +139,7 @@ sub reusable_dialog {
       $frame_browser_wordlist_item_style,
       $frame_browser_framelist_item_style,
       $frame_editor_styles,
-      $show_obsolete_ref,
+      $hide_obsolete_ref,
       $data,
       $field,
       $select_frame,
@@ -168,28 +169,30 @@ sub reusable_dialog {
 			       $frame_browser_wordlist_item_style,
 			       $frame_browser_framelist_item_style,
 			       $frame_editor_styles,
-			       undef, 1,-width => '25c');
+			       [], undef,
+			       $hide_obsolete_ref,
+			       -width => '25c');
   $chooser->subwidget_configure($confs) if ($confs);
-  ${$chooser->subwidget('hide_obsolete')}=$$show_obsolete_ref;
+  # ${$chooser->subwidget('hide_obsolete')}=$$hide_obsolete_ref;
   $chooser->widget()->bind('<Double-1>'=> [sub { shift; shift->{selected_button}='Choose'; },$d ]);
   $chooser->subwidget('frame')->pack(qw/-expand yes -fill both -side left/);
-  $chooser->prepare($show_obsolete_ref, $field, $select_frame, $start_editor);
+  $chooser->prepare($hide_obsolete_ref, $field, $select_frame, $start_editor);
   if (TrEd::ValLex::Widget::ShowDialog($d,$chooser->widget) eq 'Choose') {
     my @frames=$chooser->get_selected_frames();
     my $real=$chooser->get_selected_element_string();
-    $$show_obsolete_ref=${$chooser->subwidget('hide_obsolete')};
+    # $$hide_obsolete_ref=${$chooser->subwidget('hide_obsolete')};
     return ($chooser,$chooser->data->conv->decode(join("|",map { $_->getAttribute('id') } @frames)),$real);
   } else {
-    $$show_obsolete_ref=${$chooser->subwidget('hide_obsolete')};
+    # $$hide_obsolete_ref=${$chooser->subwidget('hide_obsolete')};
     return ($chooser);
   }
 }
 
 sub prepare {
-  my ($chooser, $show_obsolete_ref, $field,  $select_frame, $start_editor)=@_;
+  my ($chooser, $hide_obsolete_ref, $field,  $select_frame, $start_editor)=@_;
   if (ref($field) eq "ARRAY") {
     foreach my $fl (@{$chooser->subwidget('framelists')}) {
-      $fl->show_obsolete(!$$show_obsolete_ref);
+      $fl->show_obsolete(!$$hide_obsolete_ref);
       $fl->fetch_data($chooser->data()->findWordAndPOS(@{$fl->field()}));
     }
   }
@@ -243,7 +246,7 @@ sub prepare {
 sub reuse {
   my ($self,
       $title,
-      $show_obsolete_ref,
+      $hide_obsolete_ref,
       $field,
       $select_frame,
       $start_editor,
@@ -265,16 +268,16 @@ sub reuse {
     }
   }
   $self->set_reusable_assign_callback($assign_callback);
-  $self->prepare($show_obsolete_ref, $field, $select_frame, $start_editor);
+  $self->prepare($hide_obsolete_ref, $field, $select_frame, $start_editor);
   $self->widget()->focus();
   if ($modal) {
     if (TrEd::ValLex::Widget::ShowDialog($d,$self->widget) eq 'Choose') {
       my @frames=$self->get_selected_frames();
       my $real=$self->get_selected_element_string();
-      $$show_obsolete_ref=${$self->subwidget('hide_obsolete')};
+      # $$hide_obsolete_ref=${$self->subwidget('hide_obsolete')};
     return ($self->data->conv->decode(join("|",map { $_->getAttribute('id') } @frames)),$real);
     } else {
-      $$show_obsolete_ref=${$self->subwidget('hide_obsolete')};
+      # $$hide_obsolete_ref=${$self->subwidget('hide_obsolete')};
       return undef;
     }
   } else {
@@ -285,7 +288,6 @@ sub reuse {
   }
 }
 
-my $hide_obsolete=0;
 sub create_widget {
   my ($self, $data, $field, $top,
       $count,
@@ -296,6 +298,7 @@ sub create_widget {
       $frame_editor_styles,
       $cb,
       $fbutton_frame,
+      $hide_obsolete_ref,
       @conf) = @_;
 
   my $frame = $top->Frame();
@@ -339,13 +342,13 @@ sub create_widget {
   my $hide_obsolete_button=
     $fbutton_frame->
       Checkbutton(-text => 'Hide obsolete',
-		  -variable => \$hide_obsolete,
+		  -variable => $hide_obsolete_ref,
 		  -command =>
 		  [
 		   sub {
 		     my ($self)=@_;
 		     foreach my $fl (@{$self->subwidget('framelists')}) {
-		       $fl->show_obsolete(!${$self->subwidget('hide_obsolete')});
+		       $fl->show_obsolete($$hide_obsolete_ref);
 		       $fl->fetch_data($self->data()->findWordAndPOS(@{$fl->field()}));
 		     }
 		     $self->framelist_item_changed();
@@ -447,7 +450,7 @@ sub create_widget {
 	     framelists    => \@lexframelists,
 	     framelist_labels    => \@lexframelistlabels,
 	     focused_framelist => \$focused_framelist,
-	     hide_obsolete => \$hide_obsolete,
+	     hide_obsolete => $hide_obsolete_ref,
 #	     framenote    => $lexframenote
 #	     frameproblem => $lexframeproblem,
 	     infoline     => $info_line
