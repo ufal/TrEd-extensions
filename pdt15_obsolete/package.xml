@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="533038">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="533934">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt15_obsolete</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Pre-PDT 2.0 Tectogrammatical Annotation (OBSOLETE)</title>
-  <version>1.21</version>
+  <version>1.22</version>
   <copyright year="2008">Petr Pajas</copyright>
   <description>Provides original macros used for tectogrammatical
     annotation over PDT 1.0 (used before PDT 2.0 introduced
