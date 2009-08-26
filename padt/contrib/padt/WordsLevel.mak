@@ -475,39 +475,123 @@ sub inter_with_level ($) {
 
     my $thisfile = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = fileparse($thisfile, '.xml');
-    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
+    ($name, $path, undef) = fileparse($thisfile, '.words.xml');
+
+    $file[0] = path $path, $name . '.words.xml';
+    $file[1] = path $path, $name . ".$level.xml";
 
     return $level, $name, $path, @file;
 }
 
-#bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
-sub open_level_first {
+#bind open_level_words_prime to Alt+0
+sub open_level_words_prime {
+
+    open_level_words();
+}
+
+#bind open_level_morpho_prime to Alt+1
+sub open_level_morpho_prime {
+
+    open_level_morpho();
+}
+
+#bind open_level_syntax_prime to Alt+2
+sub open_level_syntax_prime {
+
+    open_level_syntax();
+}
+
+#bind open_level_tecto_prime to Alt+3
+sub open_level_tecto_prime {
+
+    open_level_tecto();
+}
+
+#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
+sub open_level_words {
+
+    ChangingFile(0);
+}
+
+#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+sub open_level_morpho {
 
     ChangingFile(0);
 
     my ($level, $name, $path, @file) = inter_with_level 'morpho';
+
+    return unless defined $level;
+
+    my @id = idx($root);
+
+    my $id = join 'm-', split 'w-', $this->{'id'};
+
+    if (Open($file[1])) {
+
+        GotoTree($id[0]);
+
+        $this = PML::GetNodeByID($id) ||
+                PML::GetNodeByID($id . 't1') ||
+                PML::GetNodeByID($id . 'l1t1') || $root;
+    }
+    else {
+
+        SwitchContext('WordsLevel');
+    }
 }
 
-#bind open_level_second to Ctrl+Alt+2 menu Action: Edit Analytic File
-sub open_level_second {
+#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
+sub open_level_syntax {
 
     ChangingFile(0);
 
     my ($level, $name, $path, @file) = inter_with_level 'syntax';
+
+    return unless defined $level;
+
+    my @id = idx($root);
+
+    my $id = join 's-', split 'w-', $this->{'id'};
+
+    if (Open($file[1])) {
+
+        GotoTree($id[0]);
+
+        $this = PML::GetNodeByID($id) ||
+                PML::GetNodeByID($id . 't1') ||
+                PML::GetNodeByID($id . 'l1t1') || $root;
+    }
+    else {
+
+        SwitchContext('WordsLevel');
+    }
 }
 
-#bind open_level_third to Ctrl+Alt+3 menu Action: Edit DeepLevels File
-sub open_level_third {
+#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+sub open_level_tecto {
 
     ChangingFile(0);
 
     my ($level, $name, $path, @file) = inter_with_level 'deeper';
-}
 
-sub switch_the_levels {
+    return unless defined $level;
 
-    ChangingFile(0);
+    my @id = idx($root);
+
+    my $id = join 'd-', split 'w-', $this->{'id'};
+
+    if (Open($file[1])) {
+
+        GotoTree($id[0]);
+
+        $this = PML::GetNodeByID($id) ||
+                PML::GetNodeByID($id . 't1') ||
+                PML::GetNodeByID($id . 'l1t1') || $root;
+    }
+    else {
+
+        SwitchContext('WordsLevel');
+    }
 }
 
 #bind ThisAddressClipBoard Ctrl+Return menu ThisAddress() to Clipboard

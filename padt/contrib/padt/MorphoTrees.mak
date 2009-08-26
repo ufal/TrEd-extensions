@@ -85,6 +85,8 @@ sub idx {
 
     my $node = $_[0] || $this;
 
+    return unless exists $node->{'id'};
+
     my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
 
     return wantarray ? @idx : ( "#" . join "/", @idx );
@@ -327,16 +329,13 @@ sub switch_either_context {
     }
     else {
 
-        my (undef, $refs) = idx($root);
+        my ($refs) = reverse idx($root);
 
         GotoTree($root->{'ref'});
 
         $this = ($root->children())[$refs - 1];
 
-        if ($quick ne 'quick' and $node->{'#name'} =~ /^(?:Lexeme|Token)$/ and exists $node->{'id'}) {
-
-            $this = PML::GetNodeByID(join 'w', split 'e', $node->{'id'});
-        }
+        $this = PML::GetNodeByID(join 'w', split 'e', $node->{'id'}) if $quick ne 'quick' and exists $node->{'id'};
     }
 }
 
@@ -1115,8 +1114,8 @@ sub reflect_choice {
         delete $hash->{$leaf->{'id'}};
         delete $hash->{$twig->{'id'}};
 
-        $leaf->{'id'} = '';
-        $twig->{'id'} = '';
+        delete $leaf->{'id'};
+        delete $twig->{'id'};
     }
 
     my ($roox, $thix) = ($root, $this);
@@ -1618,22 +1617,21 @@ sub inter_with_level ($) {
     my $thisfile = File::Spec->canonpath(FileName());
 
     ($name, $path, undef) = fileparse($thisfile, '.morpho.xml');
-    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'morpho', $name . '.morpho.xml';
-    $file[1] = path $path . "$level", $name . ".$level.xml";
+    $file[0] = path $path, $name . '.morpho.xml';
+    $file[1] = path $path, $name . ".$level.xml";
 
-    $file[2] = $level eq 'corpus' ? ( path $path . "$level", $name . '.morpho.xml' )
-                                  : ( path $path . 'morpho', $name . ".$level.xml" );
+    $file[2] = $level eq 'corpus' ? ( path $path, $name . '.morpho.xml' )
+                                  : ( path $path, $name . ".$level.xml" );
 
-    $file[3] = path $path . 'morpho', $name . '.morpho.xml.anno.xml';
+    $file[3] = path $path, $name . '.morpho.xml.anno.xml';
 
     unless ($file[0] eq $thisfile) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'morpho', $name . '.morpho.xml' ) . ".$fill",
+                        "Relocate it to " . $name . '.morpho.xml'. ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1649,37 +1647,94 @@ sub synchronize_file {
 
     ChangingFile(0);
 
-    open_level_second();
+    open_level_syntax();
 
     Analytic::synchronize_file();
 }
 
-#bind open_level_first_prime to Alt+1
-sub open_level_first_prime {
+#bind open_level_words_prime to Alt+0
+sub open_level_words_prime {
 
-    open_level_first();
+    open_level_words();
 }
 
-#bind open_level_second_prime to Alt+2
-sub open_level_second_prime {
+#bind open_level_morpho_prime to Alt+1
+sub open_level_morpho_prime {
 
-    open_level_second();
+    open_level_morpho();
 }
 
-#bind open_level_third_prime to Alt+3
-sub open_level_third_prime {
+#bind open_level_syntax_prime to Alt+2
+sub open_level_syntax_prime {
 
-    open_level_third();
+    open_level_syntax();
 }
 
-#bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
-sub open_level_first {
+#bind open_level_tecto_prime to Alt+3
+sub open_level_tecto_prime {
+
+    open_level_tecto();
+}
+
+#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
+sub open_level_words {
+
+    ChangingFile(0);
+
+    my ($level, $name, $path, @file) = inter_with_level 'words';
+
+    return unless defined $level;
+
+    unless (-f $file[1]) {
+
+        my $reply = main::userQuery($grp,
+                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
+                        "\nReally create a new one?$fill",
+                        -bitmap=> 'question',
+                        -title => "Creating",
+                        -buttons => ['Yes', 'No']);
+
+        return unless $reply eq 'Yes';
+
+        if (-f $file[2]) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'morpho', $name . ".$level.xml" ) . ".$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+
+            return;
+        }
+
+        if (GetFileSaveStatus()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+
+            return;
+        }
+
+        move $file[2], $file[1];
+    }
+
+    switch_the_levels($file[1]);
+}
+
+#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+sub open_level_morpho {
 
     ChangingFile(0);
 }
 
-#bind open_level_second to Ctrl+Alt+2 menu Action: Edit Analytic File
-sub open_level_second {
+#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
+sub open_level_syntax {
 
     ChangingFile(0);
 
@@ -1690,7 +1745,7 @@ sub open_level_second {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill" .
+                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -1726,16 +1781,14 @@ sub open_level_second {
         system 'perl -X ' . ( escape CallerDir('exec') . '/SyntaxFS.pl' ) .
                       ' ' . ( expace $file[0] );
 
-        mkdir path $path, "$level" unless -d path $path, "$level";
-
         move $file[2], $file[1];
     }
 
     switch_the_levels($file[1]);
 }
 
-#bind open_level_third to Ctrl+Alt+3 menu Action: Edit DeepLevels File
-sub open_level_third {
+#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+sub open_level_tecto {
 
     ChangingFile(0);
 
@@ -1747,7 +1800,7 @@ sub open_level_third {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
+            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1762,11 +1815,9 @@ sub switch_the_levels {
 
     my $file = $_[0];
 
-    my (@child, $hits);
-
     switch_either_context() unless $root->{'#name'} eq 'Paragraph';
 
-    my ($tree, $id) = (idx($root), join 's', split 'm', $this->{'id'});
+    my ($tree, $id) = (idx($root), join 's-', split 'm-', $this->{'id'});
 
     if (Open($file)) {
 

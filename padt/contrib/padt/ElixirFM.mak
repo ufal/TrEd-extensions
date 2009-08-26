@@ -604,7 +604,7 @@ node:<? $this->level() == 2
           map { ref $_ ? @{$_} : () }
           map { $_->{form}, $_->{imperf}, $_->{second}, $_->{pfirst} }
           ElixirFM::entity($this)->[1] ) . '}' .
-        ( $this->{'limits'}{'fst'} ?
+        ( exists $this->{'limits'}{'fst'} ?
           "\n" . '#{custom7}${limits=limited} #{custom3}${limits="' .
           $this->{'limits'}{'fst'} . '"}' : '' ) .
         ( ElixirFM::entity($this)->[1]{'except'} ?

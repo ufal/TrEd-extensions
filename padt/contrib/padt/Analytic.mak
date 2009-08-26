@@ -1342,17 +1342,16 @@ sub inter_with_level ($) {
     my $thisfile = File::Spec->canonpath(FileName());
 
     ($name, $path, undef) = fileparse($thisfile, '.syntax.xml');
-    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'syntax', $name . '.syntax.xml';
-    $file[1] = path $path . "$level", $name . ".$level.xml";
+    $file[0] = path $path, $name . '.syntax.xml';
+    $file[1] = path $path, $name . ".$level.xml";
 
-    $file[2] = $level eq 'morpho' ? ( path $path . "$level", $name . '.syntax.xml' )
-                                  : ( path $path . 'syntax', $name . ".$level.xml" );
+    $file[2] = $level eq 'morpho' ? ( path $path, $name . '.syntax.xml' )
+                                  : ( path $path, $name . ".$level.xml" );
 
-    $file[3] = path $path . 'syntax', $name . '.syntax.xml.anno.xml';
+    $file[3] = path $path, $name . '.syntax.xml.anno.xml';
 
-    $file[4] = $level eq 'morpho' ? ( path $path . "$level", $name . '.syntax.fs' )
+    $file[4] = $level eq 'morpho' ? ( path $path, $name . '.syntax.fs' )
                                   : ( undef );
 
     unless ($file[0] eq $thisfile) {
@@ -1360,7 +1359,7 @@ sub inter_with_level ($) {
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'syntax', $name . '.syntax.xml' ) . ".$fill",
+                        "Relocate it to " . $name . '.syntax.xml' . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1395,7 +1394,7 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
+                -message => "There is no " . $name . ".$level.xml" . " file.$fill\n" .
                             "Make sure you are working with complete data!$fill",
                 -title => 'Error',
                 -type => 'OK',
@@ -1403,7 +1402,7 @@ sub synchronize_file {
         }
         else {
 
-            warn "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!\n";
+            warn "There is no " . $name . ".$level.xml" . " file!\n";
         }
 
         return;
@@ -1423,7 +1422,7 @@ sub synchronize_file {
         }
         else {
 
-            warn "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!\n";
+            warn "Cannot create " . $name . '.syntax.xml' . "!\n";
         }
 
         return;
@@ -1475,26 +1474,69 @@ sub synchronize_file {
     }
 }
 
-#bind open_level_first_prime to Alt+1
-sub open_level_first_prime {
+#bind open_level_words_prime to Alt+0
+sub open_level_words_prime {
 
-    open_level_first();
+    open_level_words();
 }
 
-#bind open_level_second_prime to Alt+2
-sub open_level_second_prime {
+#bind open_level_morpho_prime to Alt+1
+sub open_level_morpho_prime {
 
-    open_level_second();
+    open_level_morpho();
 }
 
-#bind open_level_third_prime to Alt+3
-sub open_level_third_prime {
+#bind open_level_syntax_prime to Alt+2
+sub open_level_syntax_prime {
 
-    open_level_third();
+    open_level_syntax();
 }
 
-#bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
-sub open_level_first {
+#bind open_level_tecto_prime to Alt+3
+sub open_level_tecto_prime {
+
+    open_level_tecto();
+}
+
+#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
+sub open_level_words {
+
+    ChangingFile(0);
+
+    my ($level, $name, $path, @file) = inter_with_level 'words';
+
+    return unless defined $level;
+
+    unless (-f $file[1]) {
+
+        ToplevelFrame()->messageBox (
+            -icon => 'warning',
+            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
+            -title => 'Error',
+            -type => 'OK',
+        );
+
+        return;
+    }
+
+    my @id = idx($root);
+    
+    my $id = join 'w-', split 's-', $this->{'id'};
+
+    if (Open($file[1])) {
+
+        GotoTree($id[0]);
+
+        $this = PML::GetNodeByID($id);
+    }
+    else {
+
+        SwitchContext('Analytic');
+    }
+}
+
+#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+sub open_level_morpho {
 
     ChangingFile(0);
 
@@ -1506,7 +1548,7 @@ sub open_level_first {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
+            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1514,11 +1556,13 @@ sub open_level_first {
         return;
     }
 
-    my ($tree, $id) = (idx($root), join 'm', split 's', $this->{'id'});
+    my @id = idx($root);
+    
+    my $id = join 'm-', split 's-', $this->{'id'};
 
     if (Open($file[1])) {
 
-        GotoTree($root->{'ref'}{'snd'}) while --$tree;
+        GotoTree($root->{'ref'}{'snd'}) while --$id[0];
 
         $this = PML::GetNodeByID($id);
     }
@@ -1528,14 +1572,14 @@ sub open_level_first {
     }
 }
 
-#bind open_level_second to Ctrl+Alt+2 menu Action: Edit Analytic File
-sub open_level_second {
+#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
+sub open_level_syntax {
 
     ChangingFile(0);
 }
 
-#bind open_level_third to Ctrl+Alt+3 menu Action: Edit DeepLevels File
-sub open_level_third {
+#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+sub open_level_tecto {
 
     ChangingFile(0);
 
@@ -1546,7 +1590,7 @@ sub open_level_third {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill" .
+                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",

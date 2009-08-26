@@ -13,7 +13,7 @@ use strict;
 
 our ($root, $this);
 
-our ($morpho, $schema, $order, $index);
+our ($morpho, $schema, $order, $index, @index);
 
 
 sub autostart {
@@ -42,6 +42,11 @@ sub autostart {
     }
     while NextTree();
 
+    for (my $i = 1; $i < @index; $i++) {
+    
+        ($index[$i - 1]->{'ref'}{'snd'}, $index[$i]->{'ref'}{'fst'}) = ($index[$i]->{'ref'}{'fst'}, $index[$i - 1]->{'ref'}{'snd'});
+    }
+    
     $morpho->writeFile();
 }
 
@@ -62,13 +67,18 @@ sub pretty_unit {
 
     my @id = $unit->{'id'} =~ /^w-p([0-9]+)u([0-9]+)$/;
 
-    $tree->set_type_by_name($schema, 'Unit.type');
+    $tree->set_type_by_name($schema, 'Paragraph.type');
 
-    $tree->{'#name'} = 'Unit';
+    $tree->{'#name'} = 'Paragraph';
 
     $tree->{'id'} = sprintf 'm-p%du%d', @id;
 
     $tree->{'form'} = $unit->parent()->{'form'};
+    
+    $tree->{'ref'}{'fst'} = $index;
+    $tree->{'ref'}{'snd'} = $index;
+    
+    push @index, $tree;
 
     pretty_word($_, $tree) foreach reverse $unit->children();
 
