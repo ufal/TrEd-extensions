@@ -7,7 +7,7 @@
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Extension for parallel treebank alignment</title>
   <version>1.0</version>
-  <copyright year="2008">Petr Pajas</copyright>
+  <copyright year="2009">Petr Pajas</copyright>
   <description>Provides schema and mode for node-to-node stand-off parallel treebank alignment.
   </description>
 </tred_extension>
