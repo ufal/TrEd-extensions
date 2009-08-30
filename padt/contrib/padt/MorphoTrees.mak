@@ -47,11 +47,9 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-             exists $this->{'score'} && @{$this->{'score'}} ? '#{Line-fill:orange}' :
-                 defined $this->{'apply'} ? '#{Line-fill:black}' : '' ?>
+style:<? $this->children() ? '' : '#{Line-fill:red}' ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/ and $this->{'note'} ne ''
+node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph|Unit)$/ and $this->{'note'} ne ''
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
@@ -66,7 +64,7 @@ node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph)$/ a
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
                     : (
-                    $this->{'#name'} =~ /^(?:Element|Paragraph)$/
+                    $this->{'#name'} =~ /^(?:Element|Paragraph|Unit)$/
                         ? '#{black}' . MorphoTrees::idx($this)
                         : ' ' ) .
                       ( $this->{apply} > 0
@@ -114,7 +112,7 @@ sub get_nodelist_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'#name'} eq 'Paragraph') {
+    if ($tree->{'#name'} ne 'Element') {
 
         $tree->{'hide'} = '' unless defined $tree->{'hide'};
 
@@ -179,7 +177,7 @@ sub get_value_line_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'#name'} eq 'Paragraph') {
+    if ($tree->{'#name'} ne 'Element') {
 
         ($nodes, undef) = $fsfile->nodes($index, $this, 1);
 
@@ -234,14 +232,14 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = $node->parent() until !$node or $node->{'#name'} eq 'Word' or $node->{'#name'} eq 'Paragraph';
+    $node = $node->parent() while $node and $node->{'#name'} ne 'Lexeme' and $node->{'#name'} ne 'Token';
 
     return $node;
 }
 
 sub value_line_doubleclick_hook {
 
-    return if $grp->{root}->{'#name'} eq 'Paragraph';
+    return if $grp->{root}->{'#name'} ne 'Element';
 
     my ($index) = map { $_ =~ /^#([0-9]+)/ ? $1 : () } @_;
 
@@ -303,9 +301,9 @@ sub switch_either_context {
 
     my $node = $this;
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
-        if ($this->{'#name'} eq 'Paragraph') {
+        if ($this->{'#name'} ne 'Element') {
 
             GotoTree($this->{'ref'}{'fst'});
         }
@@ -342,7 +340,7 @@ sub switch_either_context {
 #bind move_to_prev_paragraph Shift+Prior menu Move to Prev Paragraph
 sub move_to_prev_paragraph {
 
-    unless ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} eq 'Element') {
 
         GotoTree($root->{'ref'});
     }
@@ -356,7 +354,7 @@ sub move_to_prev_paragraph {
 #bind move_to_next_paragraph Shift+Next menu Move to Next Paragraph
 sub move_to_next_paragraph {
 
-    unless ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} eq 'Element') {
 
         GotoTree($root->{'ref'});
     }
@@ -370,7 +368,7 @@ sub move_to_next_paragraph {
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
         $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[0];
 
@@ -391,7 +389,7 @@ sub move_word_home {
 #bind move_word_end End menu Move to Last Word
 sub move_word_end {
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
         $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[-1];
 
@@ -490,7 +488,7 @@ sub move_par_end {
 #bind tree_hide_mode Ctrl+equal menu Toggle Tree Hide Mode
 sub tree_hide_mode {
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
         $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
     }
@@ -771,7 +769,7 @@ sub elixir_resolve {
 
     import Exec::ElixirFM;
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
         my $reply = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], join " ", map { $_->{'form'} } $root->children();
 
@@ -983,9 +981,9 @@ sub annotate_morphology {
 
     # indicated below when the file or the redraw mode actually change
 
-    if ($root->{'#name'} eq 'Paragraph') {
+    if ($root->{'#name'} ne 'Element') {
 
-        if ($this->{'#name'} eq 'Paragraph') {
+        if ($this->{'#name'} ne 'Element') {
 
             GotoTree($this->{'ref'}{'snd'});
         }
@@ -1815,7 +1813,7 @@ sub switch_the_levels {
 
     my $file = $_[0];
 
-    switch_either_context() unless $root->{'#name'} eq 'Paragraph';
+    switch_either_context() if $root->{'#name'} eq 'Element';
 
     my ($tree, $id) = (idx($root), join 's-', split 'm-', $this->{'id'});
 

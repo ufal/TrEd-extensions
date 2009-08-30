@@ -18,10 +18,8 @@
                 </structure>
             </member>
             <member name="data" required="1">
-                <sequence role="#TREES" content_pattern="((Unit|Paragraph), Element*)*">
+                <sequence role="#TREES">
                     <element name="Unit" type="Unit.type"/>
-                    <element name="Paragraph" type="Paragraph.type"/>
-                    <element name="Element" type="Element.type"/>
                 </sequence>
             </member>
         </structure>
@@ -32,37 +30,6 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
-            <member name="ref">
-                <structure>
-                    <member name="fst" type="Order.type"/>
-                    <member name="snd" type="Order.type"/>
-                </structure>
-            </member>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="with" role="#CHILDNODES">
-                <sequence>
-                    <element name="Word" type="Word.type"/>
-                </sequence>
-            </member>
-        </structure>
-    </type>
-
-    <type name="Paragraph.type">
-        <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="ref">
-                <structure>
-                    <member name="fst" type="Order.type"/>
-                    <member name="snd" type="Order.type"/>
-                </structure>
-            </member>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Word" type="Word.type"/>
@@ -76,7 +43,6 @@
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
-            <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
@@ -87,13 +53,12 @@
             </member>
         </structure>
     </type>
-
+<!--
     <type name="Element.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
-            <member name="ref" type="Order.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
             <member name="restrict" type="String.type"/>
@@ -145,7 +110,7 @@
             </member>
         </structure>
     </type>
-
+-->
     <type name="Lexeme.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
@@ -194,101 +159,29 @@
         <cdata format="any"/>
     </type>
 
-    <type name="Order.type">
-        <cdata format="nonNegativeInteger"/>
-    </type>
-
     <type name="ID.type">
         <cdata format="ID"/>
     </type>
 
-    <import schema="elixir.schema.xml"/>
+    <import schema="elixir.schema.xml" type="Morphs.type"/>
+
+    <import schema="elixir.schema.xml" type="Entity.type"/>
+
+    <import schema="elixir.schema.xml" type="Limits.type"/>
+
+    <import schema="elixir.schema.xml" type="Reflex.type"/>
+
+    <import schema="elixir.schema.xml" type="Root.type"/>
+
+    <import schema="elixir.schema.xml" type="Tags.type"/>
 
     <type name="Entry.type">
-        <structure>
-            <member name="morphs" type="Morphs.type" required="1"/>
-            <member name="entity" type="Entity.type" required="1"/>
+        <structure role="#NODE">
+            <member name="morphs" type="Morphs.type"/>
+            <member name="entity" type="Entity.type"/>
             <member name="limits" type="Limits.type"/>
             <member name="reflex" type="Reflex.type"/>
         </structure>
-    </type>
-
-    <type name="Entity.type">
-        <sequence content_pattern="(Verb|Noun|Adj|Pron|Num|Adv|Prep|Conj|Part|Intj|Xtra|Ynit|Zero|Grph)?">
-            <element name="Verb">
-                <structure>
-                    <member name="form" required="1">
-                        <list type="Form.type" ordered="1"/>
-                    </member>
-                    <member name="pfirst">
-                        <list type="Pattern.type" ordered="1"/>
-                    </member>
-                    <member name="imperf">
-                        <list type="Pattern.type" ordered="1"/>
-                    </member>
-                    <member name="second">
-                        <list type="Pattern.type" ordered="1"/>
-                    </member>
-                    <member name="tense" type="Tense.type"/>
-                    <member name="voice" type="Voice.type"/>
-                    <member name="masdar">
-                        <list type="Morphs.type" ordered="1"/>
-                    </member>
-                </structure>
-            </element>
-            <element name="Noun">
-                <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="gender" type="Gender.type"/>
-                    <member name="number" type="Number.type"/>
-                    <member name="derive" type="Derive.type"/>
-                    <member name="except" type="Except.type"/>
-                </structure>
-            </element>
-            <element name="Adj" >
-                <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="femini" type="Femini.type"/>
-                    <member name="number" type="Number.type"/>
-                </structure>
-            </element>
-            <element name="Pron">
-                <container/>
-            </element>
-            <element name="Num">
-                <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="femini" type="Femini.type"/>
-                </structure>
-            </element>
-            <element name="Adv">
-                <container/>
-            </element>
-            <element name="Prep">
-                <container/>
-            </element>
-            <element name="Conj">
-                <container/>
-            </element>
-            <element name="Part">
-                <container/>
-            </element>
-            <element name="Intj">
-                <container/>
-            </element>
-            <element name="Xtra">
-                <container/>
-            </element>
-            <element name="Ynit">
-                <container/>
-            </element>
-            <element name="Zero">
-                <container/>
-            </element>
-            <element name="Grph">
-                <container/>
-            </element>
-        </sequence>
     </type>
 
 </pml_schema>

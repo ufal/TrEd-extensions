@@ -90,7 +90,25 @@
         </structure>
     </type>
 
-    <import schema="syntax.schema.xml"/>
+    <import schema="syntax.schema.xml" type="Morpho.type"/>
+
+    <import schema="syntax.schema.xml" type="Score.type"/>
+
+    <import schema="syntax.schema.xml" type="String.type"/>
+
+    <import schema="syntax.schema.xml" type="ID.type"/>
+
+    <import schema="syntax.schema.xml" type="Order.type"/>
+
+    <import schema="syntax.schema.xml" type="Afun.type"/>
+
+    <import schema="syntax.schema.xml" type="Parallel.type"/>
+
+    <import schema="syntax.schema.xml" type="Paren.type"/>
+
+    <import schema="syntax.schema.xml" type="Coref.type"/>
+
+    <import schema="syntax.schema.xml" type="Clause.type"/>
 
     <type name="Functor.type">
         <choice>

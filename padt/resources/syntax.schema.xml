@@ -136,6 +136,10 @@
         </choice>
     </type>
 
+    <type name="Order.type">
+        <cdata format="nonNegativeInteger"/>
+    </type>
+
     <type name="Morpho.type">
         <structure>
             <member name="Token" type="Token.type"/>
@@ -144,7 +148,19 @@
         </structure>
     </type>
 
-    <import schema="morpho.schema.xml"/>
+    <import schema="morpho.schema.xml" type="Entry.type"/>
+
+    <import schema="morpho.schema.xml" type="Morphs.type"/>
+
+    <import schema="morpho.schema.xml" type="Root.type"/>
+
+    <import schema="morpho.schema.xml" type="Tags.type"/>
+
+    <import schema="morpho.schema.xml" type="Score.type"/>
+
+    <import schema="morpho.schema.xml" type="String.type"/>
+
+    <import schema="morpho.schema.xml" type="ID.type"/>
 
     <type name="Word.type">
         <structure>
