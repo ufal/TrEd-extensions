@@ -11,9 +11,7 @@ use File::Basename;
 use strict;
 
 
-our ($root, $this);
-
-our ($morpho, $schema, $order, $index, @index);
+our ($root, $this, $morpho, $schema, $index);
 
 
 sub autostart {
@@ -32,7 +30,7 @@ sub autostart {
                   <data />
                 </MorphoTrees>';                                   # "
 
-    $morpho = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.morpho.xml' })->convert_to_fsfile();
+    $morpho = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.morpho.pml' })->convert_to_fsfile();
 
     $schema = $morpho->metaData('schema');
 
@@ -42,11 +40,6 @@ sub autostart {
     }
     while NextTree();
 
-    for (my $i = 1; $i < @index; $i++) {
-    
-        ($index[$i - 1]->{'ref'}{'snd'}, $index[$i]->{'ref'}{'fst'}) = ($index[$i]->{'ref'}{'fst'}, $index[$i - 1]->{'ref'}{'snd'});
-    }
-    
     $morpho->writeFile();
 }
 
@@ -67,22 +60,15 @@ sub pretty_unit {
 
     my @id = $unit->{'id'} =~ /^w-p([0-9]+)u([0-9]+)$/;
 
-    $tree->set_type_by_name($schema, 'Paragraph.type');
+    $tree->set_type_by_name($schema, 'Unit.type');
 
-    $tree->{'#name'} = 'Paragraph';
+    $tree->{'#name'} = 'Unit';
 
     $tree->{'id'} = sprintf 'm-p%du%d', @id;
 
     $tree->{'form'} = $unit->parent()->{'form'};
-    
-    $tree->{'ref'}{'fst'} = $index;
-    $tree->{'ref'}{'snd'} = $index;
-    
-    push @index, $tree;
 
     pretty_word($_, $tree) foreach reverse $unit->children();
-
-    pretty_element($_) foreach $unit->children();
 }
 
 
@@ -100,29 +86,7 @@ sub pretty_word {
 
     $node->{'id'} = sprintf 'm-p%du%dw%d', @id;
 
-    $node->{'ref'} = $index + $id[2];
-
     $node->{'form'} = $word->{'form'};
-    
-    PasteNode($node, $tree, $morpho->FS);
-}
 
-
-sub pretty_element {
-
-    my $word = $_[0];
-
-    my $tree = $morpho->new_tree($index++);
-
-    my @id = $word->{'id'} =~ /^w-p([0-9]+)u([0-9]+)w([0-9]+)$/;
-
-    $tree->set_type_by_name($schema, 'Element.type');
-
-    $tree->{'#name'} = 'Element';
-
-    $tree->{'id'} = sprintf 'm-p%du%de%d', @id;
-
-    $tree->{'ref'} = $index - $id[2];
-    
-    $tree->{'form'} = $word->{'form'};
+    PasteNode($node, $tree);
 }

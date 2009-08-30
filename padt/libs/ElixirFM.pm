@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 878 2009-08-16 16:09:39Z smrz $
+# $Id: ElixirFM.pm 882 2009-08-28 21:44:56Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 878 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 882 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -918,6 +918,7 @@ sub interlocks {
         @root = (@root, ('F', 'C', 'L')[@root .. 2]);
 
         $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^(?:F[aiu]CLA'|F[IU]LA')$/
+                                                  and @root and $root[-1] ne 'w'
                                                   and @{$s} and not $s->[0] =~ /^"[aiu]N?"$/;
 
         $pattern =~ s/^H/'/;
@@ -1149,7 +1150,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 878 $        $Date: 2009-08-16 18:09:39 +0200 (Sun, 16 Aug 2009) $
+    $Revision: 882 $        $Date: 2009-08-28 23:44:56 +0200 (Fri, 28 Aug 2009) $
 
 
 =head1 SYNOPSIS
