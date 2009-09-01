@@ -21,6 +21,11 @@ use File::Copy;
 
 use File::Basename;
 
+use Storable;
+
+#use IO::Zlib;
+#use PerlIO::gzip;
+
 our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
@@ -761,6 +766,92 @@ sub edit_note {
 #
 # ##################################################################################################
 
+#bind elixir_lexicon to Ctrl+l menu ElixirFM Lexicon
+
+sub elixir_lexicon {
+
+    import Exec::ElixirFM;
+
+    # my $file = 'data/elixir-lexicon.pls.gz';
+    
+    my $dirs = $ENV{'HOME'} . '/.tred.d/extensions/padt/contrib/padt/data/';
+    
+    my $file = $dirs . 'elixir-lexicon.pls';
+
+    mkdir $dirs unless -d $dirs;
+    
+    my $data = {};
+
+    if (-f $file) {
+
+        # open F, "<:gzip", $file or warn $! and return;
+
+        # $data = Storable::retrieve_fd *F or warn $! and return;
+
+        # close F;
+        
+        $data = Storable::retrieve $file or warn $! and return;
+    }
+
+    my ($version) = reverse split /\n/, Exec::ElixirFM::elixir 'version';
+
+    unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
+
+        my $text = Exec::ElixirFM::elixir 'lexicon';
+        
+        $text =~ s/(?<=<derive>)True(?=<\/derive>)/------F---/g; 
+        $text =~ s/(?<=<tense>)I(?=<\/tense>)/Imperfect/g; 
+        $text =~ s/(?<=<voice>)P(?=<\/voice>)/Passive/g; 
+        
+        my $pml = PMLInstance->load({ 'string' => $text });
+
+        my $lexicon = [];
+
+        my $nest_idx = 0;
+        
+        foreach my $nest (map { $_->children() } @{$pml->get_trees()}) {
+
+            $nest_idx++;
+
+            my $entry_idx = 0;
+            
+            foreach my $entry ($nest->children()) {
+
+                $entry_idx++;
+
+                my $lexeme = new Fslib::Struct;
+
+                $lexeme->{'root'} = $nest->{'root'};
+                $lexeme->{'core'} = new Fslib::Struct;
+
+                foreach my $key (grep { not /^[_#]/ } keys %$entry) {
+
+                    $lexeme->{'core'}{$key} = $entry->{$key};
+                }
+                
+                $lexicon->[$nest_idx][$entry_idx] = $lexeme;
+            }
+        }
+        
+        $data = { 'version' => $version, 'lexicon' => $lexicon };
+        
+        # open F, ">:gzip", $file . ".new" or warn $! and return;
+
+        # Storable::nstore_fd $data, *F or warn $! and return;
+
+        # close F;
+        
+        Storable::nstore $data, $file or warn $! and return;
+    }
+        
+    $MorphoTrees::ElixirFM = $data;
+    
+    print $MorphoTrees::ElixirFM->{'version'} . "\n";
+    
+    print $MorphoTrees::ElixirFM->{'lexicon'}[501][1]{'root'} . "\n";
+}
+
+
 #bind elixir_resolve to Ctrl+r menu ElixirFM Resolve
 
 sub elixir_resolve {
@@ -771,9 +862,9 @@ sub elixir_resolve {
 
     if ($root->{'#name'} ne 'Element') {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], join " ", map { $_->{'form'} } $root->children();
+        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], join " ", map { $_->{'form'} } $root->children();
 
-        foreach (ElixirFM::unpretty $reply) {
+        foreach (ElixirFM::unpretty $resolve) {
 
             NextTree();
 
@@ -789,9 +880,9 @@ sub elixir_resolve {
     }
     else {
 
-        my $reply = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], $root->{'form'};
+        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], $root->{'form'};
 
-        foreach (ElixirFM::unpretty $reply) {
+        foreach (ElixirFM::unpretty $resolve) {
 
             if ($mode eq 'trees') {
 
