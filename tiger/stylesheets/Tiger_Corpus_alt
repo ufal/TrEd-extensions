@@ -1,0 +1,54 @@
+context: Tiger_Corpus
+node: #{black}${word}
+node: #{darkblue}${cat}#{darkgreen}${pos}
+node:#{black}${label}
+text: ${word}
+
+rootstyle: #{balance:0}
+  #{skipHiddenLevels:1}
+  #{CurrentTextBox-fill:red}
+  #{nodeXSkip:5}
+  #{nodeYSkip:15}
+  #{NodeLabel-skipempty:1}
+  #{NodeLabel-halign:center}#{Node-textalign:center}
+  <? 
+    $Penn_Treebank::max_level = max(map{$_->level} $this->descendants);
+  ?>
+
+style:
+<?
+  if ( ! $this->parent ) {
+     '#{Node-hide:1}'
+  } else {
+    my $is_nonterminal = $${#name} eq 'nonterminal' ? 1 : 0;
+    my $smooth = $is_nonterminal ? '0' : '1';
+    my $coords = $smooth ? 'n,n,n,p,p,p' : 'n,n,p,p';
+    my $styles='';
+    if (length $${secedges/secedge/idref}) {
+      my $t='[? $node->{id} eq "'.$${secedges/secedge/idref}.'" ?]';
+      my $X=qq{(x$t-xn)};
+      my $Y=qq{(y$t-xn)};
+      my $D=qq{sqrt($X**2+$Y**2)};
+      my $d=qq{(25/$D+0.12)};
+      my $xt=qq{x$t-10*sgn(x$t-xn)};
+      my $yt=qq{y$t};
+      $coords.=qq{&xn,yn,($xt+xn)/2 - $Y*$d,($yt+yn)/2 + $X*$d,$xt,$yt};
+      $styles .= '#{Line-arrow:&last}#{Line-fill:&orange}#{Line-width:&1}';
+    }
+    $styles .= "#{Line-coords:$coords}#{Line-smooth:$smooth&1}";
+
+    if ($is_nonterminal and $this->parent->parent) {
+      $styles .= "#{Node-rellevel:-0.50}";
+    } elsif (!$is_nonterminal) {
+      my $level = ($Penn_Treebank::max_level - $this->level) - 1;
+      $level/=2;
+      $styles.= "#{Node-level:$level}";
+    }
+
+    $styles .= 
+    $is_nonterminal ? 
+       "#{Node-shape:rectangle}#{CurrentOval-fill:red}#{Oval-fill:lightyellow}#{Node-surroundtext:1}#{NodeLabel-valign:center}" 
+     :  "#{CurrentOval-fill:red}#{Line-dash:.}#{Oval-fill:yellow}";
+     $styles;
+  }
+?>

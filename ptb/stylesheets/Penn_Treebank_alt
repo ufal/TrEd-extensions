@@ -1,0 +1,36 @@
+context: Penn_Treebank
+
+node: #{black}${form}
+node: #{darkblue}${cat}<? $${functions}? '#{black}-${functions}' : '' ?>
+node: #{darkgreen}<? $${pos} eq '-NONE-' ? '-' : '${pos}' ?>
+node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
+
+rootstyle: #{balance:spread}
+  #{Line-coords:n,n,p,p}
+  #{nodeYSkip:5}
+  #{skipHiddenLevels:1}
+  #{NodeLabel-skipempty:1}
+  #{NodeLabel-halign:center}#{Node-textalign:center}
+
+style:
+<? 
+  if (!$this->parent) {
+    '#{Node-hide:1}'
+  } elsif ($${#name} eq 'nonterminal') {
+    "#{Node-surroundtext:1}#{Node-shape:rectangle}#{Oval-fill:lightyellow}"
+   ."#{CurrentOval-fill:lightyellow}#{CurrentOval-width:2}#{CurrentOval-outline:red}"
+   ."#{NodeLabel-valign:center}"
+  } elsif ($${pos} eq '-NONE-') {
+    "#{CurrentOval-fill:red}#{Oval-fill:gray}"
+  }
+?>
+
+style:
+<?
+  if (length $${coindex.rf}) {
+    my $t='[? $node->{id} eq "'.$${coindex.rf}.'" ?]';
+    qq(#{Line-coords:n,n,n,p,p,p&n,n,x$t,n,x$t-2,y$t-2}#{Line-arrow:&last}#{Line-fill:&orange}#{Line-smooth:1&1}#{Line-width:&1})
+  }
+?>
+
+text: <? $${pos} ne '-NONE-' ? $${form} : () ?>

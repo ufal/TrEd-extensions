@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
+  <description>Converted MRG PTB Data</description>
+  <import schema="pennmrg_schema.xml"/>
+
+  <derive name="node.type" type="nonterminal.type">
+    <structure name="node">
+      <member name="form"><cdata format="any"/></member>
+      <member name="pos" type="postag.type"/> 
+   </structure>
+  </derive>
+
+  <derive name="nonterminal_children.type">
+    <sequence>
+      <element name="nonterminal" type="node.type"/>
+      <element name="terminal" type="node.type"/>
+    </sequence>
+  </derive>
+
+</pml_schema>
