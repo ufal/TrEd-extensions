@@ -1451,13 +1451,6 @@ sub espace ($) {
     return escape $name;
 }
 
-sub expace ($) {
-
-    return '"' . "'" . $_[0] . "'" . '"'  if $^O eq 'MSWin32' and $_[0] =~ / /;
-
-    return escape $_[0];
-}
-
 sub inter_with_level ($) {
 
     my $level = $_[0];
@@ -1577,12 +1570,12 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'btred -QI ' . ( escape CallerDir('exec') . '/syntax_deeper.ntred' ) .
+    system 'btred -QI ' . ( escape CallerDir('../../exec/syntax_deeper.ntred') ) .
                     ' ' . ( espace $file[1] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('exec') . '/migrate_annotation_deeper.ntred' ) .
+    system 'btred -QI ' . ( escape CallerDir('../../exec/migrate_annotation_deeper.ntred') ) .
                     ' ' . ( espace $file[0] );
 
     warn "... succeeded.\n";

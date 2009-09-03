@@ -23,9 +23,6 @@ use File::Basename;
 
 use Storable;
 
-#use IO::Zlib;
-#use PerlIO::gzip;
-
 our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
@@ -772,24 +769,12 @@ sub elixir_lexicon {
 
     import Exec::ElixirFM;
 
-    # my $file = 'data/elixir-lexicon.pls.gz';
-    
-    my $dirs = $ENV{'HOME'} . '/.tred.d/extensions/padt/contrib/padt/data/';
-    
-    my $file = $dirs . 'elixir-lexicon.pls';
+    my $file = CallerDir('../../data/elixir-lexicon.pls');
 
-    mkdir $dirs unless -d $dirs;
-    
     my $data = {};
 
     if (-f $file) {
 
-        # open F, "<:gzip", $file or warn $! and return;
-
-        # $data = Storable::retrieve_fd *F or warn $! and return;
-
-        # close F;
-        
         $data = Storable::retrieve $file or warn $! and return;
     }
 
@@ -798,23 +783,23 @@ sub elixir_lexicon {
     unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
 
         my $text = Exec::ElixirFM::elixir 'lexicon';
-        
-        $text =~ s/(?<=<derive>)True(?=<\/derive>)/------F---/g; 
-        $text =~ s/(?<=<tense>)I(?=<\/tense>)/Imperfect/g; 
-        $text =~ s/(?<=<voice>)P(?=<\/voice>)/Passive/g; 
-        
+
+        $text =~ s/(?<=<derive>)True(?=<\/derive>)/------F---/g;
+        $text =~ s/(?<=<tense>)I(?=<\/tense>)/Imperfect/g;
+        $text =~ s/(?<=<voice>)P(?=<\/voice>)/Passive/g;
+
         my $pml = PMLInstance->load({ 'string' => $text });
 
         my $lexicon = [];
 
-        my $nest_idx = 0;
-        
+        my $nest_idx = -1;
+
         foreach my $nest (map { $_->children() } @{$pml->get_trees()}) {
 
             $nest_idx++;
 
-            my $entry_idx = 0;
-            
+            my $entry_idx = -1;
+
             foreach my $entry ($nest->children()) {
 
                 $entry_idx++;
@@ -828,27 +813,21 @@ sub elixir_lexicon {
 
                     $lexeme->{'core'}{$key} = $entry->{$key};
                 }
-                
+
                 $lexicon->[$nest_idx][$entry_idx] = $lexeme;
             }
         }
-        
+
         $data = { 'version' => $version, 'lexicon' => $lexicon };
-        
-        # open F, ">:gzip", $file . ".new" or warn $! and return;
 
-        # Storable::nstore_fd $data, *F or warn $! and return;
-
-        # close F;
-        
         Storable::nstore $data, $file or warn $! and return;
     }
-        
+
     $MorphoTrees::ElixirFM = $data;
-    
+
     print $MorphoTrees::ElixirFM->{'version'} . "\n";
-    
-    print $MorphoTrees::ElixirFM->{'lexicon'}[501][1]{'root'} . "\n";
+
+    print $MorphoTrees::ElixirFM->{'lexicon'}[500][0]{'root'} . "\n";
 }
 
 
@@ -1007,6 +986,8 @@ sub morphotrees {
 
                 DetermineNodeType($node);
 
+                if (0) {
+
                 $node->{'root'} = substr $_->{'data'}{'info'}[5], 1, -1;
 
                 $node->{'core'} = new Fslib::Struct;
@@ -1027,6 +1008,15 @@ sub morphotrees {
                 $data->[1]{'derive'} = '------F---' if exists $data->[1]{'derive'} and $data->[1]{'derive'} eq 'True';
 
                 $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element $data->[0], new Fslib::Struct $data->[1]];
+
+                }
+                else {
+
+                    my @idx = split ",", substr $_->{'data'}{'info'}[0], 1, -1;
+
+                    $node->{'root'} = $MorphoTrees::ElixirFM->{'lexicon'}[$idx[0] - 1][$idx[1] - 1]{'root'};
+                    $node->{'core'} = $MorphoTrees::ElixirFM->{'lexicon'}[$idx[0] - 1][$idx[1] - 1]{'core'};
+                }
 
                 $node->{'form'} = $_->{'data'}{'info'}[4];
 
@@ -1690,13 +1680,6 @@ sub espace ($) {
     return escape $name;
 }
 
-sub expace ($) {
-
-    return '"' . "'" . $_[0] . "'" . '"'  if $^O eq 'MSWin32' and $_[0] =~ / /;
-
-    return escape $_[0];
-}
-
 sub inter_with_level ($) {
 
     my $level = $_[0];
@@ -1867,8 +1850,8 @@ sub open_level_syntax {
             return;
         }
 
-        system 'perl -X ' . ( escape CallerDir('exec') . '/SyntaxFS.pl' ) .
-                      ' ' . ( expace $file[0] );
+        system 'btred -QI ' . ( escape CallerDir('../../exec/morpho_syntax.ntred') ) .
+                        ' ' . ( espace $file[0] );
 
         move $file[2], $file[1];
     }
