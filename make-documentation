@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 tred="/home/pajas/tred-devel"
 pod2xhtml="${tred}/devel/pod_to_xhtml"
@@ -106,6 +106,19 @@ EOF
 <ul>
 EOF
     pushd "${dir}"/resources
+    for f in *[^~]; do 
+	echo "<li>${f}</li>" >> "$index"
+    done
+    popd
+    echo "</ul>" >> "$index"
+  fi
+
+  if [ -d "${dir}"/bin ]; then
+      cat <<EOF >> "$index"
+<h3>Script files:</h3>
+<ul>
+EOF
+    pushd "${dir}"/bin
     for f in *[^~]; do 
 	echo "<li>${f}</li>" >> "$index"
     done
