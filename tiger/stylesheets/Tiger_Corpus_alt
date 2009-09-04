@@ -27,7 +27,7 @@ style:
     if (length $${secedges/secedge/idref}) {
       my $t='[? $node->{id} eq "'.$${secedges/secedge/idref}.'" ?]';
       my $X=qq{(x$t-xn)};
-      my $Y=qq{(y$t-xn)};
+      my $Y=qq{(y$t-yn)};
       my $D=qq{sqrt($X**2+$Y**2)};
       my $d=qq{(25/$D+0.12)};
       my $xt=qq{x$t-10*sgn(x$t-xn)};

@@ -1,7 +1,7 @@
 context: Penn_Treebank
 
 node: #{black}${form}
-node: #{darkblue}${cat}<? $${functions}? '#{black}-${functions}' : '' ?>
+node: #{darkblue}${cat}<? join('',map "-$_",ListV($this->{functions})) ?>
 node: #{darkgreen}<? $${pos} eq '-NONE-' ? '-' : '${pos}' ?>
 node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
 

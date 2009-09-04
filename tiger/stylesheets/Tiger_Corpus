@@ -14,8 +14,15 @@ rootstyle: #{balance:0}
   #{baseYPos:20}
   #{NodeLabel-skipempty:1}
   #{NodeLabel-halign:center}#{Node-textalign:center}
-  <? 
-    $Penn_Treebank::max_level = max(map{$_->level} $this->descendants);
+  <?
+    my (%prev,%level);
+    $Tiger_Corpus::chld_pos=\%prev;
+    $Penn_Treebank::max_level=$level{$this}=0;
+    for my $n ($this->descendants) {
+      my $lvl = $level{$n}=$level{ $n->parent }+1;
+      $prev{$n->{id}} = $prev{$n}=$prev{ $n->lbrother || "" } + 1;
+      $Penn_Treebank::max_level = $lvl if $lvl>$Penn_Treebank::max_level;
+    }
   ?>
 
 style:
@@ -25,25 +32,26 @@ style:
   } else {
     my $styles='';
     my $is_nonterminal = $${#name} eq 'nonterminal' ? 1 : 0;
-#    my $smooth = $is_nonterminal ? '0' : '0';
- #   my $coords = $smooth ? 'n,n,n,p,p,p' : 'n,n,n,p,p,p';
    my $smooth='0';
-   my $pd=-10; my $n=$this->parent; $pd+=8 while $n=$n->rbrother;
+   my $pd=-10+8*$Tiger_Corpus::chld_pos{$this->parent};
    my $nd=0;
    if ($is_nonterminal) {
-    $nd=-10; $n=$this; $nd+=8 while $n=$n->rbrother;
+    $nd=-10+8*$Tiger_Corpus::chld_pos{$this};
     $styles .= "#{NodeLabel-yadj:$nd}";
    }
     my $coords = qq{n,n+$nd,n,p+$pd,p,p+$pd};
     if (length $${secedges/secedge/idref}) {
+      my $td=-10+8*$Tiger_Corpus::chld_pos{ $${secedges/secedge/idref} };
       my $t='[? $node->{id} eq "'.$${secedges/secedge/idref}.'" ?]';
-      my $X=qq{(x$t-xn)};
-      my $Y=qq{(y$t-xn)};
+      my $xn=qq{xn};
+      my $yn=qq{yn+$nd};
+      my $xt=qq{x$t-10*sgn(x$t-$xn)};
+      my $yt=qq{y$t+$td};
+      my $X=qq{($xt-$xn)};
+      my $Y=qq{($yt-$yn)};
       my $D=qq{sqrt($X**2+$Y**2)};
       my $d=qq{(25/$D+0.12)};
-      my $xt=qq{x$t-10*sgn(x$t-xn)};
-      my $yt=qq{y$t};
-      $coords.=qq{&xn,yn,($xt+xn)/2 - $Y*$d,($yt+yn)/2 + $X*$d,$xt,$yt};
+      $coords.=qq{&$xn,$yn,($xt+$xn)/2 - $Y*$d,($yt+$yn)/2 + $X*$d,$xt,$yt};
       $styles .= '#{Line-arrow:&last}#{Line-fill:&orange}#{Line-width:&1}';
     }
     $styles .= "#{Line-coords:$coords}#{Line-smooth:$smooth&1}";
