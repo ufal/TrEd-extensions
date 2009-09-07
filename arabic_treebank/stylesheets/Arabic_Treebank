@@ -13,7 +13,11 @@ node: <?
    $g
  }
 ?>
-text: <? $${#name} eq 'terminal' ? $${token} : () ?>
+text: <?
+  $${#name} eq 'terminal' ? 
+    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    .$${token}
+  : () ?>
 
 rootstyle: #{balance:spread}
   #{skipHiddenLevels:1}
@@ -24,9 +28,10 @@ rootstyle: #{balance:spread}
   #{NodeLabel-halign:center}#{Node-textalign:center}
   <? # compute maximal tree depth and level for each node (efficiently)
     my $max; my %d = ( $this => 0 );
-    for ($this->descendants) {
-      my $lvl = $d{ $_ } = $d{ $_->parent } + 1;
-      $max = $lvl if $max < $lvl;
+    my $hidden = FileUserData('hide');
+    foreach my $n ($this->descendants) {
+      my $lvl = $d{ $n } = $d{ $n->parent } + 1;
+      $max = $lvl if $max < $lvl && !$hidden->{$n};
     }
     $Arabic_Treebank::max_level = $max;
     $Arabic_Treebank::levels=\%d;
@@ -78,7 +83,8 @@ style: <?
        }
 ?>
 
-
+style: <? "#{Node-hide:1}" if FileUserData('hide')->{$this}; ?>
+style:<? "#{Oval-fill:lightgray}" if ($this->{'#name'} eq 'nonterminal' and FileUserData('fold')->{$this}) ?>
 
 hint:<?
 $${#name} eq 'terminal' ?

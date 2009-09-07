@@ -4,7 +4,11 @@ node: #{darkblue}${cat}#{darkgreen}${pos}
 node: <? $${morph} ne '--' ? '${morph}' : '' ?>
 label:#{-coords:n,p+15}#{-anchor:center}#{black}${label}
 
-text: ${word}
+text: <?
+  $${#name} eq 'terminal' ? 
+    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    .$${word}
+  : () ?>
 
 rootstyle: #{balance:0}
   #{skipHiddenLevels:1}
@@ -17,11 +21,13 @@ rootstyle: #{balance:0}
   <?
     my (%prev,%level);
     $Tiger_Corpus::chld_pos=\%prev;
-    $Penn_Treebank::max_level=$level{$this}=0;
+    $Tiger_Corpus::max_level=$level{$this}=0;
+    $Tiger_Corpus::levels=\%level;
+    my $hidden = FileUserData('hide');
     for my $n ($this->descendants) {
       my $lvl = $level{$n}=$level{ $n->parent }+1;
       $prev{$n->{id}} = $prev{$n}=$prev{ $n->lbrother || "" } + 1;
-      $Penn_Treebank::max_level = $lvl if $lvl>$Penn_Treebank::max_level;
+      $Tiger_Corpus::max_level = $lvl if !$hidden->{$n} && $lvl>$Tiger_Corpus::max_level;
     }
   ?>
 
@@ -59,7 +65,7 @@ style:
     if ($is_nonterminal and $this->parent->parent) {
       $styles .= "#{Node-rellevel:-0.50}";
     } elsif (!$is_nonterminal) {
-      my $level = ($Penn_Treebank::max_level - $this->level) - 1;
+      my $level = ($Tiger_Corpus::max_level - $Tiger_Corpus::levels->{$this}) - 1;
       $level/=2;
       $styles.= "#{Node-level:$level}";
     }
@@ -67,7 +73,10 @@ style:
     $styles .= 
     $is_nonterminal ? 
        "#{Node-shape:oval}#{CurrentOval-fill:red}#{Oval-fill:lightyellow}#{Node-surroundtext:1}#{NodeLabel-valign:center}" 
-     :  "#{CurrentOval-fill:red}#{Line-dash:.}#{Oval-fill:yellow}";
+     :  "#{NodeLabel-yadj:-20}#{CurrentOval-fill:red}#{Line-dash:.}#{Oval-fill:yellow}";
      $styles;
   }
 ?>
+
+style: <? "#{Node-hide:1}" if FileUserData('hide')->{$this}; ?>
+style:<? "#{Oval-fill:lightgray}" if ($this->{'#name'} eq 'nonterminal' and FileUserData('fold')->{$this}) ?>

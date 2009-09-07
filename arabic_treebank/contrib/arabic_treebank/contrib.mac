@@ -6,11 +6,15 @@
 {
 package Arabic_Treebank;
 
-#binding-context Arabic_Treebank
-#bind space to EditAttributes
-
 BEGIN { import TredMacro; }
 use strict;
+
+#binding-context Arabic_Treebank
+
+#include <contrib/support/fold_subtree.inc>
+
+#bind fold_subtree_toggle to space menu Fold/unfold current subtree (toggle)
+#bind fold_subtree_unfold_all to Ctrl+space menu Unfold all in the current subtree
 
 sub detect {
   return (((PML::SchemaName()||'') eq 'arabic_treebank') ? 1 : 0);

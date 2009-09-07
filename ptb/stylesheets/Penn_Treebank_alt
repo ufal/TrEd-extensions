@@ -5,6 +5,12 @@ node: #{darkblue}${cat}<? join('',map "-$_",ListV($this->{functions})) ?>
 node: #{darkgreen}<? $${pos} eq '-NONE-' ? '-' : '${pos}' ?>
 node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
 
+text: <?
+  $${#name} eq 'terminal' ? 
+    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    .$${form}
+  : () ?>
+
 rootstyle: #{balance:spread}
   #{Line-coords:n,n,p,p}
   #{nodeYSkip:5}
@@ -33,4 +39,5 @@ style:
   }
 ?>
 
-text: <? $${pos} ne '-NONE-' ? $${form} : () ?>
+style: <? "#{Node-hide:1}" if FileUserData('hide')->{$this}; ?>
+style:<? "#{Oval-fill:lightgray}" if ($this->{'#name'} eq 'nonterminal' and FileUserData('fold')->{$this}) ?>

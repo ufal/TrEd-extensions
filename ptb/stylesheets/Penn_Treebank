@@ -5,16 +5,29 @@ node: #{darkblue}${cat}#{black}<? join('',map "-$_",ListV($this->{functions})) ?
 node: #{darkgreen}<? $${pos} eq '-NONE-' ? '-' : '${pos}' ?>
 node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
 
-text: <? $${pos} ne '-NONE-' ? $${form} : () ?>
+text: <?
+  $${#name} eq 'terminal' ? 
+    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    .$${form}
+  : () ?>
+
 
 rootstyle: #{balance:spread}
   #{skipHiddenLevels:1}
   #{CurrentTextBox-fill:red}
   #{nodeXSkip:4}
+  #{nodeYSkip:0}
   #{NodeLabel-skipempty:1}
   #{NodeLabel-halign:center}#{Node-textalign:center}
-  <? 
-    $Penn_Treebank::max_level = max(map{$_->level} $this->descendants);
+  <? # compute maximal tree depth and level for each node (efficiently)
+    my $max; my %d = ( $this => 0 );
+    my $hidden = FileUserData('hide');
+    foreach my $n ($this->descendants) {
+      my $lvl = $d{ $n } = $d{ $n->parent } + 1;
+      $max = $lvl if $max < $lvl && !$hidden->{$n};
+    }
+    $Penn_Treebank::max_level = $max;
+    $Penn_Treebank::levels=\%d;
   ?>
 
 style:
@@ -33,12 +46,9 @@ style:
     }
     $styles .= "#{Line-coords:$coords}#{Line-smooth:$smooth&1}";
 
-    if ($is_nonterminal and $this->parent->parent) {
-      $styles .= "#{Node-rellevel:-0.50}";
-    } elsif (!$is_nonterminal) {
-      my $level = ($Penn_Treebank::max_level - $this->level) - 1;
-      $level/=2;
-      $styles.= "#{Node-level:$level}";
+    if ($${#name} eq 'terminal') {
+      my $level = ($Penn_Treebank::max_level - $Penn_Treebank::levels->{$this});
+      $styles.= "#{Node-rellevel:$level}";
     }
 
     $styles .= 
@@ -49,3 +59,6 @@ style:
      $styles;
   }
 ?>
+
+style: <? "#{Node-hide:1}" if FileUserData('hide')->{$this}; ?>
+style:<? "#{Oval-fill:lightgray}" if ($this->{'#name'} eq 'nonterminal' and FileUserData('fold')->{$this}) ?>

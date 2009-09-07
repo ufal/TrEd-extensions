@@ -2,17 +2,29 @@ context: Tiger_Corpus
 node: #{black}${word}
 node: #{darkblue}${cat}#{darkgreen}${pos}
 node:#{black}${label}
-text: ${word}
+
+text: <?
+  $${#name} eq 'terminal' ? 
+    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    .$${word}
+  : () ?>
 
 rootstyle: #{balance:0}
   #{skipHiddenLevels:1}
   #{CurrentTextBox-fill:red}
   #{nodeXSkip:5}
-  #{nodeYSkip:15}
+  #{nodeYSkip:5}
   #{NodeLabel-skipempty:1}
   #{NodeLabel-halign:center}#{Node-textalign:center}
-  <? 
-    $Penn_Treebank::max_level = max(map{$_->level} $this->descendants);
+  <? # compute maximal tree depth and level for each node (efficiently)
+    my $max; my %d = ( $this => 0 );
+    my $hidden = FileUserData('hide');
+    foreach my $n ($this->descendants) {
+      my $lvl = $d{ $n } = $d{ $n->parent } + 1;
+      $max = $lvl if $max < $lvl && !$hidden->{$n};
+    }
+    $Tiger_Corpus::max_level = $max;
+    $Tiger_Corpus::levels=\%d;
   ?>
 
 style:
@@ -40,7 +52,7 @@ style:
     if ($is_nonterminal and $this->parent->parent) {
       $styles .= "#{Node-rellevel:-0.50}";
     } elsif (!$is_nonterminal) {
-      my $level = ($Penn_Treebank::max_level - $this->level) - 1;
+      my $level = ($Tiger_Corpus::max_level - $Tiger_Corpus::levels->{$this});
       $level/=2;
       $styles.= "#{Node-level:$level}";
     }
@@ -52,3 +64,6 @@ style:
      $styles;
   }
 ?>
+
+style: <? "#{Node-hide:1}" if FileUserData('hide')->{$this}; ?>
+style:<? "#{Oval-fill:lightgray}" if ($this->{'#name'} eq 'nonterminal' and FileUserData('fold')->{$this}) ?>
