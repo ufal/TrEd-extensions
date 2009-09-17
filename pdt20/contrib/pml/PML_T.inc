@@ -485,9 +485,8 @@ sub _get_frame {
     ($frame) = $lexicon->valid_frames_for($frame);
     if ($frame) {
       my $out = $ValLex::GUI::ValencyLexicon->serialize_frame($frame);
-      if ($out =~ /{[^}]+?,[^}]+?,[^}]+?,[^}]+}/) {
-        $out =~ s/{([^}]+?),[^}]+?,[^}]+?,[^}]+}/{$1,...}/g;
-      }
+      # show just the first item of {lemma,lemma,...} lists
+      $out =~ s/{([^}]+?),[^}]+?,[^}]+?,[^}]+}/{$1,...}/g;
       return $out;
     }
   }
