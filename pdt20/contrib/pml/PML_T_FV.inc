@@ -389,6 +389,7 @@ $match_actants = '(?:'.join('|',@actants).')';
 %lemma_normalization =
   qw(
      li jestli
+     li-2 jestli
     );
 }
 

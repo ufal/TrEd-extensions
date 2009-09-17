@@ -617,6 +617,7 @@ Return linguistic parents of a given node as appear in a TG tree.
 
 sub GetEParents {
   my $node = $_[0] || $this;
+  return() if IsCoord($node);
   if ($node and $node->{is_member}) {
     while ($node and (!IsCoord($node) or $node->{is_member})) {
       $node=$node->parent;

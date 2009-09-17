@@ -267,7 +267,7 @@ sub _ExpandCoordGetEParents { # node through
 sub GetEParents { # node through
   my ($node,$through)=@_;
   my $init_node = $node; # only used for reporting errors
-  return unless $node;
+  return() if !$node or $node->{afun}=~/^(?:Coord|Apos|Aux[SCP])$/;
   if ($node->{is_member}) { # go to coordination head
     while ($node->{afun}!~/Coord|Apos|AuxS/ or $node->{is_member}) {
       $node=$node->parent;
@@ -330,6 +330,7 @@ sub _FilterEChildren{ # node dive suff from
 
 sub GetEChildren{ # node dive
   my ($node,$dive)=@_;
+  return() if !$node or $node->{afun}=~/^(?:Coord|Apos|Aux[SCP])$/;
   my @sons;
   my $from;
   $dive = sub { 0 } unless defined($dive);
