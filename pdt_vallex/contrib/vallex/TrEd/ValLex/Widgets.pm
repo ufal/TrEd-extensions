@@ -186,28 +186,31 @@ sub create_widget {
   $w->configure(-opencmd => [\&open_superframe,$w],
 		-closecmd => [\&close_superframe,$w]);
   $w->configure(@conf) if (@conf);
-  $common_style=[] unless (ref($common_style) eq "ARRAY");
+  my %style;
+  %style = @$common_style if ref($common_style) eq "ARRAY";
+  my $wrap = delete $style{-wrap};
+  
   $w->BindMouseWheelVert() if $w->can('BindMouseWheelVert');
   $w->headerCreate(0,-itemtype=>'text', -text=>'Elements', -underline => 0);
   $top->toplevel->bind('<Alt-e>',sub { $w->focus() });
   return $w, {
 	      obsolete => $w->ItemStyle("imagetext", -foreground => '#707070',
-					-background => 'white', @$common_style),
+					-background => 'white', %style),
 	      substituted => $w->ItemStyle("imagetext", -foreground => '#707070',
-					   -background => 'white', @$common_style),
+					   -background => 'white', %style),
 	      reviewed => $w->ItemStyle("imagetext", -foreground => 'black',
-					-background => 'white', @$common_style),
+					-background => 'white', %style),
 	      active => $w->ItemStyle("imagetext", -foreground => 'black',
-				      -background => 'white', @$common_style),
+				      -background => 'white', %style),
 	      deleted => $w->ItemStyle("imagetext", -foreground => '#707070',
-				       -background => '#e0e0e0', @$common_style)
+				       -background => '#e0e0e0', %style)
 	     },{
 		obsolete => $w->Pixmap(-file => Tk::findINC("ValLex/stop.xpm")),
 		substituted => $w->Pixmap(-file => Tk::findINC("ValLex/reload.xpm")),
 		reviewed => $w->Pixmap(-file => Tk::findINC("ValLex/ok.xpm")),
 		active => $w->Pixmap(-file => Tk::findINC("ValLex/filenew.xpm")),
 		deleted => $w->Pixmap(-file => Tk::findINC("ValLex/erase.xpm"))
-	       },0,1,1;
+	       },0,1,1,$wrap;
 }
 
 sub style {
@@ -221,6 +224,11 @@ sub pixmap {
 sub SHOW_DELETED { 5 }
 sub SHOW_OBSOLETE { 6 }
 sub USE_SUPERFRAMES { 7 }
+
+sub wrap_length {
+  return $_[0]->[8];
+}
+
 
 sub use_superframes {
   my ($self,$value)=@_;
@@ -274,6 +282,36 @@ sub open_superframe {
   }
 }
 
+sub wrap {
+  my ($self,$text)=@_;
+  my $maxwidth = $self->wrap_length;
+  return $text unless $maxwidth;
+  return _wrap($text,$maxwidth);
+}
+sub _wrap {
+  my ($text,$maxwidth)=@_;
+  my $indent = '    ';
+  my $indentlength = length($indent);
+  $text=~s{\s+$}{};
+  return $text if (length($text) <= $maxwidth);
+  my @words = split /([\s;,]+)/,$text;
+  my $linelength;
+  foreach my $w (@words) {
+    if ($linelength+length($w) > $maxwidth) {
+      $linelength = $indentlength;
+      if ($w =~ /^[;,]+$/) {
+        $w .= "\n$indent";
+      } elsif ($w =~ /^\s+$/) { 
+        $w = "\n$indent";
+      } else {
+        $w = "\n$indent".$w;
+      }
+    }
+    $linelength += length($w);
+  }
+  return join '',@words;
+} # wrap
+
 sub fetch_data {
   my ($self, $word)=@_;
 
@@ -309,7 +347,7 @@ sub fetch_data {
 	$i=$t->itemCreate($f, 0,
 			  -itemtype=>'imagetext',
 			  -image => $self->pixmap($entry->[3]),
-			  -text=> $entry->[2].($entry->[6].$entry->[4] ? "\n" : "").
+			  -text=> $self->wrap($entry->[2]).($entry->[6].$entry->[4] ? "\n" : "").
 			  ($entry->[6] ? "(".$entry->[6].") " : "").
 			  $entry->[4]." (".$entry->[5].")",
 			  -style => $self->style($entry->[3]));
@@ -326,7 +364,7 @@ sub fetch_data {
       $i=$t->itemCreate($e, 0,
 			-itemtype=>'imagetext',
 			-image => $self->pixmap($entry->[3]),
-			-text=> $entry->[2].($entry->[6].$entry->[4] ? "\n" : "").
+			-text=> $self->wrap($entry->[2]).($entry->[6].$entry->[4] ? "\n" : "").
 			($entry->[6] ? "(".$entry->[6].") " : "").
 			$entry->[4]." (".$entry->[5].")",
 #			-text=> $entry->[2].($entry->[4] ? "\n".$entry->[4] : "")." (".$entry->[5].")",

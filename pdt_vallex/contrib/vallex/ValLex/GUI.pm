@@ -326,7 +326,7 @@ sub OpenEditor {
 					    1,                # autosave
 					    $vallex_conf,
 					    $fc,
-					    $fc,
+					    [@$fc,-wrap=>70],
 					    $fe_conf,
 					    $frameid,         # select frame
 					    0,
@@ -659,10 +659,10 @@ sub DisplayFrame {
       TrEd::ValLex::Chooser::create_toplevel($title,
 					     $top,
 					     $chooser_conf,
-					     $fc,
+					     [@$fc,-wrap=>70],
 					     $vallex_conf,
 					     $fc,
-					     $fc,
+					     [@$fc,-wrap=>70],
 					     $fe_conf,
 					     \$ChooserHideObsolete,
 					     $ValencyLexicon,
