@@ -483,7 +483,13 @@ sub _get_frame {
   if (ref $lexicon){
     my $frame = $lexicon->by_id($rf);
     ($frame) = $lexicon->valid_frames_for($frame);
-    return $ValLex::GUI::ValencyLexicon->serialize_frame($frame) if $frame;
+    if ($frame) {
+      my $out = $ValLex::GUI::ValencyLexicon->serialize_frame($frame);
+      if ($out =~ /{[^}]+?,[^}]+?,[^}]+?,[^}]+}/) {
+        $out =~ s/{([^}]+?),[^}]+?,[^}]+?,[^}]+}/{$1,...}/g;
+      }
+      return $out;
+    }
   }
   'Valency lexicon not found or not loaded!';
 }#_get_frame
