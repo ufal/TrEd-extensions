@@ -99,7 +99,7 @@ sub MouseEditLinks {
 sub node_release_hook {
   my ($node,$target,$mod)=@_;
   return unless $target and $mod;
-  return 'stop' unless $target->parent and $node->parent;
+  return 'stop' unless $node->parent;
   my%cortypes=(grammatical=>'coref_gram',
               textual=>'coref_text',
               compl=>'compl',
@@ -114,6 +114,7 @@ sub node_release_hook {
   }else{
     return;
   }
+  return 'stop' unless $target->parent;
   AddCoref($node,$target,$cortypes{$type}.'.rf');
   TredMacro::Redraw_FSFile_Tree();
   $FileChanged=1;
