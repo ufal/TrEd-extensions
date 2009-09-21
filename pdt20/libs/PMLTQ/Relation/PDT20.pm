@@ -17,7 +17,7 @@ package PMLTQ::Relation::PDT20;
       target_node_type => 'a-node',
       iterator_class => __PACKAGE__,
       iterator_weight => 2,
-      test_code => q(grep($_ eq $end->{id}, GetANodeIDs($start)) ? 1 : 0),
+      test_code => q(grep($_ eq $end->{id}, PML_T::GetANodeIDs($start)) ? 1 : 0),
   };
 
   sub get_node_list  {
