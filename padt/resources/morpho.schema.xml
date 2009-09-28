@@ -53,7 +53,7 @@
             </member>
         </structure>
     </type>
-<!--
+
     <type name="Element.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
@@ -110,7 +110,7 @@
             </member>
         </structure>
     </type>
--->
+
     <type name="Lexeme.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>

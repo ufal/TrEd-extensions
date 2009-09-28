@@ -41,6 +41,8 @@ our ($paragraph_hide_mode, $entity_hide_mode, $level_guide_mode) = ('', '', 0);
 
 our ($dims, $fill) = (10, ' ' x 4);
 
+our ($elixir, $zoom) = ({}, {});
+
 # ##################################################################################################
 #
 # ##################################################################################################
@@ -114,58 +116,26 @@ sub get_nodelist_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'#name'} ne 'Element') {
+    if (exists $zoom->{$grp} and $zoom->{$grp} and $recent->{'#name'} eq 'Word') {
 
-        $tree->{'hide'} = '' unless defined $tree->{'hide'};
+        my $resolve = resolve($recent->{'form'});
+    
+        print encode "buckwalter", "'$recent->{'form'}'\n";
+    
+        $current = new FSNode;
 
-        if ($tree->{'hide'} ne $paragraph_hide_mode) {
+        $current->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
 
-            $tree->{'hide'} = $paragraph_hide_mode;
-            $current = $tree;
-
-            if ($paragraph_hide_mode eq 'hidden') {
-
-                while ($current = $current->following()) {
-
-                    $current->{'hide'} = $current->{'apply'} > 0 ? 'hide' : '';
-                }
-            }
-            else {
-
-                while ($current = $current->following()) {
-
-                    $current->{'hide'} = '';
-                }
-            }
-        }
+        $current->{'#name'} = 'Element';
+        
+        morphotrees($current, $_) foreach @{$resolve};
+        
+        $nodes = [ $current, $current->descendants() ];
     }
     else {
 
-        $tree->{'hide'} = '' unless defined $tree->{'hide'};
-
-        if ($tree->{'hide'} ne $entity_hide_mode) {
-
-            $tree->{'hide'} = $entity_hide_mode;
-            $current = $tree;
-
-            if ($entity_hide_mode eq 'hidden') {
-
-                while ($current = $current->following()) {
-
-                    $current->{'hide'} = 'hide' if defined $current->{'tips'} and $current->{'tips'} == 0;
-                }
-            }
-            else {
-
-                while ($current = $current->following()) {
-
-                    $current->{'hide'} = '' if defined $current->{'tips'} and $current->{'tips'} == 0;
-                }
-            }
-        }
+        ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
     }
-
-    ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
@@ -298,6 +268,14 @@ sub switch_either_context {
     $Redraw = 'win' unless $Redraw eq 'file' or $Redraw eq 'tree';
 
     ChangingFile(0);
+
+    print "'$zoom->{$grp}'\t";
+    
+    $zoom->{$grp} = not $zoom->{$grp};
+    
+    print "'$zoom->{$grp}'\n";
+    
+    return;
 
     my $quick = $_[0];
 
@@ -823,13 +801,48 @@ sub elixir_lexicon {
         Storable::nstore $data, $file or warn $! and return;
     }
 
-    $MorphoTrees::ElixirFM = $data;
-
-    print $MorphoTrees::ElixirFM->{'version'} . "\n";
-
-    print $MorphoTrees::ElixirFM->{'lexicon'}[500][0]{'root'} . "\n";
+    $elixir->{'version'} = $data->{'version'};
+    $elixir->{'lexicon'} = $data->{'lexicon'};
+    
+    print "'" . @{$elixir->{'lexicon'}} . "'\n";
 }
 
+sub lexicon {
+
+    elixir_lexicon() unless exists $elixir->{'lexicon'};
+
+    my ($n, $e) = map { /([+-]?[0-9]+)/g } @_;
+
+    return unless defined $n and defined $e;
+
+    return if $n == 0 or $e == 0;
+
+    return if @{$elixir->{'lexicon'}} < abs $n;
+
+    $n-- if $n > 0;
+
+    return if @{$elixir->{'lexicon'}[$n]} < abs $e;
+
+    $e-- if $e > 0;
+
+    return $elixir->{'lexicon'}[$n][$e];
+}
+
+sub resolve {
+
+    import Exec::ElixirFM unless exists $elixir->{'resolve'};
+
+    my $word = $_[0];
+
+    unless (exists $elixir->{'resolve'}{$word}) {
+
+        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--lists' ], $word;
+
+        $elixir->{'resolve'}{$word} = [ ElixirFM::unpretty $resolve ];
+    }
+
+    return $elixir->{'resolve'}{$word};
+}
 
 #bind elixir_resolve to Ctrl+r menu ElixirFM Resolve
 
@@ -1012,10 +1025,10 @@ sub morphotrees {
                 }
                 else {
 
-                    my @idx = split ",", substr $_->{'data'}{'info'}[0], 1, -1;
+                    my $lexeme = lexicon($_->{'data'}{'info'}[0]);
 
-                    $node->{'root'} = $MorphoTrees::ElixirFM->{'lexicon'}[$idx[0] - 1][$idx[1] - 1]{'root'};
-                    $node->{'core'} = $MorphoTrees::ElixirFM->{'lexicon'}[$idx[0] - 1][$idx[1] - 1]{'core'};
+                    $node->{'root'} = $lexeme->{'root'};
+                    $node->{'core'} = $lexeme->{'core'};
                 }
 
                 $node->{'form'} = $_->{'data'}{'info'}[4];

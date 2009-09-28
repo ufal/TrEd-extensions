@@ -951,10 +951,6 @@ sub interlocks {
         $pattern =~ s/D/$root[2]/g;
         $pattern =~ s/S/$root[3]/g;
     }
-    elsif ($pattern ne '') {
-
-        return "!!! @root $pattern !!!";
-    }
 
     return $pattern;
 }
