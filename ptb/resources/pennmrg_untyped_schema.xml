@@ -11,7 +11,7 @@
    </structure>
   </derive>
 
-  <derive name="nonterminal_children.type">
+  <derive type="nonterminal_children.type">
     <sequence>
       <element name="nonterminal" type="node.type"/>
       <element name="terminal" type="node.type"/>
