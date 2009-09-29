@@ -153,7 +153,7 @@ sub CreateStylesheets {
 
 style:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{Line-fill:red}' : '' ?>
 
-node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom2}' . $this->{'form'} : '' ?>
+node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom2}' . $this->{'form'} : $this->{'form'} ?>
 
 node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom3}' . $this->{'note'} : '' ?>
 >>

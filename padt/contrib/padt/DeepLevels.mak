@@ -1460,13 +1460,12 @@ sub inter_with_level ($) {
     my $thisfile = File::Spec->canonpath(FileName());
 
     ($name, $path, undef) = fileparse($thisfile, '.deeper.xml');
-    (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
-    $file[0] = path $path . 'deeper', $name . '.deeper.xml';
-    $file[1] = path $path . "$level", $name . ".$level.xml";
+    $file[0] = path $path, $name . '.deeper.xml';
+    $file[1] = path $path, $name . ".$level.xml";
 
-    $file[2] = $level ne 'others' ? ( path $path . "$level", $name . '.deeper.xml' )
-                                  : ( path $path . 'deeper', $name . ".$level.xml" );
+    $file[2] = $level ne 'others' ? ( path $path, $name . '.deeper.xml' )
+                                  : ( path $path, $name . ".$level.xml" );
 
     $file[3] = path $path . 'deeper', $name . '.deeper.xml.anno.xml';
 
@@ -1475,7 +1474,7 @@ sub inter_with_level ($) {
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . ( path '..', 'deeper', $name . '.deeper.xml' ) . ".$fill",
+                        "Relocate it to " . $name . '.deeper.xml' . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
