@@ -585,7 +585,8 @@ rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.2}' ?>
 
 style:<? ( $this->level() < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
-         ( $ElixirFM::hiding_level && $this->level() > $ElixirFM::hiding_level
+         ( $ElixirFM::hiding_level && 
+           $ElixirFM::hiding_level < $this->level()
                ? '#{Node-hide:1}' :
            $this->level() == 0 ? '#{Node-hide:1}' :
            $this->level() == 4 ? '#{Node-rellevel:1}' . (
@@ -602,15 +603,18 @@ node:<? $this->level() == 2
       ? '${entity=' . ElixirFM::entity($this)->[0] . '}   #{custom6}${entity=' .
         ( join '}  #{custom3}${entity=',
           map { ref $_ ? @{$_} : () }
-          map { $_->{form}, $_->{imperf}, $_->{second}, $_->{pfirst} }
+          map { $_->{'form'}, $_->{'imperf'}, $_->{'second'}, $_->{'pfirst'} }
           ElixirFM::entity($this)->[1] ) . '}' .
-        ( exists $this->{'limits'}{'fst'} ?
+        ( exists $this->{'limits'} &&
+          exists $this->{'limits'}{'fst'} ?
           "\n" . '#{custom7}${limits=limited} #{custom3}${limits="' .
           $this->{'limits'}{'fst'} . '"}' : '' ) .
-        ( ElixirFM::entity($this)->[1]{'except'} ?
+        ( exists ElixirFM::entity($this)->[1]{'except'} &&
+                 ElixirFM::entity($this)->[1]{'except'} ne '' ?
           "\n" . '#{custom7}${entity=excepts} #{custom3}${entity="' .
           ElixirFM::entity($this)->[1]{'except'} . '"}' : '' ) .
-        ( ElixirFM::entity($this)->[1]{'derive'} ?
+        ( exists ElixirFM::entity($this)->[1]{'derive'} &&
+                 ElixirFM::entity($this)->[1]{'derive'} ne '' ?
           "\n" . '#{custom7}${entity=derives} #{custom3}${entity="' .
           ElixirFM::entity($this)->[1]{'derive'} . '"}' : '' )
       : $this->level() == 4
@@ -629,7 +633,7 @@ node:<? $this->level() == 2
       : '' ?>
 
 node:<? $this->level() == 2
-      ? '#{custom2}${morphs=' . $this->{morphs} . '}'
+      ? '#{custom2}${morphs=' . $this->{'morphs'} . '}'
         . ( join "", map { "\n" . $_ } map {
               '#{custom6}${entity=' . $_ . '}' }
             ElixirFM::plurals($this),
@@ -640,7 +644,7 @@ node:<? $this->level() == 2
       : '' ?>
 
 node:<? $this->level() == 2
-      ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .
+      ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
         '#{grey30}' . ( join "",
           map { "\n" . ElixirFM::phon(ElixirFM::merge($_->[0], $_->[1])) }
           map { [$this->parent()->{'root'}, $_] }
@@ -650,7 +654,7 @@ node:<? $this->level() == 2
       : '' ?>
 
 node:<? $this->level() == 2
-      ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{morphs})) .
+      ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
         '#{grey30}' . ( join "",
           map { "\n" . ElixirFM::orth(ElixirFM::merge($_->[0], $_->[1])) }
           map { [$this->parent()->{'root'}, $_] }

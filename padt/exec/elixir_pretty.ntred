@@ -1,7 +1,5 @@
 #!/usr/bin/ntred
 
-#include ../lib/ElixirFM.mak
-
 package TredMacro;
 
 use Encode;

@@ -7,8 +7,6 @@
 our $VERSION = do { q $Revision: 469 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
-#include <contrib/padt/MorphoTrees.mak>
-
 package TredMacro;
 
 use Algorithm::Diff;

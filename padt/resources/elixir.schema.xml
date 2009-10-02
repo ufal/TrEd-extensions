@@ -49,7 +49,7 @@
             <member name="morphs" type="Morphs.type" required="1"/>
             <member name="entity" type="Entity.type" required="1"/>
             <member name="limits" type="Limits.type"/>
-            <member name="reflex" type="Reflex.type"/>
+            <member name="reflex" type="Reflex.type" required="1"/>
             <member name="vallex" type="Vallex.type" role="#CHILDNODES"/>
         </structure>
     </type>
@@ -245,27 +245,29 @@
 
     <type name="Vallex.type">
         <sequence>
-            <element name="Frame">
-                <structure role="#NODE">
-                    <member name="reflex">
-                        <structure>
-                            <member name="fst" type="Reflex.type"/>
-                            <member name="snd" type="Reflex.type"/>
-                        </structure>
-                    </member>
-                    <member name="slots" role="#CHILDNODES">
-                        <sequence>
-                            <element name="Slot" type="Slot.type"/>
-                        </sequence>
-                    </member>
-                    <member name="links">
-                        <list ordered="1">
-                            <cdata format="any"/>
-                        </list>
-                    </member>
-                </structure>
-            </element>
+            <element name="Frame" type="Frame.type"/>
         </sequence>
+    </type>
+
+    <type name="Frame.type">
+        <structure role="#NODE">
+            <member name="reflex">
+                <structure>
+                    <member name="fst" type="Reflex.type"/>
+                    <member name="snd" type="Reflex.type"/>
+                </structure>
+            </member>
+            <member name="slots" role="#CHILDNODES">
+                <sequence>
+                    <element name="Slot" type="Slot.type"/>
+                </sequence>
+            </member>
+            <member name="links">
+                <list ordered="1">
+                    <cdata format="any"/>
+                </list>
+            </member>
+        </structure>
     </type>
 
     <type name="Slot.type">
