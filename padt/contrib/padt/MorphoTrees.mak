@@ -41,7 +41,7 @@ our ($paragraph_hide_mode, $entity_hide_mode, $level_guide_mode) = ('', '', 0);
 
 our ($dims, $fill) = (10, ' ' x 4);
 
-our ($elixir, $zoom) = ({}, {});
+our ($elixir, $review) = ({}, {});
 
 # ##################################################################################################
 #
@@ -116,20 +116,21 @@ sub get_nodelist_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if (exists $zoom->{$grp} and $zoom->{$grp} and $recent->{'#name'} eq 'Word') {
+    if (exists $review->{$grp} and $review->{$grp}{'zoom'} and $recent->{'#name'} eq 'Word') {
 
         my $resolve = resolve($recent->{'form'});
-    
+
         print encode "buckwalter", "'$recent->{'form'}'\n";
-    
+
         $current = new FSNode;
 
         $current->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
 
         $current->{'#name'} = 'Element';
-        
-        morphotrees($current, $_) foreach @{$resolve};
-        
+
+        $current = exists $review->{$grp} && $review->{$grp}{'mode'} ? morpholists($resolve, $current)
+                                                                     : morphotrees($resolve, $current);
+
         $nodes = [ $current, $current->descendants() ];
     }
     else {
@@ -262,6 +263,12 @@ sub annotate_morphology_click {
     annotate_morphology('click');
 }
 
+#bind switch_review_mode Ctrl+M menu Switch Trees/Lists Mode
+sub switch_review_mode {
+
+    $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
+}
+
 #bind switch_either_context Shift+space menu Switch Either Context
 sub switch_either_context {
 
@@ -269,12 +276,12 @@ sub switch_either_context {
 
     ChangingFile(0);
 
-    print "'$zoom->{$grp}'\t";
-    
-    $zoom->{$grp} = not $zoom->{$grp};
-    
-    print "'$zoom->{$grp}'\n";
-    
+    print "'$review->{$grp}{'zoom'}'\t";
+
+    $review->{$grp}{'zoom'} = not $review->{$grp}{'zoom'};
+
+    print "'$review->{$grp}{'zoom'}'\n";
+
     return;
 
     my $quick = $_[0];
@@ -803,7 +810,7 @@ sub elixir_lexicon {
 
     $elixir->{'version'} = $data->{'version'};
     $elixir->{'lexicon'} = $data->{'lexicon'};
-    
+
     print "'" . @{$elixir->{'lexicon'}} . "'\n";
 }
 
@@ -890,176 +897,183 @@ sub elixir_resolve {
 
 sub morpholists {
 
-    warn join " ", $grp->{'FSFile'}->listMetaData();
+    my ($resolve, $done) = @_;
 
-    my ($done, $data) = @_;
+    foreach (@{$resolve}) {
 
-    foreach (reverse @{$data->{'node'}}) {
+        my (undef, @data) = @{$_};
 
-        my $node = NewSon($done);
-
-        DetermineNodeType($node);
-
-        my $done = $node;
-
-        foreach (reverse @{$_->{'node'}}) {
+        foreach (reverse @data) {
 
             my $node = NewSon($done);
 
             DetermineNodeType($node);
 
-            my @form = ();
-
             my $done = $node;
 
-            foreach (reverse @{$_->{'node'}}) {
+            my (undef, @data) = @{$_};
+
+            foreach (reverse @data) {
 
                 my $node = NewSon($done);
 
                 DetermineNodeType($node);
-            if (0) {
-                $node->{'root'} = substr $_->{'data'}{'info'}[5], 1, -1;
-
-                $node->{'core'} = new Fslib::Struct;
-
-                $node->{'core'}{'morphs'} = $_->{'data'}{'info'}[6];
-
-                $node->{'core'}{'reflex'} = new Fslib::List @{eval $_->{'data'}{'info'}[2]};
-
-                my $data = ElixirFM::parse($_->{'data'}{'info'}[1]);
-
-                foreach ('plural', 'femini', 'form', 'pfirst', 'imperf', 'second', 'masdar') {
-
-                    next unless exists $data->[1]{$_};
-
-                    $data->[1]{$_} = new Fslib::List ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_};
-                }
-
-                $data->[1]{'derive'} = '------F---' if exists $data->[1]{'derive'} and $data->[1]{'derive'} eq 'True';
-
-                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element $data->[0], new Fslib::Struct $data->[1]];
-            }
-                $node->{'form'} = $_->{'data'}{'info'}[4];
 
                 my $done = $node;
 
-                # foreach (()) {
-                foreach (reverse @{$_->{'node'}}) {
+                my (undef, @data) = @{$_};
+
+                foreach (reverse @data) {
 
                     my $node = NewSon($done);
 
                     DetermineNodeType($node);
 
-                    $node->{'tag'} = $_->{'data'}{'info'}[0];
+                    $node->{'form'} = substr $_->[0][0], 1, -1;
 
-                    $node->{'form'} = $_->{'data'}{'info'}[1];
+                    my $done = $node;
 
-                    $node->{'morphs'} = $_->{'data'}{'info'}[3];
+                    my (undef, @data) = @{$_};
 
-                    unshift @form, $node->{'form'};
+                    foreach (reverse @data) {
+
+                        my $node = NewSon($done);
+
+                        DetermineNodeType($node);
+
+                        $node->{'tag'} = $_->[0];
+                        $node->{'form'} = $_->[1];
+                        $node->{'morphs'} = $_->[3];
+                    }
                 }
+
+                demode "arabtex", "noneplus";
+
+                $node->{'form'} = join "  ", ElixirFM::nub { $_[0] } map { join " ", map {
+
+                                                    decode "arabtex", $_->{'form'}
+
+                                                } $_->children() } $node->children();
+
+                demode "arabtex", "default";
             }
 
-            demode "arabtex", "noneplus";
-
-            $node->{'form'} = join " ", ElixirFM::nub { $_[0] } sort map { decode "arabtex", $_ } @form;
-
-            demode "arabtex", "default";
+            $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
         }
-
-        $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
     }
+
+    return $done;
 }
 
 sub morphotrees {
 
-    my ($done, $data) = @_;
+    my ($resolve, $done) = @_;
 
-    foreach (reverse @{$data->{'node'}}) {
+    my $tree = {};
+
+    foreach (@{$resolve}) {
+
+        # my $element;
+
+        my (undef, @data) = @{$_};
+
+        foreach (@data) {
+
+            # my $partition;
+
+            my (undef, @data) = @{$_};
+
+            foreach (@data) {
+
+                # my $group;
+
+                my ($node, @data) = @{$_};
+
+                foreach (@data) {
+
+                    # my $reading;
+
+                    my (undef, @data) = @{$_};
+
+                    my @form = map { $_->[1] } @data;
+
+                    my @path;
+
+                    demode "arabtex", "noneplus";
+
+                    $path[0] = decode "arabtex", join " ", @form;
+
+                    demode "arabtex", "default";
+
+                    for (0 .. @data - 1) {
+
+                        # my $token;
+
+                        $path[1] = $_;
+
+                        $path[2] = $node->[$_][0];
+
+                        $path[3] = join " ", @{$data[$_]}[3, 0];
+
+                        $tree->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = $data[$_];
+                    }
+                }
+            }
+        }
+    }
+
+    foreach my $p (sort keys %{$tree}) {
 
         my $node = NewSon($done);
 
         DetermineNodeType($node);
 
+        $node->{'form'} = $p;
+
         my $done = $node;
 
-        foreach (reverse @{$_->{'node'}}) {
+        foreach my $c (reverse 0 .. @{$tree->{$p}} - 1) {
 
             my $node = NewSon($done);
 
             DetermineNodeType($node);
 
-            my @form = ();
+            $node->{'form'} = $c;
 
             my $done = $node;
 
-            foreach (reverse @{$_->{'node'}}) {
+            foreach my $l (reverse sort keys %{$tree->{$p}[$c]}) {
 
                 my $node = NewSon($done);
 
                 DetermineNodeType($node);
 
-                if (0) {
+                $node->{'form'} = $l;
 
-                $node->{'root'} = substr $_->{'data'}{'info'}[5], 1, -1;
+                my $lexeme = lexicon($l);
 
-                $node->{'core'} = new Fslib::Struct;
-
-                $node->{'core'}{'morphs'} = $_->{'data'}{'info'}[6];
-
-                $node->{'core'}{'reflex'} = new Fslib::List @{eval $_->{'data'}{'info'}[2]};
-
-                my $data = ElixirFM::parse($_->{'data'}{'info'}[1]);
-
-                foreach ('plural', 'femini', 'form', 'pfirst', 'imperf', 'second', 'masdar') {
-
-                    next unless exists $data->[1]{$_};
-
-                    $data->[1]{$_} = new Fslib::List ref $data->[1]{$_} ? map { $_->[-1] } @{$data->[1]{$_}} : $data->[1]{$_};
-                }
-
-                $data->[1]{'derive'} = '------F---' if exists $data->[1]{'derive'} and $data->[1]{'derive'} eq 'True';
-
-                $node->{'core'}{'entity'} = new Fslib::Seq [new Fslib::Seq::Element $data->[0], new Fslib::Struct $data->[1]];
-
-                }
-                else {
-
-                    my $lexeme = lexicon($_->{'data'}{'info'}[0]);
-
-                    $node->{'root'} = $lexeme->{'root'};
-                    $node->{'core'} = $lexeme->{'core'};
-                }
-
-                $node->{'form'} = $_->{'data'}{'info'}[4];
+                $node->{'root'} = $lexeme->{'root'};
+                $node->{'core'} = $lexeme->{'core'};
 
                 my $done = $node;
 
-                foreach (reverse @{$_->{'node'}}) {
+                foreach my $t (sort keys %{$tree->{$p}[$c]{$l}}) {
 
                     my $node = NewSon($done);
 
                     DetermineNodeType($node);
 
-                    $node->{'tag'} = $_->{'data'}{'info'}[0];
+                    my $token = $tree->{$p}[$c]{$l}{$t};
 
-                    $node->{'form'} = $_->{'data'}{'info'}[1];
-
-                    $node->{'morphs'} = $_->{'data'}{'info'}[3];
-
-                    unshift @form, $node->{'form'};
+                    $node->{'tag'} = $token->[0];
+                    $node->{'form'} = $token->[1];
+                    $node->{'morphs'} = $token->[3];
                 }
             }
-
-            demode "arabtex", "noneplus";
-
-            $node->{'form'} = join " ", ElixirFM::nub { $_[0] } sort map { decode "arabtex", $_ } @form;
-
-            demode "arabtex", "default";
         }
-
-        $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
     }
+
+    return $done;
 }
 
 # ##################################################################################################
