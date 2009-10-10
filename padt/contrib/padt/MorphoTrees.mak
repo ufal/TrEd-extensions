@@ -115,36 +115,36 @@ sub node_release_hook {
 
 sub get_nodelist_hook {
 
-    my ($fsfile, $index, $recent, $show_hidden) = @_;
-    my ($nodes, $current);
-
-    my $tree = $fsfile->tree($index);
+    my ($fsfile, $index, $focus, $hidding) = @_;
+    my ($nodes);
 
     if (exists $review->{$grp} and $review->{$grp}{'zoom'}) {
 
-        my $resolve = resolve($review->{$grp}{'zoom'}->{'form'});
+        my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
 
-        $current = new FSNode;
+        my $tree = new FSNode;
 
-        $current->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
+        $tree->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
 
-        $current->{'#name'} = 'Element';
+        $tree->{'#name'} = 'Element';
 
-        $current->{'id'} = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
+        $tree->{'id'} = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
 
-        $current = exists $review->{$grp} && $review->{$grp}{'mode'} ? morpholists($resolve, $current)
-                                                                     : morphotrees($resolve, $current);
+        $tree = exists $review->{$grp} && $review->{$grp}{'mode'} ? morpholists($data, $tree)
+                                                                  : morphotrees($data, $tree);
 
-        $nodes = [ $current, $current->descendants() ];
+        $nodes = [$tree, $tree->descendants()];
+
+        $focus = $tree unless grep { $focus == $_ } @{$nodes};
     }
     else {
 
-        ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
+        ($nodes, $focus) = $fsfile->nodes($index, $focus, $hidding);
     }
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $current];
+    return [[@{$nodes}], $focus];
 }
 
 sub get_value_line_hook {
@@ -339,6 +339,74 @@ sub switch_either_context {
     }
 }
 
+
+my %binding = map { $_ => OverrideBuiltinBinding('*', $_) } "Prior", "Next";
+
+OverrideBuiltinBinding(__PACKAGE__, "Prior", [ sub {
+
+        my $grp = $_[1]->{'focusedWindow'};
+
+        if ($review->{$grp}{'zoom'}) {
+
+            my $node = main::treeIsVertical($grp) ? $review->{$grp}{'zoom'}->rbrother()
+                     : main::treeIsReversed($grp) ? $review->{$grp}{'zoom'}->lbrother()
+                                                  : $review->{$grp}{'zoom'}->rbrother();
+
+            if ($node) {
+
+                $review->{$grp}{'zoom'} = $node;
+
+                $grp->{'currentNode'} = $review->{$grp}{'zoom'};
+
+              # main::setCurrent($grp, $review->{$grp}{'zoom'});
+
+                main::get_nodes_win($grp);
+                main::redraw_win($grp);
+                main::centerTo($grp, $grp->{'currentNode'});
+            }
+
+            Tk->break;
+        }
+        else {
+
+            $binding{"Prior"}->[0](@_);
+        }
+
+    }, 'Display Previous Tree / Word' ]);
+
+OverrideBuiltinBinding(__PACKAGE__, "Next", [ sub {
+
+        my $grp = $_[1]->{'focusedWindow'};
+
+        if ($review->{$grp}{'zoom'}) {
+
+            my $node = main::treeIsVertical($grp) ? $review->{$grp}{'zoom'}->lbrother()
+                     : main::treeIsReversed($grp) ? $review->{$grp}{'zoom'}->rbrother()
+                                                  : $review->{$grp}{'zoom'}->lbrother();
+
+            if ($node) {
+
+                $review->{$grp}{'zoom'} = $node;
+
+                $grp->{'currentNode'} = $review->{$grp}{'zoom'};
+
+              # main::setCurrent($grp, $review->{$grp}{'zoom'});
+
+                main::get_nodes_win($grp);
+                main::redraw_win($grp);
+                main::centerTo($grp, $grp->{'currentNode'});
+            }
+
+            Tk->break;
+        }
+        else {
+
+            $binding{"Next"}->[0](@_);
+        }
+
+    }, 'Display Next Tree / Word' ]);
+
+
 #bind move_to_prev_paragraph Shift+Prior menu Move to Prev Paragraph
 sub move_to_prev_paragraph {
 
@@ -368,9 +436,9 @@ sub move_to_next_paragraph {
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
 
-    $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[0];
+    $this = ($root->children())[0];
 
-    $Redraw = 'none';
+    $review->{$grp}{'zoom'} = $this if $review->{$grp}{'zoom'};
 
     ChangingFile(0);
 }
@@ -378,9 +446,9 @@ sub move_word_home {
 #bind move_word_end End menu Move to Last Word
 sub move_word_end {
 
-    $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[-1];
+    $this = ($root->children())[-1];
 
-    $Redraw = 'none';
+    $review->{$grp}{'zoom'} = $this if $review->{$grp}{'zoom'};
 
     ChangingFile(0);
 }
@@ -448,6 +516,8 @@ sub move_par_home {
 
     GotoTree(1);
 
+    $review->{$grp}{'zoom'} = undef;
+
     $Redraw = 'win';
     ChangingFile(0);
 }
@@ -456,6 +526,8 @@ sub move_par_home {
 sub move_par_end {
 
     GotoTree($grp->{FSFile}->lastTreeNo + 1);
+
+    $review->{$grp}{'zoom'} = undef;
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -737,7 +809,7 @@ sub edit_note {
 #
 # ##################################################################################################
 
-#bind elixir_lexicon to Ctrl+l menu ElixirFM Lexicon
+#bind elixir_lexicon to Ctrl+L menu ElixirFM Lexicon
 
 sub elixir_lexicon {
 
@@ -828,67 +900,47 @@ sub resolve {
 
     import Exec::ElixirFM unless exists $elixir->{'resolve'};
 
-    my $word = $_[0];
+    my @word = map { split " " } @_;
 
-    unless (exists $elixir->{'resolve'}{$word}) {
+    my @news = grep { not exists $elixir->{'resolve'}{$_} } @word;
 
-        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--lists' ], $word;
+    my $news = join " ", @news;
 
-        $elixir->{'resolve'}{$word} = [ ElixirFM::unpretty $resolve ];
-    }
+    my $data = Exec::ElixirFM::elixir 'resolve', ['--lists'], $news;
 
-    return $elixir->{'resolve'}{$word};
+    my @data = ElixirFM::unpretty $data;
+
+    warn "MorphoTrees::resolve:\t" . "resolving " . @news . " of " . @word . " words\n" if @word > 1;
+
+    warn "MorphoTrees::resolve:\t" . '@news ' . @news . " <> " . '@data ' . @data . "\n" unless @news == @data;
+
+    $elixir->{'resolve'}{$news[$_]} = $data[$_] for 0 .. @data - 1;
+
+    return map { $elixir->{'resolve'}{$_} } @word;
 }
 
-#bind elixir_resolve to Ctrl+r menu ElixirFM Resolve
+#bind elixir_resolve to Ctrl+R menu ElixirFM Resolve
 
 sub elixir_resolve {
 
-    my $mode = 'trees';
+    resolve map { $_->{'form'} } $root->children() if $root->{'#name'} eq 'Unit';
 
-    import Exec::ElixirFM;
-
-    if ($root->{'#name'} ne 'Element') {
-
-        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], join " ", map { $_->{'form'} } $root->children();
-
-        foreach (ElixirFM::unpretty $resolve) {
-
-            NextTree();
-
-            if ($mode eq 'trees') {
-
-                morphotrees($root, $_);
-            }
-            else {
-
-                morpholists($root, $_);
-            }
-        }
-    }
-    else {
-
-        my $resolve = Exec::ElixirFM::elixir 'resolve', [ '--' . $mode ], $root->{'form'};
-
-        foreach (ElixirFM::unpretty $resolve) {
-
-            if ($mode eq 'trees') {
-
-                morphotrees($root, $_);
-            }
-            else {
-
-                morpholists($root, $_);
-            }
-        }
-    }
+    print encode "buckwalter", $this->{'form'} . "\n";
 }
 
 sub morpholists {
 
     my ($resolve, $done) = @_;
 
-    foreach (@{$resolve}) {
+    my (undef, @data) = @{$resolve};
+
+    foreach (reverse @data) {
+
+        my $node = NewSon($done);
+
+        DetermineNodeType($node);
+
+        my $done = $node;
 
         my (undef, @data) = @{$_};
 
@@ -908,6 +960,8 @@ sub morpholists {
 
                 DetermineNodeType($node);
 
+                $node->{'form'} = substr $_->[0][0], 1, -1;
+
                 my $done = $node;
 
                 my (undef, @data) = @{$_};
@@ -918,37 +972,24 @@ sub morpholists {
 
                     DetermineNodeType($node);
 
-                    $node->{'form'} = substr $_->[0][0], 1, -1;
-
-                    my $done = $node;
-
-                    my (undef, @data) = @{$_};
-
-                    foreach (reverse @data) {
-
-                        my $node = NewSon($done);
-
-                        DetermineNodeType($node);
-
-                        $node->{'tag'} = $_->[0];
-                        $node->{'form'} = $_->[1];
-                        $node->{'morphs'} = $_->[3];
-                    }
+                    $node->{'tag'} = $_->[0];
+                    $node->{'form'} = $_->[1];
+                    $node->{'morphs'} = $_->[3];
                 }
-
-                demode "arabtex", "noneplus";
-
-                $node->{'form'} = join "  ", ElixirFM::nub { $_[0] } map { join " ", map {
-
-                                                    decode "arabtex", $_->{'form'}
-
-                                                } $_->children() } $node->children();
-
-                demode "arabtex", "default";
             }
 
-            $node->{'form'} = join "    ", ElixirFM::nub { $_[0] } map { $_->{'form'} } $node->children();
+            demode "arabtex", "noneplus";
+
+            $node->{'form'} = join "  ", ElixirFM::nub { $_[0] } map { join " ", map {
+
+                                                decode "arabtex", $_->{'form'}
+
+                                            } $_->children() } $node->children();
+
+            demode "arabtex", "default";
         }
+
+        $node->{'form'} = join "    ", ElixirFM::nub { $_[0] } map { $_->{'form'} } $node->children();
     }
 
     return $done;
@@ -960,58 +1001,55 @@ sub morphotrees {
 
     my $tree = {};
 
-    foreach (@{$resolve}) {
+    # my $element;
 
-        # my $element;
+    my (undef, @data) = @{$resolve};
+
+    foreach (@data) {
+
+        # my $partition;
 
         my (undef, @data) = @{$_};
 
         foreach (@data) {
 
-            # my $partition;
+            # my $group;
 
-            my (undef, @data) = @{$_};
+            my ($node, @data) = @{$_};
 
             foreach (@data) {
 
-                # my $group;
+                # my $reading;
 
-                my ($node, @data) = @{$_};
+                my (undef, @data) = @{$_};
 
-                foreach (@data) {
+                my @form = map { $_->[1] } @data;
 
-                    # my $reading;
+                my @path;
 
-                    my (undef, @data) = @{$_};
+                demode "arabtex", "noneplus";
 
-                    my @form = map { $_->[1] } @data;
+                $path[0] = decode "arabtex", join " ", @form;
 
-                    my @path;
+                demode "arabtex", "default";
 
-                    demode "arabtex", "noneplus";
+                for (0 .. @data - 1) {
 
-                    $path[0] = decode "arabtex", join " ", @form;
+                    # my $token;
 
-                    demode "arabtex", "default";
+                    $path[1] = $_;
 
-                    for (0 .. @data - 1) {
+                    $path[2] = $node->[$_][0];
 
-                        # my $token;
+                    $path[3] = join " ", @{$data[$_]}[3, 0];
 
-                        $path[1] = $_;
-
-                        $path[2] = $node->[$_][0];
-
-                        $path[3] = join " ", @{$data[$_]}[3, 0];
-
-                        $tree->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = $data[$_];
-                    }
+                    $tree->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = $data[$_];
                 }
             }
         }
     }
 
-    foreach my $p (sort { $a =~ tr/ / / <=> $b =~ tr/ / / and $a cmp $b } keys %{$tree}) {
+    foreach my $p (sort { $b =~ tr/ / / <=> $a =~ tr/ / / or $b cmp $a } keys %{$tree}) {
 
         my $node = NewSon($done);
 
