@@ -63,7 +63,11 @@ node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph|Unit
                                                             @{$this->{'core'}{'reflex'}} : () ) . ' '
                         : '' ) .
                     '#{darkmagenta}' .
-                    ( $this->{'form'} eq '[DEFAULT]' ? $this->{'form'} : ElixirFM::phor($this->{'form'}) ) )
+                    ( $this->{'form'} eq '[DEFAULT]'
+                        ? $this->{'form'}
+                        : $this->{'form'} =~ /^\([0-9]+,[0-9]+\)$/
+                            ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'core'}{'morphs'}))
+                            : ElixirFM::phor($this->{'form'}) ) )
                 : (
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
@@ -116,17 +120,17 @@ sub get_nodelist_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if (exists $review->{$grp} and $review->{$grp}{'zoom'} and $recent->{'#name'} eq 'Word') {
+    if (exists $review->{$grp} and $review->{$grp}{'zoom'}) {
 
-        my $resolve = resolve($recent->{'form'});
-
-        print encode "buckwalter", "'$recent->{'form'}'\n";
+        my $resolve = resolve($review->{$grp}{'zoom'}->{'form'});
 
         $current = new FSNode;
 
         $current->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
 
         $current->{'#name'} = 'Element';
+
+        $current->{'id'} = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
 
         $current = exists $review->{$grp} && $review->{$grp}{'mode'} ? morpholists($resolve, $current)
                                                                      : morphotrees($resolve, $current);
@@ -276,11 +280,22 @@ sub switch_either_context {
 
     ChangingFile(0);
 
-    print "'$review->{$grp}{'zoom'}'\t";
+    if ($review->{$grp}{'zoom'}) {
 
-    $review->{$grp}{'zoom'} = not $review->{$grp}{'zoom'};
+        $this = $review->{$grp}{'zoom'};
 
-    print "'$review->{$grp}{'zoom'}'\n";
+        $review->{$grp}{'zoom'} = undef;
+    }
+    else {
+
+        my $level = $this->level();
+
+        return if $level == 0;
+
+        $this = $this->parent() for 1 .. $level - 1;
+
+        $review->{$grp}{'zoom'} = $this;
+    }
 
     return;
 
@@ -327,12 +342,11 @@ sub switch_either_context {
 #bind move_to_prev_paragraph Shift+Prior menu Move to Prev Paragraph
 sub move_to_prev_paragraph {
 
-    if ($root->{'#name'} eq 'Element') {
+    PrevTree();
 
-        GotoTree($root->{'ref'});
-    }
+    move_word_end();
 
-    GotoTree($root->{'ref'}{'fst'});
+    $review->{$grp}{'zoom'} = $this;
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -341,12 +355,11 @@ sub move_to_prev_paragraph {
 #bind move_to_next_paragraph Shift+Next menu Move to Next Paragraph
 sub move_to_next_paragraph {
 
-    if ($root->{'#name'} eq 'Element') {
+    NextTree();
 
-        GotoTree($root->{'ref'});
-    }
+    move_word_home();
 
-    GotoTree($root->{'ref'}{'snd'});
+    $review->{$grp}{'zoom'} = $this;
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -355,20 +368,9 @@ sub move_to_next_paragraph {
 #bind move_word_home Home menu Move to First Word
 sub move_word_home {
 
-    if ($root->{'#name'} ne 'Element') {
+    $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[0];
 
-        $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[0];
-
-        $Redraw = 'none';
-    }
-    else {
-
-        switch_either_context('quick');
-        $this = ($root->children())[0];
-        switch_either_context();
-
-        $Redraw = 'win';
-    }
+    $Redraw = 'none';
 
     ChangingFile(0);
 }
@@ -376,20 +378,9 @@ sub move_word_home {
 #bind move_word_end End menu Move to Last Word
 sub move_word_end {
 
-    if ($root->{'#name'} ne 'Element') {
+    $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[-1];
 
-        $this = (grep { $_->{'hide'} ne 'hide' } $root->children())[-1];
-
-        $Redraw = 'none';
-    }
-    else {
-
-        switch_either_context('quick');
-        $this = ($root->children())[-1];
-        switch_either_context();
-
-        $Redraw = 'win';
-    }
+    $Redraw = 'none';
 
     ChangingFile(0);
 }
@@ -465,8 +456,6 @@ sub move_par_home {
 sub move_par_end {
 
     GotoTree($grp->{FSFile}->lastTreeNo + 1);
-    switch_either_context('quick');
-    $this = $root;
 
     $Redraw = 'win';
     ChangingFile(0);
@@ -958,7 +947,7 @@ sub morpholists {
                 demode "arabtex", "default";
             }
 
-            $node->{'form'} = join "    ", map { $_->{'form'} } $node->children();
+            $node->{'form'} = join "    ", ElixirFM::nub { $_[0] } map { $_->{'form'} } $node->children();
         }
     }
 
@@ -1022,7 +1011,7 @@ sub morphotrees {
         }
     }
 
-    foreach my $p (sort keys %{$tree}) {
+    foreach my $p (sort { $a =~ tr/ / / <=> $b =~ tr/ / / and $a cmp $b } keys %{$tree}) {
 
         my $node = NewSon($done);
 
@@ -1038,7 +1027,7 @@ sub morphotrees {
 
             DetermineNodeType($node);
 
-            $node->{'form'} = $c;
+            my $component = $node;
 
             my $done = $node;
 
@@ -1068,6 +1057,15 @@ sub morphotrees {
                     $node->{'tag'} = $token->[0];
                     $node->{'form'} = $token->[1];
                     $node->{'morphs'} = $token->[3];
+
+                    unless (exists $component->{'form'}) {
+
+                        demode "arabtex", "noneplus";
+
+                        $component->{'form'} = decode "arabtex", $node->{'form'};
+
+                        demode "arabtex", "default";
+                    }
                 }
             }
         }
