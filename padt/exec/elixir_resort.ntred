@@ -79,9 +79,9 @@ sub isRegular {
 
 sub isComplex {
 
-    my @r = map { [ map { split /(?<![._^,])/, $_ } split " ", $_->{'root'} ] } $_[0]->children();
+    my @r = map { split /(?<![._^,])/, $_ } split " ", $_[0]->firstson()->{'root'};
 
-    return grep { @{$_} > 1 and $_->[-2] eq $_->[-1] or grep { /^['wy]$/ } @{$_} } @r;
+    return @r < 2 || $r[-2] eq $r[-1] || grep { /^['wy]$/ } @r;
 }
 
 sub isForeign {
@@ -90,7 +90,7 @@ sub isForeign {
 
     while ($this = $this->following()) {
 
-        return if $this->level() == 2 and ElixirFM::entity($this)->[0] !~ /^(?:Xtra|Ynit|Zero)$/;
+        return if $this->level() == 2 and ElixirFM::entity($this)->[0] !~ /^(?:Xtra|Ynit|Zero|Grph)$/;
     }
 
     return 1;

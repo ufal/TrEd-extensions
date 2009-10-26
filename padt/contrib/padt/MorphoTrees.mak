@@ -916,7 +916,7 @@ sub resolve {
 
     $elixir->{'resolve'}{$news[$_]} = $data[$_] for 0 .. @data - 1;
 
-    return map { $elixir->{'resolve'}{$_} } @word;
+    return map { exists $elixir->{'resolve'}{$_} ? $elixir->{'resolve'}{$_} : [[$_]] } @word;
 }
 
 #bind elixir_resolve to Ctrl+R menu ElixirFM Resolve
@@ -932,7 +932,9 @@ sub morpholists {
 
     my ($resolve, $done) = @_;
 
-    my (undef, @data) = @{$resolve};
+    my ($form, @data) = @{$resolve};
+
+    $done->{'form'} = $form->[0];
 
     foreach (reverse @data) {
 
@@ -1003,7 +1005,9 @@ sub morphotrees {
 
     # my $element;
 
-    my (undef, @data) = @{$resolve};
+    my ($form, @data) = @{$resolve};
+
+    $done->{'form'} = $form->[0];
 
     foreach (@data) {
 
