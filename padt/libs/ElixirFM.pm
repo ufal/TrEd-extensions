@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 882 2009-08-28 21:44:56Z smrz $
+# $Id: ElixirFM.pm 897 2009-10-25 23:55:00Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 882 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 897 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -26,20 +26,24 @@ no warnings 'recursion';
 
 sub foldr (&$@) {
 
-    my ($fun, $nil, @lst) = @_;
+    my ($fun, $nil, @lst, $lst) = @_;
 
     return $nil unless @lst;
 
-    return $fun->($lst[0], foldr $fun, $nil, @lst[1 .. @lst - 1]);
+    ($lst, @lst) = @lst;
+
+    return $fun->($lst, foldr $fun, $nil, @lst);
 }
 
 sub foldl (&$@) {
 
-    my ($fun, $nil, @lst) = @_;
+    my ($fun, $nil, @lst, $lst) = @_;
 
     return $nil unless @lst;
 
-    return foldl $fun, $fun->($nil, $lst[0]), @lst[1 .. @lst - 1];
+    ($lst, @lst) = @lst;
+
+    return foldl $fun, $fun->($nil, $lst), @lst;
 }
 
 sub nub (&@) {
@@ -365,17 +369,17 @@ sub restrict {
 
 sub prune {
 
-    my $node = $_[0];
+    my $data = $_[0];
 
-    return $node unless $node->{'data'}{'type'} == 4;
+    return $data unless ref $data eq 'ARRAY' and @{$data};
 
-    @{$node->{'node'}} = grep {
+    @{$data} = ($data->[0], grep {
 
-	                      not grep { not @{$_->{'node'}} } @{$_->{'node'}}
+                                not grep { not @{$_}[1 .. @{$_} - 1] } @{$_}[1 .. @{$_} - 1]
 
-                         } @{$node->{'node'}};
+                            } @{$data}[1 .. @{$data} - 1]);
 
-    return $node;
+    return $data;
 }
 
 sub concise {
@@ -526,111 +530,66 @@ sub parse {
 
 sub unpretty_resolve {
 
-    my ($data, @node) = split /[:]{1}/, $_[0];
+    my ($node, @data) = split /\n[\t ]*[:]{1}/, $_[0];
 
-    return  $data =~ /[()]/
+    return  $node =~ /[()]/
 
-        ?   {
-                'data'  =>  {
+        ?   [
+                [
 
-                    'info'  =>  [ map { [ split /[\n ]*\t/, $_ ] } grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $data ],
-                    'type'  =>  2,
-                },
-
-                'node'  =>  [
-
-                    map {
-
-                        my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
-
-                        $i .= '    ';
-
-                        s/^[\t\n ]+//;
-                        s/[\t\n ]+$//;
-
-                        my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
-
-                        {
-                            'data'  =>  {
-
-                                'info'  =>  [ join ' ', split ' ', $data ],
-                                'type'  =>  1,
-                            },
-
-                            'node'  =>  [
-
-                                map {
-
-                                    {
-                                        'data'  =>  {
-
-                                            'info'  =>  [ split /[\n ]*\t/, $_ ],
-                                            'type'  =>  0,
-                                        },
-
-                                        'node'  =>  [
-
-                                        ],
-                                    }
-
-                                } @node
-                            ],
-                        }
-
-                    } @node
+                    map { [ split /[\n ]*\t/, $_ ] } grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $node
                 ],
-            }
 
-        :   {
-                'data'  =>  {
+                map {
 
-                    'info'  =>  [ join ' ', split ' ', $data ],
-                    'type'  =>  2,
-                },
+                    my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
 
-                'node'  =>  [
+                    $i .= '    ';
 
-                    map {
+                    s/^[\t\n ]+//;
+                    s/[\t\n ]+$//;
 
-                        my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
 
-                        $i .= '    ';
+                    [
+                        [ join ' ', split ' ', $node ],
 
-                        s/^[\t\n ]+//;
-                        s/[\t\n ]+$//;
+                        map {
 
-                        my ($data, @node) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+                            [ split /[\n ]*\t/, $_ ],
 
-                        {
-                            'data'  =>  {
+                        } @data
+                    ]
 
-                                'info'  =>  [ split /[\n ]*\t/, $data ],
-                                'type'  =>  1,
-                            },
+                } @data
+            ]
 
-                            'node'  =>  [
+        :   [
+                [ join ' ', split ' ', $node ],
 
-                                map {
+                map {
 
-                                    {
-                                        'data'  =>  {
+                    my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
 
-                                            'info'  =>  [ split /[\n ]*\t/, $_ ],
-                                            'type'  =>  0,
-                                        },
+                    $i .= '    ';
 
-                                        'node'  =>  [
+                    s/^[\t\n ]+//;
+                    s/[\t\n ]+$//;
 
-                                        ],
-                                    }
+                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
 
-                                } @node
-                            ],
-                        }
+                    [
+                        [ split /[\n ]*\t/, $node ],
 
-                    } @node
-                ],
-            };
+                        map {
+
+                            [ split /[\n ]*\t/, $_ ],
+
+                        } @data
+                    ]
+
+                } @data
+            ];
 }
 
 sub unpretty {
@@ -647,41 +606,27 @@ sub unpretty {
 
         @data = map {
 
-            my ($data, @node) = split /[:]{3}/, $_;
+            my ($node, @data) = split /[:]{3}/, $_;
 
-            {
-                'data'  =>  {
+            [
+                [ split ' ', $node ],
 
-                    'info'  =>  [ map { join ' ', split ' ' } split /[:]{2}/, $data ],
-                    'type'  =>  4,
-                },
+                map {
 
-                'node'  =>  [
+                    my ($node, @data) = split /[:]{2}/, $_;
 
-                    map {
+                    [
+                        [ map { join ' ', split ' ' } split /(?<=[>])\s+(?=[<])/, $node ],
 
-                        my ($data, @node) = split /[:]{2}/, $_;
+                        map {
 
-                        {
-                            'data'  =>  {
+                            unpretty_resolve($_);
 
-                                'info'  =>  [ map { join ' ', split ' ' } split /[:]{1}/, $data ],
-                                'type'  =>  3,
-                            },
+                        } @data
+                    ]
 
-                            'node'  =>  [
-
-                                map {
-
-                                    unpretty_resolve($_);
-
-                                } @node
-                            ],
-                        }
-
-                    } @node
-                ],
-            }
+                } @data
+            ]
 
         } @data;
     }
@@ -704,9 +649,11 @@ sub unpretty {
 
                     my (@ents) = $data =~ /(<Entry>.*?<\/Entry>)/gs;
 
+                    $root = parse($root)->[2];
+
                     {
                         'clip'  =>  ( join '', split ' ', $clip ),
-                        'root'  =>  parse($root)->[2],
+                        'root'  =>  ( ref $root ? "" : $root ),
                         'ents'  =>  [ @ents ],
                     }
 
@@ -1012,7 +959,9 @@ sub mergeSuffix {
                    "UW"  => "aW",
 
                    "Ina" => "ayna",
-                   "I"   => "ay"     );
+                   "I"   => "ay",
+
+                   "^g"  => "a^g"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1024,8 +973,6 @@ sub mergeSuffix {
             return $x if $x =~ /^at/;
 
             return "aw" . $x if $x =~ /^u/;
-
-            return "a^g" if $x =~ /^a?\^g$/;
         }
 
         return "ay" . showSuffix($_[1]);
@@ -1046,7 +993,11 @@ sub mergeSuffix {
                    "UW"  => "UW",
 
                    "Ina" => "Ina",
-                   "I"   => "I"     );
+                   "I"   => "I",
+
+                   "Iy"  => "Iy",
+
+                   "mA"  => "ImA"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1058,8 +1009,6 @@ sub mergeSuffix {
             return "I" . $x if $x =~ /^[nt]/;
 
             return $x if $x =~ /^[iu]/;
-
-            return "Iy" if $x eq "Iy";
         }
 
         return "iy" . showSuffix($_[1]);
@@ -1080,7 +1029,12 @@ sub mergeSuffix {
                    "UW"  => "aW",
 
                    "Ina" => "ayna",
-                   "I"   => "ay"     );
+                   "I"   => "ay",
+
+                   "Iy"  => "AnIy",
+                   "At"  => "A'At",
+
+                   "_dA" => "A_dA"  );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1114,7 +1068,9 @@ sub mergeSuffix {
                    "I"   => "I",
 
                    "u"   => "U",
-                   "i"   => "I"     );
+                   "i"   => "I",
+
+                   "^g"  => "U^g"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1146,7 +1102,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 882 $        $Date: 2009-08-28 23:44:56 +0200 (Fri, 28 Aug 2009) $
+    $Revision: 897 $        $Date: 2009-10-26 00:55:00 +0100 (Mon, 26 Oct 2009) $
 
 
 =head1 SYNOPSIS

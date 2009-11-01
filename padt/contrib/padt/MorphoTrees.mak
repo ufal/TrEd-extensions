@@ -16,6 +16,10 @@ use Exec::ElixirFM ();
 
 use Encode::Arabic ':modes';
 
+use Algorithm::Diff;
+
+use List::Util 'reduce';
+
 use File::Spec;
 use File::Copy;
 
@@ -51,14 +55,16 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? $this->children() ? '' : '#{Line-fill:red}' ?>
+style:<? exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
+         exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
+         exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph|Unit)$/ and $this->{'note'} ne ''
+node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} ~~ ['Token', 'Unit', 'Paragraph']
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
-                ? ( ( $root->{'#name'} eq 'Element'
+                ? ( ( $MorphoTrees::review->{$grp}{'zoom'}
                         ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
                                                             @{$this->{'core'}{'reflex'}} : () ) . ' '
                         : '' ) .
@@ -69,17 +75,17 @@ node:<? '#{magenta}${note} << ' if $this->{'#name'} !~ /^(?:Token|Paragraph|Unit
                             ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'core'}{'morphs'}))
                             : ElixirFM::phor($this->{'form'}) ) )
                 : (
-                $this->{'#name'} =~ /^(?:Component|Partition)$/
+                $this->{'#name'} ~~ ['Component', 'Partition']
                     ? $this->{'form'}
                     : (
-                    $this->{'#name'} =~ /^(?:Element|Paragraph|Unit)$/
+                    $this->{'#name'} ~~ ['Element', 'Unit', 'Paragraph']
                         ? '#{black}' . MorphoTrees::idx($this)
                         : ' ' ) .
                       ( $this->{apply} > 0
                             ? ' #{red}${form}'
                             : ' #{black}${form}' ) ) ) ?>
 
-node:<? '#{goldenrod}${note} << ' if $this->{'#name'} eq 'Token' and $this->{'note'} ne ''
+node:<? '#{goldenrod}${note} << ' if $this->{'note'} ne '' and $this->{'#name'} eq 'Token'
    ?>#{darkred}${tag}<? $this->{'inherit'} eq '' ? '#{red}' : '#{orange}'
    ?>${restrict}
 
@@ -96,6 +102,18 @@ sub idx {
     my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
 
     return wantarray ? @idx : ( "#" . join "/", @idx );
+}
+
+sub normalize {
+
+    my $text = $_[0];
+
+    $text =~ tr[\x{0640}\x{0652}][]d;
+
+    $text =~ s/([\x{064B}-\x{0650}\x{0652}\x{0670}])\x{0651}/\x{0651}$1/g;
+    $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
+
+    return $text;
 }
 
 sub switch_context_hook {
@@ -118,24 +136,13 @@ sub get_nodelist_hook {
     my ($fsfile, $index, $focus, $hidding) = @_;
     my ($nodes);
 
-    if (exists $review->{$grp} and $review->{$grp}{'zoom'}) {
+    if ($review->{$grp}{'zoom'}) {
 
-        my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
+        update_zoom_tree() unless $review->{$grp}{'tree'};
 
-        my $tree = new FSNode;
+        $nodes = [$review->{$grp}{'tree'}, $review->{$grp}{'tree'}->descendants()];
 
-        $tree->set_type_by_name($fsfile->metaData('schema'), 'Element.type');
-
-        $tree->{'#name'} = 'Element';
-
-        $tree->{'id'} = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
-
-        $tree = exists $review->{$grp} && $review->{$grp}{'mode'} ? morpholists($data, $tree)
-                                                                  : morphotrees($data, $tree);
-
-        $nodes = [$tree, $tree->descendants()];
-
-        $focus = $tree unless grep { $focus == $_ } @{$nodes};
+        $focus = $review->{$grp}{'tree'} unless grep { $focus == $_ } @{$nodes};
     }
     else {
 
@@ -154,26 +161,16 @@ sub get_value_line_hook {
 
     my $tree = $fsfile->tree($index);
 
-    if ($tree->{'#name'} ne 'Element') {
+    if ($review->{$grp}{'zoom'}) {
 
-        ($nodes, undef) = $fsfile->nodes($index, $this, 1);
+        ($nodes, undef) = $fsfile->nodes($index, $review->{$grp}{'zoom'}, 1);
 
-        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
+        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => purple' ],
 
                    [ " " ],
 
                    map {
-                            [ $_->{'form'}, (
-
-                                $paragraph_hide_mode eq 'hidden'
-
-                                      ? ( $_->{'apply'} > 0
-                                            ? ( $fsfile->tree($_->{'ref'} - 1), '-foreground => gray' )
-                                            : ( $_, '-foreground => black' ) )
-                                      : ( $_->{'apply'} > 0
-                                            ? ( $_, '-foreground => red' )
-                                            : ( $_, '-foreground => black' ) )
-                                ) ],
+                            [ $_->{'form'}, $_, $_->{'id'}, $_ == $review->{$grp}{'zoom'} ? ( '-underline => 1' ) : () ],
 
                             [ " " ],
 
@@ -181,21 +178,28 @@ sub get_value_line_hook {
     }
     else {
 
-        my $para = $fsfile->tree($tree->{'ref'} - 1);
+        ($nodes, undef) = $fsfile->nodes($index, $grp->{'currentNode'}, 1);
 
-        my $last = $para->{'ref'}{'snd'};
-        my $next = 1;
+        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
 
-        $nodes = [ map { $fsfile->tree($_) } $tree->{'ref'} .. ( $tree->{'ref'} == $last ? $grp->{FSFile}->lastTreeNo : $last - 2 ) ];
-
-        $words = [ [ idx($para) . " " . $para->{'form'}, '#' . $tree->{'ref'}, '-foreground => purple' ],
                    [ " " ],
 
                    map {
-                            [ $_->{'form'}, '#' . ( $tree->{'ref'} + $next++ ), $_ == $tree ? ( $_, '-underline => 1' ) : () ],
+                            [ $_->{'form'}, $_, (
+
+                                $paragraph_hide_mode eq 'hidden'
+
+                                      ? ( $_->{'apply'} > 0
+                                            ? '-foreground => gray'
+                                            : '-foreground => black' )
+                                      : ( $_->{'apply'} > 0
+                                            ? '-foreground => red'
+                                            : '-foreground => black' )
+                                ) ],
+
                             [ " " ],
 
-                        } grep { $_->{'#name'} eq 'Element' } @{$nodes} ];
+                        } grep { $_->{'#name'} eq 'Word' } @{$nodes} ];
     }
 
     @{$words} = reverse @{$words} if $main::treeViewOpts->{reverseNodeOrder};
@@ -205,33 +209,37 @@ sub get_value_line_hook {
 
 sub highlight_value_line_tag_hook {
 
-    return $grp->{root} if $grp->{root}->{'#name'} eq 'Element';
+    return $review->{$grp}{'zoom'} if $review->{$grp}{'zoom'};
 
-    my $node = $grp->{currentNode};
+    my $node = $grp->{'currentNode'};
 
-    $node = $node->parent() while $node and $node->{'#name'} ne 'Lexeme' and $node->{'#name'} ne 'Token';
+    $node = $node->parent() while $node and not $node->{'#name'} ~~ ['Word', 'Unit'];
 
     return $node;
 }
 
 sub value_line_doubleclick_hook {
 
-    return if $grp->{root}->{'#name'} ne 'Element';
+    return unless $review->{$grp}{'zoom'};
 
-    my ($index) = map { $_ =~ /^#([0-9]+)/ ? $1 : () } @_;
+    my $id = $_[-2];            # reversed compared to get_value_line_hook
 
-    return 'stop' unless defined $index;
+    return 'stop' unless $id;
 
-    GotoTree($index);
+    $review->{$grp}{'zoom'} = PML::GetNodeByID($id);
+
+    update_zoom_tree();
+
+    $this = $review->{$grp}{'tree'};
+
     Redraw();
-    main::centerTo($grp, $grp->{currentNode});
 
     return 'stop';
 }
 
 sub node_doubleclick_hook {
 
-    $grp->{currentNode} = $_[0];
+    $grp->{'currentNode'} = $_[0];
 
     if ($_[1] eq 'Shift') {
 
@@ -247,7 +255,7 @@ sub node_doubleclick_hook {
 
 sub node_click_hook {
 
-    $grp->{currentNode} = $_[0];
+    $grp->{'currentNode'} = $_[0];
 
     if ($_[1] eq 'Shift') {
 
@@ -273,6 +281,98 @@ sub switch_review_mode {
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
 }
 
+sub update_zoom_tree {
+
+    return unless $review->{$grp}{'zoom'};
+
+    my $id = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
+
+    unless ($review->{$grp}{'tree'} and $review->{$grp}{'tree'}->{'id'} eq $id) {
+
+        my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
+
+        my $tree = new FSNode;
+
+        $tree->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.type');
+
+        $tree->{'#name'} = 'Element';
+
+        $tree->{'id'} = $id;
+
+        $tree = $review->{$grp}{'mode'} ? morpholists($data, $tree) : morphotrees($data, $tree);
+
+        $review->{$grp}{'tree'} = $tree;
+
+        score_nodes();
+    }
+}
+
+sub score_nodes {
+
+    return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
+
+    my $tree = $review->{$grp}{'tree'};
+    my $zoom = $review->{$grp}{'zoom'};
+
+    my @done = map { $_->children() } $zoom->children();
+
+    return unless @done;
+
+    foreach my $part ($tree->children()) {
+
+        my @comp = $part->children();
+
+        next unless @comp == @done;
+
+        for (my $i = 0; $i < @comp; $i++) {
+
+            foreach my $node (map { $_->children() } map { $_->children() } $comp[$i]) {
+
+                $node->{'score'} = new Fslib::Alt map { new Fslib::Container $_->[1], {'src' => $_->[0]} } compute_score($node, $done[$i]);
+            }
+        }
+    }
+}
+
+sub compute_score {
+
+    my ($node, $done) = @_;
+
+    my (@node, @done, @diff);
+
+    my %score = ();
+
+    @node = split //, $node->{'tag'};
+    @done = split //, $done->{'tag'};
+
+    for (my $i = 0; $i < @done; $i++) {
+
+        $score{'tag'} += $node[$i] eq $done[$i] ? 1 : $node[$i] eq '-' || $done[$i] eq '-' ? 0 : -1;
+    }
+
+    $score{'tag'} /= @done || $dims;
+
+    @node = split //, $node->{'form'} =~ /\p{InArabic}/ ? normalize $node->{'form'} : ElixirFM::orth($node->{'form'});
+    @done = split //, $done->{'form'} =~ /\p{InArabic}/ ? normalize $done->{'form'} : ElixirFM::orth($done->{'form'});
+
+    @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+    $score{'form'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
+
+    @node = exists $node->parent()->{'core'} && exists $node->parent()->{'core'}{'reflex'} ? sort @{$node->parent()->{'core'}{'reflex'}} : ();
+    @done = exists $done->parent()->{'core'} && exists $done->parent()->{'core'}{'reflex'} ? sort @{$done->parent()->{'core'}{'reflex'}} : ();
+
+    @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+    $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
+
+    my $total = reduce { $a + $b } map { $score{$_} == 0 ? 100 : (1 / $score{$_}) } keys %score;
+
+    $total = $total == 0 ? 1 : ((keys %score) / $total);
+
+    return [ 'total' => $total ], map { [ $_ => $score{$_} ] } keys %score;
+}
+
 #bind switch_either_context Shift+space menu Switch Either Context
 sub switch_either_context {
 
@@ -295,47 +395,8 @@ sub switch_either_context {
         $this = $this->parent() for 1 .. $level - 1;
 
         $review->{$grp}{'zoom'} = $this;
-    }
 
-    return;
-
-    my $quick = $_[0];
-
-    my $node = $this;
-
-    if ($root->{'#name'} ne 'Element') {
-
-        if ($this->{'#name'} ne 'Element') {
-
-            GotoTree($this->{'ref'}{'fst'});
-        }
-        elsif ($this->{'#name'} eq 'Word') {
-
-            GotoTree($this->{'ref'});
-        }
-        else {
-
-            if ($this->{'#name'} eq 'Lexeme') {
-
-                GotoTree($this->parent()->{'ref'});
-            }
-            else {
-
-                GotoTree($this->parent()->parent()->{'ref'});
-            }
-
-            $this = PML::GetNodeByID(join 'e', split 'w', $node->{'id'});
-        }
-    }
-    else {
-
-        my ($refs) = reverse idx($root);
-
-        GotoTree($root->{'ref'});
-
-        $this = ($root->children())[$refs - 1];
-
-        $this = PML::GetNodeByID(join 'w', split 'e', $node->{'id'}) if $quick ne 'quick' and exists $node->{'id'};
+        update_zoom_tree();
     }
 }
 
@@ -344,25 +405,21 @@ my %binding = map { $_ => OverrideBuiltinBinding('*', $_) } "Prior", "Next";
 
 OverrideBuiltinBinding(__PACKAGE__, "Prior", [ sub {
 
-        my $grp = $_[1]->{'focusedWindow'};
+        $grp = $_[1]->{'focusedWindow'};
 
         if ($review->{$grp}{'zoom'}) {
 
-            my $node = main::treeIsVertical($grp) ? $review->{$grp}{'zoom'}->rbrother()
-                     : main::treeIsReversed($grp) ? $review->{$grp}{'zoom'}->lbrother()
-                                                  : $review->{$grp}{'zoom'}->rbrother();
+            my $node = $review->{$grp}{'zoom'}->lbrother();
 
             if ($node) {
 
                 $review->{$grp}{'zoom'} = $node;
 
-                $grp->{'currentNode'} = $review->{$grp}{'zoom'};
+                update_zoom_tree();
 
-              # main::setCurrent($grp, $review->{$grp}{'zoom'});
+                $this = $review->{$grp}{'tree'};
 
-                main::get_nodes_win($grp);
-                main::redraw_win($grp);
-                main::centerTo($grp, $grp->{'currentNode'});
+                Redraw();
             }
 
             Tk->break;
@@ -376,25 +433,21 @@ OverrideBuiltinBinding(__PACKAGE__, "Prior", [ sub {
 
 OverrideBuiltinBinding(__PACKAGE__, "Next", [ sub {
 
-        my $grp = $_[1]->{'focusedWindow'};
+        $grp = $_[1]->{'focusedWindow'};
 
         if ($review->{$grp}{'zoom'}) {
 
-            my $node = main::treeIsVertical($grp) ? $review->{$grp}{'zoom'}->lbrother()
-                     : main::treeIsReversed($grp) ? $review->{$grp}{'zoom'}->rbrother()
-                                                  : $review->{$grp}{'zoom'}->lbrother();
+            my $node = $review->{$grp}{'zoom'}->rbrother();
 
             if ($node) {
 
                 $review->{$grp}{'zoom'} = $node;
 
-                $grp->{'currentNode'} = $review->{$grp}{'zoom'};
+                update_zoom_tree();
 
-              # main::setCurrent($grp, $review->{$grp}{'zoom'});
+                $this = $review->{$grp}{'tree'};
 
-                main::get_nodes_win($grp);
-                main::redraw_win($grp);
-                main::centerTo($grp, $grp->{'currentNode'});
+                Redraw();
             }
 
             Tk->break;
@@ -416,20 +469,22 @@ sub move_to_prev_paragraph {
 
     $review->{$grp}{'zoom'} = $this;
 
-    $Redraw = 'win';
+    update_zoom_tree();
+
     ChangingFile(0);
 }
 
 #bind move_to_next_paragraph Shift+Next menu Move to Next Paragraph
 sub move_to_next_paragraph {
 
-    NextTree();
+    NextTree() if $review->{$grp}{'zoom'};
 
     move_word_home();
 
     $review->{$grp}{'zoom'} = $this;
 
-    $Redraw = 'win';
+    update_zoom_tree();
+
     ChangingFile(0);
 }
 
@@ -438,7 +493,12 @@ sub move_word_home {
 
     $this = ($root->children())[0];
 
-    $review->{$grp}{'zoom'} = $this if $review->{$grp}{'zoom'};
+    if ($review->{$grp}{'zoom'}) {
+
+        $review->{$grp}{'zoom'} = $this;
+
+        update_zoom_tree();
+    }
 
     ChangingFile(0);
 }
@@ -448,7 +508,12 @@ sub move_word_end {
 
     $this = ($root->children())[-1];
 
-    $review->{$grp}{'zoom'} = $this if $review->{$grp}{'zoom'};
+    if ($review->{$grp}{'zoom'}) {
+
+        $review->{$grp}{'zoom'} = $this;
+
+        update_zoom_tree();
+    }
 
     ChangingFile(0);
 }
@@ -525,7 +590,7 @@ sub move_par_home {
 #bind move_par_end Shift+End menu Move to Last Paragraph
 sub move_par_end {
 
-    GotoTree($grp->{FSFile}->lastTreeNo + 1);
+    GotoTree($grp->{'FSFile'}->lastTreeNo() + 1);
 
     $review->{$grp}{'zoom'} = undef;
 
@@ -536,7 +601,7 @@ sub move_par_end {
 #bind tree_hide_mode Ctrl+equal menu Toggle Tree Hide Mode
 sub tree_hide_mode {
 
-    if ($root->{'#name'} ne 'Element') {
+    if ($review->{$grp}{'zoom'}) {
 
         $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
     }
@@ -575,7 +640,7 @@ sub level_guide_mode_high {
 #bind move_to_root Ctrl+Shift+Up menu Move Up to Root
 sub move_to_root {
 
-    $this = $root unless $root == $this;
+    $this = $review->{$grp}{'zoom'} ? $review->{$grp}{'tree'} : $root;
 
     $Redraw = 'none';
     ChangingFile(0);
@@ -758,7 +823,7 @@ sub edit_note {
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
+    my $note = $grp->{'FSFile'}->FS()->exists('note') ? 'note' : undef;
 
     unless (defined $note) {
 
@@ -1127,23 +1192,14 @@ sub annotate_morphology {
 
     ChangingFile(0);
 
-    # indicated below when the file or the redraw mode actually change
+    unless ($review->{$grp}{'zoom'}) {
 
-    if ($root->{'#name'} ne 'Element') {
-
-        if ($this->{'#name'} ne 'Element') {
-
-            GotoTree($this->{'ref'}{'snd'});
-        }
-        else {
-
-            switch_either_context();
-        }
-
-        $Redraw = 'win';
+        switch_either_context();
 
         return;
     }
+
+    # indicated below when the file or the redraw mode actually change
 
     my ($quick, @tips) = @_;
 
@@ -1195,7 +1251,7 @@ sub annotate_morphology {
 
                 unless ($node) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
 
-                    $word->{'apply'} = $root->{'apply'};
+                    $word->{'apply'} = $review->{$grp}{'tree'}->{'apply'};
 
                     $word->{'hide'} = $paragraph_hide_mode eq 'hidden' && $word->{'apply'} > 0 ? 'hide' : '';
                 }
@@ -1264,26 +1320,26 @@ sub reflect_choice {
         delete $twig->{'id'};
     }
 
-    my ($roox, $thix) = ($root, $this);
+    my $zoom = $review->{$grp}{'zoom'};
 
-    switch_either_context('quick');
+    my $word = CopyNode($zoom);
 
-    my $clip = $this;
+    $hash->{$zoom->{'id'}} = $word;
 
-    my $word = CopyNode($clip);
+    PasteNodeBefore($word, $zoom);
 
-    PasteNodeBefore($word, $clip);
+    CutNode($zoom);
 
-    CutNode($clip);
+    $review->{$grp}{'zoom'} = $word;
 
-    $this = $word;
+    my $tree = $review->{$grp}{'tree'};
 
     my @lexeme = grep { $_->{'apply'} > 0 } map { $_->children() }
-                 grep { $_->{'apply'} > 0 } map { $_->children() } $roox->children();
+                 grep { $_->{'apply'} > 0 } map { $_->children() } $tree->children();
 
     for (my $i = @lexeme; $i > 0; $i--) {
 
-        $lexeme[$i - 1]->{'id'} = $roox->{'id'} . 'l' . $i;
+        $lexeme[$i - 1]->{'id'} = $tree->{'id'} . 'l' . $i;
 
         $hash->{$lexeme[$i - 1]->{'id'}} = $lexeme[$i - 1];
 
@@ -1322,10 +1378,6 @@ sub reflect_choice {
         }
     }
 
-    switch_either_context();
-
-    ($root, $this) = ($roox, $thix);
-
     return $word;
 }
 
@@ -1343,7 +1395,7 @@ sub restrict_hide {
 
     ChangingFile(0);
 
-    return unless $root->{'#name'} eq 'Element';
+    return unless $review->{$grp}{'zoom'};
 
     $Redraw = 'tree' unless $Redraw eq 'file';
 
@@ -1442,7 +1494,7 @@ sub restrict_hide {
 
     { do {
 
-        last if $node == $root;     # ~~ # $root->parent(), $this->following() etc. are defined # ~~ # never hide the root
+        last if $node == $review->{$grp}{'tree'};   # ~~ # $root->parent(), $this->following() etc. are defined # ~~ # never hide the root
 
         $node->{'hide'} = $entity_hide_mode eq 'hidden' && $node->{'tips'} == 0 ? 'hide' : '';
 
@@ -1954,7 +2006,7 @@ sub switch_the_levels {
 
     my $file = $_[0];
 
-    switch_either_context() if $root->{'#name'} eq 'Element';
+    switch_either_context() if $review->{$grp}{'zoom'};
 
     my ($tree, $id) = (idx($root), join 's-', split 'm-', $this->{'id'});
 
