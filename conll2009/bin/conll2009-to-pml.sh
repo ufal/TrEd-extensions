@@ -106,7 +106,7 @@ bin=$(readlink -f "${0%/*}")
 while (( $# )) ; do
     if [[ -f "$1" ]] ; then
         max=$(perl -e 'while (<>){@num = /(\t)/g ; $max = scalar(@num) if @num > $max } print "$max\n"' "$1")
-        ((max-=14))
+        ((max-=13))
         arglist=''
         for n in $(seq 1 $max) ; do arglist=$arglist,APRED_$n ;done
 
