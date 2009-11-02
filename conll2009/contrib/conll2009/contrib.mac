@@ -3,6 +3,8 @@
 #ifndef conll2009
 #define conll2009
 
+#include <contrib/pml/PML.mak>
+
 {
 package Conll2009;
 
