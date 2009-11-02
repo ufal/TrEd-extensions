@@ -106,9 +106,8 @@ pml2conll
 
 =head1 SYNOPSIS
 
-  pml2conll [<options>] <input-file(s)>
-  pml2conll --help for help
-  pml2conll --man  for manual page
+  btred -I pml2conll -o [<options>] -- <input-file(s)>
+  perldoc pml2conll
 
 =head1 DESCRIPTION
 
@@ -142,6 +141,11 @@ Use column C<col> as the pointer to the head (defaults to C<HEAD>).
 
 Use C<name> as the name for the ordering attribute (whose value is
 stored to the column C<ID>). Defaults to C<order>.
+
+=item B<--APREDS|-A>' C<name>,
+
+Use C<name> as the name for the final set of columns representing
+predicate arguments (used in CoNLL ST 2008 and 2009).
 
 =back
 
