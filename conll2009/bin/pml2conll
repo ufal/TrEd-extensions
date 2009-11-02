@@ -1,4 +1,5 @@
 #!btred -e pml2conll()
+#-*- cperl -*-
 
 use Pod::Usage;
 use Getopt::Long;
@@ -57,36 +58,40 @@ sub pml2conll {
     unshift @$nodes,$root if $opts{'technical-root'};
 
     foreach my $node(@$nodes){
+      my $line ='';
+
       foreach my $attr(@attr){
 
         if($attr eq $opts{'head-to'}){
           my $p = $node->parent;
-          print $p ? $p->{$opts{'order-attribute'}} : 0;
+          $line .= $p ? $p->{$opts{'order-attribute'}} : '0';
 
         }elsif($attr eq $opts{'APREDS'}){
           foreach my $pred (@preds){
             # Assumption: each ID can be listed just once in the apreds list
             my ($apred) = grep $_->{'target.rf'} eq $pred->{'xml:id'}
               ,ListV($node->{apreds});
+
             if(ref $apred){
-              print $apred->{label};
+              $line .= $apred->{label};
             }else{
-              print '_';
+              $line .= '_';
             }
-            print "\t" unless $pred == $preds[-1];
+            $line .=  "\t" unless $pred == $preds[-1];
           }
 
         }else{ # normal string value
           my $value = $node->attr($attr);
           if(defined $value){
-            print $value unless ref $value;
+            $line .= $value unless ref $value;
           }else{
-            print '_';
+            $line .= '_';
           }
         }
-        print "\t" unless $attr eq $attr[-1];
+        $line .=  "\t" unless $attr eq $attr[-1];
       }
-      print "\n";
+      $line =~ s/\t+$//;
+      print $line,"\n";
     }
     print "\n";
   }} while TredMacro::NextTree();
