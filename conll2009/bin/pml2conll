@@ -1,0 +1,159 @@
+#!btred -e pml2conll()
+
+use Pod::Usage;
+use Getopt::Long;
+
+Getopt::Long::Configure ("bundling");
+my %opts;
+GetOptions(\%opts,
+	'node-ids|i',
+	'columns|c=s',
+	'head-to|h=s',
+	'order-attribute|O=s',
+	'struct-feats|F',
+	'technical-root|r',
+        'APREDS|A=s',
+	'help',
+	'usage',
+	'man',
+       ) or $opts{usage}=1;
+
+if ($opts{usage}) {
+  pod2usage(-msg => 'validate_pml');
+}
+if ($opts{help}) {
+  pod2usage(-exitstatus => 0, -verbose => 1);
+}
+if ($opts{man}) {
+  pod2usage(-exitstatus => 0, -verbose => 2);
+}
+
+$opts{columns} |= 'order,form,lemma,plemma,pos,ppos,feat,pfeat,HEAD,phead,deprel,pdeprel,fillpred,pred,APREDS';
+$opts{'head-to'} |= 'HEAD';
+$opts{'APREDS'} |= 'APREDS';
+$opts{'order-attribute'} |= 'order';
+
+my @attr = split /,/,$opts{columns};
+
+sub pml2conll {
+
+  my @sch_attr = Attributes();
+  foreach $attr (@attr){
+    die "Attribute $attr not found in schema.\n"
+      unless grep $_ eq $attr,@sch_attr
+        or grep $_ eq $attr,$opts{'head-to'},$opts{'APREDS'};
+  }
+
+  do {{
+
+    my @preds = sort { $a->{order} <=> $b->{order} }
+      grep $_->{fillpred} eq 'Y',
+        $root->descendants,
+          $opts{'technical-root'}
+            ? undef
+              : $root;
+
+    my $nodes = SortByOrd([$root->descendants]);
+    unshift @$nodes,$root if $opts{'technical-root'};
+
+    foreach my $node(@$nodes){
+      foreach my $attr(@attr){
+
+        if($attr eq $opts{'head-to'}){
+          my $p = $node->parent;
+          print $p ? $p->{$opts{'order-attribute'}} : 0;
+
+        }elsif($attr eq $opts{'APREDS'}){
+          foreach my $pred (@preds){
+            # Assumption: each ID can be listed just once in the apreds list
+            my ($apred) = grep $_->{'target.rf'} eq $pred->{'xml:id'}
+              ,ListV($node->{apreds});
+            if(ref $apred){
+              print $apred->{label};
+            }else{
+              print '_';
+            }
+            print "\t" unless $pred == $preds[-1];
+          }
+
+        }else{ # normal string value
+          my $value = $node->attr($attr);
+          if(defined $value){
+            print $value unless ref $value;
+          }else{
+            print '_';
+          }
+        }
+        print "\t" unless $attr eq $attr[-1];
+      }
+      print "\n";
+    }
+    print "\n";
+  }} while TredMacro::NextTree();
+
+}
+
+__END__
+
+=head1 NAME
+
+pml2conll
+
+=head1 SYNOPSIS
+
+  pml2conll [<options>] <input-file(s)>
+  pml2conll --help for help
+  pml2conll --man  for manual page
+
+=head1 DESCRIPTION
+
+Converts CoNLL data from PML back to ConLL-X format.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--technical-root|-r>
+
+A technical root was created for each sentence.
+
+=item B<--struct-feats>
+
+If the FEATS column has the form name=value|name=value|..., then this
+flag may be used to build a structure out of these features. (By
+default, all features are stored in a list).
+
+=item B<--columns|-c> C<col1,col2,col3,...>
+
+Specify names and order of attributes to be converted to columns the
+output ConLL-X file. Defaults to
+C<order,form,lemma,plemma,pos,ppos,feat,pfeat,HEAD,phead,deprel,pdeprel,fillpred,pred,APREDS>.
+
+=item B<--head-to|-h> C<col>
+
+Use column C<col> as the pointer to the head (defaults to C<HEAD>).
+
+=item B<--order-attribute|-O> C<name>
+
+Use C<name> as the name for the ordering attribute (whose value is
+stored to the column C<ID>). Defaults to C<order>.
+
+=back
+
+=head1 AUTHOR
+
+Jan Stepanek, jan_stepanek[at]matfyz_cz
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2006 by Jan Stepanek
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.2 or,
+at your option, any later version of Perl 5 you may have available.
+
+=head1 BUGS
+
+None reported... yet.
+
+=cut
