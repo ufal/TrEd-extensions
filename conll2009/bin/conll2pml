@@ -27,7 +27,6 @@ GetOptions(\%opts,
 	'schema-only|s',
 	'head-from|h=s',
 	'order-attribute|O=s',
-        'parents|p',
 	'struct-feats|F',
 	'technical-root|r',
 	'help',
@@ -364,10 +363,6 @@ Suppress all messages.
 =item B<--out-prefix|-o> C<basename>
 
 Output filename prefix.
-
-=item B<--parents|-p> C<basename>
-
-Make parent directories as needed.
 
 =item B<--max-sentences|-m> C<N>
 
