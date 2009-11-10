@@ -25,12 +25,12 @@ gzip=0
 
 while true ; do
     case "$1" in
-	-u|--usage) PRINT_USAGE=1; shift ;;
-	-h|--help) PRINT_HELP=1; shift ;;
-	-v|--version) PRINT_VERSION=1; shift ;;
-	-t|--trees-per-file) sentences_per_file=$2; shift 2 ; break ;;
-	-b|--btred) btred=$2; shift 2 ; break ;;
-	-z|--gzip) gzip=1; shift 1 ; break ;;
+	-u|--usage) PRINT_USAGE=1; shift; break ;;
+	-h|--help) PRINT_HELP=1; shift; break ;;
+	-v|--version) PRINT_VERSION=1; shift; break ;;
+	-t|--trees-per-file) sentences_per_file=$2; shift 2 ;  ;;
+	-b|--btred) btred=$2; shift 2 ;  ;;
+	-z|--gzip) gzip=1; shift 1 ;  ;;
 	--) shift ; break ;;
 	*) echo "Internal error while processing command-line options!" ; exit 1 ;;
     esac
