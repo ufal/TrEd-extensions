@@ -15,7 +15,7 @@ node: <?
 ?>
 text: <?
   $${#name} eq 'terminal' ? 
-    "#{-tag:".(join(",",$this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
+    "#{-tag:".(join(",",map { "$_,#$_->{id}" } $this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
     .$${token}
   : () ?>
 

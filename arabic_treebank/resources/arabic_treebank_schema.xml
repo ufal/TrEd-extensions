@@ -30,6 +30,12 @@
       <member name="para">
         <cdata format="nonNegativeInteger"/>
       </member>
+      <member name="para_id">
+        <cdata format="ID"/>
+      </member>
+      <member name="sent_no"> <!-- number of the sentence in the current paragraph -->
+        <cdata format="nonNegativeInteger"/>
+      </member>
       <member name="comment"><cdata format="any"/></member>
       <member name="children" role="#CHILDNODES">
 	<sequence>
