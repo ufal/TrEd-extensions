@@ -40,6 +40,15 @@ sub switch_context_hook {
   Redraw() if GUI();
 }
 
+# prevent re-ordering by the order attribute (nonterminals are not ordered)
+sub get_nodelist_hook {
+  my ($fsfile,$tree_no,$current,$showHidden)=@_;
+  my $tree = $fsfile && $fsfile->tree($tree_no)
+    or return;
+  return [[ $tree->descendants ], $current];
+}
+
+
 }
 1;
 
