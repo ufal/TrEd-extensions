@@ -1,19 +1,10 @@
 #!/bin/bash
 # conll2009-to-pml.sh     pajas@ufal.mff.cuni.cz     2009/04/21 12:22:25
 
-PARSED_OPTS=$(
-  getopt -n 'conll2009-to-pml.sh' --shell bash \
-    -o huvt:b:z \
-    -l help \
-    -l usage \
-    -l version \
-    -l trees-per-file \
-    -l btred \
-    -l gzip \
-  -- "$@"
-)
-if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
-eval set -- "$PARSED_OPTS"
+# readlink -f does not work on Mac OSX, so here is a Perl-based workaround:
+readlink_nf () {
+    perl -MCwd -e 'print Cwd::abs_path(shift)' "$1"
+}
 
 VERSION=1.0
 PRINT_USAGE=0
@@ -22,8 +13,10 @@ PRINT_VERSION=0
 btred=btred
 sentences_per_file=50
 gzip=0
+out_dir=
 
-while true ; do
+args=()
+while [ $# -gt 0 ]; do
     case "$1" in
 	-u|--usage) PRINT_USAGE=1; shift; break ;;
 	-h|--help) PRINT_HELP=1; shift; break ;;
@@ -31,10 +24,13 @@ while true ; do
 	-t|--trees-per-file) sentences_per_file=$2; shift 2 ;  ;;
 	-b|--btred) btred=$2; shift 2 ;  ;;
 	-z|--gzip) gzip=1; shift 1 ;  ;;
+	-o|--out-dir) out_dir=$(readlink_nf "$2"); shift 2 ;  ;;
 	--) shift ; break ;;
-	*) echo "Internal error while processing command-line options!" ; exit 1 ;;
+	-*) echo "Unknown command-line option: $1" ; exit 1 ;;
+        *) args+=("$1"); shift ;;
     esac
 done
+eval set -- "${args[@]}"
 
 function usage () {
     cat <<USAGE
@@ -101,7 +97,7 @@ apreds='<member name="apreds" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
 apreds=$(echo "$apreds" | tr '\n' ' ')
 
 columns="ID,FORM,LEMMA,PLEMMA,POS,PPOS,FEAT,PFEAT,HEAD,PHEAD,DEPREL,PDEPREL,FILLPRED,PRED"
-bin=$(readlink -f "${0%/*}")
+bin=$(readlink_nf "${0%/*}")
 
 while (( $# )) ; do
     if [[ -f "$1" ]] ; then
@@ -109,8 +105,11 @@ while (( $# )) ; do
         ((max-=13))
         arglist=''
         for n in $(seq 1 $max) ; do arglist=$arglist,APRED_$n ;done
-
-        "$bin"/conll2pml -R conll2009 -r -o "$1" -m $sentences_per_file -c $columns$arglist "$1"
+	out_prefix="$1"
+	if [ -n "$out_dir" ]; then
+	    out_prefix="$out_dir"/$(basename "$out_prefix")
+	fi
+        "$bin"/conll2pml -R conll2009 -r -o "$out_prefix" -m $sentences_per_file -c $columns$arglist "$1"
         sed -i~ 's%\(<s:member name="apred_1">\)%'"$apreds"'\1%' "$1_schema.xml"
         "$btred" -q -S -I "$bin"/args.btred "$1"_*.pml
 	rm "$1_schema.xml"
