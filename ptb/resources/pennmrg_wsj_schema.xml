@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
   <description>Generated schema for converted MRG PTB Data</description>
-  <import schema="pennmrg_untyped_schema.xml"/>
+  <import schema="pennmrg_schema.xml"/>
   <type name="postag.type">
     <choice>
       <value>#</value>

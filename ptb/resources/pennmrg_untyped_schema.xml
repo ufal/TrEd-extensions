@@ -6,16 +6,21 @@
 
   <derive name="node.type" type="nonterminal.type">
     <structure name="node">
+      <member name="cat" required="0"> <!-- syntactic category -->
+	<alt type="cat.type"/>
+      </member>
       <member name="form"><cdata format="any"/></member>
       <member name="pos" type="postag.type"/> 
+      <member name="order" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
+      <member name="children" required="0" role="#CHILDNODES" type="node_children.type"/>
    </structure>
   </derive>
 
-  <derive type="nonterminal_children.type">
+  <type name="node_children.type">
     <sequence>
       <element name="nonterminal" type="node.type"/>
       <element name="terminal" type="node.type"/>
     </sequence>
-  </derive>
+  </type>
 
 </pml_schema>

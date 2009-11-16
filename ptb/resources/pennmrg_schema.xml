@@ -46,14 +46,14 @@
       <member name="id" role="#ID" as_attribute="1" required="1">
         <cdata format="ID"/>
       </member>
-      <member name="cat"> <!-- syntactic category -->
+      <member name="cat" required="1"> <!-- syntactic category -->
 	<alt type="cat.type"/>
       </member>
       <member name="functions">
         <list ordered="1" type="function.type"/>
       </member>
       <member name="coindex.rf"><cdata format="PMLREF"/></member>
-      <member name="children" role="#CHILDNODES" type="nonterminal_children.type"/>
+      <member name="children" required="1" role="#CHILDNODES" type="nonterminal_children.type"/>
    </structure>
   </type>
 
@@ -63,8 +63,9 @@
         <cdata format="ID"/>
       </member>
       <member name="coindex.rf"><cdata format="PMLREF"/></member>
-      <member name="form"><cdata format="any"/></member>
-      <member name="pos" type="postag.type"/> <!-- Penn Treebank part of speech tag -->
+      <member name="form" required="1"><cdata format="any"/></member>
+      <member name="pos" required="1" type="postag.type"/> <!-- Penn Treebank part of speech tag -->
+      <member name="order" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
      </structure>
   </type>
 

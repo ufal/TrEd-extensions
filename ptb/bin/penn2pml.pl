@@ -105,6 +105,9 @@ HEADER
   while (my $line=<$S>) {
     chomp $line;
     next if ($line=~/^\s*\</); # skip SGML/XML markup (e.g. in Chinese Treebank files)
+    next if ($line=~/^\*/);    # skip UPenn copyright comments
+    next if ($line=~/^\( @[^)]*\)\s*$/); # skip Penn Atis IDs (or what)
+    next if ($line=~/^\( END_OF_TEXT_UNIT \)$/); # skip Penn Atis eot marks
     if ($line=~/^\(/) { $line = "\n".$line }
     $input.=$line;
   }
@@ -118,7 +121,7 @@ HEADER
   my $base_id = $basename; $base_id=~s/\.mrg$//;
 
   foreach my $sentence (split /\n/,$input) {
-    my ($terminal_count, $nonterminal_count);
+    my ($terminal_count, $nonterminal_count, $order)=(0,0,0);
     $sentence_count++;
     $sentence =~ s/\((.+)\)/$1/;
     my $sentence_id = "$base_id-s$sentence_count";
@@ -135,31 +138,34 @@ HEADER
     my $parent = $root;
     my (@coindex,%target_id);
     while ($sentence) {
-
       # terminal
-      if ( $sentence=~s/^\(([^ ()]+) ([^()]+)\)// ) {
-	my ($tag,$pennform) = ($1,$2);
+      if ( $sentence=~s{^\(((?:[^ ()\\]|\\.)+)( )((?:[^\\()/]|\\.)+)\)}{} or # e.g. (VB find)
+	   $sentence=~s{^\s*((?:[^ ()/\\]|\\.)+)(/)((?:[^ ()\\]|\\.)+)}{} # alternative format: find/VB
+	 ) {
+	my ($tag,$pennform) = ($2 eq '/') ? ($3,$1) : ($1,$3);
 	my $form = pennform2form($pennform);
 	$terminal_count++;
 	my $terminal_id = "$sentence_id-t$terminal_count";
+	my $coindex;
+	if ($pennform =~ s{\*[-](\d+)$}{*}) {
+	  $coindex = {
+	    -name => 'coindex.rf',
+	    -content => $1,
+	  };
+	  push @coindex, $coindex;
+	}
 	my $node = {
 	  -name => 'terminal',
 	  -attributes => { id => $terminal_id },
 	  -children => [
 	    { -name => 'form', -content=>$pennform },
 	    { -name => 'pos', -content=>$tag },
+	    (($pennform=~m/^\*/) ? () : { -name => 'order', -content=>$order++ }),
+	    ($coindex ? $coindex : ()),
 	   ],
 	  };
 	$postag_values{$tag}=undef if $opts{'generate-schema'};
 	push @{$parent->{-children}}, $node;
-	if ($pennform =~ m/\*[-](\d+)$/) {
-	  my $coindex = {
-	    -name => 'coindex.rf',
-	    -content => $1,
-	  };
-	  push @coindex, $coindex;
-	  push @{$node->{-children}}, $coindex;
-	}
       }
 
       # nonterminal opening bracket
@@ -221,7 +227,7 @@ HEADER
 
       # parse error
       else {
-	die "No reduction: $sentence\n";
+	die "No reduction: '$sentence'\n";
       }
     }
 
