@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="24397">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="34615">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>arabic_treebank</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Penn Arabic Treebank</title>
-  <version>1.17</version>
+  <version>1.20</version>
   <copyright year="2009">Petr Pajas</copyright>
 
   <description>This package contains basic support for working with the Penn Arabic Treebank in TrEd.

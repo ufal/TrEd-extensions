@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="655547">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="660725">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt_auto_afun</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Automatically Assign Analytical Functions</title>
-  <version>1.18</version>
+  <version>1.19</version>
   <copyright year="2002">Zdeněk Žabokrtský</copyright>
   <description>Provides a macros that attempt to assign automatically analytical functions
     to analytical nodes (PDT 1.0 or PDT 2.0 a-layer), based on morphological information
