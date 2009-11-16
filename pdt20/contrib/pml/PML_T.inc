@@ -278,7 +278,7 @@ sub get_value_line_hook {
       push@out,(['['.$token.']',@{$refers_to{$node->{id}}||[]},'-over=>1','-foreground=>'.CustomColor('spell')]);
     }
     push@out,([$form,@{$refers_to{$node->{id}}||[]},'anode:'.$node->{id}]);
-    unless($node->attr('m/w/no_space_after')){
+    unless($node->attr('m/w/[-1]/no_space_after')){
       push@out,([" ","space"]);
     }
   }

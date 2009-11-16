@@ -34,7 +34,7 @@ package PMLTQ::Relation::PDT20;
   use base qw(PMLTQ::Relation::SimpleListIterator);
   use PMLTQ::Relation {
       name => 'eparent',
-      reversed_relation => 'echild',
+      reversed_relation => 'implementation:echild',
       start_node_type => 'a-node',
       target_node_type => 'a-node',
       iterator_class => __PACKAGE__,
@@ -56,7 +56,7 @@ package PMLTQ::Relation::PDT20;
   use base qw(PMLTQ::Relation::SimpleListIterator);
   use PMLTQ::Relation {
       name => 'eparent',
-      reversed_relation => 'echild',
+      reversed_relation => 'implementation:echild',
       start_node_type => 't-node',
       target_node_type => 't-node',
       iterator_class => __PACKAGE__,
@@ -79,7 +79,7 @@ package PMLTQ::Relation::PDT20;
   use base qw(PMLTQ::Relation::SimpleListIterator);
   use PMLTQ::Relation {
       name => 'echild',
-      reversed_relation => 'eparent',
+      reversed_relation => 'implementation:eparent',
       start_node_type => 'a-node',
       target_node_type => 'a-node',
       iterator_class => __PACKAGE__,
@@ -102,7 +102,7 @@ package PMLTQ::Relation::PDT20;
   use base qw(PMLTQ::Relation::SimpleListIterator);
   use PMLTQ::Relation {
       name => 'echild',
-      reversed_relation => 'eparent',
+      reversed_relation => 'implementation:eparent',
       start_node_type => 't-node',
       target_node_type => 't-node',
       iterator_class => __PACKAGE__,
