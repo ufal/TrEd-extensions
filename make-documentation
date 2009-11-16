@@ -23,6 +23,9 @@ for pkg in "$@"; do
   icon=$(get_element "${dir}/package.xml" 'icon')
   title=$(get_element "${dir}/package.xml" 'title')
   version=$(get_element "${dir}/package.xml" 'version')
+  copyright=$(get_element "${dir}/package.xml" 'copyright')
+  year=$(get_element "${dir}/package.xml" 'copyright/@year')
+  repo=$(get_element "${dir}/package.xml" 'repository/@href')
   index_title="Generated documentation for TrEd extension ${pkg}"
   if [ -f "${doc_dir}/include.html" ]; then
       index_title="Documentation for TrEd extension ${pkg}"
@@ -40,6 +43,7 @@ for pkg in "$@"; do
 <head>
   <title>$index_title</title>
   <!-- $stamp -->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <link href="html/css/blue.css" rel="stylesheet">
 </head>
 <body>
@@ -64,6 +68,14 @@ EOF
       cat "${doc_dir}/include.html" >> "$index"
       echo "</div>" >> "$index"
   fi
+
+  cat <<EOF >> "$index"
+<h3>Installation</h3>
+<p>This extension can be installed directly from <a href="http://ufal.mff.cuni.cz/~pajas/tred">TrEd</a>, using
+<b>Setup >> Manage Extensions >> Get New Extensions</b>; just make sure
+the repository <tt>$repo</tt> is enabled in <b>Setup >> Manage Extensions >> Edit Repositories</b>.
+<p>
+EOF
 
 
   if [ -d "${dir}/contrib" ]; then
@@ -127,6 +139,19 @@ EOF
   fi
 
   cat <<EOF >> "$index"
+<h3>Copyright</h3>
+<p>Copyright (c) $year by $copyright<p>
+EOF
+
+  cat <<EOF >> "$index"
+<h3>License</h3>
+<p>This is a free software distributed under GPL - The General Public Licence.
+<br />
+ Full text of the GPL can be found at <a href="http://www.gnu.org/copyleft/gpl.html">http://www.gnu.org/copyleft/gpl.html</a>.</p>
+EOF
+
+  cat <<EOF >> "$index"
+
 </body>
 </html>
 EOF

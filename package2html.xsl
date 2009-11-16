@@ -7,11 +7,12 @@
   xmlns:p="http://ufal.mff.cuni.cz/pdt/pml/"
   version='1.0'>
 <xsl:output method="html" encoding="utf-8"/>
+<xsl:param name="doc" select="1"/>
 
 <xsl:template match="/">
   <html>
     <head>
-      <style>
+      <style type="text/css">
 /* <xsl:comment> */
 * {
   font-family: sans;
@@ -36,20 +37,30 @@
 .desc {
     padding: 3pt 3pt 3pt 3pt;
 }
-.size {
+.size, .copyright, .moreinfo {
+  float: right;
+  clear: right;
+  padding: 3pt 6pt 0pt 3pt;
   text-align: right;
+}
+
+.size {
   font-size: 7pt;
-  padding: 3pt 3pt 0pt 3pt;
 }
 .copyright {
     font-size: 7pt;
     font-style: italic;
-    text-align: right;
     color: #666;
-    padding: 3pt 3pt 3pt 3pt;
+}
+.moreinfo {
+    font-size: 10pt;
 }
 .version {
     text-align: right;
+}
+.pkgicon {
+  float: left;
+  padding: 6pt 6pt 6pt 6pt
 }
 /* </xsl:comment> */
 </style>
@@ -75,7 +86,11 @@
     </div>
     <div class="desc">
       <xsl:call-template name="icon"/>
-        <xsl:apply-templates select="p:description"/>
+      <xsl:apply-templates select="p:description"/>
+      <xsl:if test="$doc">
+	<div class="moreinfo"><small><a href="{string(p:pkgname)}/documentation/index.html">More info...</a></small>
+	</div>
+      </xsl:if>
    </div>
    <xsl:if test="@package_size|@install_size">
      <div class="size">
@@ -97,9 +112,10 @@
        </xsl:if>
      </div>
    </xsl:if>
-   <div class="copyright" style="clear:both">
+   <div class="copyright">
      <xsl:apply-templates select="p:copyright"/>
-   </div>    
+   </div>
+   <div style="clear:both"></div>
   </div>
 </xsl:template>
 
@@ -136,7 +152,7 @@
 <!--  <span class="icon"> -->
     <xsl:choose>
       <xsl:when test="p:icon">
-      <img src="{concat(string(p:pkgname),'/',string(p:icon))}" style="float: left; padding: 6pt 6pt 0pt 6pt"/>
+      <img src="{concat(string(p:pkgname),'/',string(p:icon))}" class="pkgicon"/>
       </xsl:when>
       <xsl:otherwise>
 	<img src="extension.png" style="float: left; padding: 6pt 6pt 0pt 6pt" />
