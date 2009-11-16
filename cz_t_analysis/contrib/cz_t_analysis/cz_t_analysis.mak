@@ -33,6 +33,28 @@ sub __this_dir {
 
 $TrEd::MacroStorage::CZ_T_Analysis::sentence||='Kočka leze dírou, pes oknem, nebude-li pršet, nezmoknem.';
 
+=head1 NAME
+
+CZ_T_Analysis - a TectoMT-based Czech analyzer for TrEd
+
+=head1 DESCRIPTION
+
+This package contains a TectoMT-based Czech analyzer producing
+tectogrammatical, analytical and morphological layers for a given
+Czech sentence.
+
+=head1 USAGE
+
+Use Macros->* Analyze Czech Text menu command in TrEd to start the
+macro; select a base-filename for the PML files with the analysis and
+insert one or more Czech sentences into the text box. The analyzer
+will produce three PDT~2.0-like files with the suffixes .t
+(tectogrammatical analysis), .a (analytical analysis), .m
+(morphological analysis).
+
+=cut
+
+
 Bind(
   __PACKAGE__.'->analyze_sentence'  => {
     # key => 'F9',
@@ -41,6 +63,10 @@ Bind(
     changing_file => 0,
   }
 );
+
+=head1 MACROS
+
+=over 5
 
 =item CZ_T_Analysis->analyze_sentence(\%options)
 
@@ -65,6 +91,8 @@ A directory in which to store the resulting files.
 
 Basename for the resulting files. The suffixes .m.gz, .a.gz, and .t.gz
 are appended. Default basename is 'result'.
+
+=back
 
 =cut
 
@@ -163,3 +191,16 @@ sub analyze_sentence {
 }
 
 }
+
+=back
+
+=head1 COPYRIGHT
+
+Copyright (c) 2008 by Zdeněk Žabokrtský, Václav Klimeš, and Petr Pajas
+
+=head1 LICENSE
+
+You can use and distribute this program under the same terms as TrEd
+itself.
+
+
