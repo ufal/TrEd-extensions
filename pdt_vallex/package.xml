@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="15221497">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="15227963">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt_vallex</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>PDT-ValLex Editor</title>
-  <version>1.37</version>
+  <version>1.39</version>
   <copyright year="2004-2006">Petr Pajas</copyright>
   <description>Provides GUI interface for TrEd to the Czech valency lexicon PDT-ValLex
     with browse, search, edit and annotate capabilities.
