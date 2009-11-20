@@ -175,6 +175,7 @@
  </type>
  <type name="v-element_alternation.type">
    <container role="#NODE">
+     <attribute name="id" role="#ID"><cdata format="ID" /></attribute>
      <sequence content_pattern="(element+)" role="#CHILDNODES">
        <element name="element" type="v-element.type" />
      </sequence>
@@ -182,6 +183,7 @@
  </type>
  <type name="v-element.type">
   <container role="#NODE">
+   <attribute name="id" role="#ID"><cdata format="ID" /></attribute>
    <attribute name="functor" required="1">
     <choice>
      <value>---</value>
@@ -259,6 +261,7 @@
  </type>
  <type name="v-form.type">
   <container role="#NODE">
+   <attribute name="id" role="#ID"><cdata format="ID" /></attribute>
    <attribute name="abbrev">
     <cdata format="any" />
    </attribute>
@@ -274,27 +277,29 @@
   </container>
  </type>
  <type name="v-typical.type">
-  <container role="#NODE"></container>
+  <container role="#NODE"><attribute name="id" role="#ID"><cdata format="ID" /></attribute></container>
  </type>
  <type name="v-elided.type">
-  <container role="#NODE"></container>
+  <container role="#NODE"><attribute name="id" role="#ID"><cdata format="ID" /></attribute></container>
  </type>
  <type name="v-recip.type">
-  <container role="#NODE"></container>
+  <container role="#NODE"><attribute name="id" role="#ID"><cdata format="ID" /></attribute></container>
  </type>
  <type name="v-state.type">
-  <container role="#NODE"></container>
+  <container role="#NODE"><attribute name="id" role="#ID"><cdata format="ID" /></attribute></container>
  </type>
  <type name="v-parent.type">
   <structure role="#NODE">
+   <member as_attribute="1" name="id" role="#ID"><cdata format="ID" /></member>
    <member name="node" type="v-node.type" />
   </structure>
  </type>
  <type name="v-parentpos.type">
-  <container role="#NODE"></container>
+  <container role="#NODE"><attribute name="id" role="#ID"><cdata format="ID" /></attribute></container>
  </type>
  <type name="v-node.type">
   <container role="#NODE">
+   <attribute name="id" role="#ID"><cdata format="ID" /></attribute>
    <attribute name="num">
     <choice>
      <value>S</value>
