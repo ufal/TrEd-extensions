@@ -2,6 +2,7 @@
 
 #encoding iso-8859-2
 use vars qw(
+$_CatchError
 $cList
 $fObj
 $fObject
