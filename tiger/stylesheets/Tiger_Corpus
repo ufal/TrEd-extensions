@@ -2,7 +2,10 @@ context: Tiger_Corpus
 node: #{black}${word}
 node: #{darkblue}${cat}#{darkgreen}${pos}
 node: <? $${morph} ne '--' ? '${morph}' : '' ?>
-label:#{-coords:n,p+15}#{-anchor:center}#{black}${label}
+label:<? 
+  my $pd=-10+8*$Tiger_Corpus::chld_pos->{$this->parent};
+  '#{-coords:n,p+15+'.$pd.'}#{-anchor:center}#{black}${label}'
+?>
 
 text: <?
   $${#name} eq 'terminal' ? 
@@ -14,10 +17,12 @@ rootstyle: #{balance:0}
   #{skipHiddenLevels:1}
   #{CurrentTextBox-fill:red}
   #{nodeXSkip:18}
-  #{nodeYSkip:45}
+  #{nodeYSkip:55}
   #{baseYPos:20}
   #{NodeLabel-skipempty:1}
   #{NodeLabel-halign:center}#{Node-textalign:center}
+  #{CurrentOval-outline:red}
+  #{CurrentOval-width:3}
   <?
     my (%prev,%level);
     $Tiger_Corpus::chld_pos=\%prev;
@@ -39,10 +44,11 @@ style:
     my $styles='';
     my $is_nonterminal = $${#name} eq 'nonterminal' ? 1 : 0;
    my $smooth='0';
-   my $pd=-10+8*$Tiger_Corpus::chld_pos{$this->parent};
+   my $pd=-10+8*$Tiger_Corpus::chld_pos->{$this->parent};
    my $nd=0;
    if ($is_nonterminal) {
-    $nd=-10+8*$Tiger_Corpus::chld_pos{$this};
+    $nd=-10+8*$Tiger_Corpus::chld_pos->{$this};
+  
     $styles .= "#{NodeLabel-yadj:$nd}";
    }
     my $coords = qq{n,n+$nd,n,p+$pd,p,p+$pd};
@@ -72,8 +78,8 @@ style:
 
     $styles .= 
     $is_nonterminal ? 
-       "#{Node-shape:oval}#{CurrentOval-fill:red}#{Oval-fill:lightyellow}#{Node-surroundtext:1}#{NodeLabel-valign:center}" 
-     :  "#{NodeLabel-yadj:-20}#{CurrentOval-fill:red}#{Line-dash:.}#{Oval-fill:yellow}";
+       "#{Node-shape:oval}#{Oval-fill:lightyellow}#{Node-surroundtext:1}#{NodeLabel-valign:center}" 
+     :  "#{NodeLabel-yadj:-20}#{Line-dash:.}#{Oval-fill:yellow}";
      $styles;
   }
 ?>
