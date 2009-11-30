@@ -4,7 +4,7 @@ node: #{darkblue}${cat}#{darkgreen}${pos}
 node: <? $${morph} ne '--' ? '${morph}' : '' ?>
 label:<? 
   my $pd=-10+8*$Tiger_Corpus::chld_pos->{$this->parent};
-  '#{-coords:n,p+15+'.$pd.'}#{-anchor:center}#{black}${label}'
+  '#{-coords:n,p+20+'.$pd.'}#{-anchor:center}#{black}${label}'
 ?>
 
 text: <?
@@ -53,7 +53,7 @@ style:
    }
     my $coords = qq{n,n+$nd,n,p+$pd,p,p+$pd};
     if (length $${secedges/secedge/idref}) {
-      my $td=-10+8*$Tiger_Corpus::chld_pos{ $${secedges/secedge/idref} };
+      my $td=-10+8*$Tiger_Corpus::chld_pos->{ $${secedges/secedge/idref} };
       my $t='[? $node->{id} eq "'.$${secedges/secedge/idref}.'" ?]';
       my $xn=qq{xn};
       my $yn=qq{yn+$nd};

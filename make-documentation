@@ -93,7 +93,7 @@ EOF
 	      podselect < "$f" > "${pod}/${f}.pod"
 	      podchecker "${pod}/${f}.pod"
 
-	      "$pod2xhtml" --no-index --toplink 'back' --topurl ../../.index.html --css ../css/blue.css --infile "${pod}/${f}.pod" --outfile "${html}/${f}.html" --title "Generated documentation for ${f}"
+	      "$pod2xhtml" --no-index --toplink 'back' --topurl ../../index.html --css ../css/blue.css --infile "${pod}/${f}.pod" --outfile "${html}/${f}.html" --title "Generated documentation for ${f}"
 	      echo "<li><a href=\"html/${f}.html\">${f}</a></li>" >> "$index"
 	  else
 	      echo "<li>${f}</li>" >> "$index"

@@ -203,4 +203,4 @@ Copyright (c) 2008 by Zdeněk Žabokrtský, Václav Klimeš, and Petr Pajas
 You can use and distribute this program under the same terms as TrEd
 itself.
 
-
+=cut

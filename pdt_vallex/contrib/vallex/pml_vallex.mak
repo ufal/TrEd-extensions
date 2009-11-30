@@ -31,5 +31,29 @@ sub switch_context_hook {
   Redraw() if GUI();
 }
 
+sub element_to_text {
+  my ($el)=@_;
+  my $text='';
+  $text.='?' if $el->{type} eq 'non-oblig';
+  $text.=$el->{functor}.'(';
+  $text.=join ';', map {
+    join ',', map { 
+      my $n = $_;
+      if (length($n->{'#label'})) {
+	$n->{'#label'}
+      } else {
+	if ($n->{'#name'} =~ /^(?:typical|elided|state)$/) {
+	  $n->{'#name'}
+	} else {
+	  my $morph =join('',grep { $_ ne 'unspecified' } map { $n->{$_} } qw(pos case deg gen num form afun));
+	  ($n->{lemma}||'').($morph ? '.'.$morph : '')
+	}
+      }
+    } $_->children;
+  } $el->children;
+  $text.=')';
+  return $text;
+}
+
 1;
 

@@ -1,58 +1,55 @@
 context: PML_Vallex
-rootstyle:#{balance:1}#{skipHiddenParents:1}#{skipHiddenLevels:1}
-                #{CurrentOval-outline:red}#{CurrentOval-width:4}
+rootstyle:#{vertical:1}#{balance:0}#{skipHiddenParents:1}#{skipHiddenLevels:1}
+                #{CurrentOval-outline:red}#{CurrentOval-width:2}#{Line-width:1}
                 #{Node-currentwidth:10}#{Node-currentheight:10}#{Node-textalign:center}#{NodeLabel-halign:center}
 style:<?
-   $${#name} eq 'node' ? '#{Node-shape:oval}#{Oval-fill:yellow}#{Node-addwidth:4}#{Node-addheight:4}' :
+   $${#name} eq 'node' ? '#{Node-shape:oval}#{Oval-fill:yellow}'.($this->parent->{'#name'} eq 'node' ? '#{Line-coords:n,n,p,p}' : '#{Line-coords:n,n,p,p}') :
    $${#name} eq 'form' ? ((
-      ($this->children<=1) ? '#{Node-hide:1}' : q()
-   ).'#{Node-shape:rectangle}#{Oval-fill:lightblue}') :
-   $${#name} eq 'element' ? '#{Node-shape:oval}#{Oval-fill:green}#{Node-addwidth:4}#{Node-addheight:4}' :
-   $${#name} eq 'word' ? '#{NodeLabel-dodrawbox:yes}#{NodeLabel-valign:bottom}#{Node-shape:oval}#{Oval-fill:orange}#{Node-addwidth:4}#{Node-addheight:4}' :
-   $${#name} eq 'frame' ? '#{Node-shape:rectangle}#{Oval-fill:gray}#{Line-coords:n,n,n,p,p,p}' :
-  q()
+      ($this->children<=1) ? '#{Node-hide:0}' : q()
+   ).'#{Node-shape:rectangle}#{Oval-fill:lightblue}#{Line-coords:n,n,n,p,p,p}') :
+   $${#name} eq 'element_alternation' ? '#{Node-shape:rectangle}#{Oval-fill:cyan}#{Line-coords:n,n,p,n,p,p}' :
+   $${#name} eq 'element' ? '#{Node-shape:rectangle}#{Oval-fill:green}#{Line-coords:n,n,p,n,p,p}' :
+   $${#name} eq 'word' ? '#{Node-shape:oval}#{Oval-fill:orange}' :
+   $${#name} eq 'frame' ? '#{Node-shape:rectangle}#{Oval-fill:gray}#{Line-coords:n,n,p,n,p,p}' :
+  q('#{Oval-fill:lightgray}#{Line-coords:n,n,p,n,p,p}')
  ?>
 node:${lemma}<?
-  length($${POS}) ? '.'.$${POS} : q()
+  length($${POS}) ? '#{blue}.'.$${POS} : q()
 ?><?
-  $${type} eq 'non-oblig' ? q(?) : q() ?>${functor}<?
+  $${#name} eq 'element' ? PML_Vallex::element_to_text($this) : () ?><?
+  $${#name} eq 'form' ? 'form' : () ?><?
   $${#name} =~ /^(?:typical|elided|state)$/ ? $${#name} : q() ?><? 
-  $${#name} eq 'frame' ? $${id} : q() ?><?
-  $${neg} eq 'negative; ? '~' : q() ?>${pos}<?
-  $${gen} ne '' ? $${gen} : q() ?><?   $${num} ne '' ? ' num=${num} ' : q() ?>${case}<? 
-  $${deg} ne '' ? '@${deg}' : ''?><?
-  $${agreement} ? ' #' : '' ?><?
-  $${afun} and $${afun} ne 'unspecified' ? ' afun='.$${afun} : q() ?><?
-   my $v;
-   my $tag = join q(),
+  $${#name} eq 'frame' ? '#{darkgray}'.$${id} : q() ?><? 
+  if ($${#name} eq 'node') {
+    my $t = '';
+    $t.='~' if $${neg} eq 'negative';
+    $t.='#{darkgreen(}${pos}#{)}' if $${pos};
+    $t.='#{gen}' if $${gen};
+    $t.='${num}' if $${num};
+    $t.='${case}' if $${case};
+    $t.='@${deg}' if $${deg};
+    $t.='#' if $${agreement};
+     my $v;
+     my $tag = join q(),
          map {
            $v=$this->{'tagpos'.$_};
            defined($v) and length($v) ? $v : '-' } 1..15;
-   $tag!~/^-+$/ ? $tag : q() ?>
+     $t.=$tag if $tag!~/^-+$/;
+    $t='.'.$t if $t;
+    $t.='/#{blue(}'.$${afun}.'#{)}' if $${afun} and $${afun} ne 'unspecified';
+    $t
+  }
+?>
 node:<?
   length($${note}) ? $${note} : q() ?>
 text:<? 
   if ($${#name} eq 'word') {
     $${lemma}."\n";
   } elsif ($${#name} eq 'frame') {
-      my $text='';
-      for my $el ($this->children) { 
-         $text.='?' if $el->{type} eq 'non-oblig';
-         $text.=$el->{functor}.'(';
-         $text.=join ';', map {
-            join ',', map { 
-             my $n = $_;
-              if (length($n->{'#label'})) {
-                 $n->{'#label'}
-               } else {
-                 $n->{'#name'} =~ /^(?:typical|elided|state)$/ ? $_->{'#name'} : 
-                 join('',grep { $_ ne 'unspecified' } map { $n->{$_} } qw(pos case deg gen num lemma form afun))
-               }
-            } $_->children;
-         } $el->children;
-         $text.=') ';
-      }
+      my $text=join(' ',map PML_Vallex::element_to_text($_), $this->children);
       $text.="\n".$${example}." (".$${used}."x)\n";
       $text; 
   }
  ?>
+
+hint:<? $${example} ? $${example} : undef ?>

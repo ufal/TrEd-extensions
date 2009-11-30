@@ -1,0 +1,58 @@
+context: PML_Vallex
+rootstyle:#{balance:1}#{skipHiddenParents:1}#{skipHiddenLevels:1}
+                #{CurrentOval-outline:red}#{CurrentOval-width:4}
+                #{Node-currentwidth:10}#{Node-currentheight:10}#{Node-textalign:center}#{NodeLabel-halign:center}
+style:<?
+   $${#name} eq 'node' ? '#{Node-shape:oval}#{Oval-fill:yellow}#{Node-addwidth:4}#{Node-addheight:4}' :
+   $${#name} eq 'form' ? ((
+      ($this->children<=1) ? '#{Node-hide:1}' : q()
+   ).'#{Node-shape:rectangle}#{Oval-fill:lightblue}') :
+   $${#name} eq 'element' ? '#{Node-shape:oval}#{Oval-fill:green}#{Node-addwidth:4}#{Node-addheight:4}' :
+   $${#name} eq 'word' ? '#{NodeLabel-dodrawbox:yes}#{NodeLabel-valign:bottom}#{Node-shape:oval}#{Oval-fill:orange}#{Node-addwidth:4}#{Node-addheight:4}' :
+   $${#name} eq 'frame' ? '#{Node-shape:rectangle}#{Oval-fill:gray}#{Line-coords:n,n,n,p,p,p}' :
+  q()
+ ?>
+node:${lemma}<?
+  length($${POS}) ? '.'.$${POS} : q()
+?><?
+  $${type} eq 'non-oblig' ? q(?) : q() ?>${functor}<?
+  $${#name} =~ /^(?:typical|elided|state)$/ ? $${#name} : q() ?><? 
+  $${#name} eq 'frame' ? $${id} : q() ?><?
+  $${neg} eq 'negative; ? '~' : q() ?>${pos}<?
+  $${gen} ne '' ? $${gen} : q() ?><?   $${num} ne '' ? ' num=${num} ' : q() ?>${case}<? 
+  $${deg} ne '' ? '@${deg}' : ''?><?
+  $${agreement} ? ' #' : '' ?><?
+  $${afun} and $${afun} ne 'unspecified' ? ' afun='.$${afun} : q() ?><?
+   my $v;
+   my $tag = join q(),
+         map {
+           $v=$this->{'tagpos'.$_};
+           defined($v) and length($v) ? $v : '-' } 1..15;
+   $tag!~/^-+$/ ? $tag : q() ?>
+node:<?
+  length($${note}) ? $${note} : q() ?>
+text:<? 
+  if ($${#name} eq 'word') {
+    $${lemma}."\n";
+  } elsif ($${#name} eq 'frame') {
+      my $text='';
+      for my $el ($this->children) { 
+         $text.='?' if $el->{type} eq 'non-oblig';
+         $text.=$el->{functor}.'(';
+         $text.=join ';', map {
+            join ',', map { 
+             my $n = $_;
+              if (length($n->{'#label'})) {
+                 $n->{'#label'}
+               } else {
+                 $n->{'#name'} =~ /^(?:typical|elided|state)$/ ? $_->{'#name'} : 
+                 join('',grep { $_ ne 'unspecified' } map { $n->{$_} } qw(pos case deg gen num lemma form afun))
+               }
+            } $_->children;
+         } $el->children;
+         $text.=') ';
+      }
+      $text.="\n".$${example}." (".$${used}."x)\n";
+      $text; 
+  }
+ ?>

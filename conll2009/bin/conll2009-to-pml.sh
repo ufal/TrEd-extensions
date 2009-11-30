@@ -105,16 +105,16 @@ while (( $# )) ; do
         ((max-=13))
         arglist=''
         for n in $(seq 1 $max) ; do arglist=$arglist,APRED_$n ;done
-	out_prefix="$1"
+	out_prefix="${1%.ṫxt}"
 	if [ -n "$out_dir" ]; then
 	    out_prefix="$out_dir"/$(basename "$out_prefix")
 	fi
         "$bin"/conll2pml -R conll2009 -r -o "$out_prefix" -m $sentences_per_file -c $columns$arglist "$1"
-        sed -i~ 's%\(<s:member name="apred_1">\)%'"$apreds"'\1%' "$1_schema.xml"
-        "$btred" -q -S -I "$bin"/args.btred "$1"_*.pml
-	rm "$1_schema.xml"
+        sed -i~ 's%\(<s:member name="apred_1">\)%'"$apreds"'\1%' "${out_prefix}_schema.xml"
+        "$btred" -q -S -I "$bin"/args.btred "$out_prefix"_*.pml
+	rm "${out_prefix}_schema.xml"
 	if [ $gzip = 1 ]; then
-	    gzip -9 "$1"_*.pml
+	    gzip -9 "$out_prefix"_*.pml
 	fi
     else
         echo Skipping "$1" >&2
