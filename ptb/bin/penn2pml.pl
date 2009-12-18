@@ -158,7 +158,7 @@ HEADER
 	  -name => 'terminal',
 	  -attributes => { id => $terminal_id },
 	  -children => [
-	    { -name => 'form', -content=>$pennform },
+	    { -name => 'form', -content=>$form },
 	    { -name => 'pos', -content=>$tag },
 	    (($pennform=~m/^\*/) ? () : { -name => 'order', -content=>$order++ }),
 	    ($coindex ? $coindex : ()),
