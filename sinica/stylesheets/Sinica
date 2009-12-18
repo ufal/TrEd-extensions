@@ -1,0 +1,16 @@
+context: .*
+rootstyle:
+  #{balance:1}
+  #{NodeLabel-skipempty:1}
+  #{baseYPos:30}
+  #{nodeYSkip:15}
+  #{Node-textalign:center}
+  #{NodeLabel-halign:center}
+style: <? $${#name} eq 'terminal' 
+  ? '#{Line-coords:n,n,n,n-22,p,p}' 
+  :  '#{Line-coords:n,n-22,p,p}'  ?>
+label:#{-coords:n,n-6}#{-anchor:s}#{blue}${phrase}
+node:${form}
+node:#{darkgreen}${pos}
+node:#{brown}${role}
+text: ${form}
