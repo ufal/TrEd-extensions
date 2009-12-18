@@ -12,7 +12,7 @@ use IO::File;
 use Pod::Usage;
 use Getopt::Long;
 
-use open IO => ':utf8';
+use open qw(IO :utf8 :std);
 
 Getopt::Long::Configure ("bundling");
 my %opts;
@@ -50,6 +50,7 @@ use constant PML_SCHEMA_NS => 'http://ufal.mff.cuni.cz/pdt/pml/schema/';
 my @columns = $opts{columns} 
   ? (split /,/,$opts{columns})
   : qw(ID FORM LEMMA CPOSTAG POSTAG FEATS HEAD DEPREL PHEAD PDEPREL);
+my $ID = $columns[0];
 my $HEAD = $opts{'head-from'} || 'HEAD';
 my $ORDER = $opts{'order-attribute'} || 'order';
 
@@ -74,7 +75,12 @@ my %feat;
 
 while (@ARGV) {
   my $f = shift;
-  open my $fh, '<', $f || die "Cannot open $f for reading: $!\n";
+  my $fh;
+  if ($f eq '-') {
+    $fh = \*STDIN
+  } else {
+    open($fh, '<', $f) or die "Cannot open $f for reading: $!\n";
+  }
   while (<$fh>) {
     chomp;
     if (/./) {
@@ -112,7 +118,7 @@ exit 0;
 ######################
 
 sub dump_schema {
-  open my $output, '>', $prefix.'_schema.xml' || die "Cannot open ${prefix}_schema.xml for writing: $!";
+  open(my $output, '>', $prefix.'_schema.xml') or die "Cannot open ${prefix}_schema.xml for writing: $!";
   print STDERR "\nsaving PML schema to: ",$prefix.'_schema.xml',"\n" unless $opts{quiet};
   my $writer = new XML::Writer(OUTPUT => $output,
 			       DATA_MODE => 1,
@@ -169,7 +175,7 @@ sub dump_schema {
       next if $name eq $HEAD;
       if ($name eq 'FEATS') {
 	$writer->emptyTag('s:member', name => lc($name), type => 'feats.type');
-      } elsif ($name eq 'ID') {
+      } elsif ($name eq $ID) {
 	$writer->startTag('s:member', name => $ORDER, as_attribute=>'1', role=> '#ORDER');
 	$writer->emptyTag('s:cdata', format => 'positiveInteger');
 	$writer->endTag('s:member');
@@ -212,7 +218,7 @@ sub dump_schema {
 sub dump_file {
   return unless @trees;
   my $filename = $prefix.sprintf('_%04d.pml',$fileno++);
-  open my $output, '>', $filename || die "Cannot open $filename for writing: $!";
+  open(my $output, '>', $filename) or die "Cannot open $filename for writing: $!";
   my $writer = new XML::Writer(OUTPUT => $output,
 			       DATA_MODE => 1,
 			       DATA_INDENT => 1);
@@ -260,12 +266,12 @@ sub dump_node {
   my $writer = shift;
   my $node = shift;
   my $root_id = shift;
-  $writer->startTag('LM', 
-		    $ORDER => $node->{ID},
-		    $opts{'node-ids'} ? ('xml:id' => $id_prefix.'-'.$root_id.'-'.$node->{ID}) : ()
+  $writer->startTag('LM',
+		    $ORDER => $node->{$ID},
+		    $opts{'node-ids'} ? ('xml:id' => $id_prefix.'-'.$root_id.'-'.$node->{$ID}) : ()
 		   );
   for my $name (@columns) {
-    next if $name eq $HEAD or $name eq 'ID';
+    next if $name eq $HEAD or $name eq $ID;
     my $val = $node->{$name};
     next if !defined($val) or $val eq '';
     my $tag = lc($name);
@@ -301,9 +307,9 @@ sub next_sentence {
   $sentences++;
   if (!$opts{'schema-only'} and @sent) {
     # (should not be necessary, but just for sure)
-    my %sent = map { $_->{ID} => $_ } @sent;
+    my %sent = map { $_->{$ID} => $_ } @sent;
     if (keys(%sent) != @sent) {
-       warn "\nWARNING: duplicated IDs in sentence $sentences!\n";
+       warn "\nWARNING: duplicated $ID in sentence $sentences!\n";
     }
     my @root;
     for my $t (@sent) {
