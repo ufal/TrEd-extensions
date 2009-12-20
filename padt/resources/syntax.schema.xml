@@ -152,13 +152,13 @@
 
     <import schema="morpho.schema.xml" type="Morphs.type"/>
 
+    <import schema="morpho.schema.xml" type="String.type"/>
+
     <import schema="morpho.schema.xml" type="Root.type"/>
 
     <import schema="morpho.schema.xml" type="Tags.type"/>
 
     <import schema="morpho.schema.xml" type="Score.type"/>
-
-    <import schema="morpho.schema.xml" type="String.type"/>
 
     <import schema="morpho.schema.xml" type="ID.type"/>
 

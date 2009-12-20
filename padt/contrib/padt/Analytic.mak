@@ -1549,13 +1549,11 @@ sub open_level_morpho {
         return;
     }
 
-    my @id = idx($root);
-    
-    my $id = join 'm-', split 's-', $this->{'id'};
+    my ($tree, $id) = (idx($root), join 'm-', split 's-', $this->{'id'});
 
     if (Open($file[1])) {
 
-        GotoTree($root->{'ref'}{'snd'}) while --$id[0];
+        GotoTree($tree);
 
         $this = PML::GetNodeByID($id);
     }

@@ -55,13 +55,20 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-         exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
-         exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ?>
+rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+             '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
+             '#{skipHiddenLevels:1}#{lineSpacing:1.2}' : '#{skipHiddenLevels:1}' ?>
+
+style:<? $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' :
+         (( exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
+           exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
+           exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ) .
+         ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+           '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} ~~ ['Token', 'Unit', 'Paragraph']
    ?><? $this->{'#name'} eq 'Token'
-            ? ( ElixirFM::orph($this->{'form'}, "\n") )
+            ? ( ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
                 ? ( ( $MorphoTrees::review->{$grp}{'zoom'}
@@ -133,7 +140,7 @@ sub node_release_hook {
 
 sub get_nodelist_hook {
 
-    my ($fsfile, $index, $focus, $hidding) = @_;
+    my ($fsfile, $index, $focus, $hiding) = @_;
     my ($nodes);
 
     if ($review->{$grp}{'zoom'}) {
@@ -146,7 +153,7 @@ sub get_nodelist_hook {
     }
     else {
 
-        ($nodes, $focus) = $fsfile->nodes($index, $focus, $hidding);
+        ($nodes, $focus) = $fsfile->nodes($index, $focus, $hiding);
     }
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
@@ -279,6 +286,12 @@ sub annotate_morphology_click {
 sub switch_review_mode {
 
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
+
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if exists $review->{$grp}{'maps'}->{$this};
+    
+    update_zoom_tree();
+    
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if exists $review->{$grp}{'maps'}->{$this};
 }
 
 sub update_zoom_tree {
@@ -287,23 +300,44 @@ sub update_zoom_tree {
 
     my $id = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
 
-    unless ($review->{$grp}{'tree'} and $review->{$grp}{'tree'}->{'id'} eq $id) {
+    unless ($review->{$grp}{'data'} and $review->{$grp}{'data'}->{'id'} eq $id) {
 
         my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
 
-        my $tree = new FSNode;
+        my $node = new FSNode;
 
-        $tree->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.type');
+        $node->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.Lists.type');
 
-        $tree->{'#name'} = 'Element';
+        $node->{'#name'} = 'Element';
 
-        $tree->{'id'} = $id;
+        $node->{'id'} = $id;
 
-        $tree = $review->{$grp}{'mode'} ? morpholists($data, $tree) : morphotrees($data, $tree);
+        $node = morpholists($data, $node);
 
-        $review->{$grp}{'tree'} = $tree;
+        $review->{$grp}{'data'} = $node;
+    }
 
-        score_nodes();
+    $review->{$grp}{'maps'} = {};
+
+    if ($review->{$grp}{'mode'}) {
+
+        my $node = new FSNode;
+
+        $node->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.Trees.type');
+
+        $node->{'#name'} = 'Element';
+
+        $node->{'id'} = $id;
+
+        $node = couple($node);
+
+        $review->{$grp}{'tree'} = $node;
+
+        # score_nodes();
+    }
+    else {
+
+        $review->{$grp}{'tree'} = $review->{$grp}{'data'};
     }
 }
 
@@ -973,7 +1007,7 @@ sub resolve {
 
     my $data = Exec::ElixirFM::elixir 'resolve', ['--lists'], $news;
 
-    my @data = ElixirFM::unpretty $data;
+    my @data = ElixirFM::concat ElixirFM::unpretty $data;
 
     warn "MorphoTrees::resolve:\t" . "resolving " . @news . " of " . @word . " words\n" if @word > 1;
 
@@ -995,47 +1029,60 @@ sub elixir_resolve {
 
 sub morpholists {
 
-    my ($resolve, $done) = @_;
+    my ($resolve, $node) = @_;
 
     my ($form, @data) = @{$resolve};
 
-    $done->{'form'} = $form->[0];
+    $node->{'form'} = $form->[0];
 
     foreach (reverse @data) {
 
-        my $node = NewSon($done);
+        my $node = NewSon($node);
 
         DetermineNodeType($node);
-
-        my $done = $node;
 
         my (undef, @data) = @{$_};
 
         foreach (reverse @data) {
 
-            my $node = NewSon($done);
+            my $node = NewSon($node);
 
             DetermineNodeType($node);
 
-            my $done = $node;
+            my ($data, @data) = @{$_};
 
-            my (undef, @data) = @{$_};
+            $node->{'data'} = new Fslib::Seq;
+
+            foreach (@{$data}) {
+
+                my $lexeme = lexicon($_->[0]);
+
+                my $struct = new Fslib::Struct;
+
+                $struct->{'clip'} = $_->[0];
+
+                $struct->{'root'} = $lexeme->{'root'};
+
+                $struct->{'core'} = new Fslib::Struct;
+
+                $struct->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
+
+                $node->{'data'}->push_element('Lexeme', $struct);
+            }
 
             foreach (reverse @data) {
 
-                my $node = NewSon($done);
+                my $node = NewSon($node);
 
                 DetermineNodeType($node);
 
                 $node->{'form'} = substr $_->[0][0], 1, -1;
 
-                my $done = $node;
-
                 my (undef, @data) = @{$_};
 
                 foreach (reverse @data) {
 
-                    my $node = NewSon($done);
+                    my $node = NewSon($node);
 
                     DetermineNodeType($node);
 
@@ -1059,7 +1106,147 @@ sub morpholists {
         $node->{'form'} = join "    ", ElixirFM::nub { $_[0] } map { $_->{'form'} } $node->children();
     }
 
-    return $done;
+    return $node;
+}
+
+sub relate {
+
+    if (exists $review->{$grp}{'maps'}{$_[0]}) {
+    
+        push @{$review->{$grp}{'maps'}{$_[0]}}, $_[1] unless grep { $_ == $_[1] } @{$review->{$grp}{'maps'}{$_[0]}};
+    }
+    else {
+    
+        $review->{$grp}{'maps'}{$_[0]} = [$_[1]];
+    }
+
+    if (exists $review->{$grp}{'maps'}{$_[1]}) {
+    
+        push @{$review->{$grp}{'maps'}{$_[1]}}, $_[0] unless grep { $_ == $_[0] } @{$review->{$grp}{'maps'}{$_[1]}};
+    }
+    else {
+    
+        $review->{$grp}{'maps'}{$_[1]} = [$_[0]];
+    }
+}
+
+sub couple {
+
+    my $tree = $_[0];
+    
+    my $data = $review->{$grp}{'data'};
+    
+    my $hash = {};
+    
+    foreach ($data->children()) {
+
+        foreach my $node ($_->children()) {
+
+            foreach ($node->children()) {
+
+                my @data = $_->children();
+
+                my @form = map { $_->{'form'} } @data;
+
+                my @path;
+
+                demode "arabtex", "noneplus";
+
+                $path[0] = decode "arabtex", join " ", @form;
+
+                demode "arabtex", "default";
+
+                for (0 .. @data - 1) {
+
+                    $path[1] = $_;
+
+                    $path[2] = $node->{'data'}[0][$_][1]{'clip'};
+
+                    $path[3] = join " ", @{$data[$_]}{'form', 'tag'};
+
+                    if (exists $hash->{$path[0]}[$path[1]]{$path[2]}{$path[3]}) {
+
+                        push @{$hash->{$path[0]}[$path[1]]{$path[2]}{$path[3]}}, $data[$_];
+                    }
+                    else {
+                    
+                        $hash->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = [$data[$_]];
+                    }
+                }
+            }
+        }
+    }
+
+    foreach my $p (sort { $b =~ tr/ / / <=> $a =~ tr/ / / or $b cmp $a } keys %{$hash}) {
+
+        my $node = NewSon($tree);
+
+        DetermineNodeType($node);
+
+        $node->{'form'} = $p;
+
+        my $done = $node;
+
+        foreach my $c (reverse 0 .. @{$hash->{$p}} - 1) {
+
+            my $node = NewSon($done);
+
+            DetermineNodeType($node);
+
+            my $component = $node;
+
+            my $done = $node;
+
+            foreach my $l (reverse sort keys %{$hash->{$p}[$c]}) {
+
+                my $node = NewSon($done);
+
+                DetermineNodeType($node);
+
+                my $lexeme = lexicon($l);
+
+                $node->{'clip'} = $l;
+
+                $node->{'form'} = $l;
+
+                $node->{'root'} = $lexeme->{'root'};
+
+                $node->{'core'} = new Fslib::Struct;
+
+                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
+
+                foreach my $t (sort keys %{$hash->{$p}[$c]{$l}}) {
+
+                    my $node = NewSon($node);
+
+                    DetermineNodeType($node);
+
+                    my $data = $hash->{$p}[$c]{$l}{$t};
+
+                    $node->{$_} = $data->[-1]{$_} foreach 'morphs', 'form', 'tag';
+
+                    unless (exists $component->{'form'}) {
+
+                        demode "arabtex", "noneplus";
+
+                        $component->{'form'} = decode "arabtex", $node->{'form'};
+
+                        demode "arabtex", "default";
+                    }
+                    
+                    relate($_, $node) foreach @{$data};
+                }
+            }
+        }
+    }
+
+    $tree->{'form'} = $data->{'form'};
+
+    $review->{$grp}{'tree'} = $tree;
+    
+    relate($review->{$grp}{'data'}, $review->{$grp}{'tree'});
+    
+    return $tree;
 }
 
 sub morphotrees {
@@ -1149,13 +1336,14 @@ sub morphotrees {
                 my $lexeme = lexicon($l);
 
                 $node->{'root'} = $lexeme->{'root'};
-                $node->{'core'} = $lexeme->{'core'};
 
-                my $done = $node;
+                $node->{'core'} = new Fslib::Struct;
+
+                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 
                 foreach my $t (sort keys %{$tree->{$p}[$c]{$l}}) {
 
-                    my $node = NewSon($done);
+                    my $node = NewSon($node);
 
                     DetermineNodeType($node);
 

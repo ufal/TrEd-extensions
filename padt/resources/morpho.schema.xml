@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.1.0</revision>
+    <revision>1.1.1</revision>
     <description>PADT Morphology</description>
 
     <root name="MorphoTrees" type="Trees.type"/>
@@ -47,14 +47,22 @@
             <member name="score" type="Score.type"/>
             <member name="hide" type="String.type" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
-                <sequence>
-                    <element name="Lexeme" type="Lexeme.type"/>
-                </sequence>
+                <list type="Tuple.type" ordered="1"/>
             </member>
         </structure>
     </type>
 
-    <type name="Element.type">
+    <type name="Tuple.type">
+        <container role="#NODE">
+            <sequence role="#CHILDNODES">
+                <element name="Lexeme" type="Lexeme.Trees.type"/>
+            </sequence>
+        </container>
+    </type>
+
+
+
+    <type name="Element.Trees.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
@@ -67,13 +75,13 @@
             <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Partition" type="Partition.type"/>
+                    <element name="Partition" type="Partition.Trees.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Partition.type">
+    <type name="Partition.Trees.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
@@ -86,13 +94,13 @@
             <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Component" type="Component.type"/>
+                    <element name="Component" type="Component.Trees.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Component.type">
+    <type name="Component.Trees.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
@@ -105,17 +113,18 @@
             <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Lexeme" type="Lexeme.type"/>
+                    <element name="Lexeme" type="Lexeme.Trees.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Lexeme.type">
+    <type name="Lexeme.Trees.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="root" type="Root.type"/>
             <member name="core" type="Entry.type"/>
+            <member name="clip" type="String.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
             <member name="apply" type="String.type"/>
@@ -126,19 +135,20 @@
             <member name="tips" type="String.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Token" type="Token.type"/>
+                    <element name="Token" type="Token.Trees.type"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Token.type">
+    <type name="Token.Trees.type">
         <structure role="#NODE">
             <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
             <member name="morphs" type="Morphs.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="form" type="String.type"/>
             <member name="note" type="String.type"/>
+            <member name="sense" type="String.type"/>
             <member name="gloss" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
@@ -146,6 +156,119 @@
             <member name="hide" type="String.type" role="#HIDE"/>
         </structure>
     </type>
+
+
+
+
+
+    <type name="Element.Lists.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Partition" type="Partition.Lists.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Partition.Lists.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Group" type="Group.Lists.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Group.Lists.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
+            <member name="data">
+                <sequence>
+                    <element name="Lexeme" type="Lexeme.Lists.type"/>
+                </sequence>
+            </member>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Tuple" type="Tuple.Lists.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Lexeme.Lists.type">
+        <structure>
+            <member name="root" type="Root.type"/>
+            <member name="core" type="Entry.type"/>
+            <member name="clip" type="String.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+        </structure>
+    </type>
+
+    <type name="Tuple.Lists.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="restrict" type="String.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="tips" type="String.type"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Token" type="Token.Lists.type"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="Token.Lists.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="morphs" type="Morphs.type"/>
+            <member name="tag" type="Tags.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="sense" type="String.type"/>
+            <member name="gloss" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+            <member name="inherit" type="String.type"/>
+            <member name="hide" type="String.type" role="#HIDE"/>
+        </structure>
+    </type>
+
+
 
     <type name="Score.type">
         <alt>
@@ -155,14 +278,6 @@
         </alt>
     </type>
 
-    <type name="String.type">
-        <cdata format="any"/>
-    </type>
-
-    <type name="ID.type">
-        <cdata format="ID"/>
-    </type>
-
     <import schema="elixir.schema.xml" type="Morphs.type"/>
 
     <import schema="elixir.schema.xml" type="Entity.type"/>
@@ -170,6 +285,8 @@
     <import schema="elixir.schema.xml" type="Limits.type"/>
 
     <import schema="elixir.schema.xml" type="Reflex.type"/>
+
+    <import schema="elixir.schema.xml" type="String.type"/>
 
     <import schema="elixir.schema.xml" type="Root.type"/>
 
@@ -182,6 +299,10 @@
             <member name="limits" type="Limits.type"/>
             <member name="reflex" type="Reflex.type"/>
         </structure>
+    </type>
+
+    <type name="ID.type">
+        <cdata format="ID"/>
     </type>
 
 </pml_schema>

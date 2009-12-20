@@ -215,10 +215,12 @@
         <cdata format="any"/>
     </type>
 
+    <type name="String.type">
+        <cdata format="any"/>
+    </type>
+
     <type name="Reflex.type">
-        <list ordered="1">
-            <cdata format="any"/>
-        </list>
+        <list type="String.type" ordered="1"/>
     </type>
 
     <type name="Limits.type">
@@ -263,9 +265,7 @@
                 </sequence>
             </member>
             <member name="links">
-                <list ordered="1">
-                    <cdata format="any"/>
-                </list>
+                <list type="String.type" ordered="1"/>
             </member>
         </structure>
     </type>
@@ -284,9 +284,7 @@
 
     <type name="Node.type">
         <structure role="#NODE">
-            <member name="form">
-                <cdata format="any"/>
-            </member>
+            <member name="form" type="String.type"/>
             <member name="tag" type="Tags.type"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>

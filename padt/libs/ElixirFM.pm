@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 897 2009-10-25 23:55:00Z smrz $
+# $Id: ElixirFM.pm 916 2009-12-19 17:20:50Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 897 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 916 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -528,16 +528,88 @@ sub parse {
     return $parser->parse($_[0]);
 }
 
-sub unpretty_resolve {
+sub clear {
 
-    my ($node, @data) = split /\n[\t ]*[:]{1}/, $_[0];
+    my $data = [ @{$_[0]} ];
+
+    my $ents = $data->[1];
+
+    if ($data->[0] eq 'Entry') {
+
+        if (exists $ents->{'reflex'}) {
+
+            $_ = [ ref $_ ? map { $_->[-1] } @{$_} : $_ ]
+
+                foreach $ents->{'reflex'};
+        }
+
+        if (exists $ents->{'entity'}) {
+
+            $ents->{'entity'} = $ents->{'entity'}[0];
+
+            foreach ('plural', 'femini', 'masdar',
+                     'imperf', 'pfirst', 'second', 'form') {
+
+                next unless exists $ents->{'entity'}[1]{$_};
+
+                $_ = [ ref $_ ? map { $_->[-1] } @{$_} : $_ ]
+
+                    foreach $ents->{'entity'}[1]{$_};
+            }
+
+            pop @{$ents->{'entity'}};
+        }
+
+        if (exists $ents->{'limits'}) {
+
+            if (exists $ents->{'limits'}{'snd'}) {
+
+                $_ = [ ref $_ eq 'ARRAY' ? map { $_->[-2] } @{$_} : $_ ]
+
+                    foreach $ents->{'limits'}{'snd'};
+            }
+        }
+
+        pop @{$data};
+    }
+    else {
+
+        foreach ('plural', 'femini', 'masdar',
+                 'imperf', 'pfirst', 'second', 'form') {
+
+            next unless exists $ents->{$_};
+
+            $_ = [ ref $_ ? map { $_->[-1] } @{$_} : $_ ]
+
+                foreach $ents->{$_};
+        }
+
+        pop @{$data};
+    }
+
+    return $data;
+}
+
+sub lists_trees {
+
+    my ($data, $mode) = @_;
+
+    my ($node, @data) = split /\n[\t ]*[:]{1}/, $data;
 
     return  $node =~ /[()]/
 
         ?   [
                 [
+                    map {
 
-                    map { [ split /[\n ]*\t/, $_ ] } grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $node
+                        my $data = [ split /[\n ]*\t/, $_ ];
+
+                        $data->[1] = parse_clear($data->[1], $mode);
+
+                        $data
+                    }
+
+                    grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $node
                 ],
 
                 map {
@@ -578,8 +650,12 @@ sub unpretty_resolve {
 
                     my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
 
+                    my $data = [ split /[\n ]*\t/, $node ];
+
+                    $data->[1] = parse_clear($data->[1], $mode);
+
                     [
-                        [ split /[\n ]*\t/, $node ],
+                        $data,
 
                         map {
 
@@ -592,35 +668,61 @@ sub unpretty_resolve {
             ];
 }
 
+sub parse_clear {
+
+    my ($data, $mode) = @_;
+
+    $mode = '' unless defined $mode;
+
+    if ($mode eq 'parse' or $mode eq 'clear') {
+
+        $data = parse($data);
+
+        $data = clear($data) if $mode eq 'clear';
+    }
+
+    return $data;
+}
+
 sub unpretty {
 
     my ($data, $mode) = @_;
 
+    my $type = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /^\s*[()]/ ? 'lookup' : $data =~ /^\s*[<>]/ ? 'lexicon' : '';
+
     my @data;
 
-    $mode = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /[>]\s*$/ ? 'lookup' : '' unless defined $mode;
+    if ($type eq 'resolve') {
 
-    if ($mode eq 'resolve') {
+        @data = split /(?:(?<=\n\n)\n|(?<=^\n)\n|(?<=^)\n)/, $data, -1;
 
-        (undef, @data) = split /[:]{4}/, $data;
+        pop @data;
 
         @data = map {
 
-            my ($node, @data) = split /[:]{3}/, $_;
+            my (undef, @data) = split /[:]{4}/, $_;
 
             [
-                [ split ' ', $node ],
-
                 map {
 
-                    my ($node, @data) = split /[:]{2}/, $_;
+                    my ($node, @data) = split /[:]{3}/, $_;
 
                     [
-                        [ map { join ' ', split ' ' } split /(?<=[>])\s+(?=[<])/, $node ],
+                        [ split ' ', $node ],
 
                         map {
 
-                            unpretty_resolve($_);
+                            my ($node, @data) = split /[:]{2}/, $_;
+
+                            [
+                                [ map { join ' ', split ' ' } split /(?<=[>])\s+(?=[<])/, $node ],
+
+                                map {
+
+                                    lists_trees($_, $mode)
+
+                                } @data
+                            ]
 
                         } @data
                     ]
@@ -630,7 +732,7 @@ sub unpretty {
 
         } @data;
     }
-    elsif ($mode eq 'lookup') {
+    elsif ($type eq 'lookup') {
 
         @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
 
@@ -654,7 +756,11 @@ sub unpretty {
                     {
                         'clip'  =>  ( join '', split ' ', $clip ),
                         'root'  =>  ( ref $root ? "" : $root ),
-                        'ents'  =>  [ @ents ],
+                        'ents'  =>  [ map {
+
+                                parse_clear($_, $mode)
+
+                            } @ents ],
                     }
 
                 } @data
@@ -662,11 +768,15 @@ sub unpretty {
 
         } @data;
     }
+    elsif ($type eq 'lexicon') {
+
+        @data = parse_clear($data, $mode);
+    }
     else {
 
         @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
 
-        pop @data;
+        pop @data if @data and $data[-1] eq '';
 
         @data = map {
 
@@ -997,7 +1107,8 @@ sub mergeSuffix {
 
                    "Iy"  => "Iy",
 
-                   "mA"  => "ImA"   );
+                   "mA"  => "ImA",
+                   "ka"  => "Ika"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1034,7 +1145,8 @@ sub mergeSuffix {
                    "Iy"  => "AnIy",
                    "At"  => "A'At",
 
-                   "_dA" => "A_dA"  );
+                   "_dA" => "A_dA",
+                   "ka"  => "Aka"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
 
@@ -1102,7 +1214,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 
 =head1 REVISION
 
-    $Revision: 897 $        $Date: 2009-10-26 00:55:00 +0100 (Mon, 26 Oct 2009) $
+    $Revision: 916 $        $Date: 2009-12-19 18:20:50 +0100 (Sat, 19 Dec 2009) $
 
 
 =head1 SYNOPSIS
@@ -1115,20 +1227,7 @@ ElixirFM - Interfaces to the ElixirFM system in Haskell
 The L<ElixirFM|ElixirFM> module reimplements some of the functionality of the ElixirFM system
 written in Haskell.
 
-In particular, it includes the L<ElixirFM::Resolve|ElixirFM::Resolve> and
-L<ElixirFM::Data::Compose|ElixirFM::Data::Compose> modules providing the algorithms and data for
-advanced Arabic morphological analysis, see also the L<elixir-resolve|elixir-resolve> executable.
-Other applications, such as morphological generation, can also be implemented with ElixirFM.
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc ElixirFM
-
-
-You can also look for information at L<http://sourceforge.net/projects/elixir-fm/>.
+You can find documentation for this module at L<http://sourceforge.net/projects/elixir-fm/>.
 
 
 =head1 AUTHOR

@@ -119,7 +119,7 @@ sub masdars {
 
     # use Encode::Arabic::Buckwalter ':xml';
 
-    # return unless $this->level() == 2;
+    # return unless $this->{'#name'} eq 'Entry';
 
     # return unless ElixirFM::entity($this)->[0] eq 'Verb';
 
@@ -159,7 +159,7 @@ sub change_entity {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     ChangingFile(1);
 
@@ -175,7 +175,7 @@ sub change_entity_V {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     my $old = ElixirFM::entity($this)->[1];
 
@@ -194,7 +194,7 @@ sub change_entity_N {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     my $ent = ElixirFM::entity($this);
 
@@ -226,7 +226,7 @@ sub change_entity_A {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     my $old = ElixirFM::entity($this)->[1];
 
@@ -256,7 +256,7 @@ sub change_entity_Q {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     my $old = ElixirFM::entity($this)->[1];
 
@@ -331,9 +331,9 @@ sub enforce_literal {
 
     my $node = $this;
 
-    $node = $node->parent() if $node->level() == 2;
+    $node = $node->parent() if $node->{'#name'} eq 'Entry';
 
-    return unless $node->level() == 1;
+    return unless $node->{'#name'} eq 'Nest';
 
     my %m = map { ElixirFM::morphs($_)->[0], 1 }
             map { $_->{'morphs'},
@@ -366,9 +366,9 @@ sub enforce_string {
 
     my $node = $this;
 
-    $node = $node->parent() if $node->level() == 2;
+    $node = $node->parent() if $node->{'#name'} eq 'Entry';
 
-    return unless $node->level() == 1;
+    return unless $node->{'#name'} eq 'Nest';
 
     my %m = map { ElixirFM::morphs($_)->[0], 1 }
             map { $_->{'morphs'},
@@ -493,7 +493,7 @@ sub paradigm_except {
 
     ChangingFile(0);
 
-    return unless $this->level() == 2;
+    return unless $this->{'#name'} eq 'Entry';
 
     my $ent = ElixirFM::entity($this);
 
@@ -511,7 +511,7 @@ sub change_slot_role {
 
     ChangingFile(0);
 
-    return unless $this->level() == 4;
+    return unless $this->{'#name'} eq 'Slot';
 
     main::doEditAttr($grp, $this, 'role');
 }
@@ -521,7 +521,7 @@ sub change_slot_type {
 
     ChangingFile(0);
 
-    return unless $this->level() == 4;
+    return unless $this->{'#name'} eq 'Slot';
 
     main::doEditAttr($grp, $this, 'type');
 }
@@ -584,22 +584,23 @@ sub CreateStylesheets {
 rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.2}' ?>
 
-style:<? ( $this->level() < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
-         ( $ElixirFM::hiding_level && 
-           $ElixirFM::hiding_level < $this->level()
+style:<? my $level = $this->level();
+         ( $level < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
+         ( $ElixirFM::hiding_level &&
+           $ElixirFM::hiding_level < $level
                ? '#{Node-hide:1}' :
-           $this->level() == 0 ? '#{Node-hide:1}' :
-           $this->level() == 4 ? '#{Node-rellevel:1}' . (
+           $level == 0 ? '#{Node-hide:1}' :
+           $level == 4 ? '#{Node-rellevel:1}' . (
                  $this->{'type'} eq 'OBL'
                ? '#{Line-dash}#{Line-width:3}#{Line-fill:black}'
                : $this->{'type'} eq 'OPT'
                ? '#{Line-dash:-}#{Line-width:2}#{Line-fill:black}'
                : '#{Line-dash:-}#{Line-width:2}#{Line-fill:red}' ) :
-           $this->level() == 6 ? '#{Node-rellevel}' . (
+           $level == 6 ? '#{Node-rellevel}' . (
                  '#{Line-dash}#{Line-width:2}#{Line-fill:black}'
            ) : '' ) ?>
 
-node:<? $this->level() == 2
+node:<? $this->{'#name'} eq 'Entry'
       ? '${entity=' . ElixirFM::entity($this)->[0] . '}   #{custom6}${entity=' .
         ( join '}  #{custom3}${entity=',
           map { ref $_ ? @{$_} : () }
@@ -617,22 +618,22 @@ node:<? $this->level() == 2
                  ElixirFM::entity($this)->[1]{'derive'} ne '' ?
           "\n" . '#{custom7}${entity=derives} #{custom3}${entity="' .
           ElixirFM::entity($this)->[1]{'derive'} . '"}' : '' )
-      : $this->level() == 4
+      : $this->{'#name'} eq 'Slot'
       ? ( $this->{'type'} eq 'OBL' ? '#{custom2}' :
           $this->{'type'} eq 'OPT' ? '#{custom6}' : '') .
           '${=' . $this->{'role'} . '}'
-      : $this->level() > 4
+      : $this->{'#name'} eq 'Node'
       ? ( join "\n", $this->{'form'} eq '' ? ()
                      : '${=' . ElixirFM::phor($this->{'form'}) . '}',
                      $this->{'tag'} eq '' ? ()
                      : '#{custom2}${=' . $this->{'tag'} . '}' )
       : '#{darkgrey}${entity=' . $this->{'#name'} . '}'
-   ?><? $this->level() == 1
+   ?><? $this->{'#name'} eq 'Nest'
       ? '  #{custom6}' . ElixirFM::phor(ElixirFM::cling($this->{'root'})) .
         '  #{custom2}' . '${root}'
       : '' ?>
 
-node:<? $this->level() == 2
+node:<? $this->{'#name'} eq 'Entry'
       ? '#{custom2}${morphs=' . $this->{'morphs'} . '}'
         . ( join "", map { "\n" . $_ } map {
               '#{custom6}${entity=' . $_ . '}' }
@@ -643,7 +644,7 @@ node:<? $this->level() == 2
             ElixirFM::feminis($this) )
       : '' ?>
 
-node:<? $this->level() == 2
+node:<? $this->{'#name'} eq 'Entry'
       ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
         '#{grey30}' . ( join "",
           map { "\n" . ElixirFM::phon(ElixirFM::merge($_->[0], $_->[1])) }
@@ -653,7 +654,7 @@ node:<? $this->level() == 2
           ElixirFM::feminis($this) )
       : '' ?>
 
-node:<? $this->level() == 2
+node:<? $this->{'#name'} eq 'Entry'
       ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
         '#{grey30}' . ( join "",
           map { "\n" . ElixirFM::orth(ElixirFM::merge($_->[0], $_->[1])) }
@@ -663,7 +664,7 @@ node:<? $this->level() == 2
           ElixirFM::feminis($this) )
       : '' ?>
 
-node:<? $this->level() == 2
+node:<? $this->{'#name'} eq 'Entry'
       ? '#{custom3}${reflex=' . (join ", ", @{$this->{'reflex'}}) . '}'
       : join "\n", ( exists $this->{'reflex'}{'fst'} ?
         '#{custom2}${reflex=' . (join ", ", @{$this->{'reflex'}{'fst'}}) . '}' : () ),
@@ -728,16 +729,16 @@ sub shuffle_node ($$) {
 
 sub get_nodelist_hook {
 
-    my ($fsfile, $index, $recent, $show_hidden) = @_;
-    my ($nodes, $current);
+    my ($fsfile, $index, $focus, $hiding) = @_;
+    my ($nodes);
 
-    ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
+    ($nodes, $focus) = $fsfile->nodes($index, $focus, $hiding);
 
-    ($current) = $current->children() if $current->level() == 0 and not $show_hidden;
+    ($focus) = $focus->children() unless $focus->parent() or $hiding;
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $current];
+    return [[@{$nodes}], $focus];
 }
 
 sub get_value_line_hook {
