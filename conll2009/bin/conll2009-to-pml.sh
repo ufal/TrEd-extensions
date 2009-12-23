@@ -103,9 +103,11 @@ while (( $# )) ; do
     if [[ -f "$1" ]] ; then
         max=$(perl -e 'while (<>){@num = /(\t)/g ; $max = scalar(@num) if @num > $max } print "$max\n"' "$1")
         ((max-=13))
+        # if there are no ARGS in the conll data, set max to 1
+        if ((!max)) ; then max=1 ; fi
         arglist=''
         for n in $(seq 1 $max) ; do arglist=$arglist,APRED_$n ;done
-	out_prefix="${1%.ṫxt}"
+	out_prefix="${1%.txt}"
 	if [ -n "$out_dir" ]; then
 	    out_prefix="$out_dir"/$(basename "$out_prefix")
 	fi

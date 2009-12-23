@@ -256,6 +256,7 @@ sub add_arc {
     return unless edit_arc($target,$arc);
   }
   AddToList($target,'apreds', $arc);
+  $node->{fillpred} = 'Y';
   return 1;
 }
 
