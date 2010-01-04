@@ -13,8 +13,9 @@ sub args {
   for my $node (@nodes) {
     $node->{'xml:id'}='w-'.$node->{order}.'-'.$root->{'xml:id'};
   }
-  my @preds = sort { $a->{order} <=> $b->{order} } grep $_->{pred},@nodes;
+  my @preds = sort { $a->{order} <=> $b->{order} } grep { defined($_->{pred}) and length($_->{pred}) } @nodes;
   foreach my $node (@nodes){
+    $node->{pred}='' if (($node->{pred}||'') eq 'pml:-NO-PRED-'); # special value used for encoding bogus input
     foreach my $arg (grep /^apred_[0-9]+/,keys %$node){
       $arg =~ s/^apred_//;
       AddToList($node,'apreds',

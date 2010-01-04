@@ -49,6 +49,21 @@ This package contains a stylesheet for visualization of
     the created <code>*.pml</code> data in TrEd, using the stylesheet
     <tt>conll2009</tt>.</p>
 
+    <h4>Handling bogus data</h4>
+    <p>In conversion from PML to CoNLL, if a node contains 'apreds'
+    pointers to a node with empty 'pred', warning is issued and the
+    'PRED' column is filled with a special value 'pml:-NO-PRED-',
+    which is transformed back to an empty string during the reverse
+    conversion.  This is because we do not want to drop the pointer
+    (although possibly bogus) and the CoNLL format provides no way to
+    store a pointer to a predicate with empty value in the 'PRED'.
+    </p>
+    <p>Moreover, the CoNLL-2009-ST data format uses a column named 'FILLPRED' which 
+    is used to indicate the words that should be considered predicates 
+    (should have 'PRED' filled). Neither the annotation macros nor the conversion scripts
+    attempt to set 'FILLPRED' according to whether 'PRED' is filled.
+    </p>
+
     <h3>Authors:</h3>
     <p>
     The core script <code>conll2pml</code> was created by Petr

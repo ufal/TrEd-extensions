@@ -46,6 +46,8 @@ Press t to make a new arc from the current node (predicate) B<to> the marked nod
 
 Press r to (select and) remove arcs leading to the current node (argument).
 
+Press p to edit the 'pred' attribute on the current node
+
 =back
 
 =head1 COPYRIGHT
@@ -105,6 +107,10 @@ Bind 'arc_from_marked' => {
 Bind 'select_and_remove_arcs' => {
   key => 'r',
   menu => 'Remove arcs targetted in the current node',
+};
+Bind 'edit_pred' => {
+  key => 'p',
+  menu => 'Edit the attribute "pred" of the current node',
 };
 
 # mark node
@@ -252,11 +258,15 @@ sub add_arc {
     'target.rf' => $node->{'xml:id'},
     'label' => $label,
   },1);
+  unless (defined($node->{pred}) and length(defined($node->{pred}))) {
+    $node->{pred}=$node->{lemma};
+    return unless edit_pred($node);
+  }
+  return unless (defined($node->{pred}) and length(defined($node->{pred})));
   unless (defined $label) {
     return unless edit_arc($target,$arc);
   }
   AddToList($target,'apreds', $arc);
-  $node->{fillpred} = 'Y';
   return 1;
 }
 
@@ -269,6 +279,12 @@ sub edit_arc {
   } else {
     return EditAttribute($node,"apreds/[$arc]/label");
   }
+}
+
+sub edit_pred {
+  shift if @_ and !ref($_[0]);
+  my $node = shift||$this;
+  return $node && EditAttribute($node,'pred');
 }
 
 }

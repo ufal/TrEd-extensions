@@ -93,5 +93,5 @@ for file ; do
 done
 
 for file ; do
-    $BTRED -I "$bindir"/pml2conll "$file" >> ${file%$STRIP}$ADD 
+    $BTRED -qI "$bindir"/pml2conll "$file" >> ${file%$STRIP}$ADD 
 done

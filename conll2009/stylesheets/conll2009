@@ -15,6 +15,10 @@ rootstyle:<?
 ?>
 
 style:<? $this==$root ? '#{Node-hide:1}' : '' ?>
+style:#{CurrentOval-width:2}#{CurrentOval-outline:red}
+  <? if (length($this->{pred})) { ($this->{fillpred} eq 'Y' ? '#{CurrentOval-fill:blue}#{Oval-fill:blue}' : '#{CurrentOval-fill:green}#{Oval-fill:green}') }
+     else { ($this->{fillpred} eq 'Y' ? '#{CurrentOval-fill:darkred}#{Oval-fill:darkred}' : '#{CurrentOval-fill:yellow}#{Oval-fill:yellow}') } 
+   ?>
 node:${form}<? $${pred} ? ' (#{purple(}${pred}#{)})' : ''?>
 node:#{darkblue}${deprel}<? $${pos} ? ' ' : '' ?>#{gray}${pos}
 node:<? 

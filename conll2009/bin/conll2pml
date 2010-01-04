@@ -15,7 +15,9 @@ use Getopt::Long;
 use open qw(IO :utf8 :std);
 
 Getopt::Long::Configure ("bundling");
-my %opts;
+my %opts = (
+  'feat-columns' => 'FEATS',
+);
 GetOptions(\%opts,
 	'quiet|q',
 	'max-sentences|m=i',
@@ -27,6 +29,7 @@ GetOptions(\%opts,
 	'schema-only|s',
 	'head-from|h=s',
 	'order-attribute|O=s',
+	'feat-columns|f=s',
 	'struct-feats|F',
 	'technical-root|r',
 	'help',
@@ -87,20 +90,22 @@ while (@ARGV) {
       my @tok = map { $_ eq '_' ? undef : $_ } split /\t/, $_;
       my %tok;
       @tok{ @columns } = @tok;
-      my $feat = delete $tok{FEATS};
-      if ($feat) {
-	if ($opts{'struct-feats'}) {
-	  for my $f (split /\|/, $feat) {
-	    my ($n,$v)=split /=/,$f,2;
-	    if (defined($v)) {
-	      $tok{FEATS}{$n}=$v;
-	    } else {
-	      warn "Invalid name=value feature: $f\n";
+      for my $colname (split ',',$opts{'feat-columns'}) {
+	my $feat = delete $tok{$colname};
+	if ($feat) {
+	  if ($opts{'struct-feats'}) {
+	    for my $f (split /\|/, $feat) {
+	      my ($n,$v)=split /=/,$f,2;
+	      if (defined($v)) {
+		$tok{$colname}{$n}=$v;
+	      } else {
+		warn "Invalid name=value feature: $f\n";
+	      }
+	      $feat{$n}=1;
 	    }
-	    $feat{$n}=1;
+	  } else {
+	    $tok{$colname} = [split /\|/, $feat];
 	  }
-	} else {
-	  $tok{FEATS} = [split /\|/, $feat];
 	}
       }
       push @sent, \%tok;
@@ -171,9 +176,10 @@ sub dump_schema {
   }
 
   {
+    my %is_feat = map { $_=>1 } split(',', $opts{'feat-columns'});
     for my $name (@columns) {
       next if $name eq $HEAD;
-      if ($name eq 'FEATS') {
+      if ($is_feat{$name}) {
 	$writer->emptyTag('s:member', name => lc($name), type => 'feats.type');
       } elsif ($name eq $ID) {
 	$writer->startTag('s:member', name => $ORDER, as_attribute=>'1', role=> '#ORDER');
@@ -275,7 +281,7 @@ sub dump_node {
     my $val = $node->{$name};
     next if !defined($val) or $val eq '';
     my $tag = lc($name);
-    if ($name eq 'FEATS') {
+    if (ref($val)) {
       if ($opts{'struct-feats'}) {
 	$writer->emptyTag($tag,%$val) if $val;
       } else {
@@ -406,16 +412,21 @@ Do not ouptut PML data files. That is, read the input file only in
 order to collect the information required for generating the
 corresponding PML schema and dump this schema.
 
-=item B<--struct-feats>
-
-If the FEATS column has the form name=value|name=value|..., then this
-flag may be used to build a structure out of these features. (By
-default, all features are stored in a list).
-
 =item B<--columns|-c> C<col1,col2,col3,...>
 
 Specify names and order of columns in the input ConLL-X file. Defaults
 to C<ID,FORM,LEMMA,CPOSTAG,POSTAG,FEATS,HEAD,DEPREL,PHEAD,PDEPREL>.
+
+=item B<--feat-columns|-f> C<col1,col2,col3,...>
+
+Comma-separated list of names of columns containing features. Defaults to C<FEATS>.
+
+=item B<--struct-feats|-F>
+
+If a feature column (see B<--feat-columns>) has the form
+name=value|name=value|..., then this flag may be used to build a
+structure out of these features. (By default, all features are stored
+in a list).
 
 =item B<--head-from|-h> C<col>
 

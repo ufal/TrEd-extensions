@@ -1,6 +1,7 @@
 #!btred -e pml2conll()
 #-*- cperl -*-
 
+use strict;
 use Pod::Usage;
 use Getopt::Long;
 
@@ -11,7 +12,6 @@ GetOptions(\%opts,
 	'columns|c=s',
 	'head-to|h=s',
 	'order-attribute|O=s',
-	'struct-feats|F',
 	'technical-root|r',
         'APREDS|A=s',
 	'help',
@@ -29,60 +29,81 @@ if ($opts{man}) {
   pod2usage(-exitstatus => 0, -verbose => 2);
 }
 
-$opts{columns} |= 'order,form,lemma,plemma,pos,ppos,feat,pfeat,HEAD,phead,deprel,pdeprel,fillpred,pred,APREDS';
-$opts{'head-to'} |= 'HEAD';
-$opts{'APREDS'} |= 'APREDS';
-$opts{'order-attribute'} |= 'order';
+$opts{columns} ||= 'order,form,lemma,plemma,pos,ppos,feat,pfeat,HEAD,phead,deprel,pdeprel,fillpred,pred,APREDS';
+$opts{'head-to'} ||= 'HEAD';
+$opts{'APREDS'} ||= 'APREDS';
 
 my @attr = split /,/,$opts{columns};
 
 sub pml2conll {
 
+  my $order = $root->get_ordering_member_name || 'order';
   my @sch_attr = Attributes();
-  foreach $attr (@attr){
+  my ($apreds) = grep { $_ eq $opts{'APREDS'} } @attr;
+  if ($apreds) {
+    if (!(grep { m{^apreds/} } @sch_attr)) {
+      die "Nodes in the input file do not contain 'apreds' attribute: cannot generate $opts{'APREDS'} columns!\n";
+    }
+  }
+  foreach my $attr (@attr){
     die "Attribute $attr not found in schema.\n"
-      unless grep $_ eq $attr,@sch_attr
-        or grep $_ eq $attr,$opts{'head-to'},$opts{'APREDS'};
+      unless grep $_ eq $attr, (@sch_attr,$opts{'head-to'},$apreds);
   }
 
   do {{
-
-    my @preds = sort { $a->{order} <=> $b->{order} }
-      grep $_->{fillpred} eq 'Y',
-        $root->descendants,
-          $opts{'technical-root'}
-            ? undef
-              : $root;
-
     my $nodes = SortByOrd([$root->descendants]);
     unshift @$nodes,$root if $opts{'technical-root'};
 
-    foreach my $node(@$nodes){
-      my $line ='';
+    # correct PRED if needed:
+    if ($apreds) {
+      my %is_target;
+      # find nodes being pointed to
+      for my $node (@$nodes) {
+	$is_target{ $_->{'target.rf'} } = 1 for ListV($node->{apreds});
+      }
 
+      for my $node (@$nodes) {
+	# check that nodes pointed to by apreds have pred
+	if ($is_target{ $node->{'xml:id'} }) {
+	  unless (defined($node->{pred}) and length($node->{pred})) {
+	    warn("ERROR: Missing 'pred' on node $node->{'xml:id'}!\n");
+	    $node->{pred}='pml:-NO-PRED-';
+	  }
+	}
+      }
+    }
+
+    my @preds = grep { defined($_->{pred}) and length($_->{pred}) } @$nodes if $apreds;
+
+    foreach my $node (@$nodes){
+      my $line ='';
       foreach my $attr(@attr){
 
-        if($attr eq $opts{'head-to'}){
+        if ($attr eq $opts{'head-to'}) {
           my $p = $node->parent;
-          $line .= $p ? $p->{$opts{'order-attribute'}} : '0';
-
-        }elsif($attr eq $opts{'APREDS'}){
-          foreach my $pred (@preds){
+          $line .= $p ? $p->{$order} : '0';
+        } elsif (defined($apreds) and $attr eq $apreds) {
+	  my @p;
+          foreach my $pred (@preds) {
             # Assumption: each ID can be listed just once in the apreds list
-            my ($apred) = grep $_->{'target.rf'} eq $pred->{'xml:id'}
-              ,ListV($node->{apreds});
-
-            if(ref $apred){
-              $line .= $apred->{label};
-            }else{
-              $line .= '_';
+            my ($apred) = grep $_->{'target.rf'} eq $pred->{'xml:id'}, ListV($node->{apreds});
+            if (ref $apred) {
+	      push @p, $apred->{label};
+            } else {
+              push @p, '_';
             }
-            $line .=  "\t" unless $pred == $preds[-1];
           }
-
-        }else{ # normal string value
+	  $line .=  join("\t",@p);
+        } else { # normal string value
           my $value = $node->attr($attr);
-          if(defined $value){
+	  if (ref($value)) {
+	    if (UNIVERSAL::isa($value,'ARRAY')) {
+	      $value = join('|',@$value);
+	    } elsif (UNIVERSAL::isa($value,'HASH')) {
+	      $value = join('|',map {$_.'='.$value->{$_}}  %$value);
+	    }
+	  }
+	  if(defined $value){
             $line .= $value unless ref $value;
           }else{
             $line .= '_';
@@ -121,11 +142,6 @@ Converts CoNLL data from PML back to ConLL-X format.
 
 A technical root was created for each sentence.
 
-=item B<--struct-feats>
-
-If the FEATS column has the form name=value|name=value|..., then this
-flag may be used to build a structure out of these features. (By
-default, all features are stored in a list).
 
 =item B<--columns|-c> C<col1,col2,col3,...>
 
