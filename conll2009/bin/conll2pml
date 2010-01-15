@@ -87,7 +87,7 @@ while (@ARGV) {
   while (<$fh>) {
     chomp;
     if (/./) {
-      my @tok = map { /^\s*_\s*$/ ? undef : $_ } split /\t/, $_; # should be $_ eq '_', but we accept even '_ ' etc. as null
+      my @tok = map { $_ eq '_' ? undef : $_ } split /\t/, $_;
       my %tok;
       @tok{ @columns } = @tok;
       for my $colname (split ',',$opts{'feat-columns'}) {
