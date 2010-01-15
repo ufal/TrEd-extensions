@@ -25,6 +25,9 @@ OPTIONS:
   -h|--help             - show this help
   -b|--btred            - path to btred
 
+
+  -F|--compute-fillpred - set FILLPRED=Y where PRED is set
+
   -g|--group <strip-suffix> <add-suffix>
 
     While processing files, the files with names that differ only in
@@ -46,52 +49,32 @@ USAGE: $NAME [-b path_to_btred] [-g strip add] file.pml..
 USAGE
 }
 
-if ((!$#)) || [[ $1 == -h || $1 == --help ]] ; then
-    ShowHelp
-    exit
-elif [[ $1 == -u || $1 == --usage ]] ; then
-    usage
-    exit
-elif [[ $1 == -v || $1 == --version ]] ; then
-    echo $VERSION
-    exit
-fi
-
 STRIP=''
 ADD=.conll
 BTRED=btred
-
-while [[ $1 == -* ]] ; do
-    if [[ $1 == -b* || $1 == --btred ]] ; then
-        if [[ $1 == -b? ]] ; then
-            BTRED=${1#-b}
-            shift
-        else
-            BTRED=$2
-            shift 2
-        fi
-    elif [[ $1 == -g* || $1 == --group ]] ; then
-        if [[ $1 == -g? ]] ; then
-            STRIP=${1#-g}
-            shift
-        else
-            STRIP=$2
-            shift 2
-        fi
-        ADD=$1
-        shift
-    else
-        echo Unknown option "$1" >&2
-        exit
-    fi
+OPTS=()
+args=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+	-u|--usage) usage; exit; ;;
+	-h|--help) ShowHelp; exit; ;;
+	-v|--version) echo $VERSION; exit; ;;
+	-b|--btred) BTRED=$2; shift 2; break ;;
+	-g|--group) STRIP=$2; ADD=$3; shift 3; break ;;
+	-F|--compute-fillpred) OPTS=("${OPTS[@]}" "$1"); shift; break ;;
+	--) shift ; break ;;
+        -*) echo "Invalid command-line option: $1!" >&2 ; exit 1 ;;
+	*) args=("${args[@]}" "$1"); shift ;;
+    esac
 done
 
-bindir=$(readlink -f ${0%/*})
+eval set -- "$@" "${args[@]}"
 
+bindir=$(readlink -f ${0%/*})
 for file ; do
     : > ${file%$STRIP}$ADD 
 done
 
 for file ; do
-    $BTRED -qI "$bindir"/pml2conll "$file" >> ${file%$STRIP}$ADD 
+    $BTRED -qI "$bindir"/pml2conll -o $OPTS -- "$file" >> ${file%$STRIP}$ADD 
 done
