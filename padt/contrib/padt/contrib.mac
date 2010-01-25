@@ -1,5 +1,7 @@
 # -*- cperl -*-
 
+#include <contrib/pml/PML.mak>
+
 #ifndef padt
 #define padt
 

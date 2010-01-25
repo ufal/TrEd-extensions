@@ -90,7 +90,7 @@ sub isForeign {
 
     while ($this = $this->following()) {
 
-        return if $this->level() == 2 and ElixirFM::entity($this)->[0] !~ /^(?:Xtra|Ynit|Zero|Grph)$/;
+        return if $this->{'#name'} eq 'Entry' and ElixirFM::entity($this)->[0] !~ /^(?:Xtra|Ynit|Zero|Grph)$/;
     }
 
     return 1;

@@ -929,10 +929,6 @@ sub elixir_lexicon {
 
         my $text = Exec::ElixirFM::elixir 'lexicon';
 
-        $text =~ s/(?<=<derive>)True(?=<\/derive>)/------F---/g;
-        $text =~ s/(?<=<tense>)I(?=<\/tense>)/Imperfect/g;
-        $text =~ s/(?<=<voice>)P(?=<\/voice>)/Passive/g;
-
         my $pml = PMLInstance->load({ 'string' => $text });
 
         my $lexicon = [];
