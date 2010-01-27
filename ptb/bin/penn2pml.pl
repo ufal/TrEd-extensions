@@ -8,6 +8,8 @@ use warnings;
 use strict;
 $|=1;
 
+use open ':std' => 'utf8';
+
 use File::Spec;
 use Getopt::Long;
 use Pod::Usage;
@@ -22,6 +24,8 @@ GetOptions(\%opts,
 	'encoding|e=s',
 	'output-dir|o=s',
 	'generate-schema|g=s',
+	'nonbracketed-terminals|B',
+	'bracketed-terminals|b',
 	'base-schema|s=s',
 	'quiet|q',
 	'help|h',
@@ -63,6 +67,9 @@ if ($opts{'generate-schema'}) {
   open $schema_out_fh, '>', $opts{'generate-schema'}
     or die "Cannot write schema to $opts{'generate-schema'}";
 }
+
+my $nonbracketed_terminals = $opts{'nonbracketed-terminals'};
+my $bracketed_terminals = $opts{'bracketed-terminals'};
 
 foreach my $file (@ARGV){
   my ($S,$T);
@@ -119,11 +126,10 @@ HEADER
   $input =~ s/&/&amp;/g;
   my $sentence_count;
   my $base_id = $basename; $base_id=~s/\.mrg$//;
-
   foreach my $sentence (split /\n/,$input) {
     my ($terminal_count, $nonterminal_count, $order)=(0,0,0);
     $sentence_count++;
-    $sentence =~ s/\((.+)\)/$1/;
+    $sentence =~ s/^\(   (\(.+\)) \)$/$1/x;
     my $sentence_id = "$base_id-s$sentence_count";
 
     # in order to be able to compute coindexes and intersentential
@@ -139,10 +145,29 @@ HEADER
     my (@coindex,%target_id);
     while ($sentence) {
       # terminal
-      if ( $sentence=~s{^\(((?:[^ ()\\]|\\.)+)( )((?:[^\\()/]|\\.)+)\)}{} or # e.g. (VB find)
-	   $sentence=~s{^\s*((?:[^ ()/\\]|\\.)+)(/)((?:[^ ()\\]|\\.)+)}{} # alternative format: find/VB
+      if ( (not($nonbracketed_terminals) and
+	    # case (VB find)
+	      $sentence=~s{
+			    ^\(                      # (
+                                ((?:[^\ ()\\]|\\.)+) # POS
+                                (\ )                 # <space>
+                                ((?:[^\\()/]|\\.)+)  # WORD
+                              \)                     # )
+			  }{}x)
+	  or
+	    # alternative format: find/VB
+	    not($bracketed_terminals) and
+	  $sentence=~s{^(?:\s|\+)*
+             (?:
+               # WORD                   /   POS
+               ((?:[^\ ()/\\+]|\\.)+)  (/)  ((?:[^\ ()\\+]|\\.)+)
+               |
+	       # e.g. *T*
+	       (\*(?:[^\ ()/\\+]|\\.)+)
+	     )
+	   }{}x
 	 ) {
-	my ($tag,$pennform) = ($2 eq '/') ? ($3,$1) : ($1,$3);
+	my ($tag,$pennform) = $4 ? ('', $4) : ($2 eq '/') ? ($3,$1) : ($1,$3);
 	my $form = pennform2form($pennform);
 	$terminal_count++;
 	my $terminal_id = "$sentence_id-t$terminal_count";
@@ -159,7 +184,7 @@ HEADER
 	  -attributes => { id => $terminal_id },
 	  -children => [
 	    { -name => 'form', -content=>$form },
-	    { -name => 'pos', -content=>$tag },
+	    (defined($tag) ? { -name => 'pos', -content=>$tag } : ()),
 	    (($pennform=~m/^\*/) ? () : { -name => 'order', -content=>$order++ }),
 	    ($coindex ? $coindex : ()),
 	   ],
@@ -170,9 +195,9 @@ HEADER
 
       # nonterminal opening bracket
       elsif ($sentence=~s/^\(([^ ()]+)//) {
+	my $cat = $1;
 	$nonterminal_count++;
 	my $nonterminal_id = "$sentence_id-n$nonterminal_count";
-	my $cat = $1;
 	my $role = "";
 	my $coindex = "";
 	my $node = {
