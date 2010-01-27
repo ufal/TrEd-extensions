@@ -64,7 +64,7 @@
       </member>
       <member name="coindex.rf"><cdata format="PMLREF"/></member>
       <member name="form" required="1"><cdata format="any"/></member>
-      <member name="pos" required="1" type="postag.type"/> <!-- Penn Treebank part of speech tag -->
+      <member name="pos" type="postag.type"/> <!-- Penn Treebank part of speech tag -->
       <member name="order" role="#ORDER"><cdata format="nonNegativeInteger"/></member>
      </structure>
   </type>
