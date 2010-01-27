@@ -396,6 +396,16 @@ schema that enumerates exactly those values that occur in the
 converted documents. The result may not necessarily be a subset or
 superset of the values listed in the base schema.
 
+=item B<--bracketed-terminals|b>
+
+Assume all terminals have the format of (POS WORD).
+
+=item B<--non-bracketed-terminals|B>
+
+Assume all terminals have the format of WORD/POS or TRACE, where TRACE
+is a token starting with '*', e.g. *T*-2 or *op*.
+Sibling terminals are assumed to be separated by whitespace or '+'.
+
 =item B<--usage|-u>
 
 Print a brief help message on usage and exits.
