@@ -111,6 +111,7 @@ HEADER
   my$input;
   while (my $line=<$S>) {
     chomp $line;
+    $line=~s/\r//g;
     next if ($line=~/^\s*\</); # skip SGML/XML markup (e.g. in Chinese Treebank files)
     next if ($line=~/^\*/);    # skip UPenn copyright comments
     next if ($line=~/^\( @[^)]*\)\s*$/); # skip Penn Atis IDs (or what)
@@ -252,7 +253,7 @@ HEADER
 
       # parse error
       else {
-	die "No reduction: '$sentence'\n";
+	die "No reduction:\n'$sentence'\n";
       }
     }
 
