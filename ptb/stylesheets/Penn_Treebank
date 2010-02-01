@@ -1,12 +1,11 @@
 context: Penn_Treebank
-
 node: #{black}${form}
 node: #{darkblue}${cat}#{black}<? join('',map "-$_",ListV($this->{functions})) ?>
 node: #{darkgreen}<? $${pos} eq '-NONE-' ? '-' : '${pos}' ?>
 node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
 
 text: <?
-  ($${#name} eq 'terminal' and $${form} !~ '^\*') ? 
+  ($${#name} eq 'terminal' and $${form} !~ '^\*|^0$') ? 
     "#{-tag:".(join(",",map { "$_,#$_->{id}" } $this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
     .($${form}=~/^(?:'.+|[,.;:])$/ ? "#{-nospacebefore}".$${form} : $${form})
   : () ?>
@@ -43,8 +42,8 @@ style:
       my $t='[? $node->{id} eq "'.$${coindex.rf}.'" ?]';
       my ($X,$Y)=("(x$t-xn)","(y$t-yn)");
       my $D=qq{sqrt($X**2+$Y**2)};
-      my $d=qq{(25/$D+0.12)};
-      $coords .= qq{&xn,yn,(x$t+xn)/2 - $Y*$d,(y$t+yn)/2 + $X*$d,x$t,y$t};
+      my $d=qq{-(25/$D+0.12)};
+      $coords .= qq{&xn,yn,(x$t+xn)/2 - $Y*$d,(y$t+8+yn)/2 + $X*$d,x$t,y$t+8};
       $styles .= '#{Line-arrow:&last}#{Line-fill:&orange}#{Line-width:&1}';
     }
     $styles .= "#{Line-coords:$coords}#{Line-smooth:$smooth&1}";

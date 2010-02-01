@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 # penn2pml.pl     pajas@ufal.mff.cuni.cz     2009/08/27 09:00:07
 
-our $VERSION="0.1";
+our $VERSION="0.2";
 
 use Scalar::Util qw(weaken);
 use warnings;
