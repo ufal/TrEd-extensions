@@ -1,18 +1,5 @@
 context: Conll2009
 rootstyle:#{NodeLabel-skipempty:1}#{skipHiddenLevels:1}#{skipHiddenParents:1}
-rootstyle:<?
-   %Conll2009::fillcolors = qw(A0 blue ACT blue AUTH blue arg0-agt blue C-A0 blue R-A0 blue GA blue GA2 blue
-                      A1 orange PAT orange arg1-pat orange C-A1 orange WO orange
-                      A2 violet EFF violet arg1-tem violet NO violet
-                      A3 darkgreen ORIG darkgreen TO darkgreen
-                      A4 darkred ADDR darkred argM-fin darkred arg2-fin darkred NI darkred
-                      A5 red arg4-des red arg2-efi red DE red
-                      A6 green NoGap green
-                      DIR1 brown DIR2 brown DIR3 brown LOC brown argM-loc brown arg2-loc brown AM-LOC brown NO brown
-                      TWHEN darkcyan THL darkcyan TTILL darkcyan TSIN darkcyan TPAR darkcyan THO darkcyan TFHL darkcyan TFRWH darkcyan TOWH darkcyan argM-tmp darkcyan AM-TMP darkcyan TMP darkcyan
-                      COMPL darkcyan COMPL2 darkcyan
-                     );
-?>
 
 style:<? $this==$root ? '#{Node-hide:1}' : '' ?>
 style:#{CurrentOval-width:2}#{CurrentOval-outline:red}

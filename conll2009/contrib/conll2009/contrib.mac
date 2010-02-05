@@ -89,6 +89,27 @@ sub switch_context_hook {
   Redraw() if GUI();
 }
 
+# Color coding:
+
+our %fillcolors_base = (
+  blue	     => [qw( A0 C-A0 R-A0 ACT AUTH arg0-agt GA GA2 )],
+  orange     => [qw( A1 C-A1 R-A1 PAT arg1-pat WO )],
+  violet     => [qw( A2 C-A2 R-A2 EFF arg1-tem NO )],
+  darkgreen  => [qw( A3 C-A3 R-A3 ORIG TO )],
+  darkred    => [qw( A4 C-A4 R-A4 ADDR argM-fin arg2-fin NI )],
+  red	     => [qw( A5 C-A5 R-A5 arg4-des arg2-efi DE )],
+  green	     => [qw( A6 C-A6 R-A6 NoGap )],
+  brown	     => [qw( DIR1 DIR2 DIR3 LOC argM-loc arg2-loc NO AM-DIR C-AM-DIR AM-LOC C-AM-LOC )],
+  darkcyan   => [qw( TWHEN THL TTILL TSIN TPAR THO TFHL TFRWH TOWH argM-tmp TMP COMPL COMPL2
+                     AM-MNR C-AM-MNR AM-TMP C-AM-TMP AM-EXT C-AM-EXT
+                     AM-REC C-AM-REC AM-PRD C-AM-PRD AM-PNC C-AM-PNC
+                     AM-CAU C-AM-CAU AM-DIS C-AM-DIS AM-ADV C-AM-ADV
+                     AM-MOD C-AM-MOD AM-NEG C-AM-NEG
+		  )],
+);
+
+our %fillcolors = map { my $k=$_; map { $_ => $k } @{$fillcolors_base{$k}} } keys %fillcolors_base;
+
 # Keyboard shortcuts for adding/removing arcs
 
 Bind 'mark_this_node' => {
@@ -258,13 +279,20 @@ sub add_arc {
     'target.rf' => $node->{'xml:id'},
     'label' => $label,
   },1);
-  unless (defined($node->{pred}) and length(defined($node->{pred}))) {
+  my $undo_pred = $node->{pred};
+  unless (defined($undo_pred) and length(defined($undo_pred))) {
     $node->{pred}=$node->{lemma};
-    return unless edit_pred($node);
+    unless (edit_pred($node)) {
+      $node->{pred}=$undo_pred;
+      return;
+    }
   }
   return unless (defined($node->{pred}) and length(defined($node->{pred})));
   unless (defined $label) {
-    return unless edit_arc($target,$arc);
+    unless (edit_arc($target,$arc)) {
+      $node->{pred}=$undo_pred;
+      return;
+    }
   }
   AddToList($target,'apreds', $arc);
   return 1;

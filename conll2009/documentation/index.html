@@ -50,18 +50,21 @@ This package contains a stylesheet for visualization of
     <tt>conll2009</tt>.</p>
 
     <h4>Handling bogus data</h4>
-    <p>In conversion from PML to CoNLL, if a node contains 'apreds'
-    pointers to a node with empty 'pred', warning is issued and the
-    'PRED' column is filled with a special value 'pml:-NO-PRED-',
+    <p>In conversion from PML to CoNLL-2009-ST format, if a node contains <tt>apreds</tt>
+    pointers to a node with empty attribute <tt>pred</tt>, warning is issued and the
+    column PRED is filled with a special value 'pml:-NO-PRED-',
     which is transformed back to an empty string during the reverse
     conversion.  This is because we do not want to drop the pointer
-    (although possibly bogus) and the CoNLL format provides no way to
+    (although possibly bogus) and the CoNLL-2009-ST format provides no way to
     store a pointer to a predicate with empty value in the 'PRED'.
     </p>
-    <p>Moreover, the CoNLL-2009-ST data format uses a column named 'FILLPRED' which 
+    <p>Moreover, the CoNLL-2009-ST data format uses a column named FILLPRED which 
     is used to indicate the words that should be considered predicates 
-    (should have 'PRED' filled). Neither the annotation macros nor the conversion scripts
-    attempt to set 'FILLPRED' according to whether 'PRED' is filled.
+    (should have PRED filled). The annotation macros do not
+    attempt to set FILLPRED according to whether PRED is filled,
+    however the conversion script from PML to CoNLL-2009-ST format has
+    a flag (<tt>--compute--filpred</tt>) which can be used
+    to set FILLPRED=Y for exactly those nodes where PRED is set.
     </p>
 
     <h3>Authors:</h3>
