@@ -36,7 +36,7 @@ else
 fi
 
 perl -I"${base_dir}/lib" - $lang $file <<'EOF' | \
-  "$CONLL2PML" -o "$dir/$hydt_lang" -I "$lang" -m 50 -i -c 'ID,WXFORM,FORM,WXLEMMA,LEMMA,CPOSTAG,POSTAG,FEATS,HEAD,DEPREL' -O order -r -R hydt -F -
+  "$CONLL2PML" -o "$dir/$hydt_lang" -I "$lang" -m 50 -i -c 'ID,WXFORM,FORM,WXLEMMA,LEMMA,CPOSTAG,POSTAG,FEATS,HEAD,DEPREL' -O order -r -R hydtconll -F -
 use open qw(IO :utf8 :std);
 use translit;
 use translit::wc2utf;

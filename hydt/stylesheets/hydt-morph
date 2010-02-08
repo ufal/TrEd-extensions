@@ -1,0 +1,5 @@
+context: .*
+node:<?$${form}||('#{blue}'.$${feats/lemma})?><? $${error} ? '#{red}!'.join ',',ListV($this->{error}) : ''?>
+node:#{darkgreen}${phrase} #{purple}${drel}
+text:${form}
+style:<? $${form} ? '#{Oval-fill:brown}#{CurrentOval-fill:orange}' : '' ?>
