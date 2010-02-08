@@ -59,6 +59,7 @@
       <member name="error" type="error.type"/>
       <member name="feats" type="feats.type"/>
       <member name="form"><cdata format="any"/></member>
+      <member name="wxform"><cdata format="any"/></member>
       <member name="ord" role="#ORDER"><cdata format="Integer"/></member>
       <member name="phrase"><cdata format="any"/></member>
     </structure>
@@ -66,6 +67,7 @@
 
   <type name="feats.type">
     <structure>
+      <member name="wxlemma"><cdata format="any"/></member>
       <member name="lemma"><cdata format="any"/></member>
       <member name="pos"><cdata format="any"/></member>
       <member name="g"><cdata format="any"/></member>
