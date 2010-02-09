@@ -43,10 +43,10 @@ my %langs = (NO=>'NO',
 
 my $max_sent = 0;
 if($ARGV[0] =~ /^-(?:-max-sentences|s)(.*)/){
+  shift;
   if($1 and $1 > 0){
     $max_sent = $1;
   }else{
-    shift;
     $max_sent = shift;
   }
 }
