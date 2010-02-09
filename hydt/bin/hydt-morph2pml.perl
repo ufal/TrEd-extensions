@@ -64,7 +64,9 @@ sub print_subtree {
   my ($OUT,$tree,$root,$indent) = @_;
   my $space = ' ' x ++$indent;
   my $node = $tree->{$root};
-  print $OUT qq($space <$node->{type}>\n);
+  print $OUT qq($space <$node->{type});
+  print $OUT qq( id="$node->{id}") if exists $node->{id};
+  print $OUT ">\n";
   foreach my $attr (sort keys %$node){
     if ($attr eq 'feats' and scalar @{$node->{feats}}){
       print $OUT qq($space  <feats>\n);
@@ -78,7 +80,7 @@ sub print_subtree {
         print $OUT "<LM>$_</LM>";
       }
       print $OUT qq(</$attr>\n);
-    }elsif($attr !~ /^(?:feats|error)$/){
+    }elsif($attr !~ /^(?:feats|error|id)$/){
       print $OUT qq($space  <$attr>$node->{$attr}</$attr>\n)
         if defined $node->{$attr} and length $node->{$attr} and $attr !~ /^(?:parent|type|name|_.*)$/;
     }
@@ -110,6 +112,7 @@ while (my $in_file = shift) {
   print STDERR "Processing: $in_file\n";
   my ($doc_id,           # document id
       $sentence_id,      # sentence id
+      $wordid,$chunkid,  # counters for uniq ids
       $sentence_counter, # used if no sentence id's defined in source
       $root,             # root of current tree
       $ord,              # ordering of nodes
@@ -119,6 +122,7 @@ while (my $in_file = shift) {
       @error,            # list of errors for current node
       $tree              # reference to hash with the current tree
      );
+  ($wordid,$chunkid) = (0,0);
 
   print $OUT <<"EOF";
 <?xml version="1.0" encoding="utf-8"?>
@@ -267,6 +271,7 @@ EOF
       unshift @$feats,$lemma;
 
       $tree->{$name} = {type=>'chunk',
+                   id => $lang."c".$chunkid++,
                    phrase=>$phrase,
                    parent=>$parent || '0',
                    drel=>$drel,
@@ -286,6 +291,7 @@ EOF
       my $lemma = transliterate($feats->[0]);
       unshift @$feats,$lemma;
       $tree->{"n$ord"} = {type=>'word',
+                   id=>$lang."w".$wordid++,
                    parent=>$name,
                    wxform=>$form,
                    form=>transliterate($form),
