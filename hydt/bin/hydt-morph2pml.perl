@@ -11,7 +11,7 @@ suspicious values of attributes are reported.
 
 =head2 Usage
 
-  hydt-morph2pml.perl language file1.morph [file2.morph...]
+  hydt-morph2pml.perl [--max-setntences|-s num] language file1.morph [file2.morph...]
 
 It is advisable to split large input files into smaller ones to
 improve their later processing by TrEd. Output files will be named
@@ -21,6 +21,10 @@ C<file1.morph.pml> etc.
 
 B<language> is one of NO (performs no conversion), hindi (hi), bangla
 (bn), and telugu (te).
+
+B<--max-sentences|-s num> specifies the maximal number of sentences
+per one generated file. Output files are named C<file1.morph.001.pml>
+etc.
 
 =head2 Author
 
@@ -36,6 +40,16 @@ my %langs = (NO=>'NO',
              hi=>'hi',hindi => 'hi',
              bn=>'bn',bangla => 'bn',
              te=>'te',telugu=>'te');
+
+my $max_sent = 0;
+if($ARGV[0] =~ /^-(?:-max-sentences|s)(.*)/){
+  if($1 and $1 > 0){
+    $max_sent = $1;
+  }else{
+    shift;
+    $max_sent = shift;
+  }
+}
 
 my $lang = shift;
 die "Unknown language $lang\n" unless exists $langs{$lang};
@@ -105,25 +119,8 @@ sub touch {
   touch($tree,$_) foreach @{ $node->{_children} };
 } # touch
 
-while (my $in_file = shift) {
-  my $out_file = "$in_file.pml";
-  open my $IN,"<$in_file";
-  open my $OUT,">$out_file";
-  print STDERR "Processing: $in_file\n";
-  my ($doc_id,           # document id
-      $sentence_id,      # sentence id
-      $wordid,$chunkid,  # counters for uniq ids
-      $sentence_counter, # used if no sentence id's defined in source
-      $root,             # root of current tree
-      $ord,              # ordering of nodes
-      $chunk,            # depth (number of nested chunks)
-      $name,             # name of the last chunk parsed
-      $name_counter,     # used to generate uniq names for words
-      @error,            # list of errors for current node
-      $tree              # reference to hash with the current tree
-     );
-  ($wordid,$chunkid) = (0,0);
-
+sub header {
+  my ($OUT,$in_file) = @_;
   print $OUT <<"EOF";
 <?xml version="1.0" encoding="utf-8"?>
 
@@ -137,6 +134,36 @@ while (my $in_file = shift) {
   </annotation_info>
  </meta>
 EOF
+} # header
+
+
+while (my $in_file = shift) {
+  my $out_file;
+  if($max_sent > 0){ 
+    $out_file = "$in_file.000.pml";
+  }else{
+    $out_file = "$in_file.pml";
+  }
+  open my $IN,"<$in_file";
+  open my $OUT,">$out_file";
+  print STDERR "Processing: $in_file\n";
+  my ($doc_id,           # document id
+      $sentence_id,      # sentence id
+      $wordid,$chunkid,  # counters for uniq ids
+      $sentence_counter, # used if no sentence id's defined in source
+      $filecount,        # counts files if chopping to smaller ones
+      $sentcount,        # counts sentences for chopping
+      $root,             # root of current tree
+      $ord,              # ordering of nodes
+      $chunk,            # depth (number of nested chunks)
+      $name,             # name of the last chunk parsed
+      $name_counter,     # used to generate uniq names for words
+      @error,            # list of errors for current node
+      $tree              # reference to hash with the current tree
+     );
+  ($wordid,$chunkid,$filecount,$sentcount) = (0,0,0,0);
+
+  header($OUT,$in_file);
 
   while (my $line = <$IN>){
     chomp $line;
@@ -145,7 +172,12 @@ EOF
       die "Document inside document.\n" if $doc_id;
       $doc_id = $1 || "doc1";
       $doc_id = "doc$doc_id" if $doc_id !~ /^[_a-zA-Z]/;
-      print $OUT qq(<document id="$doc_id">\n);
+      if($max_sent > 0){
+        print $OUT qq(<document id="$doc_id)
+          .sprintf('_%03d',$filecount).qq(">\n);
+      }else{
+        print $OUT qq(<document id="$doc_id">\n);
+      }
 
     }elsif($line =~ m:</document>:){
       if($doc_id){
@@ -159,6 +191,19 @@ EOF
       die "Sentence inside sentence\n" if $sentence_id;
       $sentence_id = $1 || $sentence_counter++;
       $sentence_id = "s$sentence_id" if $sentence_id !~ /^[_a-zA-Z]/;
+
+      $sentcount++;
+      if ($max_sent and $sentcount > $max_sent){
+        print $OUT "</document>\n</hydtmorph>\n";
+        close $OUT;
+        $sentcount = 1;
+        $out_file = "$in_file.".sprintf('%03d',++$filecount).'.pml';
+        open $OUT,">$out_file";
+        header($OUT,$in_file);
+        print $OUT qq(<document id="$doc_id)
+          .sprintf('_%03d',$filecount).qq(">\n);
+      }
+
       $ord = 1;
       $tree = {};
       print $OUT qq(<sentence id="$sentence_id">\n);
