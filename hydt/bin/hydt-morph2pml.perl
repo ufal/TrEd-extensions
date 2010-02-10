@@ -181,7 +181,7 @@ while (my $in_file = shift) {
 
     }elsif($line =~ m:</document>:){
       if($doc_id){
-        print $OUT "</document>\n</hydtmorph>";
+        print $OUT "</document>\n";
         $doc_id = '';
       }else{
         die "End tag for document outside document.\n";
@@ -355,4 +355,6 @@ while (my $in_file = shift) {
       warn "WARNING: Ignored: $line\n" unless $line =~ m,^(?:|</?(?:head|text)>)\s*$,;
     }
   }
+  print $OUT "</hydtmorph>\n";
+  close $OUT;
 }
