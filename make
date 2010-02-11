@@ -16,7 +16,12 @@ pod2xhtml=$DEVEL/pod_to_xhtml
 
 
 for d in "${dirs[@]%/}"; do
-    ~/tred-devel/devel/pack_extension.sh "$d" "$REPO"
+    if ! grep -q "$d" extensions.lst; then
+	echo "Adding $d to extensions.lst"
+	echo "$d" >> extensions.lst
+    fi
+
+    "$PACKER" "$d" "$REPO"
 done
 
 (
