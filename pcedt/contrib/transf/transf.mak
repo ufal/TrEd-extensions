@@ -8,7 +8,7 @@ BEGIN { import TredMacro; }
 
 sub detect {
   my $fsfile = CurrentFile();
-  if ($fsfile ane $fsfile->FS->exists->{x_TNT} and $fsfile->FS->hide eq 'X_hide') {
+  if ($fsfile and $fsfile->FS->exists->{x_TNT} and $fsfile->FS->hide eq 'X_hide') {
     return 1;
   }
   return;
