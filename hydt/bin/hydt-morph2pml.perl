@@ -11,7 +11,7 @@ suspicious values of attributes are reported.
 
 =head2 Usage
 
-  hydt-morph2pml.perl [--max-setntences|-s num] language file1.morph [file2.morph...]
+  hydt-morph2pml.perl [--max-sentences|-s num] language file1.morph [file2.morph...]
 
 It is advisable to split large input files into smaller ones to
 improve their later processing by TrEd. Output files will be named
