@@ -3,3 +3,4 @@ node:<?$${form}||('#{blue}'.$${feats/lemma})?><? $${error} ? '#{red}!'.join ',',
 node:#{darkgreen}${phrase} #{purple}${drel}
 text:${form}
 style:<? $${form} ? '#{Oval-fill:brown}#{CurrentOval-fill:orange}' : '' ?>
+hint: <? ($this->{wxform} ? 'wxform:'.$this->{wxform}."\n":'').join "\n",map $_.":".$this->{feats}{$_},sort grep $_ ne 'lemma',keys %{$this->{feats}}; ?>
