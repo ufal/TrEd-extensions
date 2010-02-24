@@ -24,7 +24,7 @@ node:${lemma}<?
     my $t = '';
     $t.='~' if $${neg} eq 'negative';
     $t.='#{darkgreen(}${pos}#{)}' if $${pos};
-    $t.='#{gen}' if $${gen};
+    $t.='${gen}' if $${gen};
     $t.='${num}' if $${num};
     $t.='${case}' if $${case};
     $t.='@${deg}' if $${deg};
