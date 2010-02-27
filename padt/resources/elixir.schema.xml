@@ -160,7 +160,6 @@
         <choice>
             <value>Perfect</value>
             <value>Imperfect</value>
-            <value>Imperative</value>
         </choice>
     </type>
 
