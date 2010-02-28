@@ -1790,12 +1790,12 @@ sub restrict_grph {
     restrict_hide('G---------');
 }
 
-#bind restrict_perfect P menu Restrict Verb Perfect
+#bind restrict_perfect P menu Restrict Verb Perfective
 sub restrict_perfect {
     restrict_hide('-P--------');
 }
 
-#bind restrict_imperfect Ctrl+i menu Restrict Verb Imperfect
+#bind restrict_imperfect Ctrl+i menu Restrict Verb Imperfective
 sub restrict_imperfect {
     restrict_hide('-I--------');
 }
@@ -2283,7 +2283,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2009 by Otakar Smrz
+Copyright 2004-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
