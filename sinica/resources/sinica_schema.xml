@@ -22,7 +22,7 @@
       <attribute name="ending"><cdata format="any"/></attribute>
       <attribute name="ending-type"><cdata format="any"/></attribute>
       <sequence role="#CHILDNODES">
-	<element name="nonterminal" role="#NODE" type="nonterminal.type"/>
+	<element name="nonterminal" type="nonterminal.type"/>
       </sequence>
     </container>
   </type>
@@ -32,8 +32,8 @@
       <attribute name="cat"><cdata format="any"/></attribute>
       <attribute name="role"><cdata format="any"/></attribute>
       <sequence role="#CHILDNODES">
-	<element name="nonterminal" role="#NODE" type="nonterminal.type"/>
-	<element name="terminal" role="#NODE" type="terminal.type"/>
+	<element name="nonterminal" type="nonterminal.type"/>
+	<element name="terminal" type="terminal.type"/>
       </sequence>
     </container>
   </type> 
