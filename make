@@ -33,10 +33,10 @@ for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*(-|\w)+\s*$'`; do
     fi
 done;
 echo '</extensions>';
-) | xsltproc package2html.xsl - > "$REPO/index.html"
+) | xsltproc "$EXTDIR"/package2html.xsl - > "$REPO/index.html"
 
 
-for d in pdt20; do
+[ -d pdt20 ] && for d in pdt20; do
   for e in "$d"/contrib/*; do
     pushd $e
     ls *.mac *.mak *.inc | sort -k 1,1 -t . -d | xargs podselect > "$WWW/pdt20.pod"
