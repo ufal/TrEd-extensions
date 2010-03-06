@@ -16,9 +16,9 @@ pod2xhtml=$DEVEL/pod_to_xhtml
 
 
 for d in "${dirs[@]%/}"; do
-    if ! grep -q "$d" extensions.lst; then
+    if ! grep -q "$d" "$REPO"/extensions.lst; then
 	echo "Adding $d to extensions.lst"
-	echo "$d" >> extensions.lst
+	echo "$d" >> "$REPO"/extensions.lst
     fi
 
     "$PACKER" "$d" "$REPO"
