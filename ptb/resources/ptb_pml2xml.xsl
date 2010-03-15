@@ -5,6 +5,7 @@
 <xsl:stylesheet
   xmlns:xsl='http://www.w3.org/1999/XSL/Transform' 
   xmlns:p='http://ufal.mff.cuni.cz/pdt/pml/'
+  exclude-result-prefixes="p"
   version='1.0'>
 <xsl:output method="xml" encoding="utf-8" indent="yes"/>
 
@@ -15,9 +16,7 @@
 </xsl:template>
 
 <xsl:template match="p:trees/p:LM">
-  <S>
-    <xsl:apply-templates/>
-  </S>
+  <xsl:apply-templates/>
 </xsl:template>
 <xsl:template match="p:children">
   <xsl:apply-templates/>
