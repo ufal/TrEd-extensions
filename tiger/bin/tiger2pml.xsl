@@ -99,7 +99,7 @@
         <s:member name="id" role="#ID" as_attribute="1">
           <s:cdata format="ID"/>
         </s:member>
-        <s:member name="order"><s:cdata format="nonNegativeInteger"/></s:member>
+        <s:member name="order" role="#ORDER"><s:cdata format="nonNegativeInteger"/></s:member>
         <s:member name="label" type="edgelabel.type"/>
         <xsl:apply-templates select="feature[@domain='T' or @domain='FREC']"/>
         <s:member name="secedges">
@@ -186,11 +186,28 @@
     </xsl:if>
     <xsl:if test="edge">
       <children>
-	<xsl:apply-templates select="edge"/>
+	<xsl:apply-templates select="edge">
+	  <!-- we order terminals by their document order
+               and nonterminals by the order of 
+               the first terminal found on 1st, 2nd, or 3rd level below them
+            -->
+	  <xsl:sort select="count(
+                         key('id',@idref)/self::t/preceding-sibling::t
+                         |
+                         (key('id',key('id',@idref)/self::nt/edge/@idref
+			          |
+                                  key('id',key('id',@idref)/self::nt/edge/@idref)/self::nt/edge/@idref
+                                  |
+                                  key('id',key('id',key('id',@idref)/self::nt/edge/@idref)/self::nt/edge/@idref)/self::nt/edge/@idref
+			     )/self::t
+			 )[1]/preceding-sibling::t
+			 )" data-type="number" order="ascending"/>
+	</xsl:apply-templates>
       </children>
     </xsl:if>
   </nonterminal>
 </xsl:template>
+
 <xsl:template match="edge">
   <xsl:apply-templates select="key('id',@idref)">
     <xsl:with-param name="label" select="@label"/>
