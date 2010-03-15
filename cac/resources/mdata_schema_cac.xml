@@ -4,7 +4,7 @@
   version="1.1">
   <revision>1.0.0</revision>
   <description>CAC morphological annotation</description>
-  <reference name="wdata" readas="dom"/>
+  <reference name="wdata" readas="pml"/>
 
   <import schema="mdata_schema.xml"/>
 

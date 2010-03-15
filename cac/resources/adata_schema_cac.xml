@@ -4,12 +4,18 @@
   version="1.1">
   <revision>1.0.0</revision>
   <description>CAC analytical trees</description>
-  <reference name="mdata" readas="dom"/>
-  <reference name="wdata" readas="dom"/>
+  <reference name="mdata" readas="pml"/>
 
   <import schema="mdata_schema_cac.xml" type="m-node.type"/>
   <import schema="adata_schema.xml"/>
 
+  <derive type="m-node.type">
+    <structure>
+      <member name="id" as_attribute="1" role="#ID" required="1">
+	<cdata format="PMLREF"/>
+      </member>
+    </structure>
+  </derive>
 
   <derive type="a-node.type">
     <structure>
