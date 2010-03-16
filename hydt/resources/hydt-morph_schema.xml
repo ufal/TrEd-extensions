@@ -27,7 +27,7 @@
   </type>
 
   <type name="sentence.type">
-    <container name="sentence_c.type" role="#NODE">
+    <container role="#NODE">
       <attribute name="id" role="#ID" required="1"><cdata format="ID"/></attribute>
       <sequence role="#CHILDNODES">
         <element name="chunk" type="chunk.type"/>
@@ -49,7 +49,7 @@
       <member name="error" type="error.type"/>
       <member name="feats" type="feats.type"/>
       <member name="drel"><cdata format="any"/></member>
-      <member name="ord" role="#ORDER"><cdata format="Integer"/></member>
+      <member name="ord" role="#ORDER"><cdata format="integer"/></member>
       <member name="phrase"><cdata format="any"/></member>
       <member name="children" type="children.type" role="#CHILDNODES"/>
     </structure>
@@ -62,7 +62,7 @@
       <member name="feats" type="feats.type"/>
       <member name="form"><cdata format="any"/></member>
       <member name="wxform"><cdata format="any"/></member>
-      <member name="ord" role="#ORDER"><cdata format="Integer"/></member>
+      <member name="ord" role="#ORDER"><cdata format="integer"/></member>
       <member name="phrase"><cdata format="any"/></member>
     </structure>
   </type>
