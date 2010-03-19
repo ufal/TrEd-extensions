@@ -8,7 +8,7 @@ node: #{red}<? $${coindex.rf} =~ /^unknown/ ? '${coindex.rf}' : '' ?>
 text: <?
   ($${#name} eq 'terminal' and $${form} !~ '^\*|^0$') ? 
     "#{-tag:".(join(",",map { "$_,#$_->{id}" } $this,grep {$_->{'#name'} eq 'nonterminal'} $this->ancestors))."}"
-    .($${form}=~/^'./ ? "#{-nospace}".$${form} : $${form})
+    .($${form}=~/^(?:'.+|[,.;:])$/ ? "#{-nospacebefore}".$${form} : $${form})
   : () ?>
 
 rootstyle: #{balance:spread}
