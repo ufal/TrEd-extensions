@@ -42,6 +42,9 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
             <member name="form" type="String.type"/>
+            <member name="norm">
+                <list type="String.type" ordered="1"/>
+            </member>
             <member name="note" type="String.type"/>
             <member name="apply" type="String.type"/>
             <member name="score" type="Score.type"/>
@@ -56,8 +59,27 @@
         <container role="#NODE">
             <sequence role="#CHILDNODES">
                 <element name="Lexeme" type="Lexeme.Trees.type"/>
+                <element name="Token" type="Token.type"/>
             </sequence>
         </container>
+    </type>
+
+    <type name="Token.type">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
+            <member name="morphs" type="Morphs.type"/>
+            <member name="tag" type="Tags.type"/>
+            <member name="form" type="String.type"/>
+            <member name="note" type="String.type"/>
+            <member name="sense" type="String.type"/>
+            <member name="gloss" type="String.type"/>
+            <member name="root" type="Root.type"/>
+            <member name="core" type="Entry.type"/>
+            <member name="clip" type="String.type"/>
+            <member name="lemma" type="String.type"/>
+            <member name="apply" type="String.type"/>
+            <member name="score" type="Score.type"/>
+        </structure>
     </type>
 
 

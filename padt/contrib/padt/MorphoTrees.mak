@@ -59,12 +59,13 @@ rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$g
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.2}' : '#{skipHiddenLevels:1}' ?>
 
-style:<? $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' :
+style:<? ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
+           $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' : '' ) .
          (( exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-           exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
-           exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ) .
-         ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
-           '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
+            exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
+            exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ) .
+          ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+            '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} ~~ ['Token', 'Unit', 'Paragraph']
    ?><? $this->{'#name'} eq 'Token'
@@ -285,13 +286,13 @@ sub annotate_morphology_click {
 #bind switch_review_mode Ctrl+M menu Switch Trees/Lists Mode
 sub switch_review_mode {
 
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
+
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
 
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if exists $review->{$grp}{'maps'}->{$this};
-    
     update_zoom_tree();
-    
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if exists $review->{$grp}{'maps'}->{$this};
+
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 }
 
 sub update_zoom_tree {
@@ -315,9 +316,10 @@ sub update_zoom_tree {
         $node = morpholists($data, $node);
 
         $review->{$grp}{'data'} = $node;
-    }
 
-    $review->{$grp}{'maps'} = {};
+        $review->{$grp}{'expect'} = {};
+        $review->{$grp}{'select'} = {};
+    }
 
     if ($review->{$grp}{'mode'}) {
 
@@ -637,11 +639,11 @@ sub tree_hide_mode {
 
     if ($review->{$grp}{'zoom'}) {
 
-        $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
+        $entity_hide_mode = $entity_hide_mode eq 'hidden' ? '' : 'hidden';
     }
     else {
 
-        $entity_hide_mode = $entity_hide_mode eq 'hidden' ? '' : 'hidden';
+        $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
     }
 
     ChangingFile(0);
@@ -1108,20 +1110,20 @@ sub morpholists {
 sub relate {
 
     if (exists $review->{$grp}{'maps'}{$_[0]}) {
-    
+
         push @{$review->{$grp}{'maps'}{$_[0]}}, $_[1] unless grep { $_ == $_[1] } @{$review->{$grp}{'maps'}{$_[0]}};
     }
     else {
-    
+
         $review->{$grp}{'maps'}{$_[0]} = [$_[1]];
     }
 
     if (exists $review->{$grp}{'maps'}{$_[1]}) {
-    
+
         push @{$review->{$grp}{'maps'}{$_[1]}}, $_[0] unless grep { $_ == $_[0] } @{$review->{$grp}{'maps'}{$_[1]}};
     }
     else {
-    
+
         $review->{$grp}{'maps'}{$_[1]} = [$_[0]];
     }
 }
@@ -1129,11 +1131,13 @@ sub relate {
 sub couple {
 
     my $tree = $_[0];
-    
+
     my $data = $review->{$grp}{'data'};
-    
+
     my $hash = {};
-    
+
+    $review->{$grp}{'maps'} = {};
+
     foreach ($data->children()) {
 
         foreach my $node ($_->children()) {
@@ -1165,7 +1169,7 @@ sub couple {
                         push @{$hash->{$path[0]}[$path[1]]{$path[2]}{$path[3]}}, $data[$_];
                     }
                     else {
-                    
+
                         $hash->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = [$data[$_]];
                     }
                 }
@@ -1229,7 +1233,7 @@ sub couple {
 
                         demode "arabtex", "default";
                     }
-                    
+
                     relate($_, $node) foreach @{$data};
                 }
             }
@@ -1239,9 +1243,9 @@ sub couple {
     $tree->{'form'} = $data->{'form'};
 
     $review->{$grp}{'tree'} = $tree;
-    
+
     relate($review->{$grp}{'data'}, $review->{$grp}{'tree'});
-    
+
     return $tree;
 }
 
@@ -1387,182 +1391,285 @@ sub annotate_morphology {
 
     my ($quick, @tips) = @_;
 
+    $quick = undef unless $quick eq 'click';
+
     my (@children, $diff, $done, $word);
 
     my $node = $this;
 
-    while (@children = $node->children()) {
+    if ($review->{$grp}{'mode'}) {
 
-        @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
+        while (@children = $node->children()) {
 
-        last unless @children == 1;
+            @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
 
-        $node = $children[0];
-    }
+            last unless @children == 1;
 
-    unless (@children) {
+            $node = $children[0];
+        }
 
-        if ($node->{'#name'} eq 'Token') {
+        unless (@children) {
 
-            $diff = $node->{'apply'} == 0 ? 1 : $node == $this ? -1 : 0;
+            if ($node->{'#name'} eq 'Token') {
 
-            $done = $node;
+                $diff = $node->{'apply'} == 0 ? 1 : $node == $this ? -1 : 0;
 
-            $node->{'apply'} += $diff;
-
-            while ($node = $node->parent()) {
-
-                if ($node->{'#name'} eq 'Partition') {
-
-                    @children = grep { $_->{'apply'} < 1 } $node->children();
-
-                    if ($diff == -1) {
-
-                        last if not @children or not $node->{'apply'} == 1;
-                    }
-                    else {
-
-                        last if @children or $node->{'apply'} == 1;
-                    }
-                }
+                $done = $node;
 
                 $node->{'apply'} += $diff;
-            }
 
-            unless ($diff == 0) {
+                while ($node = $node->parent()) {
 
-                $word = reflect_choice($done);
+                    if ($node->{'#name'} eq 'Partition') {
 
-                unless ($node) {  # ~~ # $root->parent(), $this->following() etc. are defined # ~~ #
+                        @children = grep { $_->{'apply'} < 1 } $node->children();
 
-                    $word->{'apply'} = $review->{$grp}{'tree'}->{'apply'};
+                        if ($diff == -1) {
 
-                    $word->{'hide'} = $paragraph_hide_mode eq 'hidden' && $word->{'apply'} > 0 ? 'hide' : '';
+                            last if not @children or not $node->{'apply'} == 1;
+                        }
+                        else {
+
+                            last if @children or $node->{'apply'} == 1;
+                        }
+                    }
+
+                    $node->{'apply'} += $diff;
                 }
+
+                reflect_choice($done, $diff);
 
                 $Redraw = 'file';
 
                 ChangingFile(1);
-            }
 
-            unless ($diff == -1) {
+                unless ($diff == -1) {
 
-                if (@children) {
+                    if (@children) {
 
-                    $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
+                        $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
 
-                    remove_inherited_restrict() if defined $this->{'tips'} and $this->{'tips'} == 0;
+                        remove_inherited_restrict() if defined $this->{'tips'} and $this->{'tips'} == 0;
 
-                    annotate_morphology($quick eq 'click' ? $quick : undef);
-                }
-                else {
+                        # annotate_morphology($quick);
+                    }
+                    elsif (not $quick) {
 
-                    NextTree() unless defined $quick and $quick eq 'click';
+                        $node = $review->{$grp}{'zoom'}->rbrother();
+
+                        if ($node) {
+
+                            $review->{$grp}{'zoom'} = $node;
+
+                            update_zoom_tree();
+
+                            $this = $review->{$grp}{'tree'};
+                        }
+                    }
                 }
             }
         }
-    }
-    elsif ($level_guide_mode > 0) {
+        elsif ($level_guide_mode > 0) {
 
-        if ($level_guide_mode > 1) {
+            if ($level_guide_mode > 1) {
 
-            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
-                        ? $tips[0]
-                        : $children[0]->{'#name'} eq 'Lexeme' ||
-                          $children[0]->{'#name'} eq 'Partition' && @children > 1
-                            ? $node
-                            : $children[0];
+                $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
+                            ? $tips[0]
+                            : $children[0]->{'#name'} eq 'Lexeme' ||
+                              $children[0]->{'#name'} eq 'Partition' && @children > 1
+                                ? $node
+                                : $children[0];
+            }
+            else {
+
+                $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
+                            ? $tips[0]
+                            : $children[0]->{'#name'} eq 'Lexeme'
+                                ? $node
+                                : $children[0];
+            }
         }
         else {
 
-            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
-                        ? $tips[0]
-                        : $children[0]->{'#name'} eq 'Lexeme'
-                            ? $node
-                            : $children[0];
+            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
         }
     }
     else {
 
-        $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
+        while ($node->{'#name'} ne 'Tuple' and @children = $node->children()) {
+
+            @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
+
+            last unless @children == 1;
+
+            $node = $children[0];
+        }
+
+        $node = $node->parent() if $node->{'#name'} eq 'Token';
+
+        if ($node->{'#name'} eq 'Tuple') {
+
+            $diff = $node->{'apply'} == 0 ? 1 : -1;
+
+            reflect_tuple($node, $diff);
+
+            $Redraw = 'file';
+
+            ChangingFile(1);
+
+            if ($diff == 1 and not $quick) {
+
+                $node = $review->{$grp}{'zoom'}->rbrother();
+
+                if ($node) {
+
+                    $review->{$grp}{'zoom'} = $node;
+
+                    update_zoom_tree();
+
+                    $this = $review->{$grp}{'tree'};
+                }
+            }
+        }
+        else {
+
+            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0] if @children;
+        }
     }
 }
 
 
 sub reflect_choice {
 
-    my ($leaf, $twig) = ($_[0], $_[0]->parent());
+    my $node = $_[0];
+
+    my $expect = $review->{$grp}{'expect'};
+    my $select = $review->{$grp}{'select'};
+
+    my %tuple = map { $_->parent(), $_->parent() } @{$review->{$grp}{'maps'}{$node}};
+
+    foreach (keys %{$expect}) {
+
+        delete $expect->{$_} unless exists $tuple{$_};
+    }
+
+    unless (keys %{$expect}) {
+
+        $expect->{$_} = $tuple{$_} foreach keys %tuple;
+    }
+
+    my @expect = keys %{$expect};
+
+    if (@expect == 1) {
+
+        if (exists $select->{$expect[-1]}) {
+
+            delete $select->{$expect[-1]};
+
+            reflect_tuple($tuple{$expect[-1]}, -1);
+        }
+        else {
+
+            $select->{$expect[-1]} = 1;
+
+            reflect_tuple($tuple{$expect[-1]}, 1);
+        }
+
+        delete $expect->{$expect[-1]};
+    }
+}
+
+
+sub reflect_tuple {
+
+    my ($done, $diff) = @_;
+
+    my $node = $done;
+
+    $node->{'apply'} += $diff;
+
+    $node->{'apply'} += $diff while $node = $node->following($done);
+
+    $node = $done;
+
+    $node->{'apply'} += $diff while $node = $node->parent();
 
     my $hash = PML::GetNodeHash();
 
-    if (exists $leaf->{'id'} and $leaf->{'id'} ne '') {
+    if (exists $node->{'id'} and $node->{'id'} ne '') {
 
-        delete $hash->{$leaf->{'id'}};
-        delete $hash->{$twig->{'id'}};
+        delete $hash->{$node->{'id'}};
 
-        delete $leaf->{'id'};
-        delete $twig->{'id'};
+        delete $node->{'id'};
     }
 
     my $zoom = $review->{$grp}{'zoom'};
 
-    my $word = CopyNode($zoom);
+    $zoom->{'norm'} = new Fslib::List;
 
-    $hash->{$zoom->{'id'}} = $word;
+    foreach $node ($zoom->descendants()) {
 
-    PasteNodeBefore($word, $zoom);
+        delete $hash->{$node->{'id'}};
 
-    CutNode($zoom);
+        CutNode($node);
+    }
 
-    $review->{$grp}{'zoom'} = $word;
+    my $data = $review->{$grp}{'data'};
 
-    my $tree = $review->{$grp}{'tree'};
+    my @tuple = grep { $_->{'apply'} > 0 } map { $_->children() }
+                grep { $_->{'apply'} > 0 } map { $_->children() } $data->children();
 
-    my @lexeme = grep { $_->{'apply'} > 0 } map { $_->children() }
-                 grep { $_->{'apply'} > 0 } map { $_->children() } $tree->children();
+    for (my $i = @tuple; $i > 0; $i--) {
 
-    for (my $i = @lexeme; $i > 0; $i--) {
+        $tuple[$i - 1]->{'id'} = $data->{'id'} . 'l' . $i;
 
-        $lexeme[$i - 1]->{'id'} = $tree->{'id'} . 'l' . $i;
+        $hash->{$tuple[$i - 1]->{'id'}} = $tuple[$i - 1];
 
-        $hash->{$lexeme[$i - 1]->{'id'}} = $lexeme[$i - 1];
+        unshift @{$zoom->{'norm'}}, $tuple[$i - 1]->{'form'};
 
-        my $node = CopyNode($lexeme[$i - 1]);
+        my $tuple = NewSon($zoom);
 
-        delete $node->{'restrict'};
-        delete $node->{'inherit'};
-        delete $node->{'hide'};
-        delete $node->{'tips'};
+        DetermineNodeType($tuple);
 
-        $node->{'id'} = $word->{'id'} . 'l' . $i;
+        $tuple->{$_} = $tuple[$i - 1]{$_} foreach 'form', 'note', 'apply', 'score';
 
-        $hash->{$node->{'id'}} = $node;
+        $tuple->{'id'} = $zoom->{'id'} . 'l' . $i;
 
-        PasteNode($node, $word);
+        $hash->{$tuple->{'id'}} = $tuple;
 
-        my @token = grep { $_->{'apply'} > 0 } $lexeme[$i - 1]->children();
+        my @group = map { $_->[1] } @{$tuple[$i - 1]->parent()->{'data'}[0]};
+
+        my @token = $tuple[$i - 1]->children();
 
         for (my $j = @token; $j > 0; $j--) {
 
-            $token[$j - 1]->{'id'} = $lexeme[$i - 1]->{'id'} . 't' . $j;
+            $token[$j - 1]->{'id'} = $tuple[$i - 1]->{'id'} . 't' . $j;
 
             $hash->{$token[$j - 1]->{'id'}} = $token[$j - 1];
 
-            my $done = CopyNode($token[$j - 1]);
+            my $token = NewSon($tuple);
 
-            delete $done->{'restrict'};
-            delete $done->{'inherit'};
-            delete $done->{'hide'};
+            $token->{'#name'} = 'Token';
 
-            $done->{'id'} = $node->{'id'} . 't' . $j;
+            DetermineNodeType($token);
 
-            $hash->{$done->{'id'}} = $done;
+            $token->{$_} = $token[$j - 1]{$_} foreach 'morphs', 'tag', 'form', 'note', 'sense', 'gloss', 'apply', 'score';
 
-            PasteNode($done, $node);
+            $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'core', 'clip';
+
+            $token->{'lemma'} = ElixirFM::merge($group[$j - 1]{'root'}, $group[$j - 1]{'core'}{'morphs'});
+
+            $token->{'id'} = $tuple->{'id'} . 't' . $j;
+
+            $hash->{$token->{'id'}} = $token;
         }
     }
 
-    return $word;
+    $zoom->{'apply'} = $data->{'apply'};
+
+    $zoom->{'hide'} = $paragraph_hide_mode eq 'hidden' && $zoom->{'apply'} > 0 ? 'hide' : '';
+
+    return $zoom;
 }
 
 
