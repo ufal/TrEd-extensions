@@ -14,6 +14,6 @@
     can be used to create a file list by filtering
     an input text file (e.g. a PML-TQ query result) consisting of one or more TAB-separated columns
     the last of which is a filename, URL, or a node address.
-    The selection is be based on the values in the other columns.
+    The selection is then based on the values in the other columns.
   </description>
 </tred_extension>
