@@ -131,9 +131,9 @@ sub analyze_sentence {
   {
     my @rp;
     {
-      local $Fslib::resourcePath = $Fslib::resourcePath;
+      local $Treex::PML::resourcePath = $Treex::PML::resourcePath;
       require TredPlugin::CzechAnalysis;
-      @rp=$Fslib::resourcePath;
+      @rp=$Treex::PML::resourcePath;
     }
     AddResourcePath(@rp);
   }
@@ -148,7 +148,7 @@ sub analyze_sentence {
     $m_root->{'#name'}='s';
     for my $m ($m_root->descendants) {
       $m->{'#name'}='m';
-      $m->{'#content'}=Fslib::Struct->new({
+      $m->{'#content'}=Treex::PML::Factory->createStructure({
 	map { $_ => delete $m->{$_} }
 	  qw(id form lemma tag)
 	 },1);
@@ -169,9 +169,9 @@ sub analyze_sentence {
 
   for my $layer (qw(m a t)) {
     my $skel  = File::Spec->catfile(__this_dir(),'skel',"result.${layer}.gz");
-    my $fsfile = FSFile->newFSFile($skel,
-				  [Backends()],
-				 );
+    my $fsfile = Treex::PML::Factory->createDocumentFromFile($skel, {
+      backends => [Backends()]
+     });
     # update references
     for (values %{$fsfile->metaData('references')}) {
       my ($vol,$dir,$fn)=File::Spec->splitpath($_);

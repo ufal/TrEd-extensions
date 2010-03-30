@@ -5,6 +5,8 @@ package ValLex::GUI;
 BEGIN { import TredMacro; }
 use lib CallerDir('..');
 use utf8;
+use Scalar::Util qw(blessed);
+
 
 use vars qw($ValencyLexicon $ChooserHideObsolete $frameid_attr
 	    $framere_attr $lemma_attr $sempos_attr
@@ -127,7 +129,7 @@ sub init_ValencyLexicon {
       } else {
 	$info=InfoDialog($top,"First run, loading lexicon $vallex_file. Please, wait...");
       }
-      my $url = IOBackend::make_URI($vallex_file);
+      my $url = Treex::PML::IO::make_URI($vallex_file);
       my $file = ($url->scheme eq 'file') ? $url->file : "$url";
       $ValencyLexicon= $XMLDataClass->new($file,$conv,!$vallex_validate);
     };
@@ -150,8 +152,8 @@ sub init_ValencyLexicon {
 sub _is_same_filename {
   my ($f1,$f2)=@_;
   return 1 if $f1 eq $f2;
-  my $u1 = UNIVERSAL::isa($f1,'URI') ? $f1 : IOBackend::make_URI($f1);
-  my $u2 = UNIVERSAL::isa($f2,'URI') ? $f2 : IOBackend::make_URI($f2);
+  my $u1 = (blessed($f1) and $f1->isa('URI')) ? $f1 : Treex::PML::IO::make_URI($f1);
+  my $u2 = (blessed($f2) and $f2->isa('URI')) ? $f2 : Treex::PML::IO::make_URI($f2);
   return 1 if $u1 eq $u2;
   return 1 if $u1->canonical eq $u2->canonical;
   if (!ref($f1) and !ref($f2) and $^O ne 'MSWin32' and -f $f1 and -f $f2) {

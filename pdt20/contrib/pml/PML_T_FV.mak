@@ -30,7 +30,7 @@ sub init_vallex {
   $V_module = 'ValLex::Extended'.$V_backend;
 
   $TrEd::ValLex::Editor::reviewer_can_modify=1;
-  require ValLex::Data;
+  require TrEd::ValLex::Data;
   unless (defined($V)) {
     my $tredmodule = 'TrEd::'.$V_module;
     eval "require ${V_module}"; die $@ if $@;
@@ -164,7 +164,7 @@ sub get_value_line_hook {
 	       PRED => 'gray' );
    return [ map {
      push @$_, "-underline => 1, -background => cyan"
-       if (ref($_->[1]) eq 'FSNode' and $PML_T::show{$_->[1]->{id}});
+       if (UNIVERSAL::DOES::does($_->[1],'Treex::PML::Node') and $PML_T::show{$_->[1]->{id}});
      $_,
    } @$vl];
 }

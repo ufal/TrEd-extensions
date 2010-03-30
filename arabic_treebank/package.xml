@@ -14,6 +14,6 @@
   </description>
   <icon>icons/icon.png</icon>
   <require>
-    <tred min_version="1.4372"/>
+    <tred min_version="1.4375"/>
   </require>
 </tred_extension>

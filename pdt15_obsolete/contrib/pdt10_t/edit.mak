@@ -122,7 +122,7 @@ sub trim_subtree {
   my $node=$this;
   CutNode($node);
   $grp->{FSFile}->set_tree($node,$grp->{treeNo});
-  Fslib::DeleteTree($root);
+  Treex::PML::DeleteTree($root);
   $this=$node;
   $root=$node;
 }

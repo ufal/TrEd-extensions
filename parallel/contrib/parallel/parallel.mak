@@ -181,7 +181,7 @@ sub node_release_hook {
     }
     # no alignment exists yet, creating a new one
     my $doc_name2doc_id = FileMetaData('refnames');
-    my $alignment = FSNode->new({
+    my $alignment = Treex::PML::Factory->createNode({
       "$ab[0].rf" => $doc_name2doc_id->{"document_$ab[0]"}."#$ids[0]",
       "$ab[1].rf" => $doc_name2doc_id->{"document_$ab[1]"}."#$ids[1]",
     },1);

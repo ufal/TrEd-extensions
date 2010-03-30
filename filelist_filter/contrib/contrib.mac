@@ -418,7 +418,7 @@ sub edit_query {
                                  generate_indexes($folder,$num);
                                  Tree_Query->DestroySearch($search_ident);
                                  for my $win (TrEdWindows()) {
-                                   if (CurrentFile($win) && IOBackend::is_same_filename(CurrentFile($win)->filename(), $query_file)) {
+                                   if (CurrentFile($win) && Treex::PML::IO::is_same_filename(CurrentFile($win)->filename(), $query_file)) {
                                      CloseFileInWindow($win);
                                      CloseWindow($win);
                                    }
@@ -565,7 +565,9 @@ DeclareMinorMode 'Filter_Index_Updater' => {
 
             my $sentence = CurrentTreeNumber();
             my $query_file = File::Spec->catfile($query_dir,'query.pml');
-            my $query_fsfile = FSFile->newFSFile($query_file,['PMLBackend']);
+            my $query_fsfile = Treex::PML::Factory->createDocumentFromFile($query_file,{
+	      backends => ['PML']
+	    });
             my $query = $query_fsfile->tree(0);
             my $evaluator;
             my $out_filter;

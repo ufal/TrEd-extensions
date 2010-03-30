@@ -40,7 +40,7 @@ file. If no file is given, the current file is assumed.
 =cut
 
 sub AFile {
-  my $fsfile = $_[0] || $grp->{FSFile};
+  my $fsfile = $_[0] || CurrentFile();
   return undef unless ref($fsfile->metaData('refnames')) and ref($fsfile->appData('ref'));
   my $refid = $fsfile->metaData('refnames')->{adata};
   return $fsfile->appData('ref')->{$refid};
@@ -81,7 +81,7 @@ tectogrammatical node. This combines references from a/tree.rf
 (root-node), a/aux.rf and a/lex.rf (non-root nodes). If no node is
 given, the function applies to C<$this>. If the node belongs to other
 file than the current file, the optional second argument must
-specify the corresponding FSFile object.
+specify the corresponding Treex::PML::Document object.
 
 =cut
 
@@ -143,7 +143,7 @@ C<GetANodeByID>.
 
 sub GetANodesHash {
   shift unless ref($_[0]);
-  my $fsfile = $_[0] || $grp->{FSFile};
+  my $fsfile = $_[0] || CurrentFile();
   return {} unless ref($fsfile);
   my $a_fs;
   if ($fsfile->appData('struct') eq 'adata') {
@@ -164,7 +164,7 @@ file associated with the current tectogrammatical file.
 
 sub ClearANodesHash {
   shift unless ref($_[0]);
-  my $fsfile = $_[0] || $grp->{FSFile};
+  my $fsfile = $_[0] || CurrentFile();
   my $a_fs = AFile($fsfile);
   $a_fs->changeAppData('id-hash',undef) if ref($a_fs);
   return;
@@ -197,7 +197,7 @@ sub AnalyticalTree {
   }
   $PML::desiredcontext=$desiredcontext;
   SetCurrentStylesheet('PML_A');
-  my $fsfile = $grp->{FSFile};
+  my $fsfile = CurrentFile();
   #find current tree and new $this
   my $trees = $fsfile->treeList;
   my $treeNo = $fsfile->currentTreeNo+0;
@@ -222,7 +222,7 @@ sub AnalyticalTree {
 }
 
 sub SwitchToAFile {
-  my $fsfile = $grp->{FSFile};
+  my $fsfile = CurrentFile();
   return 0 unless SchemaName() eq 'tdata';
   my $ar_fs = AFile($fsfile);
   return 0 unless $ar_fs;
@@ -1212,9 +1212,9 @@ sub NewNode{
 
 =item InitNode(node,obj?)
 
-Initialize already existing FSNode object as a t-node by associating
+Initialize already existing Treex::PML::Node object as a t-node by associating
 it with t-node PML schema type. If the node belongs to a different
-file than the current one, the FSFile or some already initialized node
+file than the current one, the Treex::PML::Document or some already initialized node
 of that file must be specified as the second argument. Returns the
 initialized node.
 

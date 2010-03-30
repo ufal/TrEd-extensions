@@ -14,5 +14,6 @@
   </description>
   <require>
     <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt10"/>
+    <tred min_version="1.4375"/>
   </require>
 </tred_extension>

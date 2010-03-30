@@ -211,9 +211,9 @@ sub node_click_hook {
 ################### with_AR etc. ##################
 
 sub which_struct {
-  if ($Fslib::parent eq "_AP_") {
+  if ($Treex::PML::parent eq "_AP_") {
     return "AR";
-  } elsif ($Fslib::parent eq "_P_" and $grp->{FSFile}) {
+  } elsif ($Treex::PML::parent eq "_P_" and $grp->{FSFile}) {
     my $o = $grp->{FSFile}->FS->order;
     if ($o eq 'dord') {
       return "TR";
@@ -639,7 +639,7 @@ sub tectogrammatical_tree {
 #bind tectogrammatical_tree_store_AR to Ctrl+B menu Save ordorig of AR tree and display tectogrammatical tree
 sub tectogrammatical_tree_store_AR {
   my $node = $root;
-  if ($Fslib::parent eq "_AP_") {
+  if ($Treex::PML::parent eq "_AP_") {
     while ($node) {
       $node->{ordorig} = $node->parent->{ord} if $node->parent;
       $node=$node->following();
@@ -943,7 +943,7 @@ sub light_current {
 sub MoveTreeToPrev {
   my @children = $root->children;
   foreach (@children) {
-    Cut($_);
+    $_->cut();
   }
   PrevTree();
   foreach (@children) {
@@ -1128,8 +1128,8 @@ sub delete_analytical_node_from_all_layers {
   tectogrammatical_tree_store_AR();
 
   my($sentord,$ord,$dord)=map{$node->{$_}}qw/sentord ord dord/;
-  Cut($node);
-  with_AR{Cut($node)};
+  $node->cut();
+  with_AR{$node->cut()};
 
   foreach my$node (grep{
     $_->{sentord}>$sentord and$_->{AID}

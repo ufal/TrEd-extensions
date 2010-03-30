@@ -263,7 +263,7 @@ declarations must be passed to this function.
 =cut
 sub substituteFSHeader {
   my $class=shift;
-  $grp->{FSFile}->changeFS(FSFormat->create(@_));
+  $grp->{FSFile}->changeFS(Treex::PML::Factory->createFSFormat([@_]));
 }
 
 =item PDT->assignTRHeader
@@ -297,7 +297,7 @@ of the current document.
 =cut
 sub appendFSHeader {
   my $class=shift;
-  my $new=FSFormat->create(@_);
+  my $new=Treex::PML::Factory->createFSFormat([@_]);
   my $newdefs=$new->defs();
   my $fs=$grp->{FSFile}->FS;
   my $defs=$grp->{FSFile}->FS->defs();
@@ -910,7 +910,7 @@ Nodes added on TR are placed on root and hidden (with ARhide='hide').
 =cut
 
 sub transform_to_tectogrammatic {
-  my $fsformat = FSFormat->new({'dord' => ' N'},['dord']);
+  my $fsformat = Treex::PML::Factory->createFSFormat({'dord' => ' N'},['dord']);
   foreach my $root ($grp->{FSFile}->trees) {
     my @nodes = ($root,$root->descendants);
     my %nodes = map {$_->{ord} => $_} @nodes;
@@ -924,19 +924,19 @@ sub transform_to_tectogrammatic {
 
     # disconnect all nodes
     foreach my $node (@nodes) {
-      Fslib::SetParent($node,0);
-      Fslib::SetFirstSon($node,0);
-      Fslib::SetLBrother($node,0);
-      Fslib::SetRBrother($node,0);
+      Treex::PML::SetParent($node,0);
+      Treex::PML::SetFirstSon($node,0);
+      Treex::PML::SetLBrother($node,0);
+      Treex::PML::SetRBrother($node,0);
     }
 
     # connect nodes
     foreach my $node (@nodes) {
       next if $node == $root;
       if (ref($nodes{ $node->{govTR} })) {
-	Fslib::Paste($node,$nodes{ $node->{govTR} },$fsformat);
+	Treex::PML::Paste($node,$nodes{ $node->{govTR} },$fsformat);
       } else {
-	Fslib::Paste($node,$root,$fsformat);
+	Treex::PML::Paste($node,$root,$fsformat);
       }
     }
 
@@ -953,7 +953,7 @@ sub transform_to_tectogrammatic {
       }
       unless ($r == $root) {
 	print STDERR "fixing structure of [$node->{ord}]\n";
-	Fslib::Paste($r,$root,$fsformat);
+	Treex::PML::Paste($r,$root,$fsformat);
       }
     }
   }
@@ -967,7 +967,7 @@ header and restores the original TR tree structure from govTR.
 =cut
 
 sub transform_to_analytic {
-  my $fsformat = FSFormat->new({'ord' => ' N'},['ord']);
+  my $fsformat = Treex::PML::Factory->createFSFormat({'ord' => ' N'},['ord']);
   foreach my $root ($grp->{FSFile}->trees) {
     my @nodes = ($root,$root->descendants);
     unless ($root->{reserve1} eq 'TR_TREE') {
@@ -981,10 +981,10 @@ sub transform_to_analytic {
     my (@analytic,@added);
     # disconnect all nodes
     foreach my $node (@nodes) {
-      Fslib::SetParent($node,0);
-      Fslib::SetFirstSon($node,0);
-      Fslib::SetLBrother($node,0);
-      Fslib::SetRBrother($node,0);
+      Treex::PML::SetParent($node,0);
+      Treex::PML::SetFirstSon($node,0);
+      Treex::PML::SetLBrother($node,0);
+      Treex::PML::SetRBrother($node,0);
     }
 
     # create an array of analytic nodes
@@ -1001,9 +1001,9 @@ sub transform_to_analytic {
       next if $node == $root;
       if ($node->{ordorig} =~ /^\d+$/ and
 	  defined $analytic[ $node->{ordorig} ]) {
-	Fslib::Paste($node,$analytic[ $node->{ordorig} ],$fsformat);
+	Treex::PML::Paste($node,$analytic[ $node->{ordorig} ],$fsformat);
       } else {
-	Fslib::Paste($node,$root,$fsformat);
+	Treex::PML::Paste($node,$root,$fsformat);
       }
       $node->{ARhide}=''; # don't hide them
     }
@@ -1011,7 +1011,7 @@ sub transform_to_analytic {
     # connect TR-added nodes
     foreach my $node (@added) {
       next if $node == $root;
-      Fslib::Paste($node,$root,$fsformat);
+      Treex::PML::Paste($node,$root,$fsformat);
       $node->{ARhide}='hide'; # hide them
     }
 
@@ -1020,7 +1020,7 @@ sub transform_to_analytic {
       next if $node == $root;
       my $r = $node->root();
       unless ($r == $root) {
-	Fslib::Paste($r,$root,$fsformat);
+	Treex::PML::Paste($r,$root,$fsformat);
       }
     }
   }
@@ -1030,9 +1030,9 @@ sub transform_to_analytic {
 
 Builds parallel analytical structure on all tectogrammatical trees in
 current file, using the ordorig attribute. This structure is stored in
-attributes _AP_,_AS_,_AL_,_AR_. Fslib is re-configured to use these
+attributes _AP_,_AS_,_AL_,_AR_. Treex::PML is re-configured to use these
 structure attributes instead of the default ones, so that all common
-FSNode methods like parent, children, following, descendants, etc work
+Treex::PML::Node methods like parent, children, following, descendants, etc work
 on the new structure. Use L<PDT::TRstruct> to switch back to the
 tectogrammatical structure.
 
@@ -1083,16 +1083,16 @@ sub ARstruct {
   $defs->{TR}   = ' P';
   $format->renew_specials();
   #  PDT->appendFSHeader('@N ord','@P dord','@P TR');
-  # configure Fslib
-  $Fslib::parent="_AP_";
-  $Fslib::firstson="_AS_";
-  $Fslib::lbrother="_AL_";
-  $Fslib::rbrother="_AR_";
+  # configure Treex::PML
+  $Treex::PML::parent="_AP_";
+  $Treex::PML::firstson="_AS_";
+  $Treex::PML::lbrother="_AL_";
+  $Treex::PML::rbrother="_AR_";
 }
 
 =item PDT::TRstruct ()
 
-Setup Fslib to use default (tectogrammatical) tree structure
+Setup Treex::PML to use default (tectogrammatical) tree structure
 (after ARstruct was called).
 
 =cut
@@ -1106,11 +1106,11 @@ sub TRstruct {
   $defs->{dord} = ' N';
   $defs->{TR}   = ' H';
   $format->renew_specials();
-  # configure Fslib
-  $Fslib::parent="_P_";
-  $Fslib::firstson="_S_";
-  $Fslib::lbrother="_L_";
-  $Fslib::rbrother="_R_";
+  # configure Treex::PML
+  $Treex::PML::parent="_P_";
+  $Treex::PML::firstson="_S_";
+  $Treex::PML::lbrother="_L_";
+  $Treex::PML::rbrother="_R_";
 }
 
 =item PDT::ClearARstruct ()

@@ -178,9 +178,9 @@ sub SwapNodes {
   return unless ($parent);
   my $oldParent=$parent->parent;
   return unless ($oldParent);
-  Cut($this);
+  $this->cut();
   PasteNode($this,$oldParent);
-  Cut($parent);
+  $parent->cut();
   PasteNode($parent,$this);
   $this=$parent;
 }
@@ -193,7 +193,7 @@ sub SwapNodesValues {
   return unless ($this);
   my $parent=$this->parent;
   return unless ($parent);
-  my @atord = @{ FSFormat->list() };
+  my @atord = @{ FSFormat()->list() };
   my @parentAttrs=@{$parent}{@atord};
   @{$parent}{@atord}=@{$this}{@atord};
   @{$this}{@atord}=@parentAttrs;  
@@ -210,7 +210,7 @@ sub SwapNodesValuesButAfun {
   return unless ($parent);
 
   my $oldparentAfun=$parent->{'afun'};
-  my @atord = @{ FSFormat->list() };
+  my @atord = @{ FSFormat()->list() };
   my @parentAttrs=@{$parent}{@atord};
   @{$parent}{@atord}=@{$this}{@atord};
   @{$this}{@atord}=@parentAttrs;

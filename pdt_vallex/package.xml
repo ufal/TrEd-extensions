@@ -11,4 +11,7 @@
   <description>Provides GUI interface for TrEd to the Czech valency lexicon PDT-ValLex
     with browse, search, edit and annotate capabilities.
   </description>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

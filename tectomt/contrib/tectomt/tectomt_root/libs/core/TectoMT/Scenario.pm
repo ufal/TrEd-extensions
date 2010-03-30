@@ -10,11 +10,12 @@ use warnings;
 use Report;
 use Class::Std;
 use File::Basename;
+use UNIVERSAL::DOES;
 
-use Fslib;
-my @backends=('FSBackend',ImportBackends(
+use Treex::PML;
+my @backends=('Treex::PML::Backend::FS',ImportBackends(
     qw(NTREDBackend StorableBackend PMLBackend )));
-$Fslib::resourcePath = $ENV{"TMT_ROOT"}."/pml_schemas/";
+$Treex::PML::resourcePath = $ENV{"TMT_ROOT"}."/pml_schemas/";
 
 use TectoMT::Node;
 use TectoMT::Bundle;
@@ -123,7 +124,7 @@ use BlockAliases;
 
         if (@documents==0) {
             Report::fatal "No document specified";
-        } elsif (grep {not UNIVERSAL::isa($_, "TectoMT::Document")} @documents) {
+        } elsif (grep {not UNIVERSAL::DOES::does($_, "TectoMT::Document")} @documents) {
             Report::fatal "Arguments must be instances of TectoMT::Document";
         }
 
@@ -150,8 +151,11 @@ use BlockAliases;
         Report::info "Number of files to be processed by the scenario: ".scalar(@filenames)." \n";
         foreach my $filename (@filenames) {
             Report::info "Processing $filename ...\n";
-            my $fsfile = FSFile->newFSFile($filename,"utf8",@backends); # vykopirovano z btredu
-            if (not UNIVERSAL::isa($fsfile,"FSFile")) {
+            my $fsfile = Treex::PML::Factory->createDocumentFromFile($filename,{
+	      encoding=>"utf8",
+	      backends => \@backends
+	     }); # vykopirovano z btredu
+            if (not UNIVERSAL::DOES::does($fsfile,"Treex::PML::Document")) {
                 Report::fatal "Did not succeed to open fsfile ($fsfile)";
             }
             my $document = TectoMT::Document->new();
@@ -171,8 +175,11 @@ use BlockAliases;
 n";
         foreach my $filename (@filenames) {
             Report::info "Processing $filename ...\n";
-            my $fsfile = FSFile->newFSFile($filename,"utf8",@backends); # vykopirovano z btredu
-            if (not UNIVERSAL::isa($fsfile,"FSFile")) {
+            my $fsfile = Treex::PML::Factory->createDocument($filename, {
+	      encoding => "utf8",
+	      backends => \@backends
+	     }); # vykopirovano z btredu
+            if (not UNIVERSAL::DOES::does($fsfile,"Treex::PML::Document")) {
                 Report::fatal "Did not succeed to open fsfile ($fsfile)";
             }
             my $document = TectoMT::Document->new();
@@ -191,8 +198,8 @@ n";
 
         my $self = shift;
         my @fsfiles = @_;
-        if (grep {not UNIVERSAL::isa($_,"FSFile")} @fsfiles) {
-            Report::fatal "Arguments must be FSFile instances.";
+        if (grep {not UNIVERSAL::DOES::does($_,"Treex::PML::Document")} @fsfiles) {
+            Report::fatal "Arguments must be Treex::PML::Document instances.";
         }
 
         #    Report::debug ("apply_on_fsfile_objects XXX");
@@ -280,7 +287,7 @@ translation blocks on them, and saves the files back (under the same names).
 
 =item $scenario->apply_on_fsfile_objects(@fsfiles);
 
-It applies the blocks on the given list of instances of class FSFile
+It applies the blocks on the given list of instances of class Treex::PML::Document
 (e.g. $grp->{FSFile} in btred/ntred)
 
 =back

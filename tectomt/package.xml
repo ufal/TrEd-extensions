@@ -9,7 +9,7 @@
   <version>1.27</version>
   <copyright year="2008">Zdeněk Žabokrtský, Václav Klimeš</copyright>
   <require>
-    <tred min_version="1.3587"/>
+    <tred min_version="1.4375"/>
     <perl_module name="Class::Std">
       <ppm perl_version="5.8" name="Class-Std" href="http://theoryx5.uwinnipeg.ca/ppms/Class-Std.ppd"/>
       <ppm perl_version="5.10" name="XML-LibXML" href="http://cpan.uwinnipeg.ca/PPMPackages/10xx/Class-Std.ppd"/>

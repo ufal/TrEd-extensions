@@ -7,11 +7,11 @@ use strict;
 use warnings;
 use Report;
 use Class::Std;
-use Fslib;
+use Treex::PML;
 use TectoMT::Node;
 
 use Scalar::Util qw( weaken );
-
+use UNIVERSAL::DOES;
 
 {
 
@@ -30,7 +30,7 @@ use Scalar::Util qw( weaken );
     sub tie_with_fsroot {
         my ($self, $fsroot) = @_;
         Report::fatal "Incorrect number of arguments" if @_ != 2;
-        Report::fatal "Argument must be a FSNode object" if not UNIVERSAL::isa($fsroot, "FSNode");
+        Report::fatal "Argument must be a Treex::PML::Node object" if not UNIVERSAL::DOES::does($fsroot, "Treex::PML::Node");
 
         #    $fsroot->{_tmt_bundle} = $self;
         $fsroot2tmt_bundle{$fsroot} = $self;
@@ -189,7 +189,7 @@ use Scalar::Util qw( weaken );
     sub set_tree {
         my ($self, $tree_name, $tree_root) = @_;
         Report::fatal "set_tree: incorrect number of arguments" if @_ != 3;
-        Report::fatal "set_tree: argument must be a TectoMT::Node object" if not UNIVERSAL::isa($tree_root, "TectoMT::Node");
+        Report::fatal "set_tree: argument must be a TectoMT::Node object" if not UNIVERSAL::DOES::does($tree_root, "TectoMT::Node");
         foreach my $node ($tree_root, $tree_root->get_descendants) {
             $node->_set_bundle($self);
         }
@@ -233,25 +233,25 @@ Creates a new empty tree bundle.
 =back
 
 
-=head2 Access to the underlying Fslib representation
+=head2 Access to the underlying Treex::PML representation
 
 =over 4
 
 =item $bundle->tie_with_fsroot($fsroot)
 
-Associates the given bundle with a FSNode object which
-is the root of a tree in the Fslib representation and
+Associates the given bundle with a Fsib::Node object which
+is the root of a tree in the Treex::PML representation and
 will be used as the underlying represenatation of the bundle.
 
 =item my $fsroot = $bundle->get_tied_fsroot();
 
-Returns the associated FSNode object used as the
-bundle's underlying Fslib represenatation.
+Returns the associated Treex::PML::Node object used as the
+bundle's underlying Treex::PML represenatation.
 
 =item $bundle->untie_from_fsroot();
 
 Unties the TectoMT::Bundle object from its underlying
-FSNode representation.
+Treex::PML::Node representation.
 
 =back
 

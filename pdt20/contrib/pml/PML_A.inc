@@ -353,7 +353,7 @@ sub GetEChildren{ # node dive
 
 Adds given a-node's C<id> to C<a/lex.rf> of the given t-node and
 adjusts C<t_lemma> of the t-node accordingly. The third argument
-t_file specifies the C<FSFile> object to which the given t-node
+t_file specifies the C<Treex::PML::Document> object to which the given t-node
 belongs.
 
 =cut
@@ -399,7 +399,7 @@ sub ANodeToALexRf {
 =item ANodeToAAuxRf(a_node,t_node,t_file)
 
 Appends given a-node's C<id> to C<a/aux.rf> of the given t-node. The
-third argument t_file specifies the C<FSFile> object to which the
+third argument t_file specifies the C<Treex::PML::Document> object to which the
 given t-node belongs.
 
 =cut

@@ -9,4 +9,7 @@
   <version/>
   <copyright year="2006-2008">Josef Toman</copyright>
   <description>Provides main annotation mode for the Prague Czech-English Dependency Treebank.</description>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

@@ -18,7 +18,7 @@ transformations over the Prague Dependency Treebank (PDT) 2.0 data
 
 =item CreateTFile($a_file?)
 
-Creates and returns empty t-file (FSFile object) linked with a given
+Creates and returns empty t-file (Treex::PML::Document object) linked with a given
 a-file.  It associates the newly created file with C<tdata_schema.xml>
 PML schema. If no a_file is given, current file is used. Initially,
 the newly created t-file contains no trees. Trees can be added using
@@ -63,9 +63,9 @@ sub CreateTFile {
 </tdata>
 EOF
 
-  my $fsfile = PMLInstance->load({string   => $pml,
+  my $fsfile = Treex::PML::Instance->load({string   => $pml,
 				  filename => $filename,
-				  config   => $PMLBackend::config
+				  config   => $Treex::PML::Backend::PML::config
 				 })->convert_to_fsfile();
   # cleanup the fake tree
   $fsfile->delete_tree(0);
@@ -189,7 +189,7 @@ sub ANodeToAAuxRf {
 #ifdef TRED
 sub NewTredFile {
   my ($fsfile)=@_;
-  die "'$fsfile' is not a FSFile\n" unless UNIVERSAL::isa($fsfile,'FSFile');
+  die "'$fsfile' is not a Treex::PML::Document\n" unless UNIVERSAL::DOES::does($fsfile,'Treex::PML::Document');
 
   die "File is already opened by TrEd\n" 
     if grep { $_ == $fsfile } GetOpenFiles();

@@ -6,7 +6,7 @@ use utf8;
 use strict;
 use vars qw ($root);
 
-use Fslib;
+use Treex::PML;
 
 binmode STDOUT,":encoding(iso-8859-2)";
 
@@ -421,10 +421,10 @@ sub rel_agr_gender($$) {
 sub CutPaste($$) {
     my ($node,$new_parent) = @_;
     if ($node->parent) {
-        Fslib::Cut($node);
+        Treex::PML::Cut($node);
     }
-    #  Fslib::Paste($node,$new_parent);
-    Fslib::Paste($node,$new_parent,$fsfile->FS());
+    #  Treex::PML::Paste($node,$new_parent);
+    Treex::PML::Paste($node,$new_parent,$fsfile->FS());
 }
 
 

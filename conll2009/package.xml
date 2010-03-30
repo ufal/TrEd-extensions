@@ -8,11 +8,13 @@
   <title>CoNLL 2009 Shared Task</title>
   <version>1.32</version>
   <copyright year="2009">Jan Štěpánek</copyright>
-
   <description>This package contains a stylesheet for visualization of
   CoNLL-2009-ST data in TrEd,
   scripts (for Linux and similar systems) for converting from the CoNLL-2009-ST format to PML,
   and a TrEd annotation mode for predicate-argument annotation.
   </description>
   <icon>icons/conll2009.png</icon>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

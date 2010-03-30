@@ -104,7 +104,7 @@ sub choose_frame_or_advfunc_validate {
 
 #bind assign_dispmod to Ctrl+asterisk menu Assign dispmod=DISPMOD to this node
 sub assign_dispmod {
-  my $defs = FSFormat->defs;
+  my $defs = FSFormat()->defs;
   unless (exists($defs->{dispmod})) {
     AppendFSHeader('@P dispmod',
 		   '@L dispmod|---|NA|NIL|DISP|???');
@@ -114,7 +114,7 @@ sub assign_dispmod {
 
 #bind assign_state to Ctrl+equal menu Assign state=ST
 sub assign_state {
-  my $defs = FSFormat->defs;
+  my $defs = FSFormat()->defs;
   unless (exists($defs->{state})) {
     AppendFSHeader('@P state',
 		   '@L state|---|NA|NIL|ST|???');

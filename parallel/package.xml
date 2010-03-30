@@ -10,4 +10,7 @@
   <copyright year="2009">Petr Pajas</copyright>
   <description>Provides schema, annotation mode, and PML-TQ extensions for node-to-node stand-off parallel treebank alignment.
   </description>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

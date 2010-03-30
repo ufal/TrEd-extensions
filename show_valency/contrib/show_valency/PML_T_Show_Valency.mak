@@ -116,7 +116,7 @@ sub get_value_line_hook {
   my %cached;
   for my $item (@$out) {
     next unless ref $item;
-    for my $n (grep { ref($_) eq 'FSNode' } @$item) {
+    for my $n (grep { UNIVERSAL::DOES::does($_,'Treex::PML::Node') } @$item) {
       my $belongs = $cached{$n} ||= BelongsToValencyFrame($n);
       if ($belongs) {
 	push @$item, '-background=>'.($belongs==OBLIG ? '#FFDFA7' : 'lightblue');

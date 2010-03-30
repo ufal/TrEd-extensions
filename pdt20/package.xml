@@ -15,5 +15,6 @@
   <icon>icons/tree.png</icon>
   <require>
     <extension name="pdt_vallex" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_vallex"/>
+    <tred min_version="1.4375"/>
   </require>
 </tred_extension>

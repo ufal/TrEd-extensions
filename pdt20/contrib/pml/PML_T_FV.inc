@@ -869,7 +869,7 @@ sub match_form {
   # try to fake AIDREFs for certain added nodes
   if ($t_node->{is_generated} and !@a) {
     # &PersPron;
-    my $fake_node = FSNode->new();
+    my $fake_node = Treex::PML::Factory->createNode();
     # if node is 1st/2nd person and the verb is in 1st/2nd person,
     # we may suppose 1st case (.1)
 
@@ -884,8 +884,8 @@ sub match_form {
       ($form,$lemma,$tag,$fake_children,$afun) = @$fake;
       if (ref($fake_children)) {
 	foreach my $fake_child (@$fake_children) {
-	  my $c = FSNode->new();
-	  $c->{m}=Fslib::Struct->new({
+	  my $c = Treex::PML::Factory->createNode();
+	  $c->{m}=Treex::PML::Factory->createStructure({
 	    form => $fake_child->[0],
 	    lemma => $fake_child->[1],
 	    tag =>  $fake_child->[2],
@@ -963,7 +963,7 @@ sub match_form {
     if (@a) {
       $tag = $pos.$gen.$num.$case.'--'.$person.'-------' unless defined($tag);
       $fake_node->{m} =
-	Fslib::Struct->new({
+	Treex::PML::Factory->createStructure({
 	  tag => $tag,
 	  lemma => $lemma || $t_node->{t_lemma},
 	  form => $form || $t_node->{t_lemma},

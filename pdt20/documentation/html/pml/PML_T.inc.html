@@ -39,7 +39,7 @@ tectogrammatical node. This combines references from a/tree.rf
 (root-node), a/aux.rf and a/lex.rf (non-root nodes). If no node is
 given, the function applies to <code>$this</code>. If the node belongs to other
 file than the current file, the optional second argument must
-specify the corresponding FSFile object.</p>
+specify the corresponding Treex::PML::Document object.</p>
 	</dd>
 	<dt>GetALexNode($node?)</dt>
 	<dd>
@@ -266,9 +266,9 @@ using NewID. Not all the required attributes are being set!</p>
 	</dd>
 	<dt>InitNode(node,obj?)</dt>
 	<dd>
-		<p>Initialize already existing FSNode object as a t-node by associating
+		<p>Initialize already existing Treex::PML::Node object as a t-node by associating
 it with t-node PML schema type. If the node belongs to a different
-file than the current one, the FSFile or some already initialized node
+file than the current one, the Treex::PML::Document or some already initialized node
 of that file must be specified as the second argument. Returns the
 initialized node.</p>
 	</dd>

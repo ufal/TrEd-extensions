@@ -12,7 +12,7 @@ use TectoMT::Bundle;
 use TectoMT::Node;
 
 
-use Fslib;
+use Treex::PML;
 
 
 sub process_document {

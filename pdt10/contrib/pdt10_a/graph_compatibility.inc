@@ -48,12 +48,12 @@ sub ValNo {
 
 Retrun name of the n'th attribute defined in the FS file. This macro
 only abbreviates the following expression:
-C<$grp-E<gt>{FSFile}-E<gt>FS-E<gt>atno(n)>
+C<<FS()->atno(n)>>
 
 =cut
 
 sub AtrNo {
-  return $grp->{FSFile}->FS->atno(shift);
+  return FS()->atno(shift);
 }
 
 =item C<Union(string_a,string_b)>

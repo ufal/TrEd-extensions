@@ -19,7 +19,7 @@ sub args {
     foreach my $arg (grep /^apred_[0-9]+/,keys %$node){
       $arg =~ s/^apred_//;
       AddToList($node,'apreds',
-		Fslib::Struct->new({
+		Treex::PML::Factory->createStructure({
 		  'target.rf' => $preds[$arg-1]->{'xml:id'},
 		  'label'     => $node->{"apred_$arg"},
 		}));

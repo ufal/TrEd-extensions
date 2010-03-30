@@ -7,7 +7,7 @@ package AutoAfun::Main;
 # and arranged for the needs of TectoMT by Zdenek Zabokrtsky
 
 use strict;
-use Fslib;
+use Treex::PML;
 use AutoAfun::Assign_afun;
 
 #use lib CallerDir("AutoAfun");

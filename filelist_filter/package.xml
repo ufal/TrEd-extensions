@@ -16,4 +16,7 @@
     the last of which is a filename, URL, or a node address.
     The selection is then based on the values in the other columns.
   </description>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

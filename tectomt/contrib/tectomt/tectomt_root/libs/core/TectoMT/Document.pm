@@ -5,18 +5,19 @@ use strict;
 use warnings;
 use Report;
 use Class::Std;
-#use Fslib;
-use Fslib qw(ImportBackends);
+#use Treex::PML;
+use Treex::PML qw(ImportBackends);
 use TectoMT::Bundle;
 use TectoMT::Node;
 use Report;
+use UNIVERSAL::DOES;
 
 use Scalar::Util qw( weaken );
 
-$Fslib::resourcePath = $ENV{"TRED_DIR"}
+$Treex::PML::resourcePath = $ENV{"TRED_DIR"}
     .":".$ENV{"TRED_DIR"}."/resources/"
     .":".$ENV{"TMT_ROOT"}."/pml_schemas/";
-Fslib::ImportBackends("PMLBackend");
+Treex::PML::ImportBackends("PMLBackend");
 
 {
     our $VERSION = '0.01';
@@ -25,7 +26,7 @@ Fslib::ImportBackends("PMLBackend");
     my %fsfile : ATTR;
 
     # substitution of the former solution with $fsfile->{_tmt_document}, $fsnode->{_tmt_bundle}, $fsnode->{_tmt_node}
-    our %fsfile2tmt_document; # mapping from FSFile instances to TectoMT::Document instances
+    our %fsfile2tmt_document; # mapping from Treex::PML::Document instances to TectoMT::Document instances
 
     sub BUILD {
         my ($self, $ident, $arg_ref) = @_;
@@ -33,24 +34,26 @@ Fslib::ImportBackends("PMLBackend");
         if ($arg_ref->{fsfile}) {
             tie_with_fsfile($self,$arg_ref->{fsfile});
         } elsif ($arg_ref->{filename}) {
-            my @IObackends = Fslib::ImportBackends(qw(PMLBackend StorableBackend)); # ??? loadovat jen pri prvnim pouziti!!!
-            my $fsfile = FSFile->newFSFile($arg_ref->{filename},\@IObackends);
+            my @IObackends = Treex::PML::ImportBackends(qw(PMLBackend StorableBackend)); # ??? loadovat jen pri prvnim pouziti!!!
+            my $fsfile = Treex::PML::Factory->createDocumentFromFile($arg_ref->{filename},{
+	      backends => \@IObackends 
+	     });
             tie_with_fsfile($self,$fsfile);
         } else {
             # create a new tmt $fsfile object, if non was specified
-            my $fsfile = FSFile->create
-                (
+            my $fsfile = Treex::PML::Factory->createDocument
+                ({
                     name => "x", #$filename,  ???
-                    FS => FSFormat->new({
+                    FS => Treex::PML::Factory->createFSFormat({
                         'deepord' => ' N' # ???
                     }),
                     trees => [],
                     backend => 'PMLBackend',
                     encoding => "utf-8",
-                );
-            my $schema_file = Fslib::ResolvePath($fsfile->filename, 'tmt_schema.xml',1);
+                });
+            my $schema_file = Treex::PML::ResolvePath($fsfile->filename, 'tmt_schema.xml',1);
             $fsfile->changeMetaData('schema-url','tmt_schema.xml');
-            $fsfile->changeMetaData('schema',Fslib::Schema->new({filename=>$schema_file}));
+            $fsfile->changeMetaData('schema',Treex::PML::Schema->new({filename=>$schema_file}));
             $fsfile->changeMetaData('pml_root',    {  meta => { }, bundles => undef, });
 
             tie_with_fsfile($self,$fsfile);
@@ -68,7 +71,7 @@ Fslib::ImportBackends("PMLBackend");
     sub tie_with_fsfile() {
         my ($self, $fsfile) = @_;
         Report::fatal("Incorrect number of arguments") if @_ != 2;
-        Report::fatal("Argument must be a FSFile object") if not UNIVERSAL::isa($fsfile,"FSFile");
+        Report::fatal("Argument must be a Treex::PML::Document object") if not UNIVERSAL::DOES::does($fsfile,"Treex::PML::Document");
         $fsfile{ident $self} = $fsfile;
 
         $fsfile2tmt_document{$fsfile} = $self;
@@ -133,7 +136,7 @@ Fslib::ImportBackends("PMLBackend");
         my ($self) = @_;
         Report::fatal("Incorrect number of arguments") if @_ != 1;
         my $fsfile = $fsfile{ident $self};
-        Report::fatal("get_tied_fsfile: there is no FSFile instance tied with $self") if not defined $fsfile;
+        Report::fatal("get_tied_fsfile: there is no Treex::PML::Document instance tied with $self") if not defined $fsfile;
         return $fsfile;
     }
 
@@ -167,7 +170,7 @@ Fslib::ImportBackends("PMLBackend");
     sub set_attr($$$) {
         my ($self, $attr_name, $attr_value) = @_;
         Report::fatal("Incorrect number of arguments") if @_ != 3;
-        return FSNode::set_attr($self->get_tied_fsfile->metaData('pml_root')->{meta},$attr_name,$attr_value);
+        return Treex::PML::Node::set_attr($self->get_tied_fsfile->metaData('pml_root')->{meta},$attr_name,$attr_value);
         #    return $self->get_tied_fsfile->metaData('pml_root')->{meta}{$attr_name}=$attr_value;
     }
 
@@ -175,7 +178,7 @@ Fslib::ImportBackends("PMLBackend");
     sub get_attr() {
         my ($self, $attr_name) = @_;
         Report::fatal("Incorrect number of arguments") if @_ != 2;
-        return FSNode::attr($self->get_tied_fsfile->metaData('pml_root')->{meta},$attr_name);
+        return Treex::PML::Node::attr($self->get_tied_fsfile->metaData('pml_root')->{meta},$attr_name);
         #    return $self->get_tied_fsfile->metaData('pml_root')->{meta}{$attr_name};
     }
 
@@ -186,7 +189,7 @@ Fslib::ImportBackends("PMLBackend");
 
         # new tree root on the fs-side
         #    print "Step A\n";
-        #    my $new_fsroot = FSNode->new();
+        #    my $new_fsroot = Treex::PML::Factory->createNode();
         my $fsfile = $self->get_tied_fsfile();
         #    print "fsfile: $fsfile\n";
         #    $fsfile->new_tree($new_fsroot);
@@ -354,16 +357,16 @@ Loads the tmt file and creates a TectoMT document corresponding to its content.
 =back
 
 
-=head2 Access to the underlying Fslib representation
+=head2 Access to the underlying Treex::PML representation
 
 =over 4
 
 =item $document->tie_with_fsfile($fsfile);
 
-Associates the given document with a FSFile object which
+Associates the given document with a Treex::PML::Document object which
 will be used as its underlying represenatation. Which means
-that for each FSFile sentence a new TectoMT::Bundle object is created
-and for each tree in the FSFile sentence representation
+that for each Treex::PML::Document sentence a new TectoMT::Bundle object is created
+and for each tree in the Treex::PML::Document sentence representation
 a new tree of TectoMT::Node objects is built. Both representations
 are interlinked in both directions.
 
@@ -375,12 +378,12 @@ its TectoMT mirror.
 =item $document->get_fsfile_name();
 
 Returns the name of the file with the underlying
-Fslib representation.
+Treex::PML representation.
 
 
 =item my $fsfile = $document->get_tied_fsfile();
 
-Returns the associated FSFile object used as the
+Returns the associated Treex::PML::Document object used as the
 documents's underlying represenatation. Fatal error
 is no such object is associated.
 

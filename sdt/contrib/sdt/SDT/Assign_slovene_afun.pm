@@ -1,6 +1,6 @@
 package Assign_slovene_afun;
 
-use Fslib;
+use Treex::PML;
 
 use strict;
 

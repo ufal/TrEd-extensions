@@ -9,7 +9,7 @@
 
 package Slovene_parser;
 use strict;
-use Fslib;
+use Treex::PML;
 
 my ($root,$grp);
 my @temporary_attributes=('attached', 'saturated', 'segment', 'ending_segment',

@@ -9,8 +9,9 @@ use strict;
 use warnings;
 use Class::Std;
 use Report;
+use UNIVERSAL::DOES;
 
-use Fslib;
+use Treex::PML;
 
 use Scalar::Util qw( weaken );
 
@@ -32,7 +33,7 @@ use Cwd;
         if ($arg_ref->{fsnode}) {
             tie_with_fsnode($self,$arg_ref->{fsnode});
         } else {
-            my $fsnode = FSNode->new();
+            my $fsnode = Treex::PML::Factory->createNode();
             tie_with_fsnode($self,$fsnode);
         }
     }
@@ -72,7 +73,7 @@ use Cwd;
     sub tie_with_fsnode {
         my ($self, $fsnode) = @_;
         Report::fatal("Incorrect number of arguments!") if @_ != 2;
-        Report::fatal("Argument (fsnode to be tied) must be a FSNode object!") if not UNIVERSAL::isa($fsnode, "FSNode");
+        Report::fatal("Argument (fsnode to be tied) must be a Treex::PML::Node object!") if not UNIVERSAL::DOES::does($fsnode, "Treex::PML::Node");
 
         #    $fsnode->{_tmt_node} = $self;
         $fsnode2tmt_node{$fsnode} = $self;
@@ -120,7 +121,7 @@ use Cwd;
             }
             $self->get_document->index_node_by_id($attr_value,$self);
         } elsif (ref($attr_value) eq "ARRAY") {
-            $attr_value = Fslib::List->new(@$attr_value);
+            $attr_value = Treex::PML::Factory->createList([@$attr_value],1);
         }
         return $fsnode{ident $self}->set_attr($attr_name,$attr_value);
     }
@@ -208,21 +209,21 @@ use Cwd;
 
     sub set_parent($$) {
         my ($self,$parent) = @_;
-        Report::fatal("Node's parent must be a TectoMT::Node (it is $parent)") if not UNIVERSAL::isa($parent,"TectoMT::Node");
+        Report::fatal("Node's parent must be a TectoMT::Node (it is $parent)") if not UNIVERSAL::DOES::does($parent,"TectoMT::Node");
         #    croak "paste_below: cannot paste tree root" if not $self->get_is_root;
         $self->_set_bundle($parent->get_bundle);
         my $fsself = $self->get_tied_fsnode;
         my $fsparent = $parent->get_tied_fsnode;
         if ($fsself->parent) {
-            Fslib::Cut($fsself)
+            Treex::PML::Cut($fsself)
           }
         #    $fsself->{'_tree_name'} = $fsparent->{'_tree_name'};
         my $fsfile = $self->get_document()->get_tied_fsfile();
         my @fschildren = $fsparent->children;
         if (@fschildren) {
-            Fslib::PasteAfter($fsself,$fschildren[-1]);
+            Treex::PML::PasteAfter($fsself,$fschildren[-1]);
         } else {
-            Fslib::Paste($fsself,$fsparent,$fsfile->FS());
+            Treex::PML::Paste($fsself,$fsparent,$fsfile->FS());
         }
     }
 
@@ -562,11 +563,11 @@ Tree's attributes must be stored as attributes of the root node.
 
 =item  my $new_node = TectoMT::Node->new();
 
-Creates a new node as well as its underlying FSNode representation.
+Creates a new node as well as its underlying Treex::PML::Node representation.
 
 =item my $new_node = TectoMT::Node->new( { 'fsnode' => $fsnode } );
 
-Creates a new node and associates it with an already existing FSNode object.
+Creates a new node and associates it with an already existing Treex::PML::Node object.
 
 
 
@@ -574,18 +575,18 @@ Creates a new node and associates it with an already existing FSNode object.
 
 
 
-=head2 Access to the underlying Fslib representation
+=head2 Access to the underlying Treex::PML representation
 
 =over 4
 
 =item $node->tie_with_fsnode($fsnode);
 
-Associates the given node with a FSNode object which
+Associates the given node with a Treex::PML::Node object which
 will be used as its underlying represenatation.
 
 =item my $fsnode = $node->get_tied_fsnode();
 
-Returns the associated FSNode object used as the
+Returns the associated Treex::PML::Node object used as the
 node's underlying represenatation.
 
 

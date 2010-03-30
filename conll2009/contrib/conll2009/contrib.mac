@@ -264,18 +264,18 @@ sub remove_arc {
   if (@arcs == 0) {
     delete $target->{apreds}
   } else {
-    $target->{apreds}=Fslib::List->new_from_ref(\@arcs);
+    $target->{apreds}=Treex::PML::Factory->createList(\@arcs,1);
   }
   return 1;
 }
 
 # create a new arc
 # label argument is optional, if not given, attribute editor is opened
-# node can be either a FSNode or an ID
+# node can be either a Treex::PML::Node or an ID
 sub add_arc {
   my ($node, $target, $label)=@_;
   return unless $node and $target;
-  my $arc = Fslib::Struct->new({
+  my $arc = Treex::PML::Factory->createStructure({
     'target.rf' => $node->{'xml:id'},
     'label' => $label,
   },1);
@@ -299,7 +299,7 @@ sub add_arc {
 }
 
 # arc can be either an index to node's apreds
-# or a new Fslib::Struct value
+# or a new Treex::PML::Struct value
 sub edit_arc {
   my ($node,$arc) = @_;
   if (ref($arc)) {

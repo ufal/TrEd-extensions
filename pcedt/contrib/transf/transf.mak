@@ -80,7 +80,7 @@ sub root_style_hook {
 
 # invoked by TrEd to allow custom styling of a specific node
 # $styles contains default styles and styles assigned by
-# styling patterns in the attribute selection of current FSFile.
+# styling patterns in the attribute selection of current Treex::PML::Document.
 sub node_style_hook {
   my ($node,$styles)=@_;
 

@@ -13,7 +13,7 @@
   for a given Czech sentence.
   </description>
   <require>
-    <tred min_version="1.3587"/>
+    <tred min_version="1.4375"/>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
     <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/tectomt"/>
     <extension name="pdt_auto_afun" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_auto_afun"/>

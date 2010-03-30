@@ -834,7 +834,7 @@ sub match_form {
   # try to fake AIDREFs for certain added nodes
   if ($node->{TID} ne '' and !@a) {
     # &PersPron;
-    my $fake_node = FSNode->new();
+    my $fake_node = Treex::PML::Factory->createNode();
     # if node is 1st/2nd person and the verb is in 1st/2nd person,
     # we may suppose 1st case (.1)
 
@@ -849,10 +849,9 @@ sub match_form {
       ($form,$lemma,$tag,$fake_children,$afun) = @$fake;
       if (ref($fake_children)) {
 	foreach my $fake_child (@$fake_children) {
-	  my $c = FSNode->new();
+	  my $c = Treex::PML::Factory->createNode();
 	  ($c->{form},$c->{lemma},$c->{tag},$c->{afun}) = @$fake_child;
-	  $c->{_P_}=$fake_node;
-	  $fake_node->{_F_} ||= $c;
+	  $c->paste_on($fake_node);
 	}
       }
       push @a,$fake_node;
