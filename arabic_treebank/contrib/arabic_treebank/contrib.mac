@@ -39,7 +39,7 @@ sub switch_context_hook {
 }
 
 RemoveBackend('AG2FS'); # obsolete
-AddBackend(Fslib::ImportBackends('AG2PML'),'PMLBackend')
+AddBackend(Treex::PML::ImportBackends('AG2PML'),'PMLTransform');
 
 }
 1;

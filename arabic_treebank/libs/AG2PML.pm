@@ -1,8 +1,8 @@
 package AG2PML;
 
-use Fslib;
-use PMLInstance;
-use PMLSchema;
+use Treex::PML;
+use Treex::PML::Instance;
+use Treex::PML::Schema;
 use strict;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
@@ -30,7 +30,7 @@ Close given filehandle opened by previous call to C<open_backend>
 
 sub close_backend {
   my ($fh)=@_;
-  return IOBackend::close_backend($fh) if ref($fh);
+  return Treex::PML::IO::close_backend($fh) if ref($fh);
   return 1;
 }
 
@@ -86,10 +86,10 @@ sub open_signal_file {
 	}
       }
       warn("Warning: xlink:href leads to a non-existing signal file, will try $filename\n")
-	if $Fslib::Debug;
+	if $Treex::PML::Debug;
     }
   }
-  return IOBackend::open_backend($filename,'r');
+  return Treex::PML::IO::open_backend($filename,'r');
 }
 
 sub read {
@@ -125,11 +125,11 @@ sub read {
 EOF
 
   my $output=$input; # $output=~s/\.xml$//; $output.='.pml';
-  PMLInstance->load({string   => $pml,
+  Treex::PML::Instance->load({string   => $pml,
 		     filename => $output,
-		     config   => $PMLBackend::config
+		     config   => $Treex::PML::Backend::PML::config
 		    })->convert_to_fsfile($fsfile);
-  # $fsfile->changeBackend('PMLBackend');
+  # $fsfile->changeBackend('PML');
   $fsfile->delete_tree(0);
   delete $fsfile->appData('id-hash')->{foo};
 
@@ -167,9 +167,9 @@ EOF
     my @nodes;
 
     my $schema = $fsfile->metaData('schema');
-    my ($root_type, $nonterminal_type, $terminal_type) =
+    my ($root_type, $nonterminal_type, $terminal_type, $trace_type) =
       map { $schema->get_type_by_name($_)->get_content_decl }
-      qw(root.type nonterminal.type terminal.type);
+      qw(root.type nonterminal.type terminal.type trace.type);
     my $tree_id=$agid; $tree_id=~tr[:][-];
 
     foreach my $annotation ($xpc->findnodes(q{ descendant::ag:Annotation[@type='word'] },$ag)) {
@@ -181,7 +181,7 @@ EOF
       my $token=substr($paratxt,$start,$end-$start);
       $token =~ s/\s+$//;
       my $id = ag_attr($annotation,'id'); $id=~tr[:][-];
-      my $node=FSNode->new({
+      my $node=Treex::PML::Factory->createTypedNode($terminal_type,{
 	'#name'=>'terminal',
 	id=> $id,
 	token => $token,
@@ -190,7 +190,6 @@ EOF
       },1);
       $node->{_start}=$start;
       $node->{_end}=$end;
-      $node->set_type($terminal_type);
       my $selection_id=xp($xpc,$annotation,q{ string(ag:Feature[@name='selection']) });
       my ($selection)=
 	$xpc->findnodes(qq{ (id("$selection_id")|//ag:Annotation[\@id="$selection_id"])[1] },$annotation);
@@ -230,7 +229,7 @@ EOF
       }
     }eg;
 
-    print "parsing preprocessed tree $agid:\n$tree\n\n" if $Fslib::Debug;
+    print "parsing preprocessed tree $agid:\n$tree\n\n" if $Treex::PML::Debug;
     my $origtree=$tree;
     my (%coref,%gapping);
     while ($tree =~ s{\( ([^()]+) \)}{nt$nt}) {
@@ -238,17 +237,16 @@ EOF
       my $cat=shift @children;
       my $node;
       if ($cat eq 'Paragraph') {
-	$node=FSNode->new({
+	$node=Treex::PML::Factory->createTypedNode($root_type,{
 	  id => $tree_id.'-s1',
 	  para_id => $tree_id,
 	  comment => $comment,
 	  para=>$para,
 	  sent_no => 1,
 	},1);
-	$node->set_type($root_type);
       } else {
 	my $id = $tree_id.'-nt'.$nt;
-	$node=FSNode->new({
+	$node=Treex::PML::Factory->createTypedNode($nonterminal_type,{
 	  '#name'=>'nonterminal',
 	  id => $id,
 	},1);
@@ -266,8 +264,7 @@ EOF
 	}
 	my @functions = split '-',$cat;
 	$node->{cat}=shift @functions;
-	$node->{functions}=Fslib::List->new(@functions);
-	$node->set_type($nonterminal_type);
+	$node->{functions}=Treex::PML::Factory->createList(\@functions,1);
       }
       foreach (reverse @children) { # reverse because paste_on pastes before first son
 	my $child;
@@ -279,7 +276,7 @@ EOF
 	} elsif (/^(\d+(?:\.\d+))(\*.*)$/) {
 	  my $type = $2;
 	  $type=~s/^\*\|\*$//g;
-	  $child=FSNode->new({
+	  $child=Treex::PML::Factory->createTypedNode($trace_type,{
 	    '#name'=>'trace',
 	    id => $tree_id.'-trace'.($trace++),
 	    type=>$type,
@@ -301,13 +298,12 @@ EOF
       my @c = $root->children;
       if (@c > 1) {
 	for my $i (1..$#c) {
-	  my $node=FSNode->new({
+	  my $node=Treex::PML::Factory->createTypedNode($root_type,{
 	    id => $root->{id}.'-s'.($i+1),
 	    para=>$root->{para},
 	    para_id=>$root->{para_id},
 	    sent_no => $i+1,
 	  },1);
-	  $node->set_type($root_type);
 	  $c[$i]->cut()->paste_on($node);
 	  $fsfile->insert_tree($node,$fsfile->lastTreeNo()+1);
 	}
@@ -331,7 +327,7 @@ sub test {
     my $line2=$f->getline();
     return ($line1.$line2)=~/<!DOCTYPE AGSet/ ? 1 : 0;
   } else {
-    my $fh = IOBackend::open_backend($f,"r");
+    my $fh = Treex::PML::IO::open_backend($f,"r");
     my $test = $fh && test($fh,$encoding);
     close_backend($fh);
     return $test;
