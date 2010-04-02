@@ -14,5 +14,6 @@
   <require>
     <extension name="pdt20"/>
     <extension name="pdt_vallex"/>
+    <tred min_version="1.4375"/>
   </require>
 </tred_extension>
