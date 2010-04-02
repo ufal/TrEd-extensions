@@ -17,7 +17,7 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-use Fslib 1.6;
+use Treex::PML 1.6;
 
 use MorphoMap 1.9;
 
@@ -60,7 +60,7 @@ until (eof()) {
 
     $FStime = gmtime;
 
-    $target = FSFile->create(define_target_format());
+    $target = Treex::PML::Factory->createDocument({define_target_format()});
 
     $source = XML::Twig->new(
 
@@ -319,7 +319,7 @@ sub process_text {
 
     foreach $node (@nodes) {
 
-        my $wordnode = FSNode->new();
+        my $wordnode = Treex::PML::Factory->createNode();
 
         $wordnode->{'type'} = 'word_node';
         $wordnode->{'input'} = $node->{'input'};
@@ -357,7 +357,7 @@ sub process_text {
 
         foreach (sort keys %{$node->{'partition'}}) {
 
-            my $partinode = FSNode->new();
+            my $partinode = Treex::PML::Factory->createNode();
 
             $partinode->{'type'} = 'partition';
             $partinode->{'form'} = $_;
@@ -367,7 +367,7 @@ sub process_text {
 
             for ($l = 1; $l < @{$node->{'partition'}{$_}->[0]}; $l++) {
 
-                my $morphonode = FSNode->new();
+                my $morphonode = Treex::PML::Factory->createNode();
 
                 $morphonode->{'type'} = 'token_form';
                 $morphonode->{'form'} = remove_diacritics($node->{'partition'}{$_}->[0][$l][0]);
@@ -385,7 +385,7 @@ sub process_text {
 
                 foreach (sort keys %cluster) {
 
-                    my $lemmanode = FSNode->new();
+                    my $lemmanode = Treex::PML::Factory->createNode();
 
                     @lem_id = restore_lemma($_);
 
@@ -406,7 +406,7 @@ sub process_text {
 
                             $repeated{join " ", $cluster{$_}[$i]->[0], $cluster{$_}[$i]->[4], $tag}++;
 
-                            my $tokennode = FSNode->new();
+                            my $tokennode = Treex::PML::Factory->createNode();
 
                             $tokennode->{'type'} = 'token_node';
                             $tokennode->{'form'} = $cluster{$_}[$i]->[0];
@@ -714,7 +714,7 @@ sub define_target_format {
 
     return (
 
-        'FS'        => FSFormat->create(
+        'FS'        => Treex::PML::Factory->createFSFormat([
 
             '@N ord',
             '@P type',
@@ -734,7 +734,7 @@ sub define_target_format {
 
                 } qw 'solution form morph tag gloss lookup id apply_m apply_t comment'
 
-                        ),
+                        ]),
 
         'hint'      => q {<? '${gloss}' if $this->{type} eq 'token_node' ?>},
         'patterns'  => [
@@ -789,7 +789,7 @@ sub define_target_format {
 
                         ],
         'trees'     => [],
-        'backend'   => 'FSBackend',
+        'backend'   => 'Treex::PML::Backend::FS',
         'encoding'  => $encode,
 
     );

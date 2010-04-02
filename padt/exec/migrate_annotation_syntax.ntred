@@ -21,7 +21,7 @@ our $nodes;
 
 sub autostart {
 
-    my $anno = PMLInstance->load({ 'filename' => FileName() . '.anno.xml' })->convert_to_fsfile();;
+    my $anno = Treex::PML::Instance->load({ 'filename' => FileName() . '.anno.xml' })->convert_to_fsfile();;
 
     $nodes = [ [], [] ];
 
@@ -75,9 +75,9 @@ sub migrate_annotation {
                 }
                 elsif ($nodes->[0][$i]->{'#name'} ne 'Tree') {
 
-                    $nodes->[0][$i]->{'score'} = new Fslib::Alt;
+                    $nodes->[0][$i]->{'score'} = Treex::PML::Factory->createAlt();
 
-                    unshift @{$nodes->[0][$i]->{'score'}}, new Fslib::Container $nodes->[0][$i]->{'afun'};
+                    unshift @{$nodes->[0][$i]->{'score'}}, Treex::PML::Factory->createContainer() $nodes->[0][$i]->{'afun'};
 
                     $nodes->[0][$i]->{'afun'} = '???';
 
@@ -102,9 +102,9 @@ sub migrate_annotation {
                     CutPaste($nodes->[0][$i], $mapping->{$parent});
                 }
 
-                $nodes->[0][$i]->{'score'} = new Fslib::Alt;
+                $nodes->[0][$i]->{'score'} = Treex::PML::Factory->createAlt();
 
-                unshift @{$nodes->[0][$i]->{'score'}}, new Fslib::Container $nodes->[0][$i]->{'afun'};
+                unshift @{$nodes->[0][$i]->{'score'}}, Treex::PML::Factory->createContainer() $nodes->[0][$i]->{'afun'};
 
                 $nodes->[0][$i]->{'afun'} = '???';
 

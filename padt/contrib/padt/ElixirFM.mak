@@ -179,7 +179,7 @@ sub change_entity_V {
 
     my $old = ElixirFM::entity($this)->[1];
 
-    my $new = change_entity('Verb', new Fslib::Struct);
+    my $new = change_entity('Verb', Treex::PML::Factory->createStruct);
 
     foreach (qw 'form pfirst imperf second tense voice') {
 
@@ -201,7 +201,7 @@ sub change_entity_N {
     my $cat = $ent->[0];
     my $old = $ent->[1];
 
-    my $new = change_entity('Noun', new Fslib::Struct);
+    my $new = change_entity('Noun', Treex::PML::Factory->createStruct);
 
     foreach (qw 'plural gender number derive') {
 
@@ -230,7 +230,7 @@ sub change_entity_A {
 
     my $old = ElixirFM::entity($this)->[1];
 
-    my $new = change_entity('Adj', new Fslib::Struct);
+    my $new = change_entity('Adj', Treex::PML::Factory->createStruct);
 
     foreach (qw 'plural femini number') {
 
@@ -248,7 +248,7 @@ sub change_entity_A {
 #bind change_entity_S Ctrl+S menu Change Entity Pron
 sub change_entity_S {
 
-    change_entity('Pron', new Fslib::Container);
+    change_entity('Pron', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_Q Ctrl+Q menu Change Entity Num
@@ -260,7 +260,7 @@ sub change_entity_Q {
 
     my $old = ElixirFM::entity($this)->[1];
 
-    my $new = change_entity('Num', new Fslib::Struct);
+    my $new = change_entity('Num', Treex::PML::Factory->createStruct);
 
     foreach (qw 'plural femini') {
 
@@ -273,55 +273,55 @@ sub change_entity_Q {
 #bind change_entity_D Ctrl+D menu Change Entity Adv
 sub change_entity_D {
 
-    change_entity('Adv', new Fslib::Container);
+    change_entity('Adv', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_P Ctrl+P menu Change Entity Prep
 sub change_entity_P {
 
-    change_entity('Prep', new Fslib::Container);
+    change_entity('Prep', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_C Ctrl+C menu Change Entity Conj
 sub change_entity_C {
 
-    change_entity('Conj', new Fslib::Container);
+    change_entity('Conj', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_F Ctrl+F menu Change Entity Part
 sub change_entity_F {
 
-    change_entity('Part', new Fslib::Container);
+    change_entity('Part', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_I Ctrl+I menu Change Entity Intj
 sub change_entity_I {
 
-    change_entity('Intj', new Fslib::Container);
+    change_entity('Intj', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_X Ctrl+X menu Change Entity Xtra
 sub change_entity_X {
 
-    change_entity('Xtra', new Fslib::Container);
+    change_entity('Xtra', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_Y Ctrl+Y menu Change Entity Ynit
 sub change_entity_Y {
 
-    change_entity('Ynit', new Fslib::Container);
+    change_entity('Ynit', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_Z Ctrl+Z menu Change Entity Zero
 sub change_entity_Z {
 
-    change_entity('Zero', new Fslib::Container);
+    change_entity('Zero', Treex::PML::Factory->createContainer);
 }
 
 #bind change_entity_G Ctrl+G menu Change Entity Grph
 sub change_entity_G {
 
-    change_entity('Grph', new Fslib::Container);
+    change_entity('Grph', Treex::PML::Factory->createContainer);
 }
 
 #bind enforce_literal Ctrl+l menu Enforce Literal
@@ -452,10 +452,10 @@ sub new_Entry {
 
     $node->{'morphs'} = '_____';
 
-    $node->{'entity'} = new Fslib::Seq;
+    $node->{'entity'} = Treex::PML::Factory->createSeq;
 
     $node->{'entity'}->set_content_pattern('(Verb|Noun|Adj|Pron|Num|Adv|Prep|Conj|Part|Intj|Xtra|Ynit|Zero|Grph)');
-    $node->{'entity'}->push_element('Grph', new Fslib::Struct);
+    $node->{'entity'}->push_element('Grph', Treex::PML::Factory->createStruct);
 
     ChangingFile(1);
 

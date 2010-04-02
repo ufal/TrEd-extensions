@@ -2,7 +2,7 @@
 
 package TredMacro;
 
-use PMLInstance;
+use Treex::PML::Instance;
 
 use Encode;
 
@@ -32,7 +32,7 @@ sub autostart {
                   <data />
                 </DeepLevels>';                                   # "
 
-    $deeper = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.deeper.xml' })->convert_to_fsfile();
+    $deeper = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.deeper.xml' })->convert_to_fsfile();
 
     $schema = $deeper->metaData('schema');
 
@@ -74,9 +74,7 @@ sub pretty_node {
 
     my ($word, $tree) = @_;
 
-    my $node = new FSNode;
-
-    $node->set_type_by_name($schema, 'Node.type');
+    my $node = Treex::PML::Factory->createTypedNode('Node.type',$schema);
 
     $node->{'#name'} = 'Node';
 
@@ -84,7 +82,7 @@ sub pretty_node {
 
     $node->{'func'} = '???';
 
-    $node->{'syntax'} = new Fslib::Struct;
+    $node->{'syntax'} = Treex::PML::Factory->createStruct();
 
     foreach (qw 'ord afun score note parallel paren arabfa coref clause') {
 

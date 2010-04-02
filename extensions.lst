@@ -4,7 +4,7 @@ cz_t_analysis
 pdt_auto_afun
 show_valency
 pedt
-padt
+!padt
 cac
 sdt
 pcedt
@@ -19,3 +19,7 @@ pml_schema_tree
 filelist_filter
 hydt
 pmltq
+ptb
+sinica
+!xml2pml
+arabic_treebank

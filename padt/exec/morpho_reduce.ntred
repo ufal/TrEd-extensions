@@ -2,7 +2,7 @@
 
 package TredMacro;
 
-use PMLInstance;
+use Treex::PML::Instance;
 
 use Encode;
 
@@ -30,7 +30,7 @@ sub autostart {
                   <data />
                 </MorphoTrees>';                                   # "
 
-    $reduce = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.reduce.xml' })->convert_to_fsfile();
+    $reduce = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.reduce.xml' })->convert_to_fsfile();
 
     $schema = $reduce->metaData('schema');
 

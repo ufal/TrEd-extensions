@@ -17,9 +17,9 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-use Fslib 1.6;
+use Treex::PML 1.6;
 
-use PMLInstance;
+use Treex::PML::Instance;
 
 
 our $decode = "utf8";
@@ -42,12 +42,11 @@ foreach $file (@ARGV) {
 
     $FStime = gmtime;
 
-    $target = FSFile->create(define_target_format());
+    $target = Treex::PML::Factory->createDocument({define_target_format()});
 
-    # $source = FSFile->create('encoding' => $decode);
-    # $source->readFile($file);
+    # $source = Treex::PML::Factory->createDocumentFromFile($file,{'encoding' => $decode});
 
-    $source = PMLInstance->load({ 'filename' => $file });
+    $source = Treex::PML::Factory->createPMLInstance()->load({ 'filename' => $file });
     
     process_source();
 
@@ -103,7 +102,7 @@ sub process_source {
 
                         $ref = ($source->tree($entity->{'ref'} - 1)->descendants())[$form->{'ref'} - 1];
 
-                        my $token = FSNode->new();
+                        my $token = Treex::PML::Factory->createNode();
 
                         $token->{'ord'} = ++$ord;
 
@@ -133,7 +132,7 @@ sub process_source {
 
                 $ref = $source->tree($entity->{'ref'} - 1);
 
-                my $token = FSNode->new();
+                my $token = Treex::PML::Factory->createNode();
 
                 $token->{'ord'} = ++$ord;
 
@@ -166,7 +165,7 @@ sub define_target_format {
 
     return (
 
-        'FS'        => FSFormat->create(
+        'FS'        => Treex::PML::Factory->createFSFormat([
 
             '@P form',
             '@P afun',
@@ -205,7 +204,7 @@ sub define_target_format {
                 } qw 'reserve1 reserve2 reserve3 reserve4 reserve5',
                   qw 'x_id_ord x_input x_lookup x_morph x_gloss x_comment'
 
-                        ),
+                        ]),
 
         'hint'      =>  ( join "\n",
 
@@ -243,7 +242,7 @@ sub define_target_format {
 
                         ],
         'trees'     => [],
-        'backend'   => 'FSBackend',
+        'backend'   => 'Treex::PML::Backend::FS',
         'encoding'  => $encode,
 
     );

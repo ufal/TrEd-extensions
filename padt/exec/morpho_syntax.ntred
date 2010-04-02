@@ -2,7 +2,7 @@
 
 package TredMacro;
 
-use PMLInstance;
+use Treex::PML::Instance;
 
 use Encode;
 
@@ -32,7 +32,7 @@ sub autostart {
                   <data />
                 </Analytic>';                                   # "
 
-    $syntax = PMLInstance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.xml' })->convert_to_fsfile();
+    $syntax = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.xml' })->convert_to_fsfile();
 
     $schema = $syntax->metaData('schema');
 
@@ -93,9 +93,7 @@ sub pretty_word {
     }
     else {
 
-        my $node = new FSNode;
-
-        $node->set_type_by_name($schema, 'Node.type');
+        my $node = Treex::PML::Factory->createTypedNode('Node.type',$schema);
 
         $node->{'#name'} = 'Node';
 
@@ -105,9 +103,9 @@ sub pretty_word {
 
         $node->{'afun'} = '???';
 
-        $node->{'morpho'} = new Fslib::Struct;
+        $node->{'morpho'} = Treex::PML::Factory->createStruct();
 
-        $node->{'morpho'}{'Word'} = new Fslib::Struct;
+        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct();
 
         foreach (qw 'form note') {
 
@@ -125,9 +123,7 @@ sub pretty_node {
 
     my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
 
-    my $node = new FSNode;
-
-    $node->set_type_by_name($schema, 'Node.type');
+    my $node = Treex::PML::Factory->createTypedNode('Node.type',$schema);
 
     $node->{'#name'} = 'Node';
 
@@ -137,9 +133,9 @@ sub pretty_node {
 
     $node->{'afun'} = '???';
 
-    $node->{'morpho'} = new Fslib::Struct;
+    $node->{'morpho'} = Treex::PML::Factory->createStruct();
 
-    $node->{'morpho'}{'Token'} = new Fslib::Struct;
+    $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStruct();
 
     foreach (qw 'morphs tag form gloss note') {
 
@@ -148,7 +144,7 @@ sub pretty_node {
 
     $word = $word->parent();
 
-    $node->{'morpho'}{'Lexeme'} = new Fslib::Struct;
+    $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStruct();
 
     foreach (qw 'root core form note') {
 
@@ -159,7 +155,7 @@ sub pretty_node {
 
         $word = $word->parent();
 
-        $node->{'morpho'}{'Word'} = new Fslib::Struct;
+        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct();
 
         foreach (qw 'form note') {
 

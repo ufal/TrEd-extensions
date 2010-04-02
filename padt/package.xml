@@ -10,4 +10,7 @@
   <version>1.39</version>
   <copyright year="2004-2010">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank, including ElixirFM and MorphoTrees.</description>
+  <require>
+    <tred min_version="1.4375"/>
+  </require>
 </tred_extension>

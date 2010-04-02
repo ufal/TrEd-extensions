@@ -37,7 +37,7 @@ sub autostart {
     $data[6] = [ grep { isRegular($_) } @{$data[6]} ];
 
 
-    @{$list} = map { my $null = new FSNode; DetermineNodeType($null); $null,
+    @{$list} = map { my $null = Treex::PML::Factory->createNode(); DetermineNodeType($null); $null,
                      sort { stringCompare($a->firstson()->{'root'},
                                           $b->firstson()->{'root'}) } @{$_} } @data[1 .. 6];
 

@@ -18,7 +18,7 @@ our $nodes;
 
 sub autostart {
 
-    my $anno = PMLInstance->load({ 'filename' => FileName() . '.anno.xml' })->convert_to_fsfile();;
+    my $anno = Treex::PML::Instance->load({ 'filename' => FileName() . '.anno.xml' })->convert_to_fsfile();;
 
     $entities = [ [], [] ];
 

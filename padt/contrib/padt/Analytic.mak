@@ -477,25 +477,25 @@ sub morpho_structure {
 
         next if exists $node->{'morpho'} or not exists $node->{'m'};
 
-        $node->{'morpho'} = new Fslib::Struct;
+        $node->{'morpho'} = Treex::PML::Factory->createStruct;
 
         if (exists $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '') {
 
-            $node->{'morpho'}{'Word'} = new Fslib::Struct;
+            $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct;
 
             $node->{'morpho'}{'Word'}{'form'} = $node->{'m'}{'input'};
         }
 
         if (exists $node->{'m'}{'lemma'} and $node->{'m'}{'lemma'} ne '') {
 
-            $node->{'morpho'}{'Lexeme'} = new Fslib::Struct;
+            $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStruct;
 
             $node->{'morpho'}{'Lexeme'}{'form'} = $node->{'m'}{'lemma'};
         }
 
         if (exists $node->{'m'}{'form'} and $node->{'m'}{'form'} ne '') {
 
-            $node->{'morpho'}{'Token'} = new Fslib::Struct;
+            $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStruct;
 
             $node->{'morpho'}{'Token'}{'form'} = $node->{'m'}{'form'};
 

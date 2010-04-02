@@ -17,7 +17,7 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-use Fslib 1.6;
+use Treex::PML 1.6;
 
 use MorphoMap 1.9;
 
@@ -54,7 +54,7 @@ until (eof()) {
 
     $FStime = gmtime;
 
-    $target = FSFile->create(define_target_format());
+    $target = Treex::PML::Factory->createDocument({define_target_format()});
 
     $file = $ARGV;
 
@@ -102,7 +102,7 @@ sub parse_twig {
 
             if (defined $this) {
 
-                $node = FSNode->new();
+                $node = Treex::PML::Factory->createNode();
 
                 $node->{'ord'} = ++$node_lim;
 
@@ -349,7 +349,7 @@ sub define_target_format {
 
     return (
 
-        'FS'        => FSFormat->create(
+        'FS'        => Treex::PML::Factory->createFSFormat([
 
             '@P morph',
             '@P label',
@@ -365,7 +365,7 @@ sub define_target_format {
             '@P ord_term',
             '@H hide',
 
-                        ),
+                        ]),
 
         'hint'      =>  ( join "\n",
 
@@ -404,7 +404,7 @@ sub define_target_format {
 
                         ],
         'trees'     => [],
-        'backend'   => 'FSBackend',
+        'backend'   => 'Treex::PML::Backend::FS',
         'encoding'  => $encode,
 
     );

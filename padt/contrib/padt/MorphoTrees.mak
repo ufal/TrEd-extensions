@@ -6,7 +6,7 @@
 
 package MorphoTrees;
 
-use 5.008;
+use 5.010; # because of ~~
 
 use strict;
 
@@ -305,9 +305,7 @@ sub update_zoom_tree {
 
         my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
 
-        my $node = new FSNode;
-
-        $node->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.Lists.type');
+        my $node = Treex::PML::Factory->createTypedNode('Element.Lists.type',PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -323,9 +321,7 @@ sub update_zoom_tree {
 
     if ($review->{$grp}{'mode'}) {
 
-        my $node = new FSNode;
-
-        $node->set_type_by_name($grp->{'FSFile'}->metaData('schema'), 'Element.Trees.type');
+        my $node = Treex::PML::Factory->createTypedNode('Element.Trees.type',PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -364,7 +360,7 @@ sub score_nodes {
 
             foreach my $node (map { $_->children() } map { $_->children() } $comp[$i]) {
 
-                $node->{'score'} = new Fslib::Alt map { new Fslib::Container $_->[1], {'src' => $_->[0]} } compute_score($node, $done[$i]);
+                $node->{'score'} = Treex::PML::Factory->createAlt() map { Treex::PML::Factory->createContainer() $_->[1], {'src' => $_->[0]} } compute_score($node, $done[$i]);
             }
         }
     }
@@ -931,7 +927,7 @@ sub elixir_lexicon {
 
         my $text = Exec::ElixirFM::elixir 'lexicon';
 
-        my $pml = PMLInstance->load({ 'string' => $text });
+        my $pml = Treex::PML::Instance->load({ 'string' => $text });
 
         my $lexicon = [];
 
@@ -947,10 +943,10 @@ sub elixir_lexicon {
 
                 $entry_idx++;
 
-                my $lexeme = new Fslib::Struct;
+                my $lexeme = Treex::PML::Factory->createStruct();
 
                 $lexeme->{'root'} = $nest->{'root'};
-                $lexeme->{'core'} = new Fslib::Struct;
+                $lexeme->{'core'} = Treex::PML::Factory->createStruct();
 
                 foreach my $key (grep { not /^[_#]/ } keys %$entry) {
 
@@ -1049,19 +1045,19 @@ sub morpholists {
 
             my ($data, @data) = @{$_};
 
-            $node->{'data'} = new Fslib::Seq;
+            $node->{'data'} = Treex::PML::Factory->createSeq();
 
             foreach (@{$data}) {
 
                 my $lexeme = lexicon($_->[0]);
 
-                my $struct = new Fslib::Struct;
+                my $struct = Treex::PML::Factory->createStruct();
 
                 $struct->{'clip'} = $_->[0];
 
                 $struct->{'root'} = $lexeme->{'root'};
 
-                $struct->{'core'} = new Fslib::Struct;
+                $struct->{'core'} = Treex::PML::Factory->createStruct();
 
                 $struct->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 
@@ -1211,7 +1207,7 @@ sub couple {
 
                 $node->{'root'} = $lexeme->{'root'};
 
-                $node->{'core'} = new Fslib::Struct;
+                $node->{'core'} = Treex::PML::Factory->createStruct();
 
                 $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 
@@ -1337,7 +1333,7 @@ sub morphotrees {
 
                 $node->{'root'} = $lexeme->{'root'};
 
-                $node->{'core'} = new Fslib::Struct;
+                $node->{'core'} = Treex::PML::Factory->createStruct();
 
                 $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 

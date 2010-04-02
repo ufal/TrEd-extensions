@@ -17,7 +17,7 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-use Fslib 1.6;
+use Treex::PML 1.6;
 
 
 our $decode = "utf8";
@@ -40,11 +40,9 @@ foreach $file (@ARGV) {
 
     $FStime = gmtime;
 
-    $target = FSFile->create(define_target_format());
+    $target = Treex::PML::Factory->createDocument({define_target_format()});
 
-    $source = FSFile->create('encoding' => $decode);
-
-    $source->readFile($file);
+    $source = Treex::PML::Factory->createDocumentFromFile($file,{'encoding' => $decode});
 
     process_source();
 
@@ -110,7 +108,7 @@ sub define_target_format {
 
     return (
 
-        'FS'        => FSFormat->create(
+        'FS'        => Treex::PML::Factory->createFSFormat([
 
             '@P form',
             '@P afun',
@@ -206,7 +204,7 @@ sub define_target_format {
             '@P trneg',
             '@L trneg|---|A|N|NA|???',
 
-                        ),
+                        ]),
 
         'hint'      =>  ( join "\n",
 
@@ -254,7 +252,7 @@ sub define_target_format {
 
                         ],
         'trees'     => [],
-        'backend'   => 'FSBackend',
+        'backend'   => 'Treex::PML::Backend::FS',
         'encoding'  => $encode,
 
     );

@@ -41,7 +41,7 @@ sub novocalize ($) {
 
 sub autostart {
 
-    my $anno = FSFile->create('encoding' => "utf8");
+    my $anno = Treex::PML::Factory->createDocument({'encoding' => "utf8"});
 
     my $thisfile = File::Spec->canonpath(FileName());
 

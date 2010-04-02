@@ -17,7 +17,7 @@ BEGIN {
     eval "use lib '$libDir', '$libDir/libs/fslib', '$libDir/libs/pml-base'";
 }
 
-use Fslib 1.6;
+use Treex::PML 1.6;
 
 use Encode;
 
@@ -44,7 +44,7 @@ foreach $file (@ARGV) {
 
     $FStime = gmtime;
 
-    $target = FSFile->create(define_target_format());
+    $target = Treex::PML::Factory->createDocument({define_target_format()});
 
     process_source($file);
 
@@ -91,7 +91,7 @@ sub process_source {
 
 	for (my $i = 0; $i < @{$tree[0]}; $i++) {
 
-	    my $node = FSNode->new();
+	    my $node = Treex::PML::Factory->createNode();
 
 	    $node->{'ord'} = $i + 1;
 	    
@@ -124,7 +124,7 @@ sub define_target_format {
 
     return (
 
-        'FS'        => FSFormat->create(
+        'FS'        => Treex::PML::Factory->createFSFormat([
 
             '@P form',
             '@P afun',
@@ -173,7 +173,7 @@ sub define_target_format {
                 'gloss: ${x_gloss}',
                 'comment: ${x_comment}',
 
-                        ),
+                        ]),
         'patterns'  => [
 
                 'svn: $' . 'Revision' . ': $ $' . 'Date' . ': $',
@@ -201,7 +201,7 @@ sub define_target_format {
 
                         ],
         'trees'     => [],
-        'backend'   => 'FSBackend',
+        'backend'   => 'Treex::PML::Backend::FS',
         'encoding'  => $encode,
 
     );
