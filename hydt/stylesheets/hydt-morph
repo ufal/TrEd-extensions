@@ -1,4 +1,4 @@
-context: .*
+context: HYDT
 node:<?$${form}||('#{blue}'.$${feats/lemma})?><? $${error} ? '#{red}!'.join ',',ListV($this->{error}) : ''?>
 node:#{darkgreen}${phrase} #{purple}${drel}
 style:<? $${form} ? '#{Oval-fill:brown}#{CurrentOval-fill:orange}' : '' ?>
