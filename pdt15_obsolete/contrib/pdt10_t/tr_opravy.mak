@@ -1,6 +1,6 @@
 ## -*- cperl -*-
 ## author: Petr Pajas
-## Time-stamp: <2008-04-18 22:21:37 pajas>
+## Time-stamp: <2010-04-08 11:41:16 pajas>
 
 package TR_Correction;
 
@@ -211,9 +211,9 @@ sub node_click_hook {
 ################### with_AR etc. ##################
 
 sub which_struct {
-  if ($Treex::PML::parent eq "_AP_") {
+  if ($Treex::PML::Node::parent eq "_AP_") {
     return "AR";
-  } elsif ($Treex::PML::parent eq "_P_" and $grp->{FSFile}) {
+  } elsif ($Treex::PML::Node::parent eq "_P_" and $grp->{FSFile}) {
     my $o = $grp->{FSFile}->FS->order;
     if ($o eq 'dord') {
       return "TR";
@@ -639,7 +639,7 @@ sub tectogrammatical_tree {
 #bind tectogrammatical_tree_store_AR to Ctrl+B menu Save ordorig of AR tree and display tectogrammatical tree
 sub tectogrammatical_tree_store_AR {
   my $node = $root;
-  if ($Treex::PML::parent eq "_AP_") {
+  if ($Treex::PML::Node::parent eq "_AP_") {
     while ($node) {
       $node->{ordorig} = $node->parent->{ord} if $node->parent;
       $node=$node->following();

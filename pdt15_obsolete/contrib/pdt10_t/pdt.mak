@@ -1084,10 +1084,10 @@ sub ARstruct {
   $format->renew_specials();
   #  PDT->appendFSHeader('@N ord','@P dord','@P TR');
   # configure Treex::PML
-  $Treex::PML::parent="_AP_";
-  $Treex::PML::firstson="_AS_";
-  $Treex::PML::lbrother="_AL_";
-  $Treex::PML::rbrother="_AR_";
+  $Treex::PML::Node::parent="_AP_";
+  $Treex::PML::Node::firstson="_AS_";
+  $Treex::PML::Node::lbrother="_AL_";
+  $Treex::PML::Node::rbrother="_AR_";
 }
 
 =item PDT::TRstruct ()
@@ -1107,10 +1107,10 @@ sub TRstruct {
   $defs->{TR}   = ' H';
   $format->renew_specials();
   # configure Treex::PML
-  $Treex::PML::parent="_P_";
-  $Treex::PML::firstson="_S_";
-  $Treex::PML::lbrother="_L_";
-  $Treex::PML::rbrother="_R_";
+  $Treex::PML::Node::parent="_P_";
+  $Treex::PML::Node::firstson="_S_";
+  $Treex::PML::Node::lbrother="_L_";
+  $Treex::PML::Node::rbrother="_R_";
 }
 
 =item PDT::ClearARstruct ()
