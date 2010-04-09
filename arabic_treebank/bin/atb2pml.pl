@@ -8,7 +8,7 @@ use Carp;
 
 $|=1;   # flush on write
 
-use Fslib qw(ImportBackends AddResourcePath);
+use Treex::PML qw(UseBackends AddResourcePath);
 use FindBin;
 use lib "$FindBin::RealBin/../libs";
 use Pod::Usage;
@@ -43,16 +43,14 @@ if ($opts{version}) {
 
 AddResourcePath("$FindBin::RealBin/../resources");
 
-my @backends = ImportBackends(qw(AG2PML PMLBackend));
+UseBackends(qw(AG2PML PML));
 for my $f (@ARGV) {
   my $out = $f.'.pml';
   my (undef,undef,$base)=File::Spec->splitpath($out);
   $out = File::Spec->catfile($opts{'output-dir'}, $base);
 
   print "$f => $out\n" unless $opts{quiet};
-  my $doc = FSFile->load($f,{
-    backends=>\@backends,
-  });
+  my $doc = Treex::PML::Factory->createDocument($f);
   if ( -f $out ) {
     if ( -f $out.'~' ) {
       unlink $out.'~';
@@ -60,7 +58,7 @@ for my $f (@ARGV) {
     rename($out, $out.'~') or warn "Cannot rename $out to $out~: $!\n";
   }
   $doc->changeFilename($out);
-  $doc->changeBackend('PMLBackend');
+  $doc->changeBackend('PML');
   $doc->save();
 }
 
