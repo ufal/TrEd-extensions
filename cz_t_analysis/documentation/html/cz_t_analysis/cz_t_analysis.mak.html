@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head><title>Generated documentation for cz_t_analysis/cz_t_analysis.mak</title>
+	<meta name="description" content="Pod documentation for CZ_T_Analysis"></meta>
+	<meta name="inputfile" content="/export/home/pajas/projects/tred-extensions/cz_t_analysis/documentation/.pod/cz_t_analysis/cz_t_analysis.mak.pod"></meta>
+	<meta name="outputfile" content="&lt;standard output&gt;"></meta>
+	<meta name="created" content="Mon Nov 16 11:38:38 2009"></meta>
+	<meta name="generator" content="Pod::Xhtml 1.59"></meta>
+<link rel="stylesheet" href="../css/blue.css"></link></head>
+<body><h1>Generated documentation for cz_t_analysis/cz_t_analysis.mak</h1>
+<div class="pod">
+<h1 id="NAME">NAME</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="NAME_CONTENT">
+<p>CZ_T_Analysis - a TectoMT-based Czech analyzer for TrEd</p>
+
+</div>
+<h1 id="DESCRIPTION">DESCRIPTION</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="DESCRIPTION_CONTENT">
+<p>This package contains a TectoMT-based Czech analyzer producing
+tectogrammatical, analytical and morphological layers for a given
+Czech sentence.</p>
+
+</div>
+<h1 id="USAGE">USAGE</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="USAGE_CONTENT">
+<p>Use Macros-&gt;* Analyze Czech Text menu command in TrEd to start the
+macro; select a base-filename for the PML files with the analysis and
+insert one or more Czech sentences into the text box. The analyzer
+will produce three PDT~2.0-like files with the suffixes .t
+(tectogrammatical analysis), .a (analytical analysis), .m
+(morphological analysis).</p>
+
+</div>
+<h1 id="MACROS">MACROS</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="MACROS_CONTENT">
+<dl>
+	<dt>CZ_T_Analysis-&gt;analyze_sentence(\%options)</dt>
+	<dd>
+		<p>Analyze a given Czech sentence up to tectogrammatical layer (without
+functors) using a simple TectoMT application, producing 
+three PML documents: mdata, adata, and tdata.</p>
+		<p>Optional arguments:</p>
+		<p>
+			<dl>
+				<dt>sentence</dt>
+				<dd>
+					<p>The Czech sentence to analyze. If not given, a sample sentence is used
+and if running from TrEd's GUI, the user is asked to replace or modify the sentence.</p>
+				</dd>
+				<dt>dir</dt>
+				<dd>
+					<p>A directory in which to store the resulting files.</p>
+				</dd>
+				<dt>basename</dt>
+				<dd>
+					<p>Basename for the resulting files. The suffixes .m.gz, .a.gz, and .t.gz
+are appended. Default basename is 'result'.</p>
+				</dd>
+			</dl>
+		</p>
+	</dd>
+</dl>
+
+</div>
+<h1 id="COPYRIGHT">COPYRIGHT</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="COPYRIGHT_CONTENT">
+<p>Copyright (c) 2008 by Zden&#283;k &#381;abokrtsk&yacute;, V&aacute;clav Klime&scaron;, and Petr Pajas</p>
+
+</div>
+<h1 id="LICENSE">LICENSE</h1><p><a href="../../index.html" class="toplink">back</a></p>
+<div id="LICENSE_CONTENT">
+<p>You can use and distribute this program under the same terms as TrEd
+itself.</p>
+
+
+
+
+
+</div>
+</div></body>
+</html>
