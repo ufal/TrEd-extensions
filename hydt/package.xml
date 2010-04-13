@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="69867">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="69819">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>hydt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Hyderabad Dependency Treebank</title>
-  <version>1.40</version>
+  <version>1.41</version>
   <copyright year="2009">Petr Pajas and Dan Zeman and Jan Štěpánek</copyright>
   <description>This package contains a conversion script for the
     original .morph format of the Hyderabad Dependency Treebank (HyDT)
@@ -16,5 +16,5 @@
   </description>
   <require>
     <extension name="conll2009" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/conll2009"/>
-  <tred min_version="1.4375"/></require>
+  </require>
 </tred_extension>
