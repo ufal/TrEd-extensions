@@ -9,10 +9,9 @@ fi
 
 WWW=~pajas/WWW/tred
 REPO=$WWW/extensions
-DEVEL=~pajas/tred-devel/devel
+DEVEL=$(readlink -fen ../tred/devel)
 PACKER=$DEVEL/pack_extension.sh
 EXTDIR=`dirname $(readlink -fen $0)`
-pod2xhtml=$DEVEL/pod_to_xhtml
 
 
 for d in "${dirs[@]%/}"; do
@@ -22,8 +21,13 @@ for d in "${dirs[@]%/}"; do
     fi
 
     "$PACKER" "$d" "$REPO"
+
+    if [ -f ".make.d/$d" ]; then
+	. ".make.d/$d"
+    fi
 done
 
+# update repository HTML index
 (
 cd $REPO;
 echo '<extensions>';
@@ -35,13 +39,3 @@ done;
 echo '</extensions>';
 ) | xsltproc "$EXTDIR"/package2html.xsl - > "$REPO/index.html"
 
-
-[ -d pdt20 ] && for d in pdt20; do
-  for e in "$d"/contrib/*; do
-    pushd $e
-    ls *.mac *.mak *.inc | sort -k 1,1 -t . -d | xargs podselect > "$WWW/pdt20.pod"
-    "$pod2xhtml" --css blue.css --infile "$WWW/pdt20.pod" \
-	--outfile "$WWW/pdt20.html" --title "Documentation for the pdt20 extension"
-    popd $e
-  done
-done

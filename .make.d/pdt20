@@ -1,0 +1,9 @@
+pod2xhtml=$DEVEL/pod_to_xhtml
+
+for e in pdt20/contrib/*; do
+    pushd $e
+    ls *.mac *.mak *.inc | sort -k 1,1 -t . -d | xargs podselect > "$WWW/pdt20.pod"
+    "$pod2xhtml" --css blue.css --infile "$WWW/pdt20.pod" \
+	--outfile "$WWW/pdt20.html" --title "Documentation for the pdt20 extension";
+    popd $e
+done
