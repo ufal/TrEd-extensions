@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="63208">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="63324">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>conll2009</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>CoNLL 2009 Shared Task</title>
-  <version>1.32</version>
+  <version>1.33</version>
   <copyright year="2009">Jan Štěpánek</copyright>
   <description>This package contains a stylesheet for visualization of
   CoNLL-2009-ST data in TrEd,
