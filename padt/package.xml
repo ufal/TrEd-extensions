@@ -7,10 +7,11 @@
   <icon>icons/logo.png</icon>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.43</version>
+  <version>1.44</version>
   <copyright year="2004-2010">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank, including ElixirFM and MorphoTrees.</description>
   <require>
     <tred min_version="1.4375"/>
+    <perl_module name="perl" min_version="5.010"/>
   </require>
 </tred_extension>
