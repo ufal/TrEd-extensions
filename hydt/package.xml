@@ -6,7 +6,7 @@
   <pkgname>hydt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Hyderabad Dependency Treebank</title>
-  <version>1.41</version>
+  <version>1.42</version>
   <copyright year="2009">Petr Pajas and Dan Zeman and Jan Štěpánek</copyright>
   <description>This package contains a conversion script for the
     original .morph format of the Hyderabad Dependency Treebank (HyDT)

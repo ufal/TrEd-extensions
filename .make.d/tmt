@@ -1,0 +1,12 @@
+# resolve a symlink in a svn:external
+
+tmt_schema=tmt/resources/tmt_schema.xml
+
+if [ -L $tmt_schema ]; then
+  tmt_schema_rel=$(readlink $tmt_schema)
+  echo "Resolving symlink $tmt_schema -> $tmt_schema_rel"
+  tmt_schema_svn=$(svn info $tmt_schema |grep '^URL:'|cut -f2- -d' ')
+  tmt_schema_svn_resolved=$(perl -MURI -e '$URI::ABS_REMOTE_LEADING_DOTS=1; print URI->new(shift)->abs(shift)' $tmt_schema_rel $tmt_schema_svn)
+  rm $tmt_schema
+  svn cat $tmt_schema_svn_resolved > $tmt_schema
+fi

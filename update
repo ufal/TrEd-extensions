@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd $(dirname $0)
+
+for f in .make.d/*.pre_update; do
+    if [ -f "$f" ]; then . "$f"; fi
+done
+
+svn update "$@"
+
+for f in .make.d/*.post_update; do
+    if [ -f "$f" ]; then . "$f"; fi
+done

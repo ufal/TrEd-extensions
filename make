@@ -20,11 +20,12 @@ for d in "${dirs[@]%/}"; do
 	echo "$d" >> "$REPO"/extensions.lst
     fi
 
-    "$PACKER" "$d" "$REPO"
-
     if [ -f ".make.d/$d" ]; then
 	. ".make.d/$d"
     fi
+
+    "$PACKER" "$d" "$REPO"
+
 done
 
 # update repository HTML index

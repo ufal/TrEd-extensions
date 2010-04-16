@@ -1,0 +1,7 @@
+# in .make.d/tmt we resolve a symlink, so now we need to
+# remove the real file so that SVN update can do its job
+# 
+tmt_schema=tmt/resources/tmt_schema.xml
+if [ ! -L "$tmt_schema" ]; then 
+  rm "$tmt_schema"
+fi
