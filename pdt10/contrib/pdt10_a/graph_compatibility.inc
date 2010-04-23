@@ -48,7 +48,7 @@ sub ValNo {
 
 Retrun name of the n'th attribute defined in the FS file. This macro
 only abbreviates the following expression:
-C<<FS()->atno(n)>>
+C<< FS()->atno(n) >>
 
 =cut
 
