@@ -54,7 +54,7 @@ sub pretty_para {
 
     my @id = $root->{'id'} =~ /^m-p([0-9]+)$/;
 
-    $tree->set_type_by_name($schema, 'Tree.type');
+    $tree->set_type_by_name($schema, 'Tree');
 
     $tree->{'#name'} = 'Tree';
 
@@ -93,7 +93,7 @@ sub pretty_word {
     }
     else {
 
-        my $node = Treex::PML::Factory->createTypedNode('Node.type',$schema);
+        my $node = Treex::PML::Factory->createTypedNode('Node',$schema);
 
         $node->{'#name'} = 'Node';
 
@@ -123,7 +123,7 @@ sub pretty_node {
 
     my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
 
-    my $node = Treex::PML::Factory->createTypedNode('Node.type',$schema);
+    my $node = Treex::PML::Factory->createTypedNode('Node',$schema);
 
     $node->{'#name'} = 'Node';
 

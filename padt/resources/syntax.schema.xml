@@ -3,9 +3,9 @@
     <revision>1.1.0</revision>
     <description>PADT Surface Syntax</description>
 
-    <root name="Analytic" type="Trees.type"/>
+    <root name="Analytic" type="Trees"/>
 
-    <type name="Trees.type">
+    <type name="Trees">
         <structure>
             <member name="meta">
                 <structure>
@@ -19,16 +19,16 @@
             </member>
             <member name="data" required="1">
                 <sequence role="#TREES">
-                    <element name="Tree" type="Tree.type"/>
+                    <element name="Tree" type="Tree"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Tree.type">
+    <type name="Tree">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="ord" required="1" role="#ORDER" type="Order"/>
             <member name="afun" required="1">
                 <choice>
                     <value>AuxS</value>
@@ -36,41 +36,41 @@
                     <value>???</value>
                 </choice>
             </member>
-            <member name="score" type="Score.type"/>
-            <member name="note" type="String.type"/>
-            <member name="form" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="score" type="Score"/>
+            <member name="note" type="String"/>
+            <member name="form" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Node.type">
+    <type name="Node">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
-            <member name="afun" type="Afun.type" required="1"/>
-            <member name="score" type="Score.type"/>
-            <member name="note" type="String.type"/>
-            <member name="parallel" type="Parallel.type"/>
-            <member name="paren" type="Paren.type"/>
-            <member name="arabfa" type="String.type"/>
-            <member name="coref" type="Coref.type"/>
-            <member name="clause" type="Clause.type"/>
-            <member name="morpho" type="Morpho.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="afun" type="Afun" required="1"/>
+            <member name="score" type="Score"/>
+            <member name="note" type="String"/>
+            <member name="parallel" type="Parallel"/>
+            <member name="paren" type="Paren"/>
+            <member name="arabfa" type="String"/>
+            <member name="coref" type="Coref"/>
+            <member name="clause" type="Clause"/>
+            <member name="morpho" type="Morpho"/>
+            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Afun.type">
+    <type name="Afun">
         <choice>
             <value>Pred</value>
             <value>Pnom</value>
@@ -105,27 +105,27 @@
         </choice>
     </type>
 
-    <type name="Parallel.type">
+    <type name="Parallel">
         <choice>
             <value>Co</value>
             <value>Ap</value>
         </choice>
     </type>
 
-    <type name="Paren.type">
+    <type name="Paren">
         <choice>
             <value>Pa</value>
         </choice>
     </type>
 
-    <type name="Coref.type">
+    <type name="Coref">
         <choice>
             <value>Ref</value>
             <value>Msd</value>
         </choice>
     </type>
 
-    <type name="Clause.type">
+    <type name="Clause">
         <choice>
             <value>Pred</value>
             <value>Pnom</value>
@@ -136,58 +136,58 @@
         </choice>
     </type>
 
-    <type name="Order.type">
+    <type name="Order">
         <cdata format="nonNegativeInteger"/>
     </type>
 
-    <type name="Morpho.type">
+    <type name="Morpho">
         <structure>
-            <member name="Token" type="Token.type"/>
-            <member name="Lexeme" type="Lexeme.type"/>
-            <member name="Word" type="Word.type"/>
+            <member name="Token" type="Token"/>
+            <member name="Lexeme" type="Lexeme"/>
+            <member name="Word" type="Word"/>
         </structure>
     </type>
 
-    <import schema="morpho.schema.xml" type="Entry.type"/>
+    <import schema="morpho.schema.xml" type="Entry"/>
 
-    <import schema="morpho.schema.xml" type="Morphs.type"/>
+    <import schema="morpho.schema.xml" type="Morphs"/>
 
-    <import schema="morpho.schema.xml" type="String.type"/>
+    <import schema="morpho.schema.xml" type="String"/>
 
-    <import schema="morpho.schema.xml" type="Root.type"/>
+    <import schema="morpho.schema.xml" type="Root"/>
 
-    <import schema="morpho.schema.xml" type="Tags.type"/>
+    <import schema="morpho.schema.xml" type="Tags"/>
 
-    <import schema="morpho.schema.xml" type="Score.type"/>
+    <import schema="morpho.schema.xml" type="Score"/>
 
-    <import schema="morpho.schema.xml" type="ID.type"/>
+    <import schema="morpho.schema.xml" type="ID"/>
 
-    <type name="Word.type">
+    <type name="Word">
         <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
-    <type name="Lexeme.type">
+    <type name="Lexeme">
         <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="root" type="Root.type"/>
-            <member name="core" type="Entry.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="root" type="Root"/>
+            <member name="core" type="Entry"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
-    <type name="Token.type">
+    <type name="Token">
         <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="morphs" type="Morphs.type"/>
-            <member name="tag" type="Tags.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="gloss" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="morphs" type="Morphs"/>
+            <member name="tag" type="Tags"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="gloss" type="String"/>
         </structure>
     </type>
 

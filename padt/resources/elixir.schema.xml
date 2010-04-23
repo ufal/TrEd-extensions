@@ -3,9 +3,9 @@
     <revision>1.1.1</revision>
     <description>ElixirFM Lexicon</description>
 
-    <root name="ElixirFM" type="Lexicon.type" />
+    <root name="ElixirFM" type="Lexicon" />
 
-    <type name="Lexicon.type">
+    <type name="Lexicon">
         <structure>
             <member name="meta">
                 <structure>
@@ -19,82 +19,82 @@
             </member>
             <member name="data" required="1">
                 <sequence role="#TREES">
-                    <element name="Cluster" type="Cluster.type"/>
+                    <element name="Cluster" type="Cluster"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Cluster.type">
+    <type name="Cluster">
         <container role="#NODE">
             <sequence role="#CHILDNODES">
-                <element name="Nest" type="Nest.type"/>
+                <element name="Nest" type="Nest"/>
             </sequence>
         </container>
     </type>
 
-    <type name="Nest.type">
+    <type name="Nest">
         <structure role="#NODE">
-            <member name="root" type="Root.type"/>
+            <member name="root" type="Root"/>
             <member name="ents" role="#CHILDNODES">
                 <sequence>
-                    <element name="Entry" type="Entry.type"/>
+                    <element name="Entry" type="Entry"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Entry.type">
+    <type name="Entry">
         <structure role="#NODE">
-            <member name="morphs" type="Morphs.type" required="1"/>
-            <member name="entity" type="Entity.type" required="1"/>
-            <member name="limits" type="Limits.type"/>
-            <member name="reflex" type="Reflex.type" required="1"/>
-            <member name="vallex" type="Vallex.type" role="#CHILDNODES"/>
+            <member name="morphs" type="Morphs" required="1"/>
+            <member name="entity" type="Entity" required="1"/>
+            <member name="limits" type="Limits"/>
+            <member name="reflex" type="Reflex" required="1"/>
+            <member name="vallex" type="Vallex" role="#CHILDNODES"/>
         </structure>
     </type>
 
-    <type name="Root.type">
+    <type name="Root">
         <cdata format="any"/>
     </type>
 
-    <type name="Entity.type">
+    <type name="Entity">
         <sequence content_pattern="(Verb|Noun|Adj|Pron|Num|Adv|Prep|Conj|Part|Intj|Xtra|Ynit|Zero|Grph)">
             <element name="Verb">
                 <structure>
                     <member name="form" required="1">
-                        <list type="Form.type" ordered="1"/>
+                        <list type="Form" ordered="1"/>
                     </member>
                     <member name="pfirst">
-                        <list type="Pattern.type" ordered="1"/>
+                        <list type="Pattern" ordered="1"/>
                     </member>
                     <member name="imperf">
-                        <list type="Pattern.type" ordered="1"/>
+                        <list type="Pattern" ordered="1"/>
                     </member>
                     <member name="second">
-                        <list type="Pattern.type" ordered="1"/>
+                        <list type="Pattern" ordered="1"/>
                     </member>
-                    <member name="tense" type="Tense.type"/>
-                    <member name="voice" type="Voice.type"/>
+                    <member name="tense" type="Tense"/>
+                    <member name="voice" type="Voice"/>
                     <member name="masdar">
-                        <list type="Morphs.type" ordered="1"/>
+                        <list type="Morphs" ordered="1"/>
                     </member>
                 </structure>
             </element>
             <element name="Noun">
                 <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="gender" type="Gender.type"/>
-                    <member name="number" type="Number.type"/>
-                    <member name="derive" type="Derive.type"/>
-                    <member name="except" type="Except.type"/>
+                    <member name="plural" type="Plural"/>
+                    <member name="gender" type="Gender"/>
+                    <member name="number" type="Number"/>
+                    <member name="derive" type="Derive"/>
+                    <member name="except" type="Except"/>
                 </structure>
             </element>
             <element name="Adj" >
                 <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="femini" type="Femini.type"/>
-                    <member name="number" type="Number.type"/>
+                    <member name="plural" type="Plural"/>
+                    <member name="femini" type="Femini"/>
+                    <member name="number" type="Number"/>
                 </structure>
             </element>
             <element name="Pron">
@@ -102,8 +102,8 @@
             </element>
             <element name="Num">
                 <structure>
-                    <member name="plural" type="Plural.type"/>
-                    <member name="femini" type="Femini.type"/>
+                    <member name="plural" type="Plural"/>
+                    <member name="femini" type="Femini"/>
                 </structure>
             </element>
             <element name="Adv">
@@ -136,7 +136,7 @@
         </sequence>
     </type>
 
-    <type name="Form.type">
+    <type name="Form">
         <choice>
             <value>I</value>
             <value>II</value>
@@ -156,36 +156,36 @@
         </choice>
     </type>
 
-    <type name="Tense.type">
+    <type name="Tense">
         <choice>
             <value>Perfect</value>
             <value>Imperfect</value>
         </choice>
     </type>
 
-    <type name="Voice.type">
+    <type name="Voice">
         <choice>
             <value>Active</value>
             <value>Passive</value>
         </choice>
     </type>
 
-    <type name="Plural.type">
-        <list type="Morphs.type" ordered="1"/>
+    <type name="Plural">
+        <list type="Morphs" ordered="1"/>
     </type>
 
-    <type name="Femini.type">
-        <list type="Morphs.type" ordered="1"/>
+    <type name="Femini">
+        <list type="Morphs" ordered="1"/>
     </type>
 
-    <type name="Gender.type">
+    <type name="Gender">
         <choice>
             <value>Masculine</value>
             <value>Feminine</value>
         </choice>
     </type>
 
-    <type name="Number.type">
+    <type name="Number">
         <choice>
             <value>Singular</value>
             <value>Dual</value>
@@ -193,46 +193,46 @@
         </choice>
     </type>
 
-    <type name="Derive.type">
+    <type name="Derive">
         <choice>
             <value>------F---</value>
         </choice>
     </type>
 
-    <type name="Except.type">
+    <type name="Except">
         <choice>
             <value>Diptote</value>
             <value>Triptote</value>
         </choice>
     </type>
 
-    <type name="Morphs.type">
+    <type name="Morphs">
         <cdata format="any"/>
     </type>
 
-    <type name="Pattern.type">
+    <type name="Pattern">
         <cdata format="any"/>
     </type>
 
-    <type name="String.type">
+    <type name="String">
         <cdata format="any"/>
     </type>
 
-    <type name="Reflex.type">
-        <list type="String.type" ordered="1"/>
+    <type name="Reflex">
+        <list type="String" ordered="1"/>
     </type>
 
-    <type name="Limits.type">
+    <type name="Limits">
         <structure>
-            <member name="fst" type="Tags.type"/>
+            <member name="fst" type="Tags"/>
             <member name="snd">
                 <list ordered="1">
                     <structure>
                         <member name="fst">
-                            <list type="Tags.type" ordered="1"/>
+                            <list type="Tags" ordered="1"/>
                         </member>
                         <member name="snd">
-                            <list type="Morphs.type" ordered="1"/>
+                            <list type="Morphs" ordered="1"/>
                         </member>
                     </structure>
                 </list>
@@ -240,60 +240,60 @@
         </structure>
     </type>
 
-    <type name="Tags.type">
+    <type name="Tags">
         <cdata format="any"/>
     </type>
 
-    <type name="Vallex.type">
+    <type name="Vallex">
         <sequence>
-            <element name="Frame" type="Frame.type"/>
+            <element name="Frame" type="Frame"/>
         </sequence>
     </type>
 
-    <type name="Frame.type">
+    <type name="Frame">
         <structure role="#NODE">
             <member name="reflex">
                 <structure>
-                    <member name="fst" type="Reflex.type"/>
-                    <member name="snd" type="Reflex.type"/>
+                    <member name="fst" type="Reflex"/>
+                    <member name="snd" type="Reflex"/>
                 </structure>
             </member>
             <member name="slots" role="#CHILDNODES">
                 <sequence>
-                    <element name="Slot" type="Slot.type"/>
+                    <element name="Slot" type="Slot"/>
                 </sequence>
             </member>
             <member name="links">
-                <list type="String.type" ordered="1"/>
+                <list type="String" ordered="1"/>
             </member>
         </structure>
     </type>
 
-    <type name="Slot.type">
+    <type name="Slot">
         <structure role="#NODE">
-            <member name="role" type="Functor.type"/>
-            <member name="type" type="Type.type"/>
+            <member name="role" type="Functor"/>
+            <member name="type" type="Type"/>
             <member name="data" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Node.type">
+    <type name="Node">
         <structure role="#NODE">
-            <member name="form" type="String.type"/>
-            <member name="tag" type="Tags.type"/>
+            <member name="form" type="String"/>
+            <member name="tag" type="Tags"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Functor.type">
+    <type name="Functor">
         <choice>
             <value>ACT</value>
             <value>PAT</value>
@@ -370,7 +370,7 @@
         </choice>
     </type>
 
-    <type name="Type.type">
+    <type name="Type">
         <choice>
             <value>OBL</value>
             <value>OPT</value>

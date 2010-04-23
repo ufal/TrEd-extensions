@@ -3,9 +3,9 @@
     <revision>1.1.1</revision>
     <description>PADT Morphology</description>
 
-    <root name="MorphoTrees" type="Trees.type"/>
+    <root name="MorphoTrees" type="Trees"/>
 
-    <type name="Trees.type">
+    <type name="Trees">
         <structure>
             <member name="meta">
                 <structure>
@@ -19,163 +19,163 @@
             </member>
             <member name="data" required="1">
                 <sequence role="#TREES">
-                    <element name="Unit" type="Unit.type"/>
+                    <element name="Unit" type="Unit"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Unit.type">
+    <type name="Unit">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Word" type="Word.type"/>
+                    <element name="Word" type="Word"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Word.type">
+    <type name="Word">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
             <member name="norm">
-                <list type="String.type" ordered="1"/>
+                <list type="String" ordered="1"/>
             </member>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
-                <list type="Tuple.type" ordered="1"/>
+                <list type="Tuple" ordered="1"/>
             </member>
         </structure>
     </type>
 
-    <type name="Tuple.type">
+    <type name="Tuple">
         <container role="#NODE">
             <sequence role="#CHILDNODES">
-                <element name="Lexeme" type="Lexeme.Trees.type"/>
-                <element name="Token" type="Token.type"/>
+                <element name="Lexeme" type="Lexeme.Trees"/>
+                <element name="Token" type="Token"/>
             </sequence>
         </container>
     </type>
 
-    <type name="Token.type">
+    <type name="Token">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="morphs" type="Morphs.type"/>
-            <member name="tag" type="Tags.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="sense" type="String.type"/>
-            <member name="gloss" type="String.type"/>
-            <member name="root" type="Root.type"/>
-            <member name="core" type="Entry.type"/>
-            <member name="clip" type="String.type"/>
-            <member name="lemma" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="morphs" type="Morphs"/>
+            <member name="tag" type="Tags"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="sense" type="String"/>
+            <member name="gloss" type="String"/>
+            <member name="root" type="Root"/>
+            <member name="core" type="Entry"/>
+            <member name="clip" type="String"/>
+            <member name="lemma" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
         </structure>
     </type>
 
 
 
-    <type name="Element.Trees.type">
+    <type name="Element.Trees">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Partition" type="Partition.Trees.type"/>
+                    <element name="Partition" type="Partition.Trees"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Partition.Trees.type">
+    <type name="Partition.Trees">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Component" type="Component.Trees.type"/>
+                    <element name="Component" type="Component.Trees"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Component.Trees.type">
+    <type name="Component.Trees">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Lexeme" type="Lexeme.Trees.type"/>
+                    <element name="Lexeme" type="Lexeme.Trees"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Lexeme.Trees.type">
+    <type name="Lexeme.Trees">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="root" type="Root.type"/>
-            <member name="core" type="Entry.type"/>
-            <member name="clip" type="String.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="root" type="Root"/>
+            <member name="core" type="Entry"/>
+            <member name="clip" type="String"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Token" type="Token.Trees.type"/>
+                    <element name="Token" type="Token.Trees"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Token.Trees.type">
+    <type name="Token.Trees">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="morphs" type="Morphs.type"/>
-            <member name="tag" type="Tags.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="sense" type="String.type"/>
-            <member name="gloss" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="morphs" type="Morphs"/>
+            <member name="tag" type="Tags"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="sense" type="String"/>
+            <member name="gloss" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
         </structure>
     </type>
 
@@ -183,147 +183,147 @@
 
 
 
-    <type name="Element.Lists.type">
+    <type name="Element.Lists">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Partition" type="Partition.Lists.type"/>
+                    <element name="Partition" type="Partition.Lists"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Partition.Lists.type">
+    <type name="Partition.Lists">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Group" type="Group.Lists.type"/>
+                    <element name="Group" type="Group.Lists"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Group.Lists.type">
+    <type name="Group.Lists">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="data">
                 <sequence>
-                    <element name="Lexeme" type="Lexeme.Lists.type"/>
+                    <element name="Lexeme" type="Lexeme.Lists"/>
                 </sequence>
             </member>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Tuple" type="Tuple.Lists.type"/>
+                    <element name="Tuple" type="Tuple.Lists"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Lexeme.Lists.type">
+    <type name="Lexeme.Lists">
         <structure>
-            <member name="root" type="Root.type"/>
-            <member name="core" type="Entry.type"/>
-            <member name="clip" type="String.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="root" type="Root"/>
+            <member name="core" type="Entry"/>
+            <member name="clip" type="String"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
-    <type name="Tuple.Lists.type">
+    <type name="Tuple.Lists">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="restrict" type="String.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
-            <member name="tips" type="String.type"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="restrict" type="String"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
+            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Token" type="Token.Lists.type"/>
+                    <element name="Token" type="Token.Lists"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Token.Lists.type">
+    <type name="Token.Lists">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID.type"/>
-            <member name="morphs" type="Morphs.type"/>
-            <member name="tag" type="Tags.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
-            <member name="sense" type="String.type"/>
-            <member name="gloss" type="String.type"/>
-            <member name="apply" type="String.type"/>
-            <member name="score" type="Score.type"/>
-            <member name="inherit" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="morphs" type="Morphs"/>
+            <member name="tag" type="Tags"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+            <member name="sense" type="String"/>
+            <member name="gloss" type="String"/>
+            <member name="apply" type="String"/>
+            <member name="score" type="Score"/>
+            <member name="inherit" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
         </structure>
     </type>
 
 
 
-    <type name="Score.type">
+    <type name="Score">
         <alt>
-            <container type="String.type">
-                <attribute name="src" type="String.type"/>
+            <container type="String">
+                <attribute name="src" type="String"/>
             </container>
         </alt>
     </type>
 
-    <import schema="elixir.schema.xml" type="Morphs.type"/>
+    <import schema="elixir.schema.xml" type="Morphs"/>
 
-    <import schema="elixir.schema.xml" type="Entity.type"/>
+    <import schema="elixir.schema.xml" type="Entity"/>
 
-    <import schema="elixir.schema.xml" type="Limits.type"/>
+    <import schema="elixir.schema.xml" type="Limits"/>
 
-    <import schema="elixir.schema.xml" type="Reflex.type"/>
+    <import schema="elixir.schema.xml" type="Reflex"/>
 
-    <import schema="elixir.schema.xml" type="String.type"/>
+    <import schema="elixir.schema.xml" type="String"/>
 
-    <import schema="elixir.schema.xml" type="Root.type"/>
+    <import schema="elixir.schema.xml" type="Root"/>
 
-    <import schema="elixir.schema.xml" type="Tags.type"/>
+    <import schema="elixir.schema.xml" type="Tags"/>
 
-    <type name="Entry.type">
+    <type name="Entry">
         <structure role="#NODE">
-            <member name="morphs" type="Morphs.type"/>
-            <member name="entity" type="Entity.type"/>
-            <member name="limits" type="Limits.type"/>
-            <member name="reflex" type="Reflex.type"/>
+            <member name="morphs" type="Morphs"/>
+            <member name="entity" type="Entity"/>
+            <member name="limits" type="Limits"/>
+            <member name="reflex" type="Reflex"/>
         </structure>
     </type>
 
-    <type name="ID.type">
+    <type name="ID">
         <cdata format="ID"/>
     </type>
 

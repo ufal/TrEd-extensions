@@ -59,7 +59,7 @@ sub reduce_para {
 
     my ($para, $unit) = @_;
 
-    $unit->set_type_by_name($schema, 'Unit.type');
+    $unit->set_type_by_name($schema, 'Unit');
 
     $unit->{'#name'} = 'Unit';
 

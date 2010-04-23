@@ -3,9 +3,9 @@
     <revision>0.0.1</revision>
     <description>PADT Words Level</description>
 
-    <root name="WordsLevel" type="Document.type"/>
+    <root name="WordsLevel" type="Document"/>
 
-    <type name="Document.type">
+    <type name="Document">
         <structure>
             <member name="meta">
                 <structure>
@@ -22,51 +22,51 @@
             </member>
             <member name="data" required="1">
                 <sequence role="#TREES">
-                    <element name="Para" type="Para.type"/>
+                    <element name="Para" type="Para"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Para.type">
+    <type name="Para">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Unit" type="Unit.type"/>
+                    <element name="Unit" type="Unit"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Unit.type">
+    <type name="Unit">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Word" type="Word.type"/>
+                    <element name="Word" type="Word"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Word.type">
+    <type name="Word">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="form" type="String.type"/>
-            <member name="note" type="String.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
-    <type name="String.type">
+    <type name="String">
         <cdata format="any"/>
     </type>
 
-    <type name="ID.type">
+    <type name="ID">
         <cdata format="ID"/>
     </type>
 

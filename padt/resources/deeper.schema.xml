@@ -3,9 +3,9 @@
     <revision>1.0.0</revision>
     <description>PADT Deep Syntax</description>
 
-    <root name="DeepLevels" type="Trees.type"/>
+    <root name="DeepLevels" type="Trees"/>
 
-    <type name="Trees.type">
+    <type name="Trees">
         <structure>
             <member name="meta">
                 <structure>
@@ -19,55 +19,55 @@
             </member>
             <member name="data" required="1">
                 <sequence role="#TREES">
-                    <element name="Tree" type="Tree.type"/>
+                    <element name="Tree" type="Tree"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Tree.type">
+    <type name="Tree">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="ord" required="1" role="#ORDER" type="Order"/>
             <member name="func" required="1">
                 <constant>SENT</constant>
             </member>
-            <member name="score" type="Score.type"/>
-            <member name="note" type="String.type"/>
-            <member name="form" type="String.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="score" type="Score"/>
+            <member name="note" type="String"/>
+            <member name="form" type="String"/>
+            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Node.type">
+    <type name="Node">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>
-            <member name="ord" required="1" role="#ORDER" type="Order.type"/>
-            <member name="func" type="Functor.type" required="1"/>
-            <member name="score" type="Score.type"/>
-            <member name="note" type="String.type"/>
-            <member name="context" type="Context.type"/>
-            <member name="parallel" type="Parallel.type"/>
-            <member name="paren" type="Paren.type"/>
-            <member name="coref" type="String.type"/>
-            <member name="clause" type="Clause.type"/>
-            <member name="morpho" type="Morpho.type"/>
-            <member name="syntax" type="Syntax.type"/>
-            <member name="hide" type="String.type" role="#HIDE"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="func" type="Functor" required="1"/>
+            <member name="score" type="Score"/>
+            <member name="note" type="String"/>
+            <member name="context" type="Context"/>
+            <member name="parallel" type="Parallel"/>
+            <member name="paren" type="Paren"/>
+            <member name="coref" type="String"/>
+            <member name="clause" type="Clause"/>
+            <member name="morpho" type="Morpho"/>
+            <member name="syntax" type="Syntax"/>
+            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
-                    <element name="Node" type="Node.type"/>
+                    <element name="Node" type="Node"/>
                 </sequence>
             </member>
         </structure>
     </type>
 
-    <type name="Context.type">
+    <type name="Context">
         <choice>
             <value>B</value>
             <value>C</value>
@@ -75,42 +75,42 @@
         </choice>
     </type>
 
-    <type name="Syntax.type">
+    <type name="Syntax">
         <structure>
-            <!--<member name="id" as_attribute="1" required="1" role="#ID" type="ID.type"/>-->
-            <member name="ord" type="Order.type"/>
-            <member name="afun" type="Afun.type"/>
-            <member name="note" type="String.type"/>
-            <member name="parallel" type="Parallel.type"/>
-            <member name="paren" type="Paren.type"/>
-            <member name="arabfa" type="String.type"/>
-            <member name="coref" type="Coref.type"/>
-            <member name="clause" type="Clause.type"/>
-            <member name="parent" type="String.type"/>
+            <!--<member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>-->
+            <member name="ord" type="Order"/>
+            <member name="afun" type="Afun"/>
+            <member name="note" type="String"/>
+            <member name="parallel" type="Parallel"/>
+            <member name="paren" type="Paren"/>
+            <member name="arabfa" type="String"/>
+            <member name="coref" type="Coref"/>
+            <member name="clause" type="Clause"/>
+            <member name="parent" type="String"/>
         </structure>
     </type>
 
-    <import schema="syntax.schema.xml" type="Morpho.type"/>
+    <import schema="syntax.schema.xml" type="Morpho"/>
 
-    <import schema="syntax.schema.xml" type="Score.type"/>
+    <import schema="syntax.schema.xml" type="Score"/>
 
-    <import schema="syntax.schema.xml" type="String.type"/>
+    <import schema="syntax.schema.xml" type="String"/>
 
-    <import schema="syntax.schema.xml" type="ID.type"/>
+    <import schema="syntax.schema.xml" type="ID"/>
 
-    <import schema="syntax.schema.xml" type="Order.type"/>
+    <import schema="syntax.schema.xml" type="Order"/>
 
-    <import schema="syntax.schema.xml" type="Afun.type"/>
+    <import schema="syntax.schema.xml" type="Afun"/>
 
-    <import schema="syntax.schema.xml" type="Parallel.type"/>
+    <import schema="syntax.schema.xml" type="Parallel"/>
 
-    <import schema="syntax.schema.xml" type="Paren.type"/>
+    <import schema="syntax.schema.xml" type="Paren"/>
 
-    <import schema="syntax.schema.xml" type="Coref.type"/>
+    <import schema="syntax.schema.xml" type="Coref"/>
 
-    <import schema="syntax.schema.xml" type="Clause.type"/>
+    <import schema="syntax.schema.xml" type="Clause"/>
 
-    <type name="Functor.type">
+    <type name="Functor">
         <choice>
             <value>ACT</value>
             <value>PAT</value>

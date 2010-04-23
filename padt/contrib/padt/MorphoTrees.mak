@@ -6,13 +6,13 @@
 
 package MorphoTrees;
 
-use 5.010; # because of ~~
+use 5.010;
 
 use strict;
 
 use ElixirFM;
 
-use Exec::ElixirFM ();
+use ElixirFM::Exec ();
 
 use Encode::Arabic ':modes';
 
@@ -305,7 +305,7 @@ sub update_zoom_tree {
 
         my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
 
-        my $node = Treex::PML::Factory->createTypedNode('Element.Lists.type',PML::Schema());
+        my $node = Treex::PML::Factory->createTypedNode('Element.Lists',PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -321,7 +321,7 @@ sub update_zoom_tree {
 
     if ($review->{$grp}{'mode'}) {
 
-        my $node = Treex::PML::Factory->createTypedNode('Element.Trees.type',PML::Schema());
+        my $node = Treex::PML::Factory->createTypedNode('Element.Trees',PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -910,7 +910,7 @@ sub edit_note {
 
 sub elixir_lexicon {
 
-    import Exec::ElixirFM;
+    import ElixirFM::Exec;
 
     my $file = CallerDir('../../data/elixir-lexicon.pls');
 
@@ -921,11 +921,11 @@ sub elixir_lexicon {
         $data = Storable::retrieve $file or warn $! and return;
     }
 
-    my ($version) = reverse split /\n/, Exec::ElixirFM::elixir 'version';
+    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir 'version';
 
     unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
 
-        my $text = Exec::ElixirFM::elixir 'lexicon';
+        my $text = ElixirFM::Exec::elixir 'lexicon';
 
         my $pml = Treex::PML::Instance->load({ 'string' => $text });
 
@@ -991,7 +991,7 @@ sub lexicon {
 
 sub resolve {
 
-    import Exec::ElixirFM unless exists $elixir->{'resolve'};
+    import ElixirFM::Exec unless exists $elixir->{'resolve'};
 
     my @word = map { split " " } @_;
 
@@ -999,7 +999,7 @@ sub resolve {
 
     my $news = join " ", @news;
 
-    my $data = Exec::ElixirFM::elixir 'resolve', ['--lists'], $news;
+    my $data = ElixirFM::Exec::elixir 'resolve', ['--lists'], $news;
 
     my @data = ElixirFM::concat ElixirFM::unpretty $data;
 
