@@ -9,9 +9,9 @@ fi
 
 WWW=~pajas/WWW/tred
 REPO=$WWW/extensions
-DEVEL=$(readlink -fen ../tred/devel)
-PACKER=$DEVEL/pack_extension.sh
 EXTDIR=`dirname $(readlink -fen $0)`
+DEVEL=$(readlink -fen $EXTDIR/../tred/devel)
+PACKER=$DEVEL/pack_extension.sh
 
 
 for d in "${dirs[@]%/}"; do
