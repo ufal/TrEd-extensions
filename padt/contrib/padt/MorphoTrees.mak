@@ -360,7 +360,7 @@ sub score_nodes {
 
             foreach my $node (map { $_->children() } map { $_->children() } $comp[$i]) {
 
-                $node->{'score'} = Treex::PML::Factory->createAlt() map { Treex::PML::Factory->createContainer() $_->[1], {'src' => $_->[0]} } compute_score($node, $done[$i]);
+                $node->{'score'} = Treex::PML::Factory->createAlt(map { Treex::PML::Factory->createContainer($_->[1], {'src' => $_->[0]}) } compute_score($node, $done[$i]));
             }
         }
     }
