@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 916 2009-12-19 17:20:50Z smrz $
+# $Id: ElixirFM.pm 944 2010-03-24 22:01:01Z smrz $
 
 package ElixirFM;
 
@@ -10,11 +10,13 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 916 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 944 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
 use XML::Parser;
+
+use Unicode::Normalize;
 
 # ##################################################################################################
 #
@@ -107,7 +109,7 @@ sub nice {
 
     my $morphs = morphs($_[0]);
 
-    $morphs->[0] = merge("", $morphs->[0]);
+    $morphs->[0] = $morphs->[0] =~ /^(?:_____|Identity)$/ ? '_____' : merge("", $morphs->[0]);
 
     $morphs->[1] = [ map { $_ =~ /"/ ? showPrefix($_) : $_ } @{$morphs->[1]} ];
 
@@ -120,44 +122,44 @@ our $tagset = [
 
     [ "",
       { "V-" => "verb",
-    	"VI" => "imperfective",
-    	"VP" => "perfective",
-    	"VC" => "imperative",
-    	"N-" => "noun",
-    	"A-" => "adjective",
-    	"S-" => "pronoun",
-    	"SP" => "personal",
-    	"SD" => "demonstrative",
-    	"SR" => "relative",
-    	"Q-" => "numeral",
-    	"QI" => "",
-    	"QV" => "",
-    	"QX" => "",
-    	"QY" => "",
-    	"QL" => "",
-    	"QC" => "",
-    	"QD" => "",
-    	"QM" => "",
-    	"D-" => "adverb",
-    	"P-" => "preposition",
-    	"PI" => "inflected",
-    	"C-" => "conjunction",
-    	"F-" => "particle",
-    	"FN" => "negative",
-    	"FI" => "interrogative",
-    	"I-" => "interjection",
-    	"X-" => "foreign word",
-    	"Y-" => "acronym/unit",
-    	"Z-" => "zero inflections",
-    	"G-" => "graphical symbol" } ],
+        "VI" => "imperfective",
+        "VP" => "perfective",
+        "VC" => "imperative",
+        "N-" => "noun",
+        "A-" => "adjective",
+        "S-" => "pronoun",
+        "SP" => "personal",
+        "SD" => "demonstrative",
+        "SR" => "relative",
+        "Q-" => "numeral",
+        "QI" => "",
+        "QV" => "",
+        "QX" => "",
+        "QY" => "",
+        "QL" => "",
+        "QC" => "",
+        "QD" => "",
+        "QM" => "",
+        "D-" => "adverb",
+        "P-" => "preposition",
+        "PI" => "inflected",
+        "C-" => "conjunction",
+        "F-" => "particle",
+        "FN" => "negative",
+        "FI" => "interrogative",
+        "I-" => "interjection",
+        "X-" => "foreign word",
+        "Y-" => "acronym/unit",
+        "Z-" => "zero inflections",
+        "G-" => "graphical symbol" } ],
 
     [ "", {} ],
 
     [ "mood",
       { "I" => "indicative",
-    	"S" => "subjunctive",
-    	"J" => "jussive",
-    	"E" => "energetic" } ],
+        "S" => "subjunctive",
+        "J" => "jussive",
+        "E" => "energetic" } ],
 
     [ "voice",
       { "A" => "active",
@@ -167,8 +169,8 @@ our $tagset = [
 
     [ "person",
       { "1" => "first",
-    	"2" => "second",
-    	"3" => "third" } ],
+        "2" => "second",
+        "3" => "third" } ],
 
     [ "gender",
       { "M" => "masculine",
@@ -176,21 +178,21 @@ our $tagset = [
 
     [ "number",
       { "S" => "singular",
-    	"D" => "dual",
-    	"P" => "plural" } ],
+        "D" => "dual",
+        "P" => "plural" } ],
 
     [ "case",
       { "1" => "nominative",
-    	"2" => "genitive",
-    	"4" => "accusative" } ],
+        "2" => "genitive",
+        "4" => "accusative" } ],
 
     [ "state",
       { "I" => "indefinite",
-    	"D" => "definite",
-    	"R" => "reduced/construct",
-    	"A" => "absolute/negative",
-    	"C" => "complex/overdetermined",
-    	"L" => "lifted/underdetermined" } ]
+        "D" => "definite",
+        "R" => "reduced/construct",
+        "A" => "absolute/negative",
+        "C" => "complex/overdetermined",
+        "L" => "lifted/underdetermined" } ]
 
     ];
 
@@ -237,126 +239,121 @@ sub describe {
 
     return join ", ", grep { $_ ne '' }
 
-                      (join " ", map { grep { $_ ne '' } $_->[1], $_->[0] } @type),
+                      ( join " ", map { grep { $_ ne '' } $_->[1], $_->[0] } @type ),
 
-                      (map { join " ", grep { $_ ne '' } $_->[1] ne '' ? ($_->[1], $_->[0]) : () } @cats);
+                      ( map { join " ", grep { $_ ne '' } $_->[1] ne '' ? ($_->[1], $_->[0]) : () } @cats );
 }
 
 sub retrieve {
 
-    my @word = split ' ', $_[0];
+    my @word = grep { $_ ne '' } map { split /([()])/, $_ } split ' ', $_[0];
 
-    my @tag = map { [] } 1 .. $dims;
+    my $tags = [ map { [] } 1 .. $dims ];
 
-    my @tags = ();
+    my @tags = ($tags);
 
-    foreach my $one (@word) {
+    my @slot = ();
 
-    	$one =~ /^verb/i                and push @{$tag[0]}, 'V' and next;
-    	$one =~ /^noun/i                and push @{$tag[0]}, 'N' and next;
-    	$one =~ /^adj/i                 and push @{$tag[0]}, 'A' and next;
-    	$one =~ /^pron/i                and push @{$tag[0]}, 'S' and next;
-    	$one =~ /^num/i                 and push @{$tag[0]}, 'Q' and next;
-    	$one =~ /^adv/i                 and push @{$tag[0]}, 'D' and next;
-    	$one =~ /^prep/i                and push @{$tag[0]}, 'P' and next;
-    	$one =~ /^conj/i                and push @{$tag[0]}, 'C' and next;
-    	$one =~ /^part/i                and push @{$tag[0]}, 'F' and next;
-    	$one =~ /^int(?:er)?j/i         and push @{$tag[0]}, 'I' and next;
+    foreach my $word (@word) {
 
-        $one =~ /^(?:e)?xtra/i          and push @{$tag[0]}, 'X' and next;
-        $one =~ /^foreign/i             and push @{$tag[0]}, 'X' and next;
-        $one =~ /^[yu]nit/i             and push @{$tag[0]}, 'Y' and next;
-        $one =~ /^acronym/i             and push @{$tag[0]}, 'Y' and next;
-        $one =~ /^zero/i                and push @{$tag[0]}, 'Z' and next;
-        $one =~ /^null/i                and push @{$tag[0]}, 'Z' and next;
-        $one =~ /^gr(?:a)?ph/i          and push @{$tag[0]}, 'G' and next;
-        $one =~ /^symbol/i              and push @{$tag[0]}, 'G' and next;
+        $word =~ /^verb/i               and push @{$tags->[0]}, 'V' and next;
+        $word =~ /^noun/i               and push @{$tags->[0]}, 'N' and next;
+        $word =~ /^adj/i                and push @{$tags->[0]}, 'A' and next;
+        $word =~ /^pron/i               and push @{$tags->[0]}, 'S' and next;
+        $word =~ /^num/i                and push @{$tags->[0]}, 'Q' and next;
+        $word =~ /^adv/i                and push @{$tags->[0]}, 'D' and next;
+        $word =~ /^prep/i               and push @{$tags->[0]}, 'P' and next;
+        $word =~ /^conj/i               and push @{$tags->[0]}, 'C' and next;
+        $word =~ /^part/i               and push @{$tags->[0]}, 'F' and next;
+        $word =~ /^int(?:er)?j/i        and push @{$tags->[0]}, 'I' and next;
 
-    	$one =~ /^perf/i                and push @{$tag[1]}, 'P' and next;
-    	$one =~ /^imp(?:er)?f/i         and push @{$tag[1]}, 'I' and next;
-    	$one =~ /^imp(?:er)?a/i         and push @{$tag[1]}, 'C' and next;
-    	$one =~ /^imp(?:er)?/i          and push @{$tag[1]}, 'I',
-    	                                                     'C' and next;
+        $word =~ /^(?:e)?xtra/i         and push @{$tags->[0]}, 'X' and next;
+        $word =~ /^foreign/i            and push @{$tags->[0]}, 'X' and next;
+        $word =~ /^[yu]nit/i            and push @{$tags->[0]}, 'Y' and next;
+        $word =~ /^acronym/i            and push @{$tags->[0]}, 'Y' and next;
+        $word =~ /^zero/i               and push @{$tags->[0]}, 'Z' and next;
+        $word =~ /^null/i               and push @{$tags->[0]}, 'Z' and next;
+        $word =~ /^gr(?:a)?ph/i         and push @{$tags->[0]}, 'G' and next;
+        $word =~ /^symbol/i             and push @{$tags->[0]}, 'G' and next;
 
-    	$one =~ /^pers(?:ona)?l/i       and push @{$tag[1]}, 'P' and next;
-    	$one =~ /^dem/i                 and push @{$tag[1]}, 'D' and next;
-    	$one =~ /^rel/i                 and push @{$tag[1]}, 'R' and next;
+        $word =~ /^perf/i               and push @{$tags->[1]}, 'P' and next;
+        $word =~ /^imp(?:er)?f/i        and push @{$tags->[1]}, 'I' and next;
+        $word =~ /^imp(?:er)?a/i        and push @{$tags->[1]}, 'C' and next;
+        $word =~ /^imp(?:er)?/i         and push @{$tags->[1]}, 'I',
+                                                                'C' and next;
 
-    	$one =~ /^inf/i                 and push @{$tag[1]}, 'I' and next;
-    	$one =~ /^neg/i                 and push @{$tag[1]}, 'N' and next;
-    	$one =~ /^int(?:er)?r/i         and push @{$tag[1]}, 'I' and next;
+        $word =~ /^pers(?:ona)?l/i      and push @{$tags->[1]}, 'P' and next;
+        $word =~ /^dem/i                and push @{$tags->[1]}, 'D' and next;
+        $word =~ /^rel/i                and push @{$tags->[1]}, 'R' and next;
 
-    	$one =~ /^ind(?![ef])/i         and push @{$tag[2]}, 'I' and next;
-    	$one =~ /^sub/i                 and push @{$tag[2]}, 'S' and next;
-    	$one =~ /^jus/i                 and push @{$tag[2]}, 'J' and next;
-    	$one =~ /^ene/i                 and push @{$tag[2]}, 'E' and next;
+        $word =~ /^inf/i                and push @{$tags->[1]}, 'I' and next;
+        $word =~ /^neg/i                and push @{$tags->[1]}, 'N' and next;
+        $word =~ /^int(?:er)?r/i        and push @{$tags->[1]}, 'I' and next;
 
-    	$one =~ /^act/i                 and push @{$tag[3]}, 'A' and next;
-    	$one =~ /^pas/i                 and push @{$tag[3]}, 'P' and next;
+        $word =~ /^ind(?![ef])/i        and push @{$tags->[2]}, 'I' and next;
+        $word =~ /^sub/i                and push @{$tags->[2]}, 'S' and next;
+        $word =~ /^jus/i                and push @{$tags->[2]}, 'J' and next;
+        $word =~ /^ene/i                and push @{$tags->[2]}, 'E' and next;
 
-    	$one =~ /^(?:fir|[1f])st/i      and push @{$tag[5]}, '1' and next;
-    	$one =~ /^(?:seco|[2s])nd/i     and push @{$tag[5]}, '2' and next;
-    	$one =~ /^(?:thi|[3t])rd/i      and push @{$tag[5]}, '3' and next;
+        $word =~ /^act/i                and push @{$tags->[3]}, 'A' and next;
+        $word =~ /^pas/i                and push @{$tags->[3]}, 'P' and next;
 
-    	$one =~ /^mas/i                 and push @{$tag[6]}, 'M' and next;
-    	$one =~ /^fem/i                 and push @{$tag[6]}, 'F' and next;
+        $word =~ /^(?:fir|[1f])st/i     and push @{$tags->[5]}, '1' and next;
+        $word =~ /^(?:seco|[2s])nd/i    and push @{$tags->[5]}, '2' and next;
+        $word =~ /^(?:thi|[3t])rd/i     and push @{$tags->[5]}, '3' and next;
 
-    	$one =~ /^s(?:in)?g/i           and push @{$tag[7]}, 'S' and next;
-    	$one =~ /^du/i                  and push @{$tag[7]}, 'D' and next;
-    	$one =~ /^pl/i                  and push @{$tag[7]}, 'P' and next;
+        $word =~ /^mas/i                and push @{$tags->[6]}, 'M' and next;
+        $word =~ /^fem/i                and push @{$tags->[6]}, 'F' and next;
 
-    	$one =~ /^nom/i                 and push @{$tag[8]}, '1' and next;
-    	$one =~ /^gen(?![dr])/i         and push @{$tag[8]}, '2' and next;
-    	$one =~ /^acc/i                 and push @{$tag[8]}, '4' and next;
-    	$one =~ /^obl/i                 and push @{$tag[8]}, '2',
-                                                             '4' and next;
+        $word =~ /^s(?:in)?g/i          and push @{$tags->[7]}, 'S' and next;
+        $word =~ /^du/i                 and push @{$tags->[7]}, 'D' and next;
+        $word =~ /^pl/i                 and push @{$tags->[7]}, 'P' and next;
 
-    	$one =~ /^ind[ef]/i             and push @{$tag[9]}, 'I' and next;
-    	$one =~ /^red/i                 and push @{$tag[9]}, 'R' and next;
-    	$one =~ /^cons/i                and push @{$tag[9]}, 'R' and next;
-    	$one =~ /^def/i                 and push @{$tag[9]}, 'D' and next;
-    	$one =~ /^com/i                 and push @{$tag[9]}, 'C' and next;
-    	$one =~ /^over/i                and push @{$tag[9]}, 'C' and next;
-    	$one =~ /^abs/i                 and push @{$tag[9]}, 'A' and next;
-    	$one =~ /^lift/i                and push @{$tag[9]}, 'L' and next;
-    	$one =~ /^under/i               and push @{$tag[9]}, 'L' and next;
+        $word =~ /^nom/i                and push @{$tags->[8]}, '1' and next;
+        $word =~ /^gen(?![dr])/i        and push @{$tags->[8]}, '2' and next;
+        $word =~ /^acc/i                and push @{$tags->[8]}, '4' and next;
+        $word =~ /^obl/i                and push @{$tags->[8]}, '2',
+                                                                '4' and next;
 
-    	my @slot = ();
+        $word =~ /^ind[ef]/i            and push @{$tags->[9]}, 'I' and next;
+        $word =~ /^red/i                and push @{$tags->[9]}, 'R' and next;
+        $word =~ /^cons/i               and push @{$tags->[9]}, 'R' and next;
+        $word =~ /^def/i                and push @{$tags->[9]}, 'D' and next;
+        $word =~ /^com/i                and push @{$tags->[9]}, 'C' and next;
+        $word =~ /^over/i               and push @{$tags->[9]}, 'C' and next;
+        $word =~ /^abs/i                and push @{$tags->[9]}, 'A' and next;
+        $word =~ /^lift/i               and push @{$tags->[9]}, 'L' and next;
+        $word =~ /^under/i              and push @{$tags->[9]}, 'L' and next;
 
-    	@slot = $one =~ /\G([-A-Z1-4]|\[[A-Z1-4]+\])/g;
+        if (@slot = $word =~ /\G([-A-Z1-4]|\[[A-Z1-4]+\])/g) {
 
-    	if (@slot > 0) {
-
-    	    if (@slot > $dims) {
+            if (@slot > $dims) {
 
                 splice @slot, $dims, (@slot - $dims);
-    	    }
-    	    else {
+            }
+            else {
 
                 push @slot, ('-') x ($dims - @slot);
-    	    }
+            }
 
-    	    push @tags, join "", @slot;
-    	}
-    }
-
-    if (not @{$tag[1]}) {
-
-        if (@{$tag[2]}) {
-
-            push @{$tag[1]}, 'I';
+            push @tags, join "", @slot;
         }
-        elsif (@{$tag[3]} or @{$tag[5]}) {
 
-            push @{$tag[1]}, 'P', 'I';
+        if ($word =~ /[()]/ or @slot) {
+
+            $tags = [ map { [] } 1 .. $dims ];
+
+            push @tags, $tags;
         }
     }
 
-    my $tag = join "", map { @{$_} == 0 ? '-' : @{$_} == 1 ? $_->[0] : '[' . (join '', @{$_}) . ']' } @tag;
+    return map { ref $_ ? ( grep { @{$_} } @{$_} ) ?
 
-    unshift @tags, $tag unless $tag eq '-' x $dims;
+                          join "", map { @{$_} == 0 ? '-' : @{$_} == 1 ? $_->[0] :
 
-    return @tags;
+                                         '[' . (join '', @{$_}) . ']' } @{$_}
+
+                        : () : $_ } @tags;
 }
 
 sub restrict {
@@ -412,6 +409,121 @@ sub concise {
             return [ $fst[0] . '-' . $fst[2], @{$_[0]}[1 .. @{$_[0]} - 1] ], @_[2 .. @_ - 1];
 
         } $data, @data;
+}
+
+sub normalize {
+
+    my ($text, $code) = @_;
+
+    $code = 'UTF' unless defined $code;
+
+    my @data = split " ", $text;
+
+    if ($code eq 'UTF') {
+
+        $text = Unicode::Normalize::normalize('KC', $text);
+
+        $text =~ tr[\x{06A9}\x{06AA}][\x{0643}];
+        $text =~ tr[\x{06CC}][\x{064A}];
+        $text =~ tr[\x{0640}][]d;
+
+        $text =~ s/([\x{064B}-\x{0650}\x{0652}\x{0670}])\x{0651}/\x{0651}$1/g;
+        $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
+
+        @data = $text =~ /( (?: \p{Arabic} | [\x{064B}-\x{0652}\x{0670}\x{0657}\x{0656}\x{0640}] )+ )/gx;
+    }
+    elsif ($code eq 'Tim') {
+
+        $text =~ tr[>&<][OWI];
+        $text =~ tr[_][]d;
+
+        $text =~ s/([FNKauio\`])\~/\~$1/g;
+        $text =~ s/([AY])F/F$1/g;
+
+        @data = $text =~ /( [OWI\'\|\}AbptvjHxd\*rzs\$SDTZEgfqklmnhwYyPJRVG\{A\~FNKaui\`o]+ )/gx;
+    }
+    elsif ($code eq 'TeX') {
+
+        $text = Unicode::Normalize::normalize('D', $text);
+
+        $text =~ s/a[\x{0304}\x{0301}]/A/g;
+        $text =~ s/i[\x{0304}\x{0301}]/I/g;
+        $text =~ s/u[\x{0304}\x{0301}]/U/g;
+
+        $text =~ s/aa/A/g;
+        $text =~ s/ii/I/g;
+        $text =~ s/uu/U/g;
+
+        $text =~ s/j/\^g/g;
+        $text =~ s/x/\_h/g;
+
+        $text =~ s/(.)[\x{030C}\x{0303}]/\^$1/g;
+        $text =~ s/(.)[\x{0331}\x{032E}]/\_$1/g;
+        $text =~ s/(.)[\x{0323}\x{0307}]/\.$1/g;
+        $text =~ s/(.)[\x{0301}]/\,$1/g;
+
+        $text =~ s/\x{02BE}/\'/g;
+        $text =~ s/\x{02BF}/\`/g;
+
+        @data = $text =~ /( (?: \.[hsdtzgr] | \_[thdaIU] | \^[gscznl] | \,[c] | ['btdrzs`fqklmnhwyTaiuAIUYNW|"-] )+ )/gx;
+    }
+
+    return join " ", @data;
+}
+
+sub identify {
+
+    my ($text, $code) = @_;
+
+    $code = 'UTF' unless defined $code;
+
+    my @data = ();
+
+    while ($text ne '') {
+
+        my $data = '';
+
+        $text =~ s/^ +//;
+
+        if (($data) = $text =~ /^(\( *-? *[1-9][0-9]* *, *(?:-? *[1-9][0-9]*|Nothing|Just *\[ *-? *[1-9][0-9]* *(?:\, *-? *[1-9][0-9]* *)*\]) *\))/) {
+
+            $text = substr $text, length $data;
+        }
+        elsif (($data) = $text =~ /^(\( *-? *[0-9]+ *, *(?:-? *[0-9]+|Nothing|Just *\[ *-? *[0-9]+ *(?:\, *-? *[0-9]+ *)*\]) *\))/) {
+
+            $text = substr $text, length $data;
+
+            $data = '';
+        }
+        elsif (($data) = $text =~ /^(\"\"|(?: *\"(?:\\.|[^\"\\]+)+\")+)/) {
+
+            $text = substr $text, length $data;
+        }
+        elsif (($data) = $text =~ /^(\p{InArabic}{2,}|\p{InArabic}(?: +\p{InArabic}(?!\p{InArabic}))*)/) {
+
+            $text = substr $text, length $data;
+
+            $data = normalize $data, 'UTF';
+        }
+        elsif (($data) = $text =~ /^((?:[._^,]?[^ ._^,]){2,}|(?:[._^,]?[^ ._^,])(?: +(?:[._^,]?[^ ._^,])(?![^ ]))*)/ and $code ne 'UTF') {
+
+            $text = substr $text, length $data;
+
+            $data = normalize $data, $code;
+        }
+        elsif (($data) = $text =~ /^(.[^\(\)\"\p{InArabic}]*)/) {
+
+            $text = substr $text, length $data;
+
+            $data =~ tr[\(\)\/\-][ ];
+
+            $data =~ s/ +$//;
+        }
+
+        push @data, $data unless $data eq '';
+    }
+
+    return @data;
 }
 
 sub parse {
@@ -530,7 +642,7 @@ sub parse {
 
 sub clear {
 
-    my $data = [ @{$_[0]} ];
+    my $data = [@{$_[0]}];
 
     my $ents = $data->[1];
 
@@ -592,9 +704,7 @@ sub clear {
 
 sub lists_trees {
 
-    my ($data, $mode) = @_;
-
-    my ($node, @data) = split /\n[\t ]*[:]{1}/, $data;
+    my ($node, @data) = split /\n[\t ]*[:]{1}/, $_[0];
 
     return  $node =~ /[()]/
 
@@ -602,11 +712,7 @@ sub lists_trees {
                 [
                     map {
 
-                        my $data = [ split /[\n ]*\t/, $_ ];
-
-                        $data->[1] = parse_clear($data->[1], $mode);
-
-                        $data
+                        [ split /[\n ]*\t/, $_ ]
                     }
 
                     grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $node
@@ -650,12 +756,8 @@ sub lists_trees {
 
                     my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
 
-                    my $data = [ split /[\n ]*\t/, $node ];
-
-                    $data->[1] = parse_clear($data->[1], $mode);
-
                     [
-                        $data,
+                        [ split /[\n ]*\t/, $node ],
 
                         map {
 
@@ -719,7 +821,7 @@ sub unpretty {
 
                                 map {
 
-                                    lists_trees($_, $mode)
+                                    lists_trees($_)
 
                                 } @data
                             ]
@@ -784,16 +886,11 @@ sub unpretty {
 
             foldl {
 
-                my $data = shift @{$_[1]};
+                my ($data, @data) = @{$_[1]};
 
-                if ($data eq ' ' x 10) {
+                push @{$_[0]}, [$data] unless $data eq ' ' x 10;
 
-                    push @{$_[0][-1]}, $_[1];
-                }
-                else {
-
-                    push @{$_[0]}, [$data, $_[1]];
-                }
+                push @{$_[0][-1]}, [@data] if @data;
 
                 return $_[0];
 
@@ -966,9 +1063,10 @@ sub interlocks {
     }
     elsif ($pattern =~ /^(?:_____|Identity)$/) {
 
-        @root = (@root, ('_____')[@root .. 0]);
+        $pattern = join "", @root;
 
-        $pattern = $root[0];
+        $pattern = (substr $pattern, 0, -1) . 'm' if $pattern =~ /^(?:`an|min)$/
+                                                  and @{$s} and $s->[0] eq '"mA"';
     }
     elsif ($pattern =~ /[FCL]/) {
 
@@ -1145,7 +1243,9 @@ sub mergeSuffix {
                    "Iy"  => "AnIy",
                    "At"  => "A'At",
 
+                   "t"   => "At",
                    "_dA" => "A_dA",
+                   "li"  => "Ali",
                    "ka"  => "Aka"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
@@ -1182,6 +1282,8 @@ sub mergeSuffix {
                    "u"   => "U",
                    "i"   => "I",
 
+                   "l"   => "Ul",
+                   "f"   => "Uf",
                    "^g"  => "U^g"   );
 
         if (($x) = $_[1] =~ /^"(.*)"$/) {
@@ -1209,12 +1311,12 @@ __END__
 
 =head1 NAME
 
-ElixirFM - Interfaces to the ElixirFM system in Haskell
+ElixirFM - Interfaces to the ElixirFM system implementing Functional Arabic Morphology
 
 
 =head1 REVISION
 
-    $Revision: 916 $        $Date: 2009-12-19 18:20:50 +0100 (Sat, 19 Dec 2009) $
+    $Revision: 944 $        $Date: 2010-03-24 23:01:01 +0100 (Wed, 24 Mar 2010) $
 
 
 =head1 SYNOPSIS
@@ -1237,7 +1339,7 @@ Otakar Smrz C<< <otakar smrz mff cuni cz> >>, L<http://ufal.mff.cuni.cz/~smrz/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2005-2009 Otakar Smrz
+Copyright (C) 2005-2010 Otakar Smrz
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3.

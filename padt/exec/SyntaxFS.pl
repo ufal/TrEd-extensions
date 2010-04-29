@@ -44,7 +44,7 @@ foreach $file (@ARGV) {
 
     $target = Treex::PML::Factory->createDocument({define_target_format()});
 
-    # $source = Treex::PML::Factory->createDocumentFromFile($file,{'encoding' => $decode});
+    # $source = Treex::PML::Factory->createDocumentFromFile($file, {'encoding' => $decode});
 
     $source = Treex::PML::Factory->createPMLInstance()->load({ 'filename' => $file });
     

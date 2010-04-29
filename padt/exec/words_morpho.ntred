@@ -78,7 +78,7 @@ sub pretty_word {
 
     my @id = $word->{'id'} =~ /^w-p([0-9]+)u([0-9]+)w([0-9]+)$/;
 
-    my $node = Treex::PML::Factory->createTypedNode('Word',$schema);
+    my $node = Treex::PML::Factory->createTypedNode('Word', $schema);
 
     $node->{'#name'} = 'Word';
 

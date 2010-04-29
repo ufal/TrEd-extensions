@@ -943,10 +943,10 @@ sub elixir_lexicon {
 
                 $entry_idx++;
 
-                my $lexeme = Treex::PML::Factory->createStruct();
+                my $lexeme = Treex::PML::Factory->createStructure();
 
                 $lexeme->{'root'} = $nest->{'root'};
-                $lexeme->{'core'} = Treex::PML::Factory->createStruct();
+                $lexeme->{'core'} = Treex::PML::Factory->createStructure();
 
                 foreach my $key (grep { not /^[_#]/ } keys %$entry) {
 
@@ -1051,13 +1051,13 @@ sub morpholists {
 
                 my $lexeme = lexicon($_->[0]);
 
-                my $struct = Treex::PML::Factory->createStruct();
+                my $struct = Treex::PML::Factory->createStructure();
 
                 $struct->{'clip'} = $_->[0];
 
                 $struct->{'root'} = $lexeme->{'root'};
 
-                $struct->{'core'} = Treex::PML::Factory->createStruct();
+                $struct->{'core'} = Treex::PML::Factory->createStructure();
 
                 $struct->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 
@@ -1207,7 +1207,7 @@ sub couple {
 
                 $node->{'root'} = $lexeme->{'root'};
 
-                $node->{'core'} = Treex::PML::Factory->createStruct();
+                $node->{'core'} = Treex::PML::Factory->createStructure();
 
                 $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 
@@ -1333,7 +1333,7 @@ sub morphotrees {
 
                 $node->{'root'} = $lexeme->{'root'};
 
-                $node->{'core'} = Treex::PML::Factory->createStruct();
+                $node->{'core'} = Treex::PML::Factory->createStructure();
 
                 $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
 

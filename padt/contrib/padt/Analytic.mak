@@ -477,25 +477,25 @@ sub morpho_structure {
 
         next if exists $node->{'morpho'} or not exists $node->{'m'};
 
-        $node->{'morpho'} = Treex::PML::Factory->createStruct;
+        $node->{'morpho'} = Treex::PML::Factory->createStructure();
 
         if (exists $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '') {
 
-            $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct;
+            $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
 
             $node->{'morpho'}{'Word'}{'form'} = $node->{'m'}{'input'};
         }
 
         if (exists $node->{'m'}{'lemma'} and $node->{'m'}{'lemma'} ne '') {
 
-            $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStruct;
+            $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStructure();
 
             $node->{'morpho'}{'Lexeme'}{'form'} = $node->{'m'}{'lemma'};
         }
 
         if (exists $node->{'m'}{'form'} and $node->{'m'}{'form'} ne '') {
 
-            $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStruct;
+            $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStructure();
 
             $node->{'morpho'}{'Token'}{'form'} = $node->{'m'}{'form'};
 

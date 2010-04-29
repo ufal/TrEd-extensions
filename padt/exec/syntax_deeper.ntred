@@ -74,7 +74,7 @@ sub pretty_node {
 
     my ($word, $tree) = @_;
 
-    my $node = Treex::PML::Factory->createTypedNode('Node',$schema);
+    my $node = Treex::PML::Factory->createTypedNode('Node', $schema);
 
     $node->{'#name'} = 'Node';
 
@@ -82,7 +82,7 @@ sub pretty_node {
 
     $node->{'func'} = '???';
 
-    $node->{'syntax'} = Treex::PML::Factory->createStruct();
+    $node->{'syntax'} = Treex::PML::Factory->createStructure();
 
     foreach (qw 'ord afun score note parallel paren arabfa coref clause') {
 

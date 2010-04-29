@@ -254,19 +254,42 @@
         <structure role="#NODE">
             <member name="reflex">
                 <structure>
-                    <member name="fst" type="Reflex"/>
-                    <member name="snd" type="Reflex"/>
+                    <member name="en" type="Reflex"/>
+                    <member name="cs" type="Reflex"/>
                 </structure>
+            </member>
+            <member name="example" type="Example"/>
+            <member name="reflexivity">
+                <structure>
+                    <member name="comment" type="String"/>
+                    <member name="example" type="Example"/>
+                </structure>
+            </member>
+            <member name="reciprocity">
+                <structure>
+                    <member name="comment" type="String"/>
+                    <member name="example" type="Example"/>
+                </structure>
+            </member>
+            <member name="links">
+                <list type="String" ordered="1"/>
             </member>
             <member name="slots" role="#CHILDNODES">
                 <sequence>
                     <element name="Slot" type="Slot"/>
                 </sequence>
             </member>
-            <member name="links">
-                <list type="String" ordered="1"/>
-            </member>
         </structure>
+    </type>
+
+    <type name="Example">
+        <list ordered="1">
+            <structure>
+                <member name="ar" type="String"/>
+                <member name="en" type="String"/>
+                <member name="cs" type="String"/>
+            </structure>
+        </list>
     </type>
 
     <type name="Slot">

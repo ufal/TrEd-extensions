@@ -93,7 +93,7 @@ sub pretty_word {
     }
     else {
 
-        my $node = Treex::PML::Factory->createTypedNode('Node',$schema);
+        my $node = Treex::PML::Factory->createTypedNode('Node', $schema);
 
         $node->{'#name'} = 'Node';
 
@@ -103,9 +103,9 @@ sub pretty_word {
 
         $node->{'afun'} = '???';
 
-        $node->{'morpho'} = Treex::PML::Factory->createStruct();
+        $node->{'morpho'} = Treex::PML::Factory->createStructure();
 
-        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct();
+        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
 
         foreach (qw 'form note') {
 
@@ -123,7 +123,7 @@ sub pretty_node {
 
     my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
 
-    my $node = Treex::PML::Factory->createTypedNode('Node',$schema);
+    my $node = Treex::PML::Factory->createTypedNode('Node', $schema);
 
     $node->{'#name'} = 'Node';
 
@@ -133,9 +133,9 @@ sub pretty_node {
 
     $node->{'afun'} = '???';
 
-    $node->{'morpho'} = Treex::PML::Factory->createStruct();
+    $node->{'morpho'} = Treex::PML::Factory->createStructure();
 
-    $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStruct();
+    $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStructure();
 
     foreach (qw 'morphs tag form gloss note') {
 
@@ -144,7 +144,7 @@ sub pretty_node {
 
     $word = $word->parent();
 
-    $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStruct();
+    $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStructure();
 
     foreach (qw 'root core form note') {
 
@@ -155,7 +155,7 @@ sub pretty_node {
 
         $word = $word->parent();
 
-        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStruct();
+        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
 
         foreach (qw 'form note') {
 
