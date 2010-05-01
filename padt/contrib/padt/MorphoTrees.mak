@@ -6,7 +6,7 @@
 
 package MorphoTrees;
 
-use 5.010;
+use 5.008;
 
 use strict;
 
@@ -67,7 +67,7 @@ style:<? ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
           ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} ~~ ['Token', 'Unit', 'Paragraph']
+node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit|Paragraph)$/
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
@@ -83,10 +83,10 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                             ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'core'}{'morphs'}))
                             : ElixirFM::phor($this->{'form'}) ) )
                 : (
-                $this->{'#name'} ~~ ['Component', 'Partition']
+                $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
                     : (
-                    $this->{'#name'} ~~ ['Element', 'Unit', 'Paragraph']
+                    $this->{'#name'} =~ /^(?:Element|Unit|Paragraph)$/
                         ? '#{black}' . MorphoTrees::idx($this)
                         : ' ' ) .
                       ( $this->{apply} > 0
@@ -221,7 +221,7 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{'currentNode'};
 
-    $node = $node->parent() while $node and not $node->{'#name'} ~~ ['Word', 'Unit'];
+    $node = $node->parent() while $node and not $node->{'#name'} =~ /^(?:Word|Unit)$/;
 
     return $node;
 }

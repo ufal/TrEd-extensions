@@ -2,7 +2,7 @@
 #
 # ElixirFM Context for the TrEd Environment ########################################################
 
-# $Id: ElixirFM.mak 838 2009-04-08 23:14:18Z smrz $
+# $Id$
 
 package ElixirFM;
 
@@ -17,7 +17,7 @@ use File::Copy;
 
 use File::Basename;
 
-our $VERSION = join '.', '1.1', q $Revision: 838 $ =~ /(\d+)/;
+our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
 #
@@ -504,6 +504,38 @@ sub paradigm_except {
                                : 'Triptote';
 
     ChangingFile(1);
+}
+
+#bind change_frame_properties Ctrl+q menu Change Frame Properties
+sub change_frame_properties {
+
+    ChangingFile(0);
+
+    return unless $this->{'#name'} eq 'Frame';
+
+    $this->{'example'} = Treex::PML::Factory->createList([Treex::PML::Factory->createStructure()])
+
+                                    unless exists $this->{'example'} and @{$this->{'example'}};
+
+    unless (exists $this->{'reciprocity'}) {
+
+        $this->{'reciprocity'} = Treex::PML::Factory->createStructure();
+
+        $this->{'reciprocity'}{'example'} = Treex::PML::Factory->createList([Treex::PML::Factory->createStructure()])
+
+                                    unless exists $this->{'reciprocity'}{'example'} and @{$this->{'reciprocity'}{'example'}};
+    }
+
+    unless (exists $this->{'reflexivity'}) {
+
+        $this->{'reflexivity'} = Treex::PML::Factory->createStructure();
+
+        $this->{'reflexivity'}{'example'} = Treex::PML::Factory->createList([Treex::PML::Factory->createStructure()])
+
+                                    unless exists $this->{'reflexivity'}{'example'} and @{$this->{'reflexivity'}{'example'}};
+    }
+
+    main::editAttrsDialog($grp, $this);
 }
 
 #bind change_slot_role Ctrl+r menu Change Slot Role
@@ -1035,7 +1067,7 @@ ElixirFM - Context for Annotation of the ElixirFM Lexicon in the TrEd Environmen
 
 =head1 REVISION
 
-    $Revision: 838 $       $Date: 2009-04-09 01:14:18 +0200 (Thu, 09 Apr 2009) $
+    $Revision$       $Date$
 
 
 =head1 DESCRIPTION
@@ -1061,7 +1093,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2009 by Otakar Smrz
+Copyright 2006-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
