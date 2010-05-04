@@ -163,11 +163,11 @@ sub change_entity {
 
     ChangingFile(1);
 
-    my $ent = ElixirFM::entity($this);
+    my $entity = ElixirFM::entity($this);
 
-    @{$ent} = @_;
+    @{$entity} = @_;
 
-    return $ent->[1];
+    return $entity->[1];
 }
 
 #bind change_entity_V Ctrl+V menu Change Entity Verb
@@ -196,10 +196,10 @@ sub change_entity_N {
 
     return unless $this->{'#name'} eq 'Entry';
 
-    my $ent = ElixirFM::entity($this);
+    my $entity = ElixirFM::entity($this);
 
-    my $cat = $ent->[0];
-    my $old = $ent->[1];
+    my $cat = $entity->[0];
+    my $old = $entity->[1];
 
     my $new = change_entity('Noun', Treex::PML::Factory->createStructure());
 
@@ -212,7 +212,7 @@ sub change_entity_N {
 
         unless (exists $new->{'plural'} and @{$new->{'plural'}}) {
 
-            $new->{'plural'} = List($this->{'morphs'} . ' |< Un');
+            $new->{'plural'} = Treex::PML::Factory->createList([$this->{'morphs'} . ' |< Un']);
         }
 
         $new->{'derive'} = '------F---';
@@ -495,13 +495,50 @@ sub paradigm_except {
 
     return unless $this->{'#name'} eq 'Entry';
 
-    my $ent = ElixirFM::entity($this);
+    my $entity = ElixirFM::entity($this);
 
-    return unless $ent->[0] eq 'Noun';
+    return unless $entity->[0] eq 'Noun';
 
-    $ent->[1]{'except'} = exists $ent->[1]{'except'} && $ent->[1]{'except'} ne ''
-                               ? $ent->[1]{'except'} eq 'Triptote' ? 'Diptote' : ''
-                               : 'Triptote';
+    $entity->[1]{'except'} = exists $entity->[1]{'except'} && $entity->[1]{'except'} ne ''
+                                  ? $entity->[1]{'except'} eq 'Triptote' ? 'Diptote' : ''
+                                  : 'Triptote';
+
+    ChangingFile(1);
+}
+
+#bind paradigm_restrict Ctrl+w menu Paradigm Restrict
+sub paradigm_restrict {
+
+    ChangingFile(0);
+
+    return unless $this->{'#name'} eq 'Entry';
+
+    my $entity = ElixirFM::entity($this);
+
+    return unless $entity->[0] eq 'Noun';
+
+    if (exists $entity->[1]{'plural'}) {
+
+        return unless @{$entity->[1]{'plural'}} == 1 and $this->{'morphs'} eq $entity->[1]{'plural'}[0];
+
+        return unless exists $this->{'limits'} and not exists $this->{'limits'}{'snd'};
+
+        return unless exists $this->{'limits'}{'fst'} and $this->{'limits'}{'fst'} eq "-------P--";
+
+        delete $entity->[1]{'plural'};
+
+        delete $this->{'limits'};
+    }
+    else {
+
+        return if exists $this->{'limits'};
+
+        $entity->[1]{'plural'} = Treex::PML::Factory->createList([$this->{'morphs'}]);
+
+        $this->{'limits'} = Treex::PML::Factory->createStructure();
+
+        $this->{'limits'}{'fst'} = "-------P--";
+    }
 
     ChangingFile(1);
 }
@@ -526,13 +563,13 @@ sub change_frame_properties {
                                     unless exists $this->{'reciprocity'}{'example'} and @{$this->{'reciprocity'}{'example'}};
     }
 
-    unless (exists $this->{'reflexivity'}) {
+    unless (exists $this->{'passivity'}) {
 
-        $this->{'reflexivity'} = Treex::PML::Factory->createStructure();
+        $this->{'passivity'} = Treex::PML::Factory->createStructure();
 
-        $this->{'reflexivity'}{'example'} = Treex::PML::Factory->createList([Treex::PML::Factory->createStructure()])
+        $this->{'passivity'}{'example'} = Treex::PML::Factory->createList([Treex::PML::Factory->createStructure()])
 
-                                    unless exists $this->{'reflexivity'}{'example'} and @{$this->{'reflexivity'}{'example'}};
+                                    unless exists $this->{'passivity'}{'example'} and @{$this->{'passivity'}{'example'}};
     }
 
     main::editAttrsDialog($grp, $this);

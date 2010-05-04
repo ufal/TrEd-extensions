@@ -3,7 +3,7 @@
     <revision>1.1.1</revision>
     <description>ElixirFM Lexicon</description>
 
-    <root name="ElixirFM" type="Lexicon" />
+    <root name="ElixirFM" type="Lexicon"/>
 
     <type name="Lexicon">
         <structure>
@@ -84,10 +84,9 @@
             <element name="Noun">
                 <structure>
                     <member name="plural" type="Plural"/>
-                    <member name="gender" type="Gender"/>
-                    <member name="number" type="Number"/>
-                    <member name="derive" type="Derive"/>
                     <member name="except" type="Except"/>
+                    <member name="gender" type="Gender"/>
+                    <member name="derive" type="Derive"/>
                 </structure>
             </element>
             <element name="Adj" >
@@ -258,8 +257,9 @@
                     <member name="cs" type="Reflex"/>
                 </structure>
             </member>
+            <member name="class" type="String"/>
             <member name="example" type="Example"/>
-            <member name="reflexivity">
+            <member name="passivity">
                 <structure>
                     <member name="comment" type="String"/>
                     <member name="example" type="Example"/>
@@ -347,6 +347,10 @@
             <value>DIR1</value>
             <value>DIR2</value>
             <value>DIR3</value>
+            <value>DIR!</value>
+            <value>DIR1!</value>
+            <value>DIR2!</value>
+            <value>DIR3!</value>
             <value>DISJ</value>
             <value>DPHR</value>
             <value>ETHD</value>
@@ -381,6 +385,7 @@
             <value>TFHL</value>
             <value>TFRWH</value>
             <value>THL</value>
+            <value>THL!</value>
             <value>THO</value>
             <value>TOWH</value>
             <value>TPAR</value>

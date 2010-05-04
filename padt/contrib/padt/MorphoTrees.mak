@@ -14,6 +14,8 @@ use ElixirFM;
 
 use ElixirFM::Exec ();
 
+use subs 'ElixirFM::Exec::elixir';
+
 use Encode::Arabic ':modes';
 
 use Algorithm::Diff;
@@ -1601,7 +1603,7 @@ sub reflect_tuple {
 
     my $zoom = $review->{$grp}{'zoom'};
 
-    $zoom->{'norm'} = new Fslib::List;
+    $zoom->{'norm'} = Treex::PML::Factory->createList();
 
     foreach $node ($zoom->descendants()) {
 
