@@ -517,11 +517,11 @@ sub paradigm_restrict {
 
     return unless $entity->[0] eq 'Noun';
 
-    if (exists $entity->[1]{'plural'}) {
+    if (exists $entity->[1]{'plural'} and @{$entity->[1]{'plural'}}) {
 
         return unless @{$entity->[1]{'plural'}} == 1 and $this->{'morphs'} eq $entity->[1]{'plural'}[0];
 
-        return unless exists $this->{'limits'} and not exists $this->{'limits'}{'snd'};
+        return if not exists $this->{'limits'} or exists $this->{'limits'}{'snd'} and @{$this->{'limits'}{'snd'}};
 
         return unless exists $this->{'limits'}{'fst'} and $this->{'limits'}{'fst'} eq "-------P--";
 
@@ -531,7 +531,9 @@ sub paradigm_restrict {
     }
     else {
 
-        return if exists $this->{'limits'};
+        return if exists $this->{'limits'} and exists $this->{'limits'}{'fst'} and $this->{'limits'}{'fst'} ne "";
+
+        return if exists $this->{'limits'} and exists $this->{'limits'}{'snd'} and @{$this->{'limits'}{'snd'}};
 
         $entity->[1]{'plural'} = Treex::PML::Factory->createList([$this->{'morphs'}]);
 
