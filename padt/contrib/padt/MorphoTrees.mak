@@ -14,8 +14,6 @@ use ElixirFM;
 
 use ElixirFM::Exec ();
 
-use subs 'ElixirFM::Exec::elixir';
-
 use Encode::Arabic ':modes';
 
 use Algorithm::Diff;
@@ -912,7 +910,7 @@ sub edit_note {
 
 sub elixir_lexicon {
 
-    import ElixirFM::Exec;
+    ElixirFM::Exec->import();
 
     my $file = CallerDir('../../data/elixir-lexicon.pls');
 
@@ -923,11 +921,11 @@ sub elixir_lexicon {
         $data = Storable::retrieve $file or warn $! and return;
     }
 
-    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir 'version';
+    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir('version');
 
     unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
 
-        my $text = ElixirFM::Exec::elixir 'lexicon';
+        my $text = ElixirFM::Exec::elixir('lexicon');
 
         my $pml = Treex::PML::Instance->load({ 'string' => $text });
 
@@ -1001,7 +999,7 @@ sub resolve {
 
     my $news = join " ", @news;
 
-    my $data = ElixirFM::Exec::elixir 'resolve', ['--lists'], $news;
+    my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $news);
 
     my @data = ElixirFM::concat ElixirFM::unpretty $data;
 

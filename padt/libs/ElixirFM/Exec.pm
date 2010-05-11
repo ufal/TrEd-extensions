@@ -2,13 +2,13 @@
 #
 # ElixirFM Executable ##############################################################################
 
-# $Id$
+# $Id: Exec.pm 946 2010-04-12 19:27:23Z smrz $
 
 package ElixirFM::Exec;
 
 use strict;
 
-our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
+our $VERSION = join '.', '1.1', q $Revision: 946 $ =~ /(\d+)/;
 
 
 use Encode;
@@ -138,7 +138,7 @@ ElixirFM::Exec - Interface to the ElixirFM executable
 
 =head1 REVISION
 
-    $Revision$        $Date$
+    $Revision: 946 $        $Date: 2010-04-12 21:27:23 +0200 (Mon, 12 Apr 2010) $
 
 
 =head1 SYNOPSIS
