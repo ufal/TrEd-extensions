@@ -55,7 +55,8 @@ sub pennform2form($) {
   my $form = shift;
   for ($form) {
     s/-LRB-/(/ or s/-RRB-/)/ or s/-LSB-/[/ or
-    s/-RSB-/]/ or s/-LCB-/{/ or s/-RCB-/}/
+    s/-RSB-/]/ or s/-LCB-/{/ or s/-RCB-/}/ or
+    s%\\/%/%
   }
   return $form;
 } # pennform2form
