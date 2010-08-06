@@ -56,7 +56,7 @@ sub pennform2form($) {
   for ($form) {
     s/-LRB-/(/ or s/-RRB-/)/ or s/-LSB-/[/ or
     s/-RSB-/]/ or s/-LCB-/{/ or s/-RCB-/}/ or
-    s%\\/%/%
+    s%\\/%/%g
   }
   return $form;
 } # pennform2form
@@ -254,7 +254,7 @@ HEADER
 
       # parse error
       else {
-	die "No reduction:\n'$sentence'\n";
+	die "$sentence_id: No reduction:\n'$sentence'\n";
       }
     }
 
