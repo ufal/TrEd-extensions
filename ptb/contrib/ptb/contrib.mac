@@ -36,7 +36,9 @@ sub allow_switch_context_hook {
   return 'stop' unless detect();
 }
 sub switch_context_hook {
-  SetCurrentStylesheet('Penn_Treebank');
+  if (GetCurrentStylesheet() eq STYLESHEET_FROM_FILE()) {
+    SetCurrentStylesheet('Penn_Treebank');
+  }
   Redraw() if GUI();
 }
 
