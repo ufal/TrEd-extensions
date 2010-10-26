@@ -46,7 +46,6 @@
                 <list type="String" ordered="1"/>
             </member>
             <member name="note" type="String"/>
-            <member name="apply" type="String"/>
             <member name="score" type="Score"/>
             <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
@@ -58,7 +57,6 @@
     <type name="Tuple">
         <container role="#NODE">
             <sequence role="#CHILDNODES">
-                <element name="Lexeme" type="Lexeme.Trees"/>
                 <element name="Token" type="Token"/>
             </sequence>
         </container>
@@ -72,12 +70,10 @@
             <member name="form" type="String"/>
             <member name="note" type="String"/>
             <member name="sense" type="String"/>
-            <member name="gloss" type="String"/>
             <member name="root" type="Root"/>
             <member name="core" type="Entry"/>
             <member name="clip" type="String"/>
             <member name="lemma" type="String"/>
-            <member name="apply" type="String"/>
             <member name="score" type="Score"/>
         </structure>
     </type>
@@ -171,7 +167,6 @@
             <member name="form" type="String"/>
             <member name="note" type="String"/>
             <member name="sense" type="String"/>
-            <member name="gloss" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
             <member name="inherit" type="String"/>
@@ -282,7 +277,6 @@
             <member name="form" type="String"/>
             <member name="note" type="String"/>
             <member name="sense" type="String"/>
-            <member name="gloss" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
             <member name="inherit" type="String"/>
