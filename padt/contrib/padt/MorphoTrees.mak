@@ -59,9 +59,12 @@ rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$g
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.2}' : '#{skipHiddenLevels:1}' ?>
 
-style:<? ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
+style:<? my @child = $this->children();
+         ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
            $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' : '' ) .
-         (( exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
+         (( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}' 
+                                       : @child > 1 ? '#{Line-fill:purple}' : '' :
+            exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
             exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
             exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ) .
           ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
@@ -85,6 +88,8 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                 : (
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
+                    : $this->{'#name'} eq 'Tuple'
+                    ? '#{orange}' . ElixirFM::phon($this->{'form'})
                     : (
                     $this->{'#name'} =~ /^(?:Element|Unit|Paragraph)$/
                         ? '#{black}' . MorphoTrees::idx($this)
@@ -97,7 +102,10 @@ node:<? '#{goldenrod}${note} << ' if $this->{'note'} ne '' and $this->{'#name'} 
    ?>#{darkred}${tag}<? $this->{'inherit'} eq '' ? '#{red}' : '#{orange}'
    ?>${restrict}
 
-hint:<? '${gloss}' if $this->{'#name'} eq 'Token' ?>
+node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
+        ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
+
+hint:<? '${sense}' if $this->{'#name'} eq 'Token' ?>
 >>
 }
 
@@ -305,7 +313,7 @@ sub update_zoom_tree {
 
         my ($data) = resolve($review->{$grp}{'zoom'}->{'form'});
 
-        my $node = Treex::PML::Factory->createTypedNode('Element.Lists',PML::Schema());
+        my $node = Treex::PML::Factory->createTypedNode('Element.Lists', PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -321,7 +329,7 @@ sub update_zoom_tree {
 
     if ($review->{$grp}{'mode'}) {
 
-        my $node = Treex::PML::Factory->createTypedNode('Element.Trees',PML::Schema());
+        my $node = Treex::PML::Factory->createTypedNode('Element.Trees', PML::Schema());
 
         $node->{'#name'} = 'Element';
 
@@ -1627,7 +1635,7 @@ sub reflect_tuple {
 
         DetermineNodeType($tuple);
 
-        $tuple->{$_} = $tuple[$i - 1]{$_} foreach 'form', 'note', 'apply', 'score';
+        $tuple->{$_} = $tuple[$i - 1]{$_} foreach 'form', 'note', 'score';
 
         $tuple->{'id'} = $zoom->{'id'} . 'l' . $i;
 
@@ -1649,7 +1657,7 @@ sub reflect_tuple {
 
             DetermineNodeType($token);
 
-            $token->{$_} = $token[$j - 1]{$_} foreach 'morphs', 'tag', 'form', 'note', 'sense', 'gloss', 'apply', 'score';
+            $token->{$_} = $token[$j - 1]{$_} foreach 'morphs', 'tag', 'form', 'note', 'sense', 'score';
 
             $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'core', 'clip';
 
@@ -1661,9 +1669,7 @@ sub reflect_tuple {
         }
     }
 
-    $zoom->{'apply'} = $data->{'apply'};
-
-    $zoom->{'hide'} = $paragraph_hide_mode eq 'hidden' && $zoom->{'apply'} > 0 ? 'hide' : '';
+    $zoom->{'hide'} = $paragraph_hide_mode eq 'hidden' && $zoom->children() ? 'hide' : '';
 
     return $zoom;
 }

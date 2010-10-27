@@ -47,7 +47,6 @@
             </member>
             <member name="note" type="String"/>
             <member name="score" type="Score"/>
-            <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <list type="Tuple" ordered="1"/>
             </member>
