@@ -71,7 +71,6 @@
             <member name="sense" type="String"/>
             <member name="root" type="Root"/>
             <member name="core" type="Entry"/>
-            <member name="clip" type="String"/>
             <member name="lemma" type="String"/>
             <member name="score" type="Score"/>
         </structure>
@@ -141,7 +140,6 @@
             <member name="id" as_attribute="1" role="#ID" type="ID"/>
             <member name="root" type="Root"/>
             <member name="core" type="Entry"/>
-            <member name="clip" type="String"/>
             <member name="form" type="String"/>
             <member name="note" type="String"/>
             <member name="apply" type="String"/>
@@ -243,7 +241,6 @@
         <structure>
             <member name="root" type="Root"/>
             <member name="core" type="Entry"/>
-            <member name="clip" type="String"/>
             <member name="form" type="String"/>
             <member name="note" type="String"/>
         </structure>
@@ -295,13 +292,17 @@
 
     <import schema="elixir.schema.xml" type="Morphs"/>
 
-    <import schema="elixir.schema.xml" type="Entity"/>
-
     <import schema="elixir.schema.xml" type="Limits"/>
 
     <import schema="elixir.schema.xml" type="Reflex"/>
 
     <import schema="elixir.schema.xml" type="String"/>
+
+    <import schema="elixir.schema.xml" type="Plural"/>
+
+    <import schema="elixir.schema.xml" type="Femini"/>
+
+    <import schema="elixir.schema.xml" type="Pattern"/>
 
     <import schema="elixir.schema.xml" type="Root"/>
 
@@ -314,6 +315,71 @@
             <member name="limits" type="Limits"/>
             <member name="reflex" type="Reflex"/>
         </structure>
+    </type>
+
+    <type name="Entity">
+        <sequence content_pattern="(Verb|Noun|Adj|Pron|Num|Adv|Prep|Conj|Part|Intj|Xtra|Ynit|Zero|Grph)">
+            <element name="Verb">
+                <structure>
+                    <member name="pfirst">
+                        <list type="Pattern" ordered="1"/>
+                    </member>
+                    <member name="imperf">
+                        <list type="Pattern" ordered="1"/>
+                    </member>
+                    <member name="second">
+                        <list type="Pattern" ordered="1"/>
+                    </member>
+                </structure>
+            </element>
+            <element name="Noun">
+                <structure>
+                    <member name="plural" type="Plural"/>
+                </structure>
+            </element>
+            <element name="Adj" >
+                <structure>
+                    <member name="plural" type="Plural"/>
+                    <member name="femini" type="Femini"/>
+                </structure>
+            </element>
+            <element name="Pron">
+                <container/>
+            </element>
+            <element name="Num">
+                <structure>
+                    <member name="plural" type="Plural"/>
+                    <member name="femini" type="Femini"/>
+                </structure>
+            </element>
+            <element name="Adv">
+                <container/>
+            </element>
+            <element name="Prep">
+                <container/>
+            </element>
+            <element name="Conj">
+                <container/>
+            </element>
+            <element name="Part">
+                <container/>
+            </element>
+            <element name="Intj">
+                <container/>
+            </element>
+            <element name="Xtra">
+                <container/>
+            </element>
+            <element name="Ynit">
+                <container/>
+            </element>
+            <element name="Zero">
+                <container/>
+            </element>
+            <element name="Grph">
+                <container/>
+            </element>
+        </sequence>
     </type>
 
     <type name="ID">

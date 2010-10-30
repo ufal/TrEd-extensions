@@ -27,6 +27,8 @@ use File::Basename;
 
 use Storable;
 
+use JSON;
+
 our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 # ##################################################################################################
@@ -47,6 +49,8 @@ our ($dims, $fill) = (10, ' ' x 4);
 
 our ($elixir, $review) = ({}, {});
 
+our ($JSON) = JSON->new()->allow_nonref();
+
 # ##################################################################################################
 #
 # ##################################################################################################
@@ -62,7 +66,7 @@ rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$g
 style:<? my @child = $this->children();
          ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
            $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' : '' ) .
-         (( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}' 
+         (( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}'
                                        : @child > 1 ? '#{Line-fill:purple}' : '' :
             exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
             exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
@@ -98,9 +102,13 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                             ? ' #{red}${form}'
                             : ' #{black}${form}' ) ) ) ?>
 
-node:<? '#{goldenrod}${note} << ' if $this->{'note'} ne '' and $this->{'#name'} eq 'Token'
-   ?>#{darkred}${tag}<? $this->{'inherit'} eq '' ? '#{red}' : '#{orange}'
-   ?>${restrict}
+node:<? $this->{'#name'} eq 'Word'
+            ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } @{$this->{'norm'}} )
+            :
+        $this->{'#name'} eq 'Token'
+            ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
+            : ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
+                                             . $this->{'restrict'} : '' ) ?>
 
 node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
         ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
@@ -1011,6 +1019,30 @@ sub resolve {
 
     my @data = ElixirFM::concat ElixirFM::unpretty $data;
 
+    foreach (@data) {
+
+        my (undef, @data) = @{$_};
+
+        foreach (@data) {
+
+            my (undef, @data) = @{$_};
+
+            foreach (@data) {
+
+                foreach (@{$_->[0]}) {
+
+                    $_ = [
+                            $_->[4],                 #   "qAl"
+                            $JSON->decode($_->[5]),  #   "q w l"
+                            $_->[6],                 #   "FAL"
+                            $_->[2],                 #   "Verb [] [FUL] []"
+                            $JSON->decode($_->[1])   #   ["say","tell"]
+                         ];
+                }
+            }
+        }
+    }
+
     warn "MorphoTrees::resolve:\t" . "resolving " . @news . " of " . @word . " words\n" if @word > 1;
 
     warn "MorphoTrees::resolve:\t" . '@news ' . @news . " <> " . '@data ' . @data . "\n" unless @news == @data;
@@ -1018,6 +1050,95 @@ sub resolve {
     $elixir->{'resolve'}{$news[$_]} = $data[$_] for 0 .. @data - 1;
 
     return map { exists $elixir->{'resolve'}{$_} ? $elixir->{'resolve'}{$_} : [[$_]] } @word;
+}
+
+sub lexeme {
+
+    my $text = $_[0];
+
+    my $data = Treex::PML::Factory->createStructure();
+
+    $data->{'form'} = $text->[0];
+    $data->{'root'} = $text->[1];
+
+    $data->{'core'} = Treex::PML::Factory->createStructure();
+
+    $data->{'core'}{'morphs'} = $text->[2];
+    $data->{'core'}{'entity'} = entity($text->[3]);
+    $data->{'core'}{'reflex'} = Treex::PML::Factory->createList($text->[4]);
+
+    return $data;
+}
+
+sub identity {
+
+    my $data = $_[0];
+
+    my $text = [];
+
+    $text->[0] = $data->{'form'};
+    $text->[1] = $data->{'root'};
+    $text->[2] = $data->{'core'}{'morphs'};
+
+    $text->[3] = join " ", $_->[0], ( $_->[0] eq 'Verb' ?
+
+                                        (exists $_->[1]{'pfirst'} ? "[" . ( join ",", @{$_->[1]{'pfirst'}} ) . "]" : "[]",
+                                         exists $_->[1]{'imperf'} ? "[" . ( join ",", @{$_->[1]{'imperf'}} ) . "]" : "[]",
+                                         exists $_->[1]{'second'} ? "[" . ( join ",", @{$_->[1]{'second'}} ) . "]" : "[]")
+
+                                    : $_->[0] eq 'Noun' ?
+
+                                        (exists $_->[1]{'plural'} ? "[" . ( join ",", @{$_->[1]{'plural'}} ) . "]" : "[]")
+
+                                    : $_->[0] eq 'Adj' || $_->[0] eq 'Num' ?
+
+                                        (exists $_->[1]{'plural'} ? "[" . ( join ",", @{$_->[1]{'plural'}} ) . "]" : "[]",
+                                         exists $_->[1]{'femini'} ? "[" . ( join ",", @{$_->[1]{'femini'}} ) . "]" : "[]")
+
+                                    : () )
+
+                                    for $data->{'core'}{'entity'}[0][0];
+
+    $text->[4] = [ @{$data->{'core'}{'reflex'}} ];
+
+    return $JSON->encode($text);
+}
+
+sub entity {
+
+    my ($text, @text) = split /\s+(?=\[)/, $_[0];
+
+    my $data = Treex::PML::Factory->createSeq();
+
+    my @data = map { [ grep { $_ ne '' } split /\s*[\[,\]]\s*/, $_ ] } @text;
+
+    if ($text eq 'Verb') {
+
+        $data->push_element($text, Treex::PML::Factory->createStructure());
+
+        $data->[0][0][1]{'pfirst'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
+        $data->[0][0][1]{'imperf'} = Treex::PML::Factory->createList($data[1]) if @{$data[1]};
+        $data->[0][0][1]{'second'} = Treex::PML::Factory->createList($data[2]) if @{$data[2]};
+    }
+    elsif ($text eq 'Noun') {
+
+        $data->push_element($text, Treex::PML::Factory->createStructure());
+
+        $data->[0][0][1]{'plural'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
+    }
+    elsif ($text eq 'Adj' or $text eq 'Num') {
+
+        $data->push_element($text, Treex::PML::Factory->createStructure());
+
+        $data->[0][0][1]{'plural'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
+        $data->[0][0][1]{'femini'} = Treex::PML::Factory->createList($data[1]) if @{$data[1]};
+    }
+    else {
+
+        $data->push_element($text, Treex::PML::Factory->createContainer());
+    }
+
+    return $data;
 }
 
 #bind elixir_resolve to Ctrl+R menu ElixirFM Resolve
@@ -1055,22 +1176,7 @@ sub morpholists {
 
             $node->{'data'} = Treex::PML::Factory->createSeq();
 
-            foreach (@{$data}) {
-
-                my $lexeme = lexicon($_->[0]);
-
-                my $struct = Treex::PML::Factory->createStructure();
-
-                $struct->{'clip'} = $_->[0];
-
-                $struct->{'root'} = $lexeme->{'root'};
-
-                $struct->{'core'} = Treex::PML::Factory->createStructure();
-
-                $struct->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
-
-                $node->{'data'}->push_element('Lexeme', $struct);
-            }
+            $node->{'data'}->push_element('Lexeme', lexeme($_)) foreach @{$data};
 
             foreach (reverse @data) {
 
@@ -1164,7 +1270,7 @@ sub couple {
 
                     $path[1] = $_;
 
-                    $path[2] = $node->{'data'}[0][$_][1]{'clip'};
+                    $path[2] = identity($node->{'data'}[0][$_][1]);
 
                     $path[3] = join " ", @{$data[$_]}{'form', 'tag'};
 
@@ -1207,17 +1313,9 @@ sub couple {
 
                 DetermineNodeType($node);
 
-                my $lexeme = lexicon($l);
+                my $lexeme = lexeme($JSON->decode($l));
 
-                $node->{'clip'} = $l;
-
-                $node->{'form'} = $l;
-
-                $node->{'root'} = $lexeme->{'root'};
-
-                $node->{'core'} = Treex::PML::Factory->createStructure();
-
-                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
+                $node->{$_} = $lexeme->{$_} foreach 'root', 'form', 'core';
 
                 foreach my $t (sort keys %{$hash->{$p}[$c]{$l}}) {
 
@@ -1635,11 +1733,7 @@ sub reflect_tuple {
 
         DetermineNodeType($tuple);
 
-        $tuple->{$_} = $tuple[$i - 1]{$_} foreach 'form', 'note', 'score';
-
-        $tuple->{'id'} = $zoom->{'id'} . 'l' . $i;
-
-        $hash->{$tuple->{'id'}} = $tuple;
+        my $id = $zoom->{'id'} . 'l' . $i;
 
         my @group = map { $_->[1] } @{$tuple[$i - 1]->parent()->{'data'}[0]};
 
@@ -1659,11 +1753,11 @@ sub reflect_tuple {
 
             $token->{$_} = $token[$j - 1]{$_} foreach 'morphs', 'tag', 'form', 'note', 'sense', 'score';
 
-            $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'core', 'clip';
+            $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'core';
 
-            $token->{'lemma'} = ElixirFM::merge($group[$j - 1]{'root'}, $group[$j - 1]{'core'}{'morphs'});
+            $token->{'lemma'} = $group[$j - 1]{'form'};
 
-            $token->{'id'} = $tuple->{'id'} . 't' . $j;
+            $token->{'id'} = $id . 't' . $j;
 
             $hash->{$token->{'id'}} = $token;
         }
