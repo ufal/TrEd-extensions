@@ -18,7 +18,7 @@ use Encode::Arabic ':modes';
 
 use Algorithm::Diff;
 
-use List::Util 'reduce';
+use List::Util 'reduce', 'max';
 
 use File::Spec;
 use File::Copy;
@@ -69,8 +69,12 @@ style:<? my @child = $this->children();
          (( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}'
                                        : @child > 1 ? '#{Line-fill:purple}' : '' :
             exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-            exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:magenta}' :
-            exists $this->{'score'} && $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:orange}' : '' ) .
+            exists $this->{'score'} ? ( $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:orange}' :
+                                        $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:magenta}' :
+                                        $this->{'score'}[0]{'#content'} > 0.70 ? '#{Line-fill:purple}' :
+                                        $this->{'score'}[0]{'#content'} > 0.50 ? '#{Line-fill:darkviolet}' :
+                                        $this->{'score'}[0]{'#content'} > 0.25 ? '#{Line-fill:darkmagenta}' :
+                                                                                 '#{Line-fill:black}' ) : '' ) .
           ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
 
@@ -189,7 +193,7 @@ sub get_value_line_hook {
 
         ($nodes, undef) = $fsfile->nodes($index, $review->{$grp}{'zoom'}, 1);
 
-        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => purple' ],
+        $words = [ [ $tree->{'form'} . " " . idx($tree), $tree, '-foreground => purple' ],
 
                    [ " " ],
 
@@ -204,7 +208,7 @@ sub get_value_line_hook {
 
         ($nodes, undef) = $fsfile->nodes($index, $grp->{'currentNode'}, 1);
 
-        $words = [ [ idx($tree) . " " . $tree->{'form'}, $tree, '-foreground => darkmagenta' ],
+        $words = [ [ $tree->{'form'} . " " . idx($tree), $tree, '-foreground => darkmagenta' ],
 
                    [ " " ],
 
@@ -333,6 +337,8 @@ sub update_zoom_tree {
 
         $review->{$grp}{'expect'} = {};
         $review->{$grp}{'select'} = {};
+
+        score_nodes();
     }
 
     if ($review->{$grp}{'mode'}) {
@@ -346,8 +352,6 @@ sub update_zoom_tree {
         $node = couple($node);
 
         $review->{$grp}{'tree'} = $node;
-
-        # score_nodes();
     }
     else {
 
@@ -357,27 +361,26 @@ sub update_zoom_tree {
 
 sub score_nodes {
 
-    return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
+    return unless $review->{$grp}{'data'} and $review->{$grp}{'zoom'};
 
-    my $tree = $review->{$grp}{'tree'};
+    my $data = $review->{$grp}{'data'};
     my $zoom = $review->{$grp}{'zoom'};
 
-    my @done = map { $_->children() } $zoom->children();
+    my @zoom = $zoom->children();
 
-    return unless @done;
+    return unless @zoom;
 
-    foreach my $part ($tree->children()) {
+    my @data = map { $_->children() } $data->children();
 
-        my @comp = $part->children();
+    foreach my $group (@data) {
 
-        next unless @comp == @done;
+        my @tuple = grep { my @t = $_->children(); @t == @{$group->{'data'}[0]} } @zoom;
 
-        for (my $i = 0; $i < @comp; $i++) {
+        foreach my $tuple ($group->children()) {
 
-            foreach my $node (map { $_->children() } map { $_->children() } $comp[$i]) {
+            my @score = map { compute_score($tuple, $_) } @tuple;
 
-                $node->{'score'} = Treex::PML::Factory->createAlt(map { Treex::PML::Factory->createContainer($_->[1], {'src' => $_->[0]}) } compute_score($node, $done[$i]));
-            }
+            $tuple->{'score'} = Treex::PML::Factory->createAlt([Treex::PML::Factory->createContainer(max @score)]);
         }
     }
 }
@@ -388,37 +391,55 @@ sub compute_score {
 
     my (@node, @done, @diff);
 
-    my %score = ();
+    my @score = ();
 
-    @node = split //, $node->{'tag'};
-    @done = split //, $done->{'tag'};
+    $node = [$node->children()];
+    $done = [$done->children()];
 
-    for (my $i = 0; $i < @done; $i++) {
+    return unless @{$node} == @{$done};
 
-        $score{'tag'} += $node[$i] eq $done[$i] ? 1 : $node[$i] eq '-' || $done[$i] eq '-' ? 0 : -1;
+    for (my $i = 0; $i < @{$node}; $i++) {
+
+        my %score = ();
+
+        @node = split //, $node->[$i]->{'tag'};
+        @done = split //, $done->[$i]->{'tag'};
+
+        for (my $j = 0; $j < @node; $j++) {
+
+            $score{'tag'} += $node[$j] eq $done[$j] ? 1 : $node[$j] eq '-' || $done[$j] eq '-' ? 0 : -1;
+        }
+
+        $score{'tag'} /= @node || $dims;
+
+        # $score{'tag'} = 0 if $score{'tag'} < 0;
+
+        @node = split //, $node->[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $node->[$i]->{'form'} : ElixirFM::orth($node->[$i]->{'form'});
+        @done = split //, $done->[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $done->[$i]->{'form'} : ElixirFM::orth($done->[$i]->{'form'});
+
+        @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+        $score{'form'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
+
+        # @node = exists $node->[$i]->parent()->{'core'} &&
+                # exists $node->[$i]->parent()->{'core'}{'reflex'} ? sort @{$node->[$i]->parent()->{'core'}{'reflex'}} : ();
+        # @done = exists $done->[$i]->parent()->{'core'} &&
+                # exists $done->[$i]->parent()->{'core'}{'reflex'} ? sort @{$done->[$i]->parent()->{'core'}{'reflex'}} : ();
+
+        # @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+        # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
+
+        # my $total = reduce { $a + $b } map { $score{$_} == 0 ? 100 : (1 / $score{$_}) } keys %score;
+
+        # $total = $total == 0 ? 1 : ((keys %score) / $total);
+
+        # return [ 'total' => $total ], map { [ $_ => $score{$_} ] } keys %score;
+
+        $score[$i] = reduce { $a * $b } map { $score{$_} } keys %score;
     }
 
-    $score{'tag'} /= @done || $dims;
-
-    @node = split //, $node->{'form'} =~ /\p{InArabic}/ ? normalize $node->{'form'} : ElixirFM::orth($node->{'form'});
-    @done = split //, $done->{'form'} =~ /\p{InArabic}/ ? normalize $done->{'form'} : ElixirFM::orth($done->{'form'});
-
-    @diff = Algorithm::Diff::LCS([@node], [@done]);
-
-    $score{'form'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
-
-    @node = exists $node->parent()->{'core'} && exists $node->parent()->{'core'}{'reflex'} ? sort @{$node->parent()->{'core'}{'reflex'}} : ();
-    @done = exists $done->parent()->{'core'} && exists $done->parent()->{'core'}{'reflex'} ? sort @{$done->parent()->{'core'}{'reflex'}} : ();
-
-    @diff = Algorithm::Diff::LCS([@node], [@done]);
-
-    $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
-
-    my $total = reduce { $a + $b } map { $score{$_} == 0 ? 100 : (1 / $score{$_}) } keys %score;
-
-    $total = $total == 0 ? 1 : ((keys %score) / $total);
-
-    return [ 'total' => $total ], map { [ $_ => $score{$_} ] } keys %score;
+    return reduce { $a * $b } @score;
 }
 
 #bind switch_either_context Shift+space menu Switch Either Context
@@ -980,8 +1001,6 @@ sub elixir_lexicon {
 
     $elixir->{'version'} = $data->{'version'};
     $elixir->{'lexicon'} = $data->{'lexicon'};
-
-    print "'" . @{$elixir->{'lexicon'}} . "'\n";
 }
 
 sub lexicon {
@@ -1005,23 +1024,77 @@ sub lexicon {
     return $elixir->{'lexicon'}[$n][$e];
 }
 
+#bind elixir_dictionary to Ctrl+D menu ElixirFM Dictionary
+
+sub elixir_dictionary {
+
+    my @data = exists $elixir->{'dictionary'} ? keys %{$elixir->{'dictionary'}} : ();
+
+    my ($level, $name, $path, @file) = inter_with_level('elixir');
+
+    return unless defined $level;
+
+    if (@data) {
+
+        open F, '>', $file[1] or return;
+
+        local $\ = "\n";
+
+        print F encode "utf8", $elixir->{'dictionary'}{$_} foreach sort @data;
+
+        close F;
+    }
+    else {
+
+        open F, '<', $file[1] or return;
+
+        local $/ = undef;
+
+        dictionary($_) foreach ElixirFM::unwords decode "utf8", <F>;
+
+        close F;
+    }
+}
+
+sub dictionary {
+
+    my ($text) = @_;
+
+    my (undef, $word) = split /^[\t ]*[:]{3,4}[\t ]+/m, $text;
+
+    $word = join " ", split " ", $word;
+
+    $elixir->{'dictionary'}{$word} = $text;
+}
+
 sub resolve {
 
-    import ElixirFM::Exec unless exists $elixir->{'resolve'};
+    elixir_dictionary() unless exists $elixir->{'dictionary'};
 
     my @word = map { split " " } @_;
 
-    my @news = grep { not exists $elixir->{'resolve'}{$_} } @word;
+    my @need = grep { not exists $elixir->{'resolve'}{$_} } @word;
 
-    my $news = join " ", @news;
+    my @none = grep { not exists $elixir->{'dictionary'}{$_} } @need;
 
-    my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $news);
+    if (@none) {
 
-    my @data = ElixirFM::concat ElixirFM::unpretty $data;
+        ElixirFM::Exec->import();
 
-    foreach (@data) {
+        my $none = join " ", @none;
 
-        my (undef, @data) = @{$_};
+        my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $none);
+
+        my @data = ElixirFM::unwords $data;
+
+        dictionary($_) foreach @data;
+    }
+
+    foreach (@need) {
+
+        my ($data) = ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_};
+
+        my (undef, @data) = @{$data};
 
         foreach (@data) {
 
@@ -1041,15 +1114,11 @@ sub resolve {
                 }
             }
         }
+
+        $elixir->{'resolve'}{$_} = $data;
     }
 
-    warn "MorphoTrees::resolve:\t" . "resolving " . @news . " of " . @word . " words\n" if @word > 1;
-
-    warn "MorphoTrees::resolve:\t" . '@news ' . @news . " <> " . '@data ' . @data . "\n" unless @news == @data;
-
-    $elixir->{'resolve'}{$news[$_]} = $data[$_] for 0 .. @data - 1;
-
-    return map { exists $elixir->{'resolve'}{$_} ? $elixir->{'resolve'}{$_} : [[$_]] } @word;
+    return map { $elixir->{'resolve'}{$_} } @word;
 }
 
 sub lexeme {
@@ -1146,8 +1215,6 @@ sub entity {
 sub elixir_resolve {
 
     resolve map { $_->{'form'} } $root->children() if $root->{'#name'} eq 'Unit';
-
-    print encode "buckwalter", $this->{'form'} . "\n";
 }
 
 sub morpholists {
@@ -1723,7 +1790,7 @@ sub reflect_tuple {
 
     for (my $i = @tuple; $i > 0; $i--) {
 
-        $tuple[$i - 1]->{'id'} = $data->{'id'} . 'l' . $i;
+        $tuple[$i - 1]->{'id'} = $data->{'id'} . (@tuple > 1 ? '-' . $i : '');
 
         $hash->{$tuple[$i - 1]->{'id'}} = $tuple[$i - 1];
 
@@ -1733,7 +1800,7 @@ sub reflect_tuple {
 
         DetermineNodeType($tuple);
 
-        my $id = $zoom->{'id'} . 'l' . $i;
+        my $id = $zoom->{'id'} . (@tuple > 1 ? '-' . $i : '');
 
         my @group = map { $_->[1] } @{$tuple[$i - 1]->parent()->{'data'}[0]};
 
@@ -2188,28 +2255,32 @@ sub espace ($) {
 
 sub inter_with_level ($) {
 
-    my $level = $_[0];
+    my ($inter, $level) = ('morpho', $_[0]);
 
-    my (@file, $path, $name);
+    my (@file, $path, $name, $exts);
 
-    my $thisfile = File::Spec->canonpath(FileName());
+    my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = fileparse($thisfile, '.morpho.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
 
-    $file[0] = path $path, $name . '.morpho.xml';
-    $file[1] = path $path, $name . ".$level.xml";
+    ($name, undef, undef) = fileparse($name, ".$inter");
 
-    $file[2] = $level eq 'corpus' ? ( path $path, $name . '.morpho.xml' )
-                                  : ( path $path, $name . ".$level.xml" );
+    $file[0] = path $path, $name . ".$inter" . $exts;
 
-    $file[3] = path $path, $name . '.morpho.xml.anno.xml';
+    $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
+                                  : ( path $path, $name . ".$level" . $exts );
 
-    unless ($file[0] eq $thisfile) {
+    $file[2] = $level eq 'corpus' ? ( path $path, $name . ".$inter" . $exts )
+                                  : ( path $path, $name . ".$level" . $exts );
+
+    $file[3] = path $path, $name . ".$inter.xml.anno.xml";
+
+    unless ($file[0] eq $file) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . $name . '.morpho.xml'. ".$fill",
+                        "Relocate it to " . $name . ".$inter" . $exts . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );

@@ -1328,31 +1328,32 @@ sub espace ($) {
 
 sub inter_with_level ($) {
 
-    my $level = $_[0];
+    my ($inter, $level) = ('syntax', $_[0]);
 
-    my (@file, $path, $name);
+    my (@file, $path, $name, $exts);
 
-    my $thisfile = File::Spec->canonpath(FileName());
+    my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = fileparse($thisfile, '.syntax.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
 
-    $file[0] = path $path, $name . '.syntax.xml';
-    $file[1] = path $path, $name . ".$level.xml";
+    ($name, undef, undef) = fileparse($name, ".$inter");
 
-    $file[2] = $level eq 'morpho' ? ( path $path, $name . '.syntax.xml' )
-                                  : ( path $path, $name . ".$level.xml" );
+    $file[0] = path $path, $name . ".$inter" . $exts;
 
-    $file[3] = path $path, $name . '.syntax.xml.anno.xml';
+    $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
+                                  : ( path $path, $name . ".$level" . $exts );
 
-    $file[4] = $level eq 'morpho' ? ( path $path, $name . '.syntax.fs' )
-                                  : ( undef );
+    $file[2] = $level eq 'morpho' ? ( path $path, $name . ".$inter" . $exts )
+                                  : ( path $path, $name . ".$level" . $exts );
 
-    unless ($file[0] eq $thisfile) {
+    $file[3] = path $path, $name . ".$inter.xml.anno.xml";
+
+    unless ($file[0] eq $file) {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
             -message => "This file's name does not fit the directory structure!$fill\n" .
-                        "Relocate it to " . $name . '.syntax.xml' . ".$fill",
+                        "Relocate it to " . $name . ".$inter" . $exts . ".$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1513,7 +1514,7 @@ sub open_level_words {
     }
 
     my @id = idx($root);
-    
+
     my $id = join 'w-', split 's-', $this->{'id'};
 
     if (Open($file[1])) {
@@ -1541,7 +1542,7 @@ sub open_level_morpho {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
+            -message => "There is no " . $file[1] . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1581,7 +1582,7 @@ sub open_level_tecto {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
+                        "\nThere is no " . $file[1] . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -1698,7 +1699,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2009 by Otakar Smrz
+Copyright 2004-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -469,16 +469,33 @@ sub path (@) {
 
 sub inter_with_level ($) {
 
-    my $level = $_[0];
+    my ($inter, $level) = ('words', $_[0]);
 
-    my (@file, $path, $name);
+    my (@file, $path, $name, $exts);
 
-    my $thisfile = File::Spec->canonpath(FileName());
+    my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = fileparse($thisfile, '.words.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
+    
+    ($name, undef, undef) = fileparse($name, ".$inter");
 
-    $file[0] = path $path, $name . '.words.xml';
-    $file[1] = path $path, $name . ".$level.xml";
+    $file[0] = path $path, $name . ".$inter" . $exts;
+    
+    $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
+                                  : ( path $path, $name . ".$level" . $exts );
+
+    unless ($file[0] eq $file) {
+
+        ToplevelFrame()->messageBox (
+            -icon => 'warning',
+            -message => "This file's name does not fit the directory structure!$fill\n" .
+                        "Relocate it to " . $name . ".$inter" . $exts . ".$fill",
+            -title => 'Error',
+            -type => 'OK',
+        );
+
+        return;
+    }
 
     return $level, $name, $path, @file;
 }
@@ -656,7 +673,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2009 by Otakar Smrz
+Copyright 2006-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
