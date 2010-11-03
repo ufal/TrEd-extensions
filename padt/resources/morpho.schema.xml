@@ -314,6 +314,9 @@
             <member name="entity" type="Entity"/>
             <member name="limits" type="Limits"/>
             <member name="reflex" type="Reflex"/>
+            <member name="note">
+                <list type="String" ordered="1"/>
+            </member>
         </structure>
     </type>
 

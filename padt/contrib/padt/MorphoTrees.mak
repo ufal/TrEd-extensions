@@ -70,15 +70,15 @@ style:<? my @child = $this->children();
                                        : @child > 1 ? '#{Line-fill:purple}' : '' :
             exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
             exists $this->{'score'} ? ( $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:orange}' :
-                                        $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:magenta}' :
-                                        $this->{'score'}[0]{'#content'} > 0.70 ? '#{Line-fill:purple}' :
-                                        $this->{'score'}[0]{'#content'} > 0.50 ? '#{Line-fill:darkviolet}' :
+                                        $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:pink}' :
+                                        $this->{'score'}[0]{'#content'} > 0.64 ? '#{Line-fill:magenta}' :
+                                        $this->{'score'}[0]{'#content'} > 0.48 ? '#{Line-fill:goldenrod}' :
                                         $this->{'score'}[0]{'#content'} > 0.25 ? '#{Line-fill:darkmagenta}' :
-                                                                                 '#{Line-fill:black}' ) : '' ) .
+                                                                                 '#{Line-fill:darkgrey}' ) : '' ) .
           ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
 
-node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit|Paragraph)$/
+node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
    ?><? $this->{'#name'} eq 'Token'
             ? ( ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
@@ -98,13 +98,12 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                     ? $this->{'form'}
                     : $this->{'#name'} eq 'Tuple'
                     ? '#{orange}' . ElixirFM::phon($this->{'form'})
-                    : (
-                    $this->{'#name'} =~ /^(?:Element|Unit|Paragraph)$/
-                        ? '#{black}' . MorphoTrees::idx($this)
-                        : ' ' ) .
+                    : ( $this->{'#name'} eq 'Element'
+                            ? '#{black}' . MorphoTrees::idx($this) . ' ' : '' ) .
                       ( $this->{apply} > 0
-                            ? ' #{red}${form}'
-                            : ' #{black}${form}' ) ) ) ?>
+                            ? '#{red}${form}' : '#{black}${form}' ) .
+                      ( $this->{'#name'} eq 'Unit'
+                            ? ' ' . '#{black}' . MorphoTrees::idx($this) : '' ) ) ) ?>
 
 node:<? $this->{'#name'} eq 'Word'
             ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } @{$this->{'norm'}} )
@@ -385,6 +384,13 @@ sub score_nodes {
     }
 }
 
+sub harmonic {
+
+    return 0 if grep { $_ == 0 } @_;
+
+    return @_ / ( reduce { $a + $b } map { 1 / $_ } @_ );
+}
+
 sub compute_score {
 
     my ($node, $done) = @_;
@@ -393,53 +399,49 @@ sub compute_score {
 
     my @score = ();
 
-    $node = [$node->children()];
-    $done = [$done->children()];
+    my @n = $node->children();
+    my @d = $done->children();
 
-    return unless @{$node} == @{$done};
+    return unless @n == @d;
 
-    for (my $i = 0; $i < @{$node}; $i++) {
+    for (my $i = 0; $i < @n; $i++) {
 
         my %score = ();
 
-        @node = split //, $node->[$i]->{'tag'};
-        @done = split //, $done->[$i]->{'tag'};
+        @node = split //, $n[$i]->{'tag'};
+        @done = split //, $d[$i]->{'tag'};
 
         for (my $j = 0; $j < @node; $j++) {
 
-            $score{'tag'} += $node[$j] eq $done[$j] ? 1 : $node[$j] eq '-' || $done[$j] eq '-' ? 0 : -1;
+            $score{'tag'} += $node[$j] eq $done[$j] ? 1.0 : $node[$j] eq '-' || $done[$j] eq '-' ? 0.5 : 0.0;
         }
 
         $score{'tag'} /= @node || $dims;
 
-        # $score{'tag'} = 0 if $score{'tag'} < 0;
-
-        @node = split //, $node->[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $node->[$i]->{'form'} : ElixirFM::orth($node->[$i]->{'form'});
-        @done = split //, $done->[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $done->[$i]->{'form'} : ElixirFM::orth($done->[$i]->{'form'});
+        @node = split //, $n[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $n[$i]->{'form'} : ElixirFM::orth($n[$i]->{'form'});
+        @done = split //, $d[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $d[$i]->{'form'} : ElixirFM::orth($d[$i]->{'form'});
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
         $score{'form'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
 
-        # @node = exists $node->[$i]->parent()->{'core'} &&
-                # exists $node->[$i]->parent()->{'core'}{'reflex'} ? sort @{$node->[$i]->parent()->{'core'}{'reflex'}} : ();
-        # @done = exists $done->[$i]->parent()->{'core'} &&
-                # exists $done->[$i]->parent()->{'core'}{'reflex'} ? sort @{$done->[$i]->parent()->{'core'}{'reflex'}} : ();
+        my $group = $node->parent()->{'data'}[0][$i][1];
 
-        # @diff = Algorithm::Diff::LCS([@node], [@done]);
+        @node = exists $group->{'core'} && exists $group->{'core'}{'reflex'} ? sort @{$group->{'core'}{'reflex'}} : ();
+        @done = exists $d[$i]->{'core'} && exists $d[$i]->{'core'}{'reflex'} ? sort @{$d[$i]->{'core'}{'reflex'}} : ();
+
+        @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+        $score{'reflex'} = @done ? 2 * @diff / (@node + @done) : 1;
 
         # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
 
-        # my $total = reduce { $a + $b } map { $score{$_} == 0 ? 100 : (1 / $score{$_}) } keys %score;
+        # $score[$i] = reduce { $a * $b } map { $score{$_} } keys %score;
 
-        # $total = $total == 0 ? 1 : ((keys %score) / $total);
-
-        # return [ 'total' => $total ], map { [ $_ => $score{$_} ] } keys %score;
-
-        $score[$i] = reduce { $a * $b } map { $score{$_} } keys %score;
+        $score[$i] = harmonic values %score;
     }
 
-    return reduce { $a * $b } @score;
+    return harmonic @score;
 }
 
 #bind switch_either_context Shift+space menu Switch Either Context
@@ -947,7 +949,7 @@ sub edit_note {
 
 sub elixir_lexicon {
 
-    ElixirFM::Exec->import();
+    import ElixirFM::Exec;
 
     my $file = CallerDir('../../data/elixir-lexicon.pls');
 
@@ -958,11 +960,11 @@ sub elixir_lexicon {
         $data = Storable::retrieve $file or warn $! and return;
     }
 
-    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir('version');
+    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir 'version';
 
     unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
 
-        my $text = ElixirFM::Exec::elixir('lexicon');
+        my $text = ElixirFM::Exec::elixir 'lexicon';
 
         my $pml = Treex::PML::Instance->load({ 'string' => $text });
 
@@ -1079,11 +1081,11 @@ sub resolve {
 
     if (@none) {
 
-        ElixirFM::Exec->import();
+        import ElixirFM::Exec;
 
         my $none = join " ", @none;
 
-        my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $none);
+        my $data = ElixirFM::Exec::elixir 'resolve', ['--lists'], $none;
 
         my @data = ElixirFM::unwords $data;
 
