@@ -283,11 +283,7 @@
 
 
     <type name="Score">
-        <alt>
-            <container type="String">
-                <attribute name="src" type="String"/>
-            </container>
-        </alt>
+        <list type="String" ordered="1"/>
     </type>
 
     <import schema="elixir.schema.xml" type="Morphs"/>

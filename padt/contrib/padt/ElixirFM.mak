@@ -31,9 +31,11 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
+our $hiding_level = 0;
+
 our ($dims, $fill) = (10, ' ' x 4);
 
-our $hiding_level = 0;
+our $window = {};
 
 
 sub entity {
@@ -653,7 +655,7 @@ sub CreateStylesheets {
     return << '>>';
 
 rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
-             '#{skipHiddenLevels:1}#{lineSpacing:1.2}' ?>
+             '#{skipHiddenLevels:1}#{lineSpacing:1.1}' ?>
 
 style:<? my $level = $this->level();
          ( $level < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
@@ -1041,24 +1043,42 @@ sub inter_with_level ($) {
     return $level, $name, $path, @file;
 }
 
-#bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
-sub open_level_first {
+#bind open_level_morpho_prime to Alt+1
+sub open_level_morpho_prime {
+
+    open_level_morpho();
+}
+
+#bind open_level_syntax_prime to Alt+2
+sub open_level_syntax_prime {
+
+    open_level_syntax();
+}
+
+#bind open_level_tecto_prime to Alt+3
+sub open_level_tecto_prime {
+
+    open_level_tecto();
+}
+
+#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+sub open_level_morpho {
 
     ChangingFile(0);
 
-    my ($level, $name, $path, @file) = inter_with_level 'morpho';
+    SetCurrentWindow($MorphoTrees::window->{$grp}) if exists $MorphoTrees::window->{$grp};
 }
 
-#bind open_level_second to Ctrl+Alt+2 menu Action: Edit Analytic File
-sub open_level_second {
+#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
+sub open_level_syntax {
 
     ChangingFile(0);
 
     my ($level, $name, $path, @file) = inter_with_level 'syntax';
 }
 
-#bind open_level_third to Ctrl+Alt+3 menu Action: Edit DeepLevels File
-sub open_level_third {
+#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+sub open_level_tecto {
 
     ChangingFile(0);
 

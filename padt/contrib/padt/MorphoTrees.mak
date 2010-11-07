@@ -47,7 +47,7 @@ our ($paragraph_hide_mode, $entity_hide_mode, $level_guide_mode) = ('', '', 0);
 
 our ($dims, $fill) = (10, ' ' x 4);
 
-our ($elixir, $review) = ({}, {});
+our ($elixir, $review, $window) = ({}, {}, {});
 
 our ($JSON) = JSON->new()->allow_nonref();
 
@@ -61,22 +61,22 @@ sub CreateStylesheets {
 
 rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
-             '#{skipHiddenLevels:1}#{lineSpacing:1.2}' : '#{skipHiddenLevels:1}' ?>
+             '#{skipHiddenLevels:1}#{lineSpacing:1.0}' : '#{skipHiddenLevels:1}' ?>
 
 style:<? my @child = $this->children();
+         my $score = exists $this->{'score'} ? $this->{'score'}[0] :
+                     exists $this->parent()->{'score'} ? $this->parent()->{'score'}[0] : 0;
          ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
            $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' : '' ) .
-         (( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}'
-                                       : @child > 1 ? '#{Line-fill:purple}' : '' :
+         ( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}'
+                                      : @child > 1 ? '#{Line-fill:purple}' : '' :
             exists $this->{'apply'} && $this->{'apply'} > 0 ? '#{Line-fill:red}' :
-            exists $this->{'score'} ? ( $this->{'score'}[0]{'#content'} > 0.95 ? '#{Line-fill:orange}' :
-                                        $this->{'score'}[0]{'#content'} > 0.85 ? '#{Line-fill:pink}' :
-                                        $this->{'score'}[0]{'#content'} > 0.64 ? '#{Line-fill:magenta}' :
-                                        $this->{'score'}[0]{'#content'} > 0.48 ? '#{Line-fill:goldenrod}' :
-                                        $this->{'score'}[0]{'#content'} > 0.25 ? '#{Line-fill:darkmagenta}' :
-                                                                                 '#{Line-fill:darkgrey}' ) : '' ) .
+            $score > 0.98 ? '#{Line-fill:violetred}' :
+            $score > 0.95 ? '#{Line-fill:darkviolet}' :
+            $score > 0.90 ? '#{Line-fill:goldenrod}' :
+            $score > 0.80 ? '#{Line-fill:tan}' : '' ) .
           ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
-            '#{Line-coords:n,n,p,n,p,p}' : '' )) ?>
+            '#{Line-coords:n,n,p,n,p,p}' : '' ) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
    ?><? $this->{'#name'} eq 'Token'
@@ -379,7 +379,7 @@ sub score_nodes {
 
             my @score = map { compute_score($tuple, $_) } @tuple;
 
-            $tuple->{'score'} = Treex::PML::Factory->createAlt([Treex::PML::Factory->createContainer(max @score)]);
+            $tuple->{'score'} = Treex::PML::Factory->createList([max @score]);
         }
     }
 }
@@ -1396,6 +1396,10 @@ sub couple {
 
                     $node->{$_} = $data->[-1]{$_} foreach 'morphs', 'form', 'tag';
 
+                    my $score = max map { exists $_->parent()->{'score'} ? $_->parent()->{'score'}[0] : 0 } @{$data};
+
+                    $node->{'score'} = Treex::PML::Factory->createList([$score]) if $score > 0;
+
                     unless (exists $component->{'form'}) {
 
                         demode "arabtex", "noneplus";
@@ -2263,7 +2267,7 @@ sub inter_with_level ($) {
 
     my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml', '.exclude.xml', '.xml');
 
     ($name, undef, undef) = fileparse($name, ".$inter");
 
@@ -2272,10 +2276,11 @@ sub inter_with_level ($) {
     $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[2] = $level eq 'corpus' ? ( path $path, $name . ".$inter" . $exts )
+    $file[2] = $level eq 'words'  ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = path $path, $name . ".$inter.xml.anno.xml";
+    $file[3] = $level eq 'elixir' ? ( path $path, '..', '..', 'ElixirFM', 'elixir' )
+                                  : ( path $path, $name . ".$inter.xml.anno.xml" );
 
     unless ($file[0] eq $file) {
 
@@ -2325,6 +2330,12 @@ sub open_level_syntax_prime {
 sub open_level_tecto_prime {
 
     open_level_tecto();
+}
+
+#bind open_level_elixir_prime to Alt+9
+sub open_level_elixir_prime {
+
+    open_level_elixir();
 }
 
 #bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
@@ -2460,6 +2471,52 @@ sub open_level_tecto {
     }
 
     switch_the_levels($file[1]);
+}
+
+
+sub open_level_elixir {
+
+    ChangingFile(0);
+
+    return unless $this->{'#name'} eq 'Token' and $root->{'#name'} eq 'Unit' and
+                  exists $this->{'root'} and $this->{'root'} ne '';
+
+    my $root = $this->{'root'};
+                  
+    my $name = '-' . (ElixirFM::isSunny($this->{'root'}) ? 'sunny' : 'moony') .
+               '-' . (ElixirFM::isComplex($this->{'root'}) ? 'complex' : 'regular');
+
+    my (undef, undef, $path, @file) = inter_with_level 'elixir';
+
+    unless (exists $ElixirFM::window->{$grp}) {
+
+        my $win = SplitWindowHorizontally({ 'ratio' => 0.45, 'no_init' => 1 });
+
+        $ElixirFM::window->{$grp} = $win;
+
+        $MorphoTrees::window->{$win} = $grp;
+    }
+
+    SetCurrentWindow($ElixirFM::window->{$grp});
+    
+    if (Open($file[3] . $name . '.xml')) {
+
+        { do {
+        
+            last if grep { $_->{'root'} eq $root } $this->children();
+        }
+        while NextTree() };
+    
+        # GotoTree(200);
+
+        # $this = PML::GetNodeByID($id) ||
+                # PML::GetNodeByID($id . 't1') ||
+                # PML::GetNodeByID($id . 'l1t1') || $root;
+    }
+    else {
+
+        SwitchContext('MorphoTrees');
+    }
 }
 
 sub switch_the_levels {
