@@ -305,6 +305,8 @@ sub annotate_morphology_click {
 #bind switch_review_mode Ctrl+M menu Switch Trees/Lists Mode
 sub switch_review_mode {
 
+    ChangingFile(0);
+
     $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
@@ -2473,18 +2475,42 @@ sub open_level_tecto {
     switch_the_levels($file[1]);
 }
 
-
+#bind open_level_elixir to Ctrl+Alt+9 menu Action: Display ElixirFM Lexicon
 sub open_level_elixir {
 
     ChangingFile(0);
 
-    return unless $this->{'#name'} eq 'Token' and $root->{'#name'} eq 'Unit' and
-                  exists $this->{'root'} and $this->{'root'} ne '';
+    return unless $this->{'#name'} eq 'Token' or $this->{'#name'} eq 'Lexeme';
 
-    my $root = $this->{'root'};
-                  
-    my $name = '-' . (ElixirFM::isSunny($this->{'root'}) ? 'sunny' : 'moony') .
-               '-' . (ElixirFM::isComplex($this->{'root'}) ? 'complex' : 'regular');
+    my $node = $this;
+    my $data = {};
+
+    if ($node->root()->{'#name'} eq 'Unit') {
+
+        return unless exists $node->{'root'} and exists $node->{'core'};
+    }
+    else {
+
+        if ($review->{$grp}{'mode'}) {
+
+            $node = $node->parent() unless $node->{'#name'} eq 'Lexeme';
+        }
+        else {
+
+            my @data = map { $_->[1] } @{$node->parent()->parent()->{'data'}[0]};
+
+            shift @data while $node = $node->lbrother();
+
+            $node = shift @data;
+        }
+    }
+
+    $data->{$_} = $node->{$_} foreach 'root', 'core';
+
+    return if $data->{'root'} eq '';
+
+    my $name = '-' . (ElixirFM::isSunny($data->{'root'}) ? 'sunny' : 'moony') .
+               '-' . (ElixirFM::isComplex($data->{'root'}) ? 'complex' : 'regular');
 
     my (undef, undef, $path, @file) = inter_with_level 'elixir';
 
@@ -2498,20 +2524,33 @@ sub open_level_elixir {
     }
 
     SetCurrentWindow($ElixirFM::window->{$grp});
-    
+
     if (Open($file[3] . $name . '.xml')) {
 
-        { do {
-        
-            last if grep { $_->{'root'} eq $root } $this->children();
-        }
-        while NextTree() };
-    
-        # GotoTree(200);
+        my $idx = CurrentTreeNumber();
 
-        # $this = PML::GetNodeByID($id) ||
-                # PML::GetNodeByID($id . 't1') ||
-                # PML::GetNodeByID($id . 'l1t1') || $root;
+        my @tree = GetTrees();
+
+        TREE: for (my $i = $idx - @tree; $i < $idx; $i++) {
+
+            foreach my $node ($tree[$i]->children()) {
+
+                next unless $node->{'root'} eq $data->{'root'};
+
+                foreach my $node ($node->children()) {
+
+                    next unless $node->{'morphs'} eq $data->{'core'}{'morphs'};
+
+                    next unless $node->{'entity'}[0][0][0] eq $data->{'core'}{'entity'}[0][0][0];
+
+                    GotoTree($i < 0 ? $i + @tree + 1 : $i + 1);
+
+                    $this = $node;
+
+                    last TREE;
+                }
+            }
+        }
     }
     else {
 
