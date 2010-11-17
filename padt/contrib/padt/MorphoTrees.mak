@@ -64,8 +64,8 @@ rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$g
              '#{skipHiddenLevels:1}#{lineSpacing:1.0}' : '#{skipHiddenLevels:1}' ?>
 
 style:<? my @child = $this->children();
-         my $score = exists $this->{'score'} ? $this->{'score'}[0] :
-                     exists $this->parent()->{'score'} ? $this->parent()->{'score'}[0] : 0;
+         my $score = exists $this->{'score'} ? $this->{'score'} :
+                     exists $this->parent()->{'score'} ? $this->parent()->{'score'} : 0;
          ( exists $this->{'hide'} && $this->{'hide'} eq 'hide' ||
            $this->parent()->{'#name'} eq 'Word' ? '#{Node-hide:1}' : '' ) .
          ( $root->{'#name'} eq 'Unit' ? $this->{'#name'} ne 'Word' || @child == 1 ? '#{Line-fill:red}'
@@ -106,7 +106,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                             ? ' ' . '#{black}' . MorphoTrees::idx($this) : '' ) ) ) ?>
 
 node:<? $this->{'#name'} eq 'Word'
-            ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } @{$this->{'norm'}} )
+            ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } map { $_->{'form'} } $this->children() )
             :
         $this->{'#name'} eq 'Token'
             ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
@@ -178,7 +178,7 @@ sub get_nodelist_hook {
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $focus];
+    return [$nodes, $focus];
 }
 
 sub get_value_line_hook {
@@ -296,6 +296,74 @@ sub node_click_hook {
     return 'stop';
 }
 
+#bind focus_score to Ctrl+Shift+Down menu Focus Highest Score
+sub focus_score {
+
+    ChangingFile(0);
+
+    return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
+
+    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+
+    return unless @node;
+
+    my $score = max map { $_->{'score'} } @node;
+
+    @node = grep { $_->{'score'} == $score } @node;
+
+    if (@node > 1) {
+
+        my $node = $this;
+
+        while ($node = $node->following()) {
+
+            last if $node->{'score'} == $score;
+        }
+
+        unless ($node) {
+
+            $node = $review->{$grp}{'tree'};
+
+            while ($node = $node->following()) {
+
+                last if $node->{'score'} == $score;
+            }
+        }
+        
+        $this = $node;
+    }
+    else {
+
+        $this = $node[0];
+    }
+}
+
+#bind update_morphology to Ctrl+Shift+space menu Update the Annotation
+sub update_morphology {
+
+    my $zoom = $review->{$grp}{'zoom'};
+
+    switch_either_context() unless $zoom;
+
+    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+
+    if (@node) {
+
+        my $score = max map { $_->{'score'} } @node;
+
+        @node = grep { $_->{'score'} == $score } @node;
+
+        foreach (@node) {
+
+            $this = $_;
+
+            annotate_morphology('click');
+        }
+    }
+
+    switch_either_context() unless $zoom;
+}
+
 #bind annotate_morphology_click to Ctrl+space menu Annotate as if by Clicking
 sub annotate_morphology_click {
 
@@ -381,7 +449,7 @@ sub score_nodes {
 
             my @score = map { compute_score($tuple, $_) } @tuple;
 
-            $tuple->{'score'} = Treex::PML::Factory->createList([max @score]);
+            $tuple->{'score'} = max @score;
         }
     }
 }
@@ -719,7 +787,6 @@ sub move_to_root {
     ChangingFile(0);
 }
 
-#bind move_to_fork Ctrl+Shift+Down menu Move Down to Fork
 sub move_to_fork {
 
     my $node = $this;
@@ -947,7 +1014,18 @@ sub edit_note {
 #
 # ##################################################################################################
 
-#bind elixir_lexicon to Ctrl+L menu ElixirFM Lexicon
+#bind display_elixir_lexicon to Ctrl+L menu ElixirFM Lexicon
+
+sub display_elixir_lexicon {
+
+    my $win = $grp;
+
+    open_level_elixir();
+
+    Redraw();
+
+    SetCurrentWindow($win);
+}
 
 sub elixir_lexicon {
 
@@ -1398,9 +1476,9 @@ sub couple {
 
                     $node->{$_} = $data->[-1]{$_} foreach 'morphs', 'form', 'tag';
 
-                    my $score = max map { exists $_->parent()->{'score'} ? $_->parent()->{'score'}[0] : 0 } @{$data};
+                    my $score = max map { exists $_->parent()->{'score'} ? $_->parent()->{'score'} : 0 } @{$data};
 
-                    $node->{'score'} = Treex::PML::Factory->createList([$score]) if $score > 0;
+                    $node->{'score'} = $score if $score > 0;
 
                     unless (exists $component->{'form'}) {
 
@@ -1782,13 +1860,18 @@ sub reflect_tuple {
 
     my $zoom = $review->{$grp}{'zoom'};
 
-    $zoom->{'norm'} = Treex::PML::Factory->createList();
+    foreach ($zoom->children()) {
 
-    foreach $node ($zoom->descendants()) {
+        next unless exists $_->{'form'} and $_->{'form'} ne '';
 
-        delete $hash->{$node->{'id'}};
+        foreach $node ($_->children()) {
 
-        CutNode($node);
+            delete $hash->{$node->{'id'}};
+
+            CutNode($node);
+        }
+
+        CutNode($_);
     }
 
     my $data = $review->{$grp}{'data'};
@@ -1802,11 +1885,11 @@ sub reflect_tuple {
 
         $hash->{$tuple[$i - 1]->{'id'}} = $tuple[$i - 1];
 
-        unshift @{$zoom->{'norm'}}, $tuple[$i - 1]->{'form'};
-
         my $tuple = NewSon($zoom);
 
         DetermineNodeType($tuple);
+
+        $tuple->{'form'} = $tuple[$i - 1]->{'form'};
 
         my $id = $zoom->{'id'} . (@tuple > 1 ? '-' . $i : '');
 
@@ -2514,7 +2597,7 @@ sub open_level_elixir {
 
     my (undef, undef, $path, @file) = inter_with_level 'elixir';
 
-    unless (exists $ElixirFM::window->{$grp}) {
+    unless (exists $ElixirFM::window->{$grp} and grep { $ElixirFM::window->{$grp} == $_ } TrEdWindows()) {
 
         my $win = SplitWindowHorizontally({ 'ratio' => 0.45, 'no_init' => 1 });
 

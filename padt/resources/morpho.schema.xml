@@ -42,9 +42,6 @@
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
             <member name="form" type="String"/>
-            <member name="norm">
-                <list type="String" ordered="1"/>
-            </member>
             <member name="note" type="String"/>
             <member name="score" type="Score"/>
             <member name="with" role="#CHILDNODES">
@@ -55,6 +52,8 @@
 
     <type name="Tuple">
         <container role="#NODE">
+            <attribute name="form" type="String"/>
+            <attribute name="note" type="String"/>
             <sequence role="#CHILDNODES">
                 <element name="Token" type="Token"/>
             </sequence>
@@ -282,10 +281,6 @@
 
 
 
-    <type name="Score">
-        <list type="String" ordered="1"/>
-    </type>
-
     <import schema="elixir.schema.xml" type="Morphs"/>
 
     <import schema="elixir.schema.xml" type="Limits"/>
@@ -383,6 +378,10 @@
 
     <type name="ID">
         <cdata format="ID"/>
+    </type>
+
+    <type name="Score">
+        <cdata format="any"/>
     </type>
 
 </pml_schema>
