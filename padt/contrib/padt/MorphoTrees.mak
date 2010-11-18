@@ -329,7 +329,7 @@ sub focus_score {
                 last if $node->{'score'} == $score;
             }
         }
-        
+
         $this = $node;
     }
     else {
@@ -1174,7 +1174,9 @@ sub resolve {
 
     foreach (@need) {
 
-        my ($data) = ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_};
+        my ($data) = exists $elixir->{'dictionary'}{$_}
+                        ? ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_}
+                        : [[$_]];
 
         my (undef, @data) = @{$data};
 
