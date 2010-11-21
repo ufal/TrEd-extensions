@@ -28,6 +28,9 @@
     <type name="Tree">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="w.rf">
+                <cdata format="PMLREF"/>
+            </member>
             <member name="ord" required="1" role="#ORDER" type="Order"/>
             <member name="afun" required="1">
                 <choice>
@@ -51,6 +54,12 @@
     <type name="Node">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="w.rf">
+                <cdata format="PMLREF"/>
+            </member>
+            <member name="m.rf">
+                <cdata format="PMLREF"/>
+            </member>
             <member name="ord" required="1" role="#ORDER" type="Order"/>
             <member name="afun" type="Afun" required="1"/>
             <member name="score" type="Score"/>
