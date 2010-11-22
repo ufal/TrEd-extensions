@@ -430,26 +430,28 @@ sub CreateStylesheets {
 
 style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
-node:<? exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
-        exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
-        '#{custom2}${form} ' . Analytic::idx($this) ?>
+node:<? $this->{'#name'} eq 'Tree' ? '#{custom2}${form} ' . Analytic::idx($this) :
+        exists $this->{'m'} && $this->{'m'} !~ /t$/ 
+            ? ElixirFM::orph($this->{'m'}{'form'}, InVerticalMode() ? " " : "\n") 
+            : '#{custom6}${w/form}' ?>
 
-node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'} && @{$this->{'score'}}
-                        ? '#{custom3}' . join " ", map { $_->{'#content'} } @{$this->{'score'}}
+node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'} 
+                        ? '#{custom3}${score}'
                         : '#{custom1}${afun}' ),
                     map { '#{custom1}${' . $_ . '}' } grep { $this->attr($_) ne '' }
                         qw 'parallel paren arabfa coref clause' ?>
 
-node:<? exists $this->{'morpho'}{'Token'} ? (
-        exists $this->{'morpho'}{'Token'}{'note'} &&
-               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
-        ) . '#{custom2}${morpho/Token/tag}' : '' ?>
+node:<? exists $this->{'m'} ? (
+        exists $this->{'m'}{'note'} &&
+               $this->{'m'}{'note'} ne '' ? '#{custom6}${m/note} << ' : ''
+        ) . '#{custom2}${m/tag}' : '' ?>
 
-hint:<? exists $this->{'morpho'}{'Token'} ? join "\n", 'tag: ${morpho/Token/tag}',
-                                                       'lemma: ${morpho/Lexeme/form}',
-                                                       'morphs: ${morpho/Token/morphs}',
-                                                       'gloss: ${morpho/Token/gloss}',
-                                                       'note: ${morpho/Token/note}' : '' ?>
+hint:<? exists $this->{'m'} && $this->{'m'} !~ /t$/ ? join "\n",
+        'tag: ${m/tag}',
+        'lemma: ${m/lemma}',
+        'morphs: ${m/morphs}',
+        'gloss: ${m/sense}',
+        'note: ${m/note}' : '' ?>
 >>
 }
 
@@ -617,8 +619,8 @@ sub get_value_line_hook {
 
                map {
 
-                   show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
-                                                    not exists $_->{'morpho'}{'Token'})
+                   show_value_line_node($views, $_, exists $_->{'m'} && $_->{'m'}{'id'} !~ /t1$/ ? '' : $_->{'w'}{'form'},
+                                                    not exists $_->{'m'})
 
                } @{$nodes}[1 .. $#{$nodes}] ];
 
@@ -633,10 +635,9 @@ sub show_value_line_node {
 
     if (HiddenVisible()) {
 
-        return  unless exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
-                                                                   $node->{'morpho'}{'Word'}{'form'} ne '';
+        return  unless exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
 
-        return  [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+        return  [ $text, $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
                                                                                     : '-foreground => gray' ],
                 [ " " ];
     }
@@ -646,10 +647,9 @@ sub show_value_line_node {
                 [ " " ]
                         if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
-        return  unless exists $view->{$node->{'ord'}} and exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
-                                                                                                      $node->{'morpho'}{'Word'}{'form'} ne '';
+        return  unless exists $view->{$node->{'ord'}} and exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
 
-        return  [ $node->attr($text), $node, $warn ? '-foreground => red' : () ],
+        return  [ $text, $node, $warn ? '-foreground => red' : () ],
                 [ " " ];
     }
 }
@@ -658,8 +658,7 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 'ord') until !$node or exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
-                                                                                                     $node->{'morpho'}{'Word'}{'form'} ne '';
+    $node = PrevNodeLinear($node, 'ord') until !$node or exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
 
     return $node;
 }
@@ -779,8 +778,8 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{'clause'} ne "" || exists $this->{'morpho'}{'Token'} &&
-                                             $this->{'morpho'}{'Token'}{'tag'} =~ /^V/ &&
+    return $this->{'clause'} ne "" || exists $this->{'m'} &&
+                                             $this->{'m'}{'tag'} =~ /^V/ &&
                                              $this->{'afun'} !~ /^Aux/
                                    || $this->{'afun'} =~ /^Pred[ECMP]?$/;
 }
@@ -872,8 +871,8 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{'afun'} eq 'Atr' and exists $_[0]->{'morpho'}{'Token'} and
-                                                                $_[0]->{'morpho'}{'Token'}{'tag'} =~ /^A/
+            return $_[0] if $_[0]->{'afun'} eq 'Atr' and exists $_[0]->{'m'} and
+                                                                $_[0]->{'m'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -923,8 +922,8 @@ sub referring_Msd {
 
     $head = $head->parent() if $this->{'afun'} eq 'Atr';                                # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or exists $head->{'morpho'}{'Token'} and
-                                                      $head->{'morpho'}{'Token'}{'tag'} =~ /^[VNA]/;    # the verb, governing masdar or participle
+    $head = $head->parent() until not $head or exists $head->{'m'} and
+                                                      $head->{'m'}{'tag'} =~ /^[VNA]/;  # the verb, governing masdar or participle
 
     return $head;
 }
@@ -976,12 +975,12 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${morpho/Token/tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
 
-    my $code = q {<? exists $this->{'morpho'}{'Token'} ? (
-        exists $this->{'morpho'}{'Token'}{'note'} &&
-               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
-        ) . '#{custom2}${morpho/Token/tag}' : '' ?>};
+    my $code = q {<? exists $this->{'m'} ? (
+        exists $this->{'m'}{'note'} &&
+               $this->{'m'}{'note'} ne '' ? '#{custom6}${m/note} << ' : ''
+        ) . '#{custom2}${m/tag}' : '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -1034,15 +1033,15 @@ sub accept_auto_afun {
 
     my $node = $this;
 
-    if ($this->{'afun'} ne '???' or exists $this->{'score'} and @{$this->{'score'}} > 0) {
+    if ($this->{'afun'} ne '???' or exists $this->{'score'}) {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = $this->{'score'}[0]{'#content'};
-        shift @{$this->{'score'}};
+        $this->{'afun'} = $this->{'score'};
+        delete $this->{'score'};
 
         $Redraw = 'tree';
     }
@@ -1059,7 +1058,7 @@ sub unset_afun {
     else {
 
         $this->{'afun'} = '???';
-        shift @{$this->{'score'}};
+        delete $this->{'score'};
 
         $Redraw = 'tree';
     }

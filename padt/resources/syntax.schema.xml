@@ -3,6 +3,8 @@
     <revision>1.1.0</revision>
     <description>PADT Surface Syntax</description>
 
+    <reference name="morpho" readas="dom"/>
+
     <root name="Analytic" type="Trees"/>
 
     <type name="Trees">
@@ -54,10 +56,10 @@
     <type name="Node">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="w.rf">
+            <member name="w.rf" role="#KNIT" type="Word">
                 <cdata format="PMLREF"/>
             </member>
-            <member name="m.rf">
+            <member name="m.rf" role="#KNIT" type="Token">
                 <cdata format="PMLREF"/>
             </member>
             <member name="ord" required="1" role="#ORDER" type="Order"/>
@@ -157,47 +159,14 @@
         </structure>
     </type>
 
-    <import schema="morpho.schema.xml" type="Entry"/>
+    <import schema="morpho.schema.xml" type="Word"/>
 
-    <import schema="morpho.schema.xml" type="Morphs"/>
+    <import schema="morpho.schema.xml" type="Token"/>
 
     <import schema="morpho.schema.xml" type="String"/>
-
-    <import schema="morpho.schema.xml" type="Root"/>
-
-    <import schema="morpho.schema.xml" type="Tags"/>
 
     <import schema="morpho.schema.xml" type="Score"/>
 
     <import schema="morpho.schema.xml" type="ID"/>
-
-    <type name="Word">
-        <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID"/>
-            <member name="form" type="String"/>
-            <member name="note" type="String"/>
-        </structure>
-    </type>
-
-    <type name="Lexeme">
-        <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID"/>
-            <member name="root" type="Root"/>
-            <member name="core" type="Entry"/>
-            <member name="form" type="String"/>
-            <member name="note" type="String"/>
-        </structure>
-    </type>
-
-    <type name="Token">
-        <structure>
-            <member name="id" as_attribute="1" role="#ID" type="ID"/>
-            <member name="morphs" type="Morphs"/>
-            <member name="tag" type="Tags"/>
-            <member name="form" type="String"/>
-            <member name="note" type="String"/>
-            <member name="gloss" type="String"/>
-        </structure>
-    </type>
 
 </pml_schema>
