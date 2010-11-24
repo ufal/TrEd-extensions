@@ -212,16 +212,18 @@ sub get_value_line_hook {
                    [ " " ],
 
                    map {
+                            my @child = grep { exists $_->{'form'} and $_->{'form'} ne '' } $_->children();
+                   
                             [ $_->{'form'}, $_, (
 
                                 $paragraph_hide_mode eq 'hidden'
 
-                                      ? ( $_->{'apply'} > 0
-                                            ? '-foreground => gray'
-                                            : '-foreground => black' )
-                                      : ( $_->{'apply'} > 0
-                                            ? '-foreground => red'
-                                            : '-foreground => black' )
+                                      ? ( @child == 1 ? '-foreground => red'
+                                                      : @child > 1 ? '-foreground => purple' 
+                                                                   : '-foreground => black' )
+                                      : ( @child == 1 ? '-foreground => gray'
+                                                      : @child > 1 ? '-foreground => purple' 
+                                                                   : '-foreground => black' )
                                 ) ],
 
                             [ " " ],
@@ -1922,8 +1924,6 @@ sub reflect_tuple {
             $hash->{$token->{'id'}} = $token;
         }
     }
-
-    $zoom->{'hide'} = $paragraph_hide_mode eq 'hidden' && $zoom->children() ? 'hide' : '';
 
     return $zoom;
 }

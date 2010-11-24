@@ -1,37 +1,9 @@
 # -*- cperl -*-
 
-#include <contrib/pml/PML.mak>
-
 #ifndef padt
 #define padt
 
-use lib CallerDir();
-
-push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
-
-    my $schema = PML::SchemaName();
-
-    return $schema       if defined $schema and $schema =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/;
-
-    return 'MorphoTrees' if $grp->{FSFile}->FS()->isList('type') and
-                            grep { /[EP]|paragraph|entity/ } $grp->{FSFile}->FS()->listValues('type');
-
-    return 'DeepLevels'  if $grp->{FSFile}->FS()->isList('func') and
-                            grep { /ACT|PAT|ADDR|EFF|ORIG/ } $grp->{FSFile}->FS()->listValues('func');
-
-    return 'Analytic'    if $grp->{FSFile}->FS()->exists('afun') and
-                            $grp->{FSFile}->FS()->exists('arabclause');
-
-    return 'PhraseTrees' if $grp->{FSFile}->FS()->exists('label');
-    return;
-};
-
-#include "ElixirFM.mak"
-#include "MorphoTrees.mak"
-#include "Analytic.mak"
-#include "DeepLevels.mak"
-#include "WordsLevel.mak"
-#include "PhraseTrees.mak"
+#include <contrib/pml/PML.mak>
 
 package PADT;
 
@@ -86,5 +58,33 @@ sub pre_switch_context_hook {
 
     initialize_direction('left-to-right', 'left');
 }
+
+#include "ElixirFM.mak"
+#include "MorphoTrees.mak"
+#include "Analytic.mak"
+#include "DeepLevels.mak"
+#include "WordsLevel.mak"
+#include "PhraseTrees.mak"
+
+package TredMacro;
+
+push @AUTO_CONTEXT_GUESSING, sub {
+
+    my $schema = PML::SchemaName();
+
+    return $schema       if defined $schema and $schema =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/;
+
+    return 'MorphoTrees' if $grp->{FSFile}->FS()->isList('type') and
+                            grep { /[EP]|paragraph|entity/ } $grp->{FSFile}->FS()->listValues('type');
+
+    return 'DeepLevels'  if $grp->{FSFile}->FS()->isList('func') and
+                            grep { /ACT|PAT|ADDR|EFF|ORIG/ } $grp->{FSFile}->FS()->listValues('func');
+
+    return 'Analytic'    if $grp->{FSFile}->FS()->exists('afun') and
+                            $grp->{FSFile}->FS()->exists('arabclause');
+
+    return 'PhraseTrees' if $grp->{FSFile}->FS()->exists('label');
+    return;
+};
 
 #endif padt

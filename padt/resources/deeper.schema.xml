@@ -3,6 +3,8 @@
     <revision>1.0.0</revision>
     <description>PADT Deep Syntax</description>
 
+    <reference name="syntax"/>
+
     <root name="DeepLevels" type="Trees"/>
 
     <type name="Trees">

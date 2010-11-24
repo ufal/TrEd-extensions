@@ -431,7 +431,7 @@ sub CreateStylesheets {
 style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
 node:<? $this->{'#name'} eq 'Tree' ? '#{custom2}${form} ' . Analytic::idx($this) :
-        exists $this->{'m'} && $this->{'m'} !~ /t$/ 
+        exists $this->{'m'} 
             ? ElixirFM::orph($this->{'m'}{'form'}, InVerticalMode() ? " " : "\n") 
             : '#{custom6}${w/form}' ?>
 
@@ -446,7 +446,7 @@ node:<? exists $this->{'m'} ? (
                $this->{'m'}{'note'} ne '' ? '#{custom6}${m/note} << ' : ''
         ) . '#{custom2}${m/tag}' : '' ?>
 
-hint:<? exists $this->{'m'} && $this->{'m'} !~ /t$/ ? join "\n",
+hint:<? exists $this->{'m'} ? join "\n",
         'tag: ${m/tag}',
         'lemma: ${m/lemma}',
         'morphs: ${m/morphs}',

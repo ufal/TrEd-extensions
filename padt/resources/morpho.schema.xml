@@ -3,6 +3,8 @@
     <revision>1.1.1</revision>
     <description>PADT Morphology</description>
 
+    <reference name="words" readas="pml"/>
+
     <root name="MorphoTrees" type="Trees"/>
 
     <type name="Trees">
@@ -28,6 +30,11 @@
     <type name="Unit">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="w.rf">
+                <list role="#KNIT" type="W.Unit" ordered="1">
+                    <cdata format="PMLREF"/>
+                </list>
+            </member>
             <member name="form" type="String"/>
             <member name="note" type="String"/>
             <member name="with" role="#CHILDNODES">
@@ -38,12 +45,43 @@
         </structure>
     </type>
 
-    <type name="Word">
+    <type name="W.Unit">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
             <member name="form" type="String"/>
             <member name="note" type="String"/>
+            <member name="with" role="#CHILDNODES">
+                <sequence>
+                    <element name="Word" type="W.Word"/>
+                </sequence>
+            </member>
+        </structure>
+    </type>
+
+    <type name="W.Word">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
+        </structure>
+    </type>
+
+    <type name="Word">
+        <structure role="#NODE">
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
+            <member name="w.rf">
+                <list role="#KNIT" type="W.Word" ordered="1">
+                    <cdata format="PMLREF"/>
+                </list>
+            </member>
+            <member name="form" type="String"/>
+            <member name="note" type="String"/>
             <member name="score" type="Score"/>
+            <!--
+            <member name="data">
+                <list type="Tuple" ordered="1"/>
+            </member>
+            -->
             <member name="with" role="#CHILDNODES">
                 <list type="Tuple" ordered="1"/>
             </member>
@@ -376,12 +414,12 @@
         </sequence>
     </type>
 
-    <type name="ID">
-        <cdata format="ID"/>
-    </type>
-
     <type name="Score">
         <cdata format="any"/>
+    </type>
+
+    <type name="ID">
+        <cdata format="ID"/>
     </type>
 
 </pml_schema>
