@@ -37,7 +37,12 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context MorphoTrees
 
-BEGIN { import TredMacro; }
+BEGIN { 
+
+    import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
+    
+    import TredMacro; 
+}
 
 our ($this, $root, $grp);
 
@@ -120,17 +125,6 @@ hint:<? '${sense}' if $this->{'#name'} eq 'Token' ?>
 >>
 }
 
-sub idx {
-
-    my $node = $_[0] || $this;
-
-    return unless exists $node->{'id'};
-
-    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
-
-    return wantarray ? @idx : ( "#" . join "/", @idx );
-}
-
 sub normalize {
 
     my $text = $_[0];
@@ -141,16 +135,6 @@ sub normalize {
     $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
 
     return $text;
-}
-
-sub switch_context_hook {
-
-    &PADT::switch_context_hook;
-}
-
-sub pre_switch_context_hook {
-
-    &PADT::pre_switch_context_hook;
 }
 
 sub node_release_hook {

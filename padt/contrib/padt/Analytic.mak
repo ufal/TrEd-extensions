@@ -25,7 +25,12 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context Analytic
 
-BEGIN { import TredMacro; }
+BEGIN { 
+
+    import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
+    
+    import TredMacro; 
+}
 
 our ($this, $root, $grp);
 
@@ -455,15 +460,6 @@ hint:<? exists $this->{'m'} ? join "\n",
 >>
 }
 
-sub idx {
-
-    my $node = $_[0] || $this;
-
-    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
-
-    return wantarray ? @idx : ( "#" . join "/", @idx );
-}
-
 sub morpho_structure {
 
     my $node = $this->root();
@@ -535,16 +531,6 @@ sub morpho_structure {
 
         delete $node->{'m'};
     }
-}
-
-sub switch_context_hook {
-
-    &PADT::switch_context_hook;
-}
-
-sub pre_switch_context_hook {
-
-    &PADT::pre_switch_context_hook;
 }
 
 sub get_auto_afun {

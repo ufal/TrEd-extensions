@@ -18,7 +18,12 @@ our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 #binding-context PhraseTrees
 
-BEGIN { import TredMacro; }
+BEGIN { 
+
+    import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
+    
+    import TredMacro; 
+}
 
 our ($this, $root, $grp);
 
@@ -57,16 +62,6 @@ hint:<? join "\n", 'morph: ${morph}',
                    'tag_3: ${tag_3}'
                    'comment: ${comment}' ?>
 >>
-}
-
-sub switch_context_hook {
-
-    &PADT::switch_context_hook;
-}
-
-sub pre_switch_context_hook {
-
-    &PADT::pre_switch_context_hook;
 }
 
 #bind tree_justify_mode Ctrl+j menu Toggle Tree Justify Mode

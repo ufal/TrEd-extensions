@@ -23,7 +23,12 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context WordsLevel
 
-BEGIN { import TredMacro; }
+BEGIN { 
+
+    import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
+    
+    import TredMacro; 
+}
 
 our ($this, $root, $grp);
 
@@ -157,25 +162,6 @@ node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom2}' . $this->
 
 node:<? exists $this->{'note'} && $this->{'note'} ne '' ? '#{custom3}' . $this->{'note'} : '' ?>
 >>
-}
-
-sub idx {
-
-    my $node = $_[0] || $this;
-
-    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
-
-    return wantarray ? @idx : ( "#" . join "/", @idx );
-}
-
-sub switch_context_hook {
-
-    &PADT::switch_context_hook;
-}
-
-sub pre_switch_context_hook {
-
-    &PADT::pre_switch_context_hook;
 }
 
 sub node_release_hook {

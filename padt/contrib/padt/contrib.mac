@@ -9,6 +9,10 @@ package PADT;
 
 BEGIN {
 
+    use Exporter 'import';
+
+    our @EXPORT_OK = ('switch_context_hook', 'pre_switch_context_hook', 'idx');
+
     import TredMacro;
 }
 
@@ -57,6 +61,17 @@ sub pre_switch_context_hook {
               $_[1] =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/;
 
     initialize_direction('left-to-right', 'left');
+}
+
+sub idx {
+
+    my $node = $_[0] || $this;
+
+    return unless exists $node->{'id'};
+
+    my @idx = grep { $_ ne '' } split /[^0-9]+/, $node->{'id'};
+
+    return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
 #include "ElixirFM.mak"

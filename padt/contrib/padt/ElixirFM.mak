@@ -25,7 +25,12 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context ElixirFM
 
-BEGIN { import TredMacro; }
+BEGIN { 
+
+    import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
+    
+    import TredMacro; 
+}
 
 our ($this, $root, $grp);
 
@@ -745,16 +750,6 @@ node:<? $this->{'#name'} eq 'Entry'
         '#{custom6}${reflex=' . (join ", ", @{$this->{'reflex'}{'cs'}}) . '}' : () ) ?>
 
 >>
-}
-
-sub switch_context_hook {
-
-    &PADT::switch_context_hook;
-}
-
-sub pre_switch_context_hook {
-
-    &PADT::pre_switch_context_hook;
 }
 
 sub node_release_hook {
