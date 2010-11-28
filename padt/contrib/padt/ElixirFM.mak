@@ -25,11 +25,11 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context ElixirFM
 
-BEGIN { 
+BEGIN {
 
     import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
-    
-    import TredMacro; 
+
+    import TredMacro;
 }
 
 our ($this, $root, $grp);
@@ -806,7 +806,7 @@ sub get_nodelist_hook {
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $focus];
+    return [$nodes, $focus];
 }
 
 sub get_value_line_hook {

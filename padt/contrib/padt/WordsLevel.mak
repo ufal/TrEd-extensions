@@ -23,11 +23,11 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context WordsLevel
 
-BEGIN { 
+BEGIN {
 
     import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
-    
-    import TredMacro; 
+
+    import TredMacro;
 }
 
 our ($this, $root, $grp);
@@ -35,13 +35,6 @@ our ($this, $root, $grp);
 our ($Redraw);
 
 our ($dims, $fill) = (10, ' ' x 4);
-
-our $hiding_level = 0;
-
-our $regexQ = qr/[0-9]+(?:[\.\,\x{060C}\x{066B}\x{066C}][0-9]+)? |
-                 [\x{0660}-\x{0669}]+(?:[\.\,\x{060C}\x{066B}\x{066C}][\x{0660}-\x{0669}]+)?/x;
-
-our $regexG = qr/[\.\,\;\:\!\?\`\"\'\(\)\[\]\{\}\<\>\\\|\/\~\@\#\$\%\^\&\*\_\=\+\-\x{00AB}\x{00BB}\x{060C}\x{061B}\x{061F}]/;
 
 sub words {
 
@@ -51,8 +44,8 @@ sub words {
                                                  # \p{InArabic} |   # too general
                                                 \p{InArabicPresentationFormsA} | \p{InArabicPresentationFormsB} )+ |
                                                 \p{Latin}+ |
-                                                $regexQ |
-                                                $regexG |
+                                                $PADT::regexQ |
+                                                $PADT::regexG |
                                                 \p{IsGraph} ) )/ogx;
 
     return @words;
@@ -216,7 +209,7 @@ sub get_nodelist_hook {
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $current];
+    return [$nodes, $current];
 }
 
 sub get_value_line_hook {
@@ -416,34 +409,6 @@ sub invoke_redo {
     ChangingFile(0);
 }
 
-#bind hiding_level_deeper Ctrl+plus menu Hiding Level Deeper
-sub hiding_level_deeper {
-
-    $hiding_level++;
-
-    $hiding_level %= 6;
-
-    ChangingFile(0);
-}
-
-#bind hiding_level_higher Ctrl+minus menu Hiding Level Higher
-sub hiding_level_higher {
-
-    $hiding_level--;
-
-    $hiding_level %= 6;
-
-    ChangingFile(0);
-}
-
-#bind hiding_level_reset Ctrl+equal menu Hiding Level Reset
-sub hiding_level_reset {
-
-    $hiding_level = $hiding_level ? 0 : 2;
-
-    ChangingFile(0);
-}
-
 # ##################################################################################################
 #
 # ##################################################################################################
@@ -462,11 +427,11 @@ sub inter_with_level ($) {
     my $file = File::Spec->canonpath(FileName());
 
     ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
-    
+
     ($name, undef, undef) = fileparse($name, ".$inter");
 
     $file[0] = path $path, $name . ".$inter" . $exts;
-    
+
     $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
                                   : ( path $path, $name . ".$level" . $exts );
 

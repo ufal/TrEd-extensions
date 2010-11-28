@@ -37,11 +37,11 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context MorphoTrees
 
-BEGIN { 
+BEGIN {
 
     import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
-    
-    import TredMacro; 
+
+    import TredMacro;
 }
 
 our ($this, $root, $grp);
@@ -197,16 +197,16 @@ sub get_value_line_hook {
 
                    map {
                             my @child = grep { exists $_->{'form'} and $_->{'form'} ne '' } $_->children();
-                   
+
                             [ $_->{'form'}, $_, (
 
                                 $paragraph_hide_mode eq 'hidden'
 
                                       ? ( @child == 1 ? '-foreground => red'
-                                                      : @child > 1 ? '-foreground => purple' 
+                                                      : @child > 1 ? '-foreground => purple'
                                                                    : '-foreground => black' )
                                       : ( @child == 1 ? '-foreground => gray'
-                                                      : @child > 1 ? '-foreground => purple' 
+                                                      : @child > 1 ? '-foreground => purple'
                                                                    : '-foreground => black' )
                                 ) ],
 
@@ -1114,7 +1114,7 @@ sub elixir_dictionary {
     }
     else {
 
-        open F, '<', $file[1] or return;
+        open F, '<', -f $file[1] ? $file[1] : $file[2] or return;
 
         local $/ = undef;
 
@@ -2347,7 +2347,8 @@ sub inter_with_level ($) {
     $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[2] = $level eq 'words'  ? ( path $path, $name . ".$inter" . $exts )
+    $file[2] = $level eq 'elixir' ? ( path $path, '.elixir.dat' ) :
+               $level eq 'words'  ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
     $file[3] = $level eq 'elixir' ? ( path $path, '..', '..', 'ElixirFM', 'elixir' )
@@ -2606,9 +2607,14 @@ sub open_level_elixir {
 
                 next unless $node->{'root'} eq $data->{'root'};
 
+                $this = $node;
+
                 foreach my $node ($node->children()) {
 
-                    next unless $node->{'morphs'} eq $data->{'core'}{'morphs'};
+                    next unless $node->{'morphs'} eq $data->{'core'}{'morphs'} or
+                                $node->{'morphs'} . ' |< aT' eq $data->{'core'}{'morphs'} and
+                                exists $node->{'entity'}[0][0][1]{'derive'} and
+                                $node->{'entity'}[0][0][1]{'derive'} eq '------F---';
 
                     next unless $node->{'entity'}[0][0][0] eq $data->{'core'}{'entity'}[0][0][0];
 

@@ -25,11 +25,11 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 
 #binding-context Analytic
 
-BEGIN { 
+BEGIN {
 
     import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
-    
-    import TredMacro; 
+
+    import TredMacro;
 }
 
 our ($this, $root, $grp);
@@ -436,11 +436,11 @@ sub CreateStylesheets {
 style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
 
 node:<? $this->{'#name'} eq 'Tree' ? '#{custom2}${form} ' . Analytic::idx($this) :
-        exists $this->{'m'} 
-            ? ElixirFM::orph($this->{'m'}{'form'}, InVerticalMode() ? " " : "\n") 
+        exists $this->{'m'}
+            ? ElixirFM::orph($this->{'m'}{'form'}, InVerticalMode() ? " " : "\n")
             : '#{custom6}${w/form}' ?>
 
-node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'} 
+node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'}
                         ? '#{custom3}${score}'
                         : '#{custom1}${afun}' ),
                     map { '#{custom1}${' . $_ . '}' } grep { $this->attr($_) ne '' }

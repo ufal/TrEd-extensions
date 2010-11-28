@@ -18,11 +18,11 @@ our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 #binding-context PhraseTrees
 
-BEGIN { 
+BEGIN {
 
     import PADT 'switch_context_hook', 'pre_switch_context_hook', 'idx';
-    
-    import TredMacro; 
+
+    import TredMacro;
 }
 
 our ($this, $root, $grp);
@@ -85,7 +85,7 @@ sub get_nodelist_hook {
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
-    return [[@{$nodes}], $current];
+    return [$nodes, $current];
 }
 
 sub get_value_line_hook {
