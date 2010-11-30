@@ -2675,6 +2675,51 @@ sub ThisAddressClipBoard {
     ChangingFile(0);
 }
 
+sub update_references {
+
+    OpenSecondaryFiles(CurrentFile());
+
+    my ($file) = GetSecondaryFiles();
+
+    return unless defined $file;
+
+    my $w = [ map { $_->children() } map { $_->children() } $file->trees() ];
+    my $m = [ map { $_->children() } GetTrees() ];
+
+    print "w " . @{$w} . "\n";
+    print "m " . @{$m} . "\n";
+
+    Algorithm::Diff::traverse_balanced($w, $m, {
+
+            'MATCH' => sub {
+
+                    $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
+
+                },
+
+            'CHANGE' => sub {
+
+                    $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
+
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]]) . "\n";
+                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\n";
+                },
+
+            'DISCARD_A' => sub {
+
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]]) . "\n";
+                },
+
+            'DISCARD_B' => sub {
+
+                    delete $m->[$_[1]]->{'w.rf'};
+
+                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\n";
+                },
+
+        }, sub { $_[0]->{'form'} });
+}
+
 # ##################################################################################################
 #
 # ##################################################################################################
