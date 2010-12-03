@@ -109,7 +109,7 @@ EOF
 <ul>
 EOF
       pushd "${dir}"/stylesheets/
-      for f in * ; do if [[ -e $f && $f ~= *~ ]] ; then
+      for f in * ; do if [[ -e $f && $f != *~ ]] ; then
 	      echo "<li>${f}</li>" >> "$index"
           fi
       done
@@ -122,7 +122,7 @@ EOF
 <ul>
 EOF
     pushd "${dir}"/resources
-    for f in * ; do if [[ -e $f && $f ~= *~ ]] ; then
+    for f in * ; do if [[ -e $f && $f != *~ ]] ; then
 	    echo "<li>${f}</li>" >> "$index"
         fi
     done
@@ -136,7 +136,7 @@ EOF
 <ul>
 EOF
     pushd "${dir}"/bin
-    for f in *; do if [[ -e $f && $f ~= *~ ]] ; then
+    for f in *; do if [[ -e $f && $f != *~ ]] ; then
 	    echo "<li>${f}</li>" >> "$index"
         fi
     done
