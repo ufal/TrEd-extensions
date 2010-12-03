@@ -13,8 +13,7 @@
     -->
     <transform id="tigerXML" test="/corpus/head/annotation">
       <in type="xslt" href="tiger2pml.xsl"/>
-      <!-- NOT YET DEFINED: -->
-      <!-- <out type="xslt" href="pml2tiger.xsl"/> -->
+      <out type="xslt" href="pml2tiger.xsl"/>
     </transform> 
   </transform_map>
 </pmlbackend>
