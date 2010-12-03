@@ -84,33 +84,37 @@ EOF
 <ul>
 EOF
       pushd "${dir}/contrib"
-      for f in */*[^~]; do 
-	  fdir=$(dirname "$f")
-	  if grep -q '^=' "$f"; then
-	      mkdir -p "${pod}/$fdir"
-	      mkdir -p "${html}/$fdir"
+      for f in */* ; do if [[ -e $f && $f != *~ ]] ; then
+	      fdir=$(dirname "$f")
+	      if grep -q '^=' "$f"; then
+	          mkdir -p "${pod}/$fdir"
+	          mkdir -p "${html}/$fdir"
 
-	      podselect < "$f" > "${pod}/${f}.pod"
-	      podchecker "${pod}/${f}.pod"
+	          podselect < "$f" > "${pod}/${f}.pod"
+	          podchecker "${pod}/${f}.pod"
 
-	      "$pod2xhtml" --no-index --toplink 'back' --topurl ../../index.html --css ../css/blue.css --infile "${pod}/${f}.pod" --outfile "${html}/${f}.html" --title "Generated documentation for ${f}"
-	      echo "<li><a href=\"html/${f}.html\">${f}</a></li>" >> "$index"
-	  else
-	      echo "<li>${f}</li>" >> "$index"
-	  fi
+	          "$pod2xhtml" --no-index --toplink 'back' --topurl ../../index.html --css ../css/blue.css --infile "${pod}/${f}.pod" --outfile "${html}/${f}.html" --title "Generated documentation for ${f}"
+	          echo "<li><a href=\"html/${f}.html\">${f}</a></li>" >> "$index"
+	      else
+	          echo "<li>${f}</li>" >> "$index"
+	      fi
+          fi
       done
       popd
       echo "</ul>" >> "$index"
   fi
   if [ -d "${dir}"/stylesheets ]; then
-  cat <<EOF >> "$index"
+      cat <<EOF >> "$index"
 <h3>Stylesheet files:</h3>
 <ul>
 EOF
-    for f in "${dir}"/stylesheets/*[^~]; do 
-	echo "<li>${f}</li>" >> "$index"
-    done
-    echo "</ul>" >> "$index"
+      pushd "${dir}"/stylesheets/
+      for f in * ; do if [[ -e $f && $f ~= *~ ]] ; then
+	      echo "<li>${f}</li>" >> "$index"
+          fi
+      done
+      echo "</ul>" >> "$index"
+      popd
   fi
   if [ -d "${dir}"/resources ]; then
       cat <<EOF >> "$index"
@@ -118,8 +122,9 @@ EOF
 <ul>
 EOF
     pushd "${dir}"/resources
-    for f in *[^~]; do 
-	echo "<li>${f}</li>" >> "$index"
+    for f in * ; do if [[ -e $f && $f ~= *~ ]] ; then
+	    echo "<li>${f}</li>" >> "$index"
+        fi
     done
     popd
     echo "</ul>" >> "$index"
@@ -131,8 +136,9 @@ EOF
 <ul>
 EOF
     pushd "${dir}"/bin
-    for f in *[^~]; do 
-	echo "<li>${f}</li>" >> "$index"
+    for f in *; do if [[ -e $f && $f ~= *~ ]] ; then
+	    echo "<li>${f}</li>" >> "$index"
+        fi
     done
     popd
     echo "</ul>" >> "$index"
