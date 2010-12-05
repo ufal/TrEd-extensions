@@ -142,6 +142,70 @@ sub node_release_hook {
     return 'stop' if defined $_[0]->{'#name'};
 }
 
+sub enable_edit_node_hook {
+
+    return 'stop' if $review->{$grp}{'zoom'};
+}
+
+sub enable_attr_hook {
+
+    return 'stop' if $review->{$grp}{'zoom'};
+}
+
+sub after_edit_attr_hook {
+
+    return unless $_[2] and not $review->{$grp}{'zoom'};
+
+    $review->{$grp}{$_} = undef for 'data', 'tree';
+}
+
+sub after_edit_node_hook {
+
+    return unless $_[1] and not $review->{$grp}{'zoom'};
+
+    $review->{$grp}{$_} = undef for 'data', 'tree';
+}
+
+sub file_opened_hook {
+
+    $this = PML::GetNodeByID($review->{$grp}{'zoom'}->{'id'}) if $review->{$grp}{'zoom'};
+
+    $grp->{'currentNode'} = $this;
+
+    $review->{$grp}{$_} = undef for 'zoom', 'data', 'tree';
+
+    Redraw();
+}
+
+sub file_reloaded_hook {
+
+    $grp->{'currentNode'} = $grp->{'currentNode'}->root();
+
+    $review->{$grp}{$_} = undef for 'zoom', 'data', 'tree';
+}
+
+sub file_resumed_hook {
+
+    $this = PML::GetNodeByID($review->{$grp}{'zoom'}->{'id'}) if $review->{$grp}{'zoom'};
+
+    $grp->{'currentNode'} = $this;
+
+    $review->{$grp}{$_} = undef for 'zoom', 'data', 'tree';
+
+    Redraw();
+}
+
+sub goto_file_hook {
+
+    $this = PML::GetNodeByID($review->{$grp}{'zoom'}->{'id'}) if $review->{$grp}{'zoom'};
+
+    $grp->{'currentNode'} = $this;
+
+    $review->{$grp}{$_} = undef for 'zoom', 'data', 'tree';
+
+    Redraw();
+}
+
 sub get_nodelist_hook {
 
     my ($fsfile, $index, $focus, $hiding) = @_;
@@ -946,54 +1010,20 @@ sub invoke_redo {
 #bind edit_note to exclam menu Edit Annotation Note
 sub edit_note {
 
-    $Redraw = 'none';
-    ChangingFile(0);
+    return if $review->{$grp}{'zoom'};
+    
+    return unless $this->{'#name'} eq 'Token' or $this->{'#name'} eq 'Word';
 
-    my $note = $grp->{'FSFile'}->FS()->exists('note') ? 'note' : undef;
-
-    unless (defined $note) {
-
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "There is no 'note' attribute in this file's format!$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
-
-        return;
+    if (exists $this->{'note'} and $this->{'note'} ne "") {
+    
+        delete $this->{'note'};
     }
+    else {
+    
+        my $note = main::QueryString($grp->{framegroup}, "Enter the note", 'note');
 
-    my $switch = $this->{'#name'} eq 'Token' || $this->{'#name'} eq 'Lexeme';
-
-    if ($switch and not $this->{'apply'} > 0) {
-
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "This node must be annotated in order to receive notes!$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
-
-        return;
+        $this->{'note'} = $note if defined $note;
     }
-
-    switch_either_context() if $switch;
-
-    my $value = $this->{$note};
-
-    $value = main::QueryString($grp->{framegroup}, "Enter the note", $note, $value);
-
-    if (defined $value) {
-
-        $this->{$note} = $value;
-
-        $Redraw = 'tree';
-        ChangingFile(1);
-    }
-
-    switch_either_context() if $switch;
-
-    $this->{$note} = $value if defined $value;
 }
 
 # ##################################################################################################
@@ -1341,7 +1371,7 @@ sub morpholists {
 
             $node->{'form'} = join "  ", ElixirFM::nub { $_[0] } map { join " ", map {
 
-                                                decode "arabtex", $_->{'form'}
+                                                ElixirFM::orth $_->{'form'}
 
                                             } $_->children() } $node->children();
 
@@ -1399,7 +1429,7 @@ sub couple {
 
                 demode "arabtex", "noneplus";
 
-                $path[0] = decode "arabtex", join " ", @form;
+                $path[0] = ElixirFM::orth join " ", @form;
 
                 demode "arabtex", "default";
 
@@ -1472,7 +1502,7 @@ sub couple {
 
                         demode "arabtex", "noneplus";
 
-                        $component->{'form'} = decode "arabtex", $node->{'form'};
+                        $component->{'form'} = ElixirFM::orth $node->{'form'};
 
                         demode "arabtex", "default";
                     }
@@ -1528,7 +1558,7 @@ sub morphotrees {
 
                 demode "arabtex", "noneplus";
 
-                $path[0] = decode "arabtex", join " ", @form;
+                $path[0] = ElixirFM::orth join " ", @form;
 
                 demode "arabtex", "default";
 
@@ -1600,7 +1630,7 @@ sub morphotrees {
 
                         demode "arabtex", "noneplus";
 
-                        $component->{'form'} = decode "arabtex", $node->{'form'};
+                        $component->{'form'} = ElixirFM::orth $node->{'form'};
 
                         demode "arabtex", "default";
                     }
@@ -2677,17 +2707,12 @@ sub ThisAddressClipBoard {
 
 sub update_references {
 
-    OpenSecondaryFiles(CurrentFile());
-
     my ($file) = GetSecondaryFiles();
 
     return unless defined $file;
 
     my $w = [ map { $_->children() } map { $_->children() } $file->trees() ];
     my $m = [ map { $_->children() } GetTrees() ];
-
-    print "w " . @{$w} . "\n";
-    print "m " . @{$m} . "\n";
 
     Algorithm::Diff::traverse_balanced($w, $m, {
 
@@ -2701,13 +2726,13 @@ sub update_references {
 
                     $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]]) . "\n";
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\n";
                     warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\n";
                 },
 
             'DISCARD_A' => sub {
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]]) . "\n";
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\n";
                 },
 
             'DISCARD_B' => sub {
@@ -2718,6 +2743,8 @@ sub update_references {
                 },
 
         }, sub { $_[0]->{'form'} });
+
+    ChangingFile(1);
 }
 
 # ##################################################################################################
