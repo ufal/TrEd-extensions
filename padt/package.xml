@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="1028859">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="1041177">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
@@ -7,7 +7,7 @@
   <icon>icons/logo.png</icon>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.50</version>
+  <version>1.53</version>
   <copyright year="2004-2010">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank, including ElixirFM and MorphoTrees.</description>
   <require>
