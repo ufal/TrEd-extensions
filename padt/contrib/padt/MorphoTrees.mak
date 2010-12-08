@@ -1045,7 +1045,7 @@ sub display_elixir_lexicon {
 
 sub elixir_lexicon {
 
-    import ElixirFM::Exec;
+    import 'ElixirFM::Exec';
 
     my $file = CallerDir('../../data/elixir-lexicon.pls');
 
