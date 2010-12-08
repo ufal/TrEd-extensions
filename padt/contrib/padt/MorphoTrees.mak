@@ -1056,11 +1056,11 @@ sub elixir_lexicon {
         $data = Storable::retrieve $file or warn $! and return;
     }
 
-    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir 'version';
+    my ($version) = reverse split /\n/, ElixirFM::Exec::elixir('version');
 
     unless (not defined $version or exists $data->{'version'} and $data->{'version'} ge $version) {
 
-        my $text = ElixirFM::Exec::elixir 'lexicon';
+        my $text = ElixirFM::Exec::elixir('lexicon');
 
         my $pml = Treex::PML::Instance->load({ 'string' => $text });
 
@@ -1148,7 +1148,7 @@ sub elixir_dictionary {
 
         local $/ = undef;
 
-        dictionary($_) foreach ElixirFM::unwords decode "utf8", <F>;
+        dictionary($_) foreach ElixirFM::unwords(decode "utf8", <F>);
 
         close F;
     }
@@ -1181,7 +1181,7 @@ sub resolve {
 
         my $none = join " ", @none;
 
-        my $data = ElixirFM::Exec::elixir 'resolve', ['--lists'], $none;
+        my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $none);
 
         my @data = ElixirFM::unwords $data;
 
