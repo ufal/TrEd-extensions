@@ -6,8 +6,8 @@
 
 =head2 Description
 
-Converts Hyderabad Treebank *.morph data into pml. Errors and some
-suspicious values of attributes are reported.
+Converts Hyderabad 2009 Treebank *.morph data into pml. Errors and
+some suspicious values of attributes are reported.
 
 =head2 Usage
 
@@ -144,8 +144,8 @@ while (my $in_file = shift) {
   }else{
     $out_file = "$in_file.pml";
   }
-  open my $IN,"<$in_file";
-  open my $OUT,">$out_file";
+  open my $IN,"<$in_file" or die "Cannot read $in_file: $!\n";
+  open my $OUT,">$out_file" or die "Cannot write to $out_file: $!\n";
   print STDERR "Processing: $in_file\n";
   my ($doc_id,           # document id
       $sentence_id,      # sentence id
@@ -198,7 +198,7 @@ while (my $in_file = shift) {
         close $OUT;
         $sentcount = 1;
         $out_file = "$in_file.".sprintf('%03d',++$filecount).'.pml';
-        open $OUT,">$out_file";
+        open $OUT,">$out_file" or die "Cannot write to $out_file: $!\n";
         header($OUT,$in_file);
         print $OUT qq(<document id="$doc_id)
           .sprintf('_%03d',$filecount).qq(">\n);
