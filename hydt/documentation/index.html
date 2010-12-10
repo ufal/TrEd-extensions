@@ -5,20 +5,25 @@
   </head>
   <body>
     <h1>Hyderabad Treebank Extension for TrEd</h1>
-
+    <p>
     This extension allows to convert data from the Hyderabad Treebank
     (tested on ICON 09 data) to PML and visualise and process them in
     TrEd. It has two separate scripts to convert either the original
-    *.morph data, or the converted data in CoNLL-ST format.
+    *.morph data, or the converted data in CoNLL-ST format.</p>
 
     <h2>Morph Data</h2>
-    Use
+    <p>Use
     <pre>bin/hydt-morph2pml.perl [--max-sentences|-s num] language file1.morph [file2.morph...]</pre>
-    It is advisable to split large files into smaller ones to improve
+    <p>It is advisable to split large files into smaller ones to improve
     TrEd's performance.
 
     <h2>CoNLL Data</h2>
-    Use <pre>bin/hydt_conll_to_pml.sh language output-dir hydt-conll-file</pre>
+    <p>Use <pre>bin/hydt_conll_to_pml.sh language output-dir hydt-conll-file</pre>
+
+    <h2>ICON 2010 Data</h2>
+    <p>The script <code>bin/icon2010-preprocess.perl</code> converts the
+    2010 ssf format to 2009 ssf format, so you can use the above
+    script. For Hindi data, you can use the CoNLL version.</p>
 
 </body>
 </html>
