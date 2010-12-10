@@ -58,6 +58,7 @@
   <type name="word.type">
     <structure role="#NODE">
       <member name="id" role="#ID" as_attribute="1" required="1"><cdata format="ID"/></member>
+      <member name="head"><choice><value>0</value><value>1</value></choice></member>
       <member name="error" type="error.type"/>
       <member name="feats" type="feats.type"/>
       <member name="form"><cdata format="any"/></member>

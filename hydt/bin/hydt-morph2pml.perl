@@ -84,6 +84,7 @@ sub print_subtree {
   foreach my $attr (sort keys %$node){
     if ($attr eq 'feats' and scalar @{$node->{feats}}){
       print $OUT qq($space  <feats>\n);
+      warn "WARNING: Invalid number of feats" if @{ $node->{feats} } >= @FEATS ;
       for(my $i=0;$i<=$#FEATS;$i++){
         print $OUT qq($space    <$FEATS[$i]>$node->{feats}[$i]</$FEATS[$i]>\n) if defined $node->{feats}[$i] and length $node->{feats}[$i];
       }
@@ -159,7 +160,8 @@ while (my $in_file = shift) {
       $name,             # name of the last chunk parsed
       $name_counter,     # used to generate uniq names for words
       @error,            # list of errors for current node
-      $tree              # reference to hash with the current tree
+      $tree,             # reference to hash with the current tree
+      $head,             # the name of the head of a chunk, if any
      );
   ($wordid,$chunkid,$filecount,$sentcount) = (0,0,0,0);
 
@@ -247,8 +249,6 @@ while (my $in_file = shift) {
           push @{ $tree->{0}{_children} },$previous;
         }
 
-
-#        foreach my $root (@{ $children->{0}}){
         foreach my $root (sort { $tree->{$a}{ord} <=> $tree->{$b}{ord} }
                           @{ $tree->{0}{_children} }){
           print_subtree($OUT,$tree,$root,0);
@@ -264,14 +264,15 @@ while (my $in_file = shift) {
 
     }elsif($line =~ m{^([0-9.]+)\s+\(\(\s+(\S+)(?:\s+<(.+)>)?}){
       my ($num,$phrase,$detail) = ($1,$2,$3);
-      my ($drel,$parent,$feats);
+      my ($drel,$parent);
+      my $feats = [];
       if ($chunk) {
         $parent = $name;
         push @error,'inside-chunk';
         warn "WARNING: Chunk inside chunk at $..\n";
       }
       $chunk++;
-      if($detail =~ m{name=([^/]+)}){
+      if($detail =~ m{name=([^/>]+)}){
         $name = $1;
         if ($name =~ /:/) {
           warn "WARNING: Name '$name' resembles drel at $..\n";
@@ -286,6 +287,9 @@ while (my $in_file = shift) {
         }
 
       }
+      if($detail =~ m{head=([^/>]+)}){
+        $head = $1;
+      }
       if($detail =~ m{drel=([^:/]+)}){
         $drel = $1;
         if($detail =~ m{drel=$drel:([^/]+)}){
@@ -294,8 +298,9 @@ while (my $in_file = shift) {
           $parent = 0;
         }
       }
-      if($detail =~ m{af=(.*?)[/]}){
-        $feats = [split /,/,"$1,#"];
+      if($detail =~ m{af=(.*?)[/>]}){
+        my $morph = $1;
+        $feats = [split /,/,"$morph,#"];
       }
 
       if($detail =~ /name=/ && !$name
@@ -326,7 +331,7 @@ while (my $in_file = shift) {
                    ord=>$ord++};
       @error = ();
 
-    }elsif($line =~ m{^([0-9.]+)\s+(\S+)(?:\s+(\S+)\s+<af=(.+)>)?}){
+    }elsif($line =~ m{^([0-9.]+)\s+(\S+)(?:\s+(\S+)\s+<af=(.+?)[>/])?}){
       my ($num,$form,$phrase,$morph) = ($1,$2,$3,$4);
       die "Word outside chunk.\n" unless $chunk;
       $morph ||= '';
@@ -344,13 +349,16 @@ while (my $in_file = shift) {
                    feats=>[@$feats],
                    error=>[@error],
                    name=>"n$ord",
-                   ord=>$ord++};
+                   ord=>$ord};
+      $tree->{"n$ord"}{head} = 1 if(defined $head and $line =~ m{name=$head[/>]});
+      $ord++;
       @error = ();
 
     }elsif($line =~ /^\s*\)\)/){
       die "Not inside chunk.\n" unless $chunk;
       $chunk--;
-
+      warn "WARNING: No chunk head" unless defined $head;
+      undef $head;
     }else{
       warn "WARNING: Ignored: $line\n" unless $line =~ m,^(?:|</?(?:head|text)>)\s*$,;
     }

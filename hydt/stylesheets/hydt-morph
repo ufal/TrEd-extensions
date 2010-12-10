@@ -1,7 +1,7 @@
 context: HYDT
-node:<?$${form}||('#{blue}'.$${feats/lemma})?><? $${error} ? '#{red}!'.join ',',ListV($this->{error}) : ''?>
+node:<? ($${head}?'#{brown}':'').$${form}||('#{blue}'.$${feats/lemma})?><? $${error} ? '#{red}!'.join ',',ListV($this->{error}) : ''?>
 node:#{darkgreen}${phrase} #{purple}${drel}
-style:<? $${form} ? '#{Oval-fill:brown}#{CurrentOval-fill:orange}' : '' ?>
+style:<? $${form} ? ($${head}?'#{Oval-fill:black}#{CurrentOval-fill:gray}':'#{Oval-fill:brown}#{CurrentOval-fill:orange}') : '' ?>
 hint: <? ($this->{wxform} ? 'wxform: '.$this->{wxform}."\n":'').join "\n",map $_.": ".$this->{feats}{$_},sort grep $_ ne 'lemma' || $this->{'#name'} eq 'word',keys %{$this->{feats}}; ?>
 text:<? $${form} 
   ? ("#{-tag:".(join(",",map { "$_,#$_->{id}" } $this,grep $_ != $root,$this->ancestors))."}"
