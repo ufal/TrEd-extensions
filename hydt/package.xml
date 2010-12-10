@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="69819">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="77039">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>hydt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Hyderabad Dependency Treebank</title>
-  <version>1.42</version>
-  <copyright year="2009">Petr Pajas and Dan Zeman and Jan Štěpánek</copyright>
+  <version>1.50</version>
+  <copyright year="2010">Petr Pajas and Dan Zeman and Jan Štěpánek</copyright>
   <description>This package contains a conversion script for the
     original .morph format of the Hyderabad Dependency Treebank (HyDT)
     to PML and for the CoNLL representation to PML with
     detransliteration of form and lemma and provides a stylesheets for
-    visualization of the resulting PML in TrEd.
+    visualization of the resulting PML in TrEd. Works both for
+    ICON2009 and ICON2010 versions of the data.
   </description>
   <require>
     <extension name="conll2009" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/conll2009"/>
