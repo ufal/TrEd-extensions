@@ -134,6 +134,14 @@ sub normalize {
     $text =~ s/([\x{064B}-\x{0650}\x{0652}\x{0670}])\x{0651}/\x{0651}$1/g;
     $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
 
+    $text =~ s/\x{064E}\x{0627}/\x{0627}/g;
+    $text =~ s/\x{0627}[\x{064E}-\x{0650}]/\x{0627}/g;
+
+    if (grep { $text eq decode "buckwalter", $_ } map { "hu" . $_, "hi" . $_ } "", "m", "n~a", "mA") {
+
+        $text =~ s/[\x{064F}\x{0650}]//;
+    }
+
     return $text;
 }
 
@@ -393,7 +401,18 @@ sub update_morphology {
 
     my $zoom = $review->{$grp}{'zoom'};
 
-    switch_either_context() unless $zoom;
+    unless ($zoom) {
+
+        return if $this->{'#name'} eq 'Unit';
+
+        $this = $this->parent() until $this->{'#name'} eq 'Word';
+
+        $review->{$grp}{'zoom'} = $this;
+    }
+
+    $review->{$grp}{$_} = undef for 'data', 'tree';
+
+    update_zoom_tree();
 
     my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
 
@@ -411,7 +430,12 @@ sub update_morphology {
         }
     }
 
-    switch_either_context() unless $zoom;
+    unless ($zoom) {
+
+        $this = $review->{$grp}{'zoom'};
+
+        $review->{$grp}{'zoom'} = undef;
+    }
 }
 
 #bind annotate_morphology_click to Ctrl+space menu Annotate as if by Clicking
@@ -489,6 +513,10 @@ sub score_nodes {
 
     return unless @zoom;
 
+    my @none  = grep { not exists $_->{'form'} or $_->{'form'} eq '' } @zoom;
+
+    @zoom = @none if @none;
+
     my @data = map { $_->children() } $data->children();
 
     foreach my $group (@data) {
@@ -531,6 +559,32 @@ sub compute_score {
         @node = split //, $n[$i]->{'tag'};
         @done = split //, $d[$i]->{'tag'};
 
+        $node[4] = $node[0];
+        $done[4] = $done[0];
+        
+        if ($node[0] eq 'V') {
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 2 .. 3;
+        }
+        elsif ($node[0] eq 'N') {
+
+            $done[-4] = '-';
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -3 .. -1;
+        }
+        elsif ($node[0] eq 'A') {
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -4 .. -1;
+        }
+        elsif ($node[0] eq 'Q') {
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -4 .. -1;
+        }
+        elsif ($node[0] eq 'S') {
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -5 .. -1;
+        }
+
         for (my $j = 0; $j < @node; $j++) {
 
             $score{'tag'} += $node[$j] eq $done[$j] ? 1.0 : $node[$j] eq '-' || $done[$j] eq '-' ? 0.5 : 0.0;
@@ -538,8 +592,8 @@ sub compute_score {
 
         $score{'tag'} /= @node || $dims;
 
-        @node = split //, $n[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $n[$i]->{'form'} : ElixirFM::orth($n[$i]->{'form'});
-        @done = split //, $d[$i]->{'form'} =~ /\p{InArabic}/ ? normalize $d[$i]->{'form'} : ElixirFM::orth($d[$i]->{'form'});
+        @node = split //, normalize $n[$i]->{'form'} =~ /\p{InArabic}/ ? $n[$i]->{'form'} : ElixirFM::orth $n[$i]->{'form'};
+        @done = split //, normalize $d[$i]->{'form'} =~ /\p{InArabic}/ ? $d[$i]->{'form'} : ElixirFM::orth $d[$i]->{'form'};
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
@@ -550,9 +604,23 @@ sub compute_score {
         @node = exists $group->{'core'} && exists $group->{'core'}{'reflex'} ? sort @{$group->{'core'}{'reflex'}} : ();
         @done = exists $d[$i]->{'core'} && exists $d[$i]->{'core'}{'reflex'} ? sort @{$d[$i]->{'core'}{'reflex'}} : ();
 
+        @node = split '', join " ", @node;
+        @done = split '', join " ", @done;
+
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
         $score{'reflex'} = @done ? 2 * @diff / (@node + @done) : 1;
+
+        if (exists $d[$i]->{'sense'} and $d[$i]->{'sense'} ne '') {
+
+            @done = sort split /[\/\:]/, $d[$i]->{'sense'};
+
+            @done = split '', join " ", @done;
+
+            @diff = Algorithm::Diff::LCS([@node], [@done]);
+        }
+
+        # $score{'sense'} = @done ? 2 * @diff / (@node + @done) : 1;
 
         # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
 
@@ -579,11 +647,9 @@ sub switch_either_context {
     }
     else {
 
-        my $level = $this->level();
+        return if $this->{'#name'} eq 'Unit';
 
-        return if $level == 0;
-
-        $this = $this->parent() for 1 .. $level - 1;
+        $this = $this->parent() until $this->{'#name'} eq 'Word';
 
         $review->{$grp}{'zoom'} = $this;
 
@@ -1011,15 +1077,15 @@ sub invoke_redo {
 sub edit_note {
 
     return if $review->{$grp}{'zoom'};
-    
+
     return unless $this->{'#name'} eq 'Token' or $this->{'#name'} eq 'Word';
 
     if (exists $this->{'note'} and $this->{'note'} ne "") {
-    
+
         delete $this->{'note'};
     }
     else {
-    
+
         my $note = main::QueryString($grp->{framegroup}, "Enter the note", 'note');
 
         $this->{'note'} = $note if defined $note;
@@ -1045,7 +1111,7 @@ sub display_elixir_lexicon {
 
 sub elixir_lexicon {
 
-    import 'ElixirFM::Exec';
+    import ElixirFM::Exec;
 
     my $file = CallerDir('../../data/elixir-lexicon.pls');
 
@@ -1869,25 +1935,14 @@ sub reflect_tuple {
 
     my $hash = PML::GetNodeHash();
 
-    if (exists $node->{'id'} and $node->{'id'} ne '') {
-
-        delete $hash->{$node->{'id'}};
-
-        delete $node->{'id'};
-    }
-
     my $zoom = $review->{$grp}{'zoom'};
 
     foreach ($zoom->children()) {
 
-        next unless exists $_->{'form'} and $_->{'form'} ne '';
+        next unless exists $done->{'score'} and $done->{'score'} > 0.95 or
+                    exists $_->{'form'} and $_->{'form'} ne '';
 
-        foreach $node ($_->children()) {
-
-            delete $hash->{$node->{'id'}};
-
-            CutNode($node);
-        }
+        delete $hash->{$_->{'id'}} foreach $_->children();
 
         CutNode($_);
     }
@@ -1898,10 +1953,6 @@ sub reflect_tuple {
                 grep { $_->{'apply'} > 0 } map { $_->children() } $data->children();
 
     for (my $i = @tuple; $i > 0; $i--) {
-
-        $tuple[$i - 1]->{'id'} = $data->{'id'} . (@tuple > 1 ? '-' . $i : '');
-
-        $hash->{$tuple[$i - 1]->{'id'}} = $tuple[$i - 1];
 
         my $tuple = NewSon($zoom);
 
@@ -1916,10 +1967,6 @@ sub reflect_tuple {
         my @token = $tuple[$i - 1]->children();
 
         for (my $j = @token; $j > 0; $j--) {
-
-            $token[$j - 1]->{'id'} = $tuple[$i - 1]->{'id'} . 't' . $j;
-
-            $hash->{$token[$j - 1]->{'id'}} = $token[$j - 1];
 
             my $token = NewSon($tuple);
 
