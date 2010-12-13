@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+#include environment variables
+. ../admin/env.sh
+
 EXTDIR=`dirname $(readlink -fen $0)`
 CURDIR=$(readlink -fen $PWD)
 
@@ -14,8 +18,8 @@ else
    dirs=("$@")
 fi
 
-WWW=~pajas/WWW/tred
-REPO=$WWW/extensions
+WWW_TRED=$WWW/tred
+REPO=$WWW_TRED/extensions
 DEVEL=$(readlink -fen $EXTDIR/../tred/devel)
 PACKER=$DEVEL/pack_extension.sh
 
