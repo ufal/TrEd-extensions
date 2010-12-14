@@ -134,6 +134,8 @@ sub normalize {
     $text =~ s/([\x{064B}-\x{0650}\x{0652}\x{0670}])\x{0651}/\x{0651}$1/g;
     $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
 
+    $text =~ s/^(\x{0627}\x{064E}\x{0644}.)\x{0651}/$1/;
+
     $text =~ s/\x{064E}\x{0627}/\x{0627}/g;
     $text =~ s/\x{0627}[\x{064E}-\x{0650}]/\x{0627}/g;
 
@@ -361,7 +363,7 @@ sub focus_score {
 
     return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
 
-    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
 
     return unless @node;
 
@@ -561,7 +563,7 @@ sub compute_score {
 
         $node[4] = $node[0];
         $done[4] = $done[0];
-        
+
         if ($node[0] eq 'V') {
 
             $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 2 .. 3;
@@ -1939,7 +1941,7 @@ sub reflect_tuple {
 
     foreach ($zoom->children()) {
 
-        next unless exists $done->{'score'} and $done->{'score'} > 0.95 or
+        next unless exists $done->{'score'} and $done->{'score'} == 1 or
                     exists $_->{'form'} and $_->{'form'} ne '';
 
         delete $hash->{$_->{'id'}} foreach $_->children();
