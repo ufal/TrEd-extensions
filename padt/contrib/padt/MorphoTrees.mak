@@ -559,7 +559,7 @@ sub compute_score {
         my %score = ();
 
         @node = split //, $n[$i]->{'tag'};
-        @done = split //, $d[$i]->{'tag'};
+        @done = split //, exists $d[$i]->{'note'} ? $d[$i]->{'note'} : $d[$i]->{'tag'};
 
         $node[4] = $node[0];
         $done[4] = $done[0];
