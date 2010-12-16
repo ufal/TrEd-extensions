@@ -580,11 +580,15 @@ sub compute_score {
         }
         elsif ($node[0] eq 'Q') {
 
-            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -4 .. -1;
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -4 .. -1;
         }
         elsif ($node[0] eq 'S') {
 
-            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach -5 .. -1;
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -5 .. -1;
+        }
+        elsif ($node[0] eq 'P') {
+
+            $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -2;
         }
 
         for (my $j = 0; $j < @node; $j++) {
