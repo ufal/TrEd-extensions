@@ -2,9 +2,10 @@
 
 
 #include environment variables
-. ../admin/env.sh
 
 EXTDIR=`dirname $(readlink -fen $0)`
+. "$EXTDIR"/../admin/env.sh
+
 CURDIR=$(readlink -fen $PWD)
 
 if [ -z "$1" ]; then
