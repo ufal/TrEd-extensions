@@ -363,7 +363,7 @@ sub focus_score {
 
     return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
 
-    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
+    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
 
     return unless @node;
 
@@ -416,7 +416,7 @@ sub update_morphology {
 
     update_zoom_tree();
 
-    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
 
     if (@node) {
 
@@ -603,7 +603,7 @@ sub compute_score {
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
-        $score{'form'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
+        $score{'form'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
 
         my $group = $node->parent()->{'data'}[0][$i][1];
 
@@ -615,7 +615,7 @@ sub compute_score {
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
-        $score{'reflex'} = @done ? 2 * @diff / (@node + @done) : 1;
+        $score{'reflex'} = @done ? 2 * @diff / (@node + @done) : 1.0;
 
         if (exists $d[$i]->{'sense'} and $d[$i]->{'sense'} ne '') {
 
@@ -624,9 +624,9 @@ sub compute_score {
             @done = split '', join " ", @done;
 
             @diff = Algorithm::Diff::LCS([@node], [@done]);
-        }
 
-        # $score{'sense'} = @done ? 2 * @diff / (@node + @done) : 1;
+            $score{'sense'} = @done ? 2 * @diff / (@node + @done) : 1.0;
+        }
 
         # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
 
@@ -1945,7 +1945,7 @@ sub reflect_tuple {
 
     foreach ($zoom->children()) {
 
-        next unless exists $done->{'score'} and $done->{'score'} == 1 or
+        next unless exists $done->{'score'} and $done->{'score'} == 1.0 or
                     exists $_->{'form'} and $_->{'form'} ne '';
 
         delete $hash->{$_->{'id'}} foreach $_->children();
