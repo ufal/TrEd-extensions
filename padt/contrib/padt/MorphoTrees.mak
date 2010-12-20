@@ -48,11 +48,9 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
-our ($paragraph_hide_mode, $entity_hide_mode, $level_guide_mode) = ('', '', 0);
-
 our ($dims, $fill) = (10, ' ' x 4);
 
-our ($elixir, $review, $window) = ({}, {}, {});
+our ($elixir, $review, $window, $option) = ({}, {}, {}, {});
 
 our ($JSON) = JSON->new()->allow_nonref();
 
@@ -135,6 +133,8 @@ sub normalize {
     $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
 
     $text =~ s/^(\x{0627}\x{064E}\x{0644}.)\x{0651}/$1/;
+
+    $text =~ s/^(\x{0627}\x{064E}\x{0644})\x{0650}\x{0627}/$1\x{0627}\x{0650}/;
 
     $text =~ s/\x{064E}\x{0627}/\x{0627}/g;
     $text =~ s/\x{0627}[\x{064E}-\x{0650}]/\x{0627}/g;
@@ -274,7 +274,7 @@ sub get_value_line_hook {
 
                             [ $_->{'form'}, $_, (
 
-                                $paragraph_hide_mode eq 'hidden'
+                                $option->{$grp}{'show'}
 
                                       ? ( @child == 1 ? '-foreground => red'
                                                       : @child > 1 ? '-foreground => purple'
@@ -554,6 +554,59 @@ sub compute_score {
 
     return unless @n == @d;
 
+    my %except = (
+
+        "kAn"   => ['V...-...--', 'V...-...--'],
+        "qAl"   => ['V...-...--', 'V...-...--'],
+        "lays"  => ['VP.A-...--', 'V...-...--'],
+
+        "huwa"  => ['SP---....-', 'S.---....-'],
+
+        "wa"    => ['C---------', 'C---------'],
+        "fa"    => ['C---------', 'C---------'],
+
+        "lA"    => ['F---------', 'FN--------'],
+        "lam"   => ['F---------', 'FN--------'],
+        "lan"   => ['F---------', 'FN--------'],
+
+        "sa"    => ['F---------', 'F---------'],
+        "sawfa" => ['F---------', 'F---------'],
+        "qad"   => ['F---------', 'F---------'],
+
+        "li"    => ['P---------', 'P---------'],
+        "bi"    => ['P---------', 'P---------'],
+
+        "min"   => ['P---------', 'P---------'],
+        "`an"   => ['P---------', 'P---------'],
+        "ma`a"  => ['PI------.-', 'P---------'],
+
+        "'amAma"    => ['PI------.-', 'P---------'],
+        "warA'a"    => ['PI------.-', 'P---------'],
+        "_hilAla"   => ['PI------.-', 'P---------'],
+
+        "muqAbila"  => ['PI------.-', 'P---------'],
+
+        "ba`da"     => ['PI------.-', 'P---------'],
+        "qabla"     => ['PI------.-', 'P---------'],
+        ".hawla"    => ['PI------.-', 'P---------'],
+        "ta.hta"    => ['PI------.-', 'P---------'],
+        "fawqa"     => ['PI------.-', 'P---------'],
+
+        "mi_tla"    => ['PI------.-', 'P---------'],
+        "wifqa"     => ['PI------.-', 'P---------'],
+
+        "mun_du"    => ['P---------', 'P---------'],
+
+        ".hay_tu"   => ['C---------', 'D---------'],
+
+        "faqa.t"    => ['D---------', 'D---------'],
+
+        "fImA"  => ['C---------', 'C---------'],
+
+        ".gayr" => ['N------S..', 'FN------..|N-------..'],
+
+            );
+
     for (my $i = 0; $i < @n; $i++) {
 
         my %score = ();
@@ -589,6 +642,13 @@ sub compute_score {
         elsif ($node[0] eq 'P') {
 
             $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -2;
+        }
+        elsif ($node[0] eq 'X' and $done[0] eq 'Z') {
+
+            $done[-1] = '-';
+
+            $done[0] = 'X';
+            $done[4] = 'X';
         }
 
         for (my $j = 0; $j < @node; $j++) {
@@ -626,6 +686,13 @@ sub compute_score {
             @diff = Algorithm::Diff::LCS([@node], [@done]);
 
             $score{'sense'} = @done ? 2 * @diff / (@node + @done) : 1.0;
+        }
+
+        if (exists $except{$group->{'form'}} and $n[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[0])$/
+                                             and $d[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[1])$/) {
+
+            delete $score{'reflex'};
+            delete $score{'sense'};
         }
 
         # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
@@ -866,38 +933,27 @@ sub tree_hide_mode {
 
     if ($review->{$grp}{'zoom'}) {
 
-        $entity_hide_mode = $entity_hide_mode eq 'hidden' ? '' : 'hidden';
+        $option->{$grp}{'hide'} = not $option->{$grp}{'hide'};
     }
     else {
 
-        $paragraph_hide_mode = $paragraph_hide_mode eq 'hidden' ? '' : 'hidden';
+        $option->{$grp}{'show'} = not $option->{$grp}{'show'};
     }
 
     ChangingFile(0);
 }
-
-#bind level_guide_mode_none Ctrl+F1 menu Level Guide Mode Normal
-sub level_guide_mode_none {
-
-    $level_guide_mode = 0;
+#bind switch_review_mode Ctrl+M menu Switch Trees/Lists Mode
+sub switch_review_mode {
 
     ChangingFile(0);
-}
 
-#bind level_guide_mode_fine Ctrl+F2 menu Level Guide Mode Strict
-sub level_guide_mode_fine {
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 
-    $level_guide_mode = 1;
+    $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
 
-    ChangingFile(0);
-}
+    update_zoom_tree();
 
-#bind level_guide_mode_high Ctrl+F3 menu Level Guide Mode Xtreme
-sub level_guide_mode_high {
-
-    $level_guide_mode = 2;
-
-    ChangingFile(0);
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 }
 
 #bind move_to_root Ctrl+Shift+Up menu Move Up to Root
@@ -1814,26 +1870,6 @@ sub annotate_morphology {
                 }
             }
         }
-        elsif ($level_guide_mode > 0) {
-
-            if ($level_guide_mode > 1) {
-
-                $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
-                            ? $tips[0]
-                            : $children[0]->{'#name'} eq 'Lexeme' ||
-                              $children[0]->{'#name'} eq 'Partition' && @children > 1
-                                ? $node
-                                : $children[0];
-            }
-            else {
-
-                $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children )
-                            ? $tips[0]
-                            : $children[0]->{'#name'} eq 'Lexeme'
-                                ? $node
-                                : $children[0];
-            }
-        }
         else {
 
             $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
@@ -2015,6 +2051,142 @@ sub restrict_hide {
 
     ChangingFile(1);
 
+    if ($review->{$grp}{'mode'}) {
+
+        restrict_hide_morphotrees(@_);
+    }
+    else {
+
+        restrict_hide_morpholists(@_);
+    }
+}
+
+
+sub restrict_hide_morpholists {
+
+    my ($restrict, $context) = @_;
+
+    my $node = $this;
+
+    $node = $node->parent() if $node->{'#name'} eq 'Token';
+    $node = $node->parent() if $node->{'#name'} eq 'Tuple';
+
+    my $roof = $node;
+
+    my (@tips, %tips, $orig, $diff);
+
+    if (defined $context) {
+
+        if ($context eq 'remove inherited') {
+
+            delete $node->{'inherit'};
+        }
+        elsif ($context eq 'remove induced') {
+
+            if ($node->{'restrict'} eq '') {
+
+                $context = 'remove induced clear';
+            }
+            else {
+
+                $node->{'restrict'} = '';
+
+                if ($node->parent()) {
+
+                    $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
+                    $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
+                }
+                else {
+
+                    $node->{'inherit'} = [];
+                }
+            }
+        }
+    }
+
+    $node->{'restrict'} = restrict($restrict, $node->{'restrict'}) unless $restrict eq '';
+
+    while ($node = $node->following($roof)) {
+
+        if ($context eq 'remove induced clear') {
+
+            $node->{'restrict'} = '';
+            $node->{'inherit'} = $node->parent()->{'inherit'};
+        }
+        else {
+
+            $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
+            $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
+        }
+
+        if ($node->{'#name'} eq 'Token') {
+
+            if (restrict($node->{'inherit'}, $node->{'tag'}) ne $node->{'tag'}) {
+
+                $node->{'hide'} = 'hide';
+            }
+            else {
+
+                $node->{'hide'} = '';
+                unshift @tips, $node;
+            }
+        }
+        else {
+
+            $node->{'hide'} = $option->{$grp}{'hide'} ? 'hide' : '';
+            $node->{'tips'} = 0;
+        }
+    }
+
+    $orig = defined $roof->{'tips'} && $roof->{'tips'} == 0 ? 0 : 1;
+    $roof->{'tips'} = 0;
+
+    while ($node = shift @tips) {
+
+        next if $node == $roof;
+
+        $node->{'hide'} = '';
+
+        $node->parent()->{'tips'}++ unless $node->{'hide'} eq 'hide' or defined $node->{'tips'} and $node->{'tips'} == 0;
+        $tips{$node->parent()} = $node->parent();
+
+        unless (@tips) {
+
+            @tips = values %tips;
+            %tips = ();
+        }
+    }
+
+    $node = $roof;
+
+    { do {
+
+        last if $node == $review->{$grp}{'tree'};   # ~~ # $root->parent(), $this->following() etc. are defined # ~~ # never hide the root
+
+        $node->{'hide'} = $option->{$grp}{'hide'} && $node->{'tips'} == 0 ? 'hide' : '';
+
+        if (defined $node->parent()->{'tips'}) {    # optimizing, if this is necessary ^^
+
+            $diff = ( $node->{'tips'} > 0 ? 1 : 0 ) - $orig;
+            $orig = $node->parent()->{'tips'} > 0 ? 1 : 0;
+            $node->parent()->{'tips'} += $diff;
+        }
+        else {
+
+            $orig = 1;
+            $node->parent()->{'tips'} = grep { not defined $_->{'tips'} or $_->{'tips'} > 0 } $node->parent()->children();
+        }
+    }
+    while $node = $node->parent(); }
+
+    ($this, @tips) = ($roof, $this);
+
+    annotate_morphology(undef, @tips) if $this->{'tips'} > 0 and not defined $context;
+}
+
+
+sub restrict_hide_morphotrees {
+
     my ($restrict, $context) = @_;
 
     my $node = $this->{'#name'} eq 'Token' ? $this->parent() : $this;
@@ -2080,7 +2252,7 @@ sub restrict_hide {
         }
         else {
 
-            $node->{'hide'} = $entity_hide_mode eq 'hidden' ? 'hide' : '';
+            $node->{'hide'} = $option->{$grp}{'hide'} ? 'hide' : '';
             $node->{'tips'} = 0;
         }
     }
@@ -2110,7 +2282,7 @@ sub restrict_hide {
 
         last if $node == $review->{$grp}{'tree'};   # ~~ # $root->parent(), $this->following() etc. are defined # ~~ # never hide the root
 
-        $node->{'hide'} = $entity_hide_mode eq 'hidden' && $node->{'tips'} == 0 ? 'hide' : '';
+        $node->{'hide'} = $option->{$grp}{'hide'} && $node->{'tips'} == 0 ? 'hide' : '';
 
         if (defined $node->parent()->{'tips'}) {    # optimizing, if this is necessary ^^
 

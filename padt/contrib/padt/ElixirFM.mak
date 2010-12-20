@@ -36,11 +36,9 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
-our $hiding_level = 0;
-
 our ($dims, $fill) = (10, ' ' x 4);
 
-our $window = {};
+our ($window, $option) = ({}, {});
 
 
 sub entity {
@@ -664,8 +662,8 @@ rootstyle:<? '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
 
 style:<? my $level = $this->level();
          ( $level < 6 ? '#{Line-coords:n,n,p,n,p,p}' : '' ) .
-         ( $ElixirFM::hiding_level &&
-           $ElixirFM::hiding_level < $level
+         ( $ElixirFM::option->{$grp}{'hide'} &&
+           $ElixirFM::option->{$grp}{'hide'} < $level
                ? '#{Node-hide:1}' :
            $level == 0 ? '#{Node-hide:1}' :
            $level == 4 ? '#{Node-rellevel:1}' . (
@@ -990,9 +988,9 @@ sub invoke_redo {
 #bind hiding_level_deeper Ctrl+plus menu Hiding Level Deeper
 sub hiding_level_deeper {
 
-    $hiding_level++;
+    $option->{$grp}{'hide'}++;
 
-    $hiding_level %= 6;
+    $option->{$grp}{'hide'} %= 6;
 
     ChangingFile(0);
 }
@@ -1000,9 +998,9 @@ sub hiding_level_deeper {
 #bind hiding_level_higher Ctrl+minus menu Hiding Level Higher
 sub hiding_level_higher {
 
-    $hiding_level--;
+    $option->{$grp}{'hide'}--;
 
-    $hiding_level %= 6;
+    $option->{$grp}{'hide'} %= 6;
 
     ChangingFile(0);
 }
@@ -1010,7 +1008,7 @@ sub hiding_level_higher {
 #bind hiding_level_reset Ctrl+equal menu Hiding Level Reset
 sub hiding_level_reset {
 
-    $hiding_level = $hiding_level ? 0 : 2;
+    $option->{$grp}{'hide'} = $option->{$grp}{'hide'} ? 0 : 2;
 
     ChangingFile(0);
 }

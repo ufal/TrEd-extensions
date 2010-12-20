@@ -29,9 +29,7 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
-our ($hooks_request_mode, $fill) = (0, ' ' x 4);
-
-our ($justify_mode, $support_unicode, $ArabicRendering);
+our ($option, $fill) = ({}, ' ' x 4);
 
 # ##################################################################################################
 #
@@ -67,7 +65,7 @@ hint:<? join "\n", 'morph: ${morph}',
 #bind tree_justify_mode Ctrl+j menu Toggle Tree Justify Mode
 sub tree_justify_mode {
 
-    $justify_mode = $justify_mode eq 'justify' ? '' : 'justify';
+    $$option->{$grp}{'just'} = not $option->{$grp}{'just'};
 
     ChangingFile(0);
 }
@@ -81,7 +79,7 @@ sub get_nodelist_hook {
 
     ($nodes, $current) = $fsfile->nodes($index, $recent, $show_hidden);
 
-    @{$nodes} = sort { $a->{'ord_just'} <=> $b->{'ord_just'} } @{$nodes} if $justify_mode;
+    @{$nodes} = sort { $a->{'ord_just'} <=> $b->{'ord_just'} } @{$nodes} if $option->{$grp}{'just'};
 
     @{$nodes} = reverse @{$nodes} if $main::treeViewOpts->{reverseNodeOrder};
 
@@ -166,7 +164,7 @@ sub node_release_hook {
 
     return unless $done;
 
-    return unless $hooks_request_mode;
+    return unless $option->{$grp}{'hook'};
 
     while ($done->{'afun'} eq '???' and $done->{'afunaux'} eq '') {
 
@@ -180,7 +178,7 @@ sub node_release_hook {
 
 sub node_moved_hook {
 
-    return unless $hooks_request_mode;
+    return unless $option->{$grp}{'hook'};
 
     my (undef, $done) = @_;
 

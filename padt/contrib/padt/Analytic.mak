@@ -36,7 +36,7 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
-our ($hooks_request_mode, $fill) = (0, ' ' x 4);
+our ($option, $fill) = ({}, ' ' x 4);
 
 # ##################################################################################################
 #
@@ -585,7 +585,7 @@ sub request_auto_afun_subtree {
 #bind hooks_request_mode Ctrl+Shift+F8 menu Arabic: Toggle request mode for auto afuns
 sub hooks_request_mode {
 
-    $hooks_request_mode = not $hooks_request_mode;
+    $option->{$grp}{'hook'} = not $option->{$grp}{'hook'};
 
     $Redraw = 'none';
     ChangingFile(0);
@@ -656,7 +656,7 @@ sub node_release_hook {
 
     return unless $done;
 
-    return unless $hooks_request_mode;
+    return unless $option->{$grp}{'hook'};
 
     until ($done->{'afun'} ne '???' or exists $done->{'score'} and @{$done->{'score'}} > 0) {
 
@@ -670,7 +670,7 @@ sub node_release_hook {
 
 sub node_moved_hook {
 
-    return unless $hooks_request_mode;
+    return unless $option->{$grp}{'hook'};
 
     my (undef, $done) = @_;
 

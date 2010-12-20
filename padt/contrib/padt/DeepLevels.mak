@@ -36,7 +36,7 @@ our ($this, $root, $grp);
 
 our ($Redraw);
 
-our ($hooks_request_mode, $fill) = (0, ' ' x 4);
+our ($option, $fill) = ({}, ' ' x 4);
 
 # ##################################################################################################
 #
@@ -748,7 +748,7 @@ sub node_release_hook {
     }
     else {
 
-        return unless $hooks_request_mode;
+        return unless $option->{$grp}{'hook'};
 
         while ($done->{'syntax'}{'afun'} eq '???' and $done->{'syntax'}{'afunaux'} eq '') {
 
@@ -851,7 +851,7 @@ sub shuffle_node ($$) {
 
 sub node_moved_hook {
 
-    return unless $hooks_request_mode;
+    return unless $option->{$grp}{'hook'};
 
     my (undef, $done) = @_;
 
