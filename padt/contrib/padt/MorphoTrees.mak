@@ -612,7 +612,7 @@ sub compute_score {
         my %score = ();
 
         @node = split //, $n[$i]->{'tag'};
-        @done = split //, exists $d[$i]->{'note'} ? $d[$i]->{'note'} : $d[$i]->{'tag'};
+        @done = split //, $d[$i]->{'note'} || $d[$i]->{'tag'};
 
         $node[4] = $node[0];
         $done[4] = $done[0];
@@ -633,7 +633,11 @@ sub compute_score {
         }
         elsif ($node[0] eq 'Q') {
 
+            $done[0] = 'Q';
+            $done[4] = 'Q';
+
             $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -4 .. -1;
+            $done[$_] = $node[$_] eq '-' ? '-' : $done[$_] foreach 1, -4 .. -1;
         }
         elsif ($node[0] eq 'S') {
 
@@ -641,14 +645,21 @@ sub compute_score {
         }
         elsif ($node[0] eq 'P') {
 
+            $done[0] = 'P';
+            $done[4] = 'P';
+
             $node[$_] = $done[$_] eq '-' ? '-' : $node[$_] foreach 1, -2;
+        }
+        elsif ($node[0] eq 'F' and $done[0] eq 'F') {
+
+            $done[1] = '-';
         }
         elsif ($node[0] eq 'X' and $done[0] eq 'Z') {
 
-            $done[-1] = '-';
-
             $done[0] = 'X';
             $done[4] = 'X';
+
+            $done[-1] = '-';
         }
 
         for (my $j = 0; $j < @node; $j++) {
@@ -690,6 +701,12 @@ sub compute_score {
 
         if (exists $except{$group->{'form'}} and $n[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[0])$/
                                              and $d[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[1])$/) {
+
+            delete $score{'reflex'};
+            delete $score{'sense'};
+        }
+
+        if ($n[$i]->{'tag'} =~ /^Q[^IY]..-.....$/) {
 
             delete $score{'reflex'};
             delete $score{'sense'};
