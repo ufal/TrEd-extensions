@@ -270,18 +270,24 @@ sub get_value_line_hook {
                    [ " " ],
 
                    map {
-                            my @child = grep { exists $_->{'form'} and $_->{'form'} ne '' } $_->children();
+                            my @modern = grep { exists $_->{'form'} and $_->{'form'} ne '' } $_->children();
+
+                            my @former = grep { not exists $_->{'form'} or $_->{'form'} eq '' } $_->children();
 
                             [ $_->{'form'}, $_, (
 
                                 $option->{$grp}{'show'}
 
-                                      ? ( @child == 1 ? '-foreground => red'
-                                                      : @child > 1 ? '-foreground => purple'
-                                                                   : '-foreground => black' )
-                                      : ( @child == 1 ? '-foreground => gray'
-                                                      : @child > 1 ? '-foreground => purple'
-                                                                   : '-foreground => black' )
+                                      ? ( @modern == 1 ? @former ? '-foreground => orange'
+                                                                 : '-foreground => red'
+                                                       : @modern > 1 ? @former ? '-foreground => violetred'
+                                                                               : '-foreground => purple'
+                                                                     : '-foreground => black' )
+                                      : ( @modern == 1 ? @former ? '-foreground => goldenrod'
+                                                                 : '-foreground => gray'
+                                                       : @modern > 1 ? @former ? '-foreground => violetred'
+                                                                               : '-foreground => purple'
+                                                                     : '-foreground => black' )
                                 ) ],
 
                             [ " " ],
@@ -600,6 +606,9 @@ sub compute_score {
         ".hay_tu"   => ['C---------', 'D---------'],
 
         "faqa.t"    => ['D---------', 'D---------'],
+
+        "hunA"      => ['D---------', 'D---------'],
+        "hunAka"    => ['D---------', 'D---------'],
 
         "fImA"  => ['C---------', 'C---------'],
 

@@ -2,7 +2,7 @@
 #
 # Encoding of Arabic: ArabTeX Notation by Klaus Lagally ############################ 2003/06/19
 
-# $Id: ArabTeX.pm 842 2009-04-20 19:18:56Z smrz $
+# $Id: ArabTeX.pm 937 2010-02-14 12:54:54Z smrz $
 
 package Encode::Arabic::ArabTeX;
 
@@ -14,7 +14,7 @@ use warnings;
 use Scalar::Util 'blessed';
 use Carp;
 
-our $VERSION = do { q $Revision: 842 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = do { q $Revision: 937 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
 use Encode::Encoding;
@@ -819,7 +819,7 @@ sub decoder ($@) {
 
                         ) ),
 
-                    } "'", @scope, "y", "T", "H", "W"
+                    } "'", @scope, "y", "T", "H", "W", "_W"
                 ),
 
                 (
@@ -869,7 +869,7 @@ sub decoder ($@) {
 
                             ) ),
 
-                        } "'", @scope, "y", "T", "H", "W"
+                        } "'", @scope, "y", "T", "H", "W", "_W"
 
                     } @scope, $option{'non-quoting'} ? () : "\""    # quoted included
                 ),
@@ -1265,6 +1265,9 @@ sub decoder ($@) {
                             $_->[0] x $x . "aNA", $_->[1] . $y . "\x{064B}\x{0627}",
                             $_->[0] x $x . "aNY", $_->[1] . $y . "\x{064B}\x{0649}",
 
+                            $_->[0] x $x . "uNU", $_->[1] . $y . "\x{064C}\x{0648}",
+                            $_->[0] x $x . "iNU", $_->[1] . $y . "\x{064D}\x{0648}",
+
                             ( $option{'non-refined'} ? () : (
 
                             $_->[0] x $x . "uNA", $_->[1] . $y . "\x{064C}\x{0627}",
@@ -1274,14 +1277,16 @@ sub decoder ($@) {
                             $_->[0] x $x . "iNY", $_->[1] . $y . "\x{064D}\x{0649}",
 
                             $_->[0] x $x . "aNU", $_->[1] . $y . "\x{064B}\x{0648}",
-                            $_->[0] x $x . "uNU", $_->[1] . $y . "\x{064C}\x{0648}",
-                            $_->[0] x $x . "iNU", $_->[1] . $y . "\x{064D}\x{0648}",
 
                             $_->[0] x $x . "aW-a", $_->[1] . $y . "\x{064E}\x{0648}\x{064E}\x{0627}",
                             $_->[0] x $x . "aW-u", $_->[1] . $y . "\x{064E}\x{0648}\x{064F}\x{0627}",
                             $_->[0] x $x . "aW-i", $_->[1] . $y . "\x{064E}\x{0648}\x{0650}\x{0627}",
 
                             ) ),
+
+                            $_->[0] x $x . "a_W", $_->[1] . $y . "\x{064E}\x{0648}",
+                            $_->[0] x $x . "u_W", $_->[1] . $y . "\x{064F}\x{0648}",
+                            $_->[0] x $x . "i_W", $_->[1] . $y . "\x{0650}\x{0648}",
 
                             $_->[0] x $x . "aW", $_->[1] . $y . "\x{064E}\x{0648}\x{0652}\x{0627}",
                             $_->[0] x $x . "uW", $_->[1] . $y . "\x{064F}\x{0648}\x{0627}",
@@ -1306,6 +1311,9 @@ sub decoder ($@) {
                             $_->[0] x $x . "\"aNA", $_->[1] . $y . "\"\x{064B}\x{0627}",
                             $_->[0] x $x . "\"aNY", $_->[1] . $y . "\"\x{064B}\x{0649}",
 
+                            $_->[0] x $x . "\"uNU", $_->[1] . $y . "\"\x{064C}\x{0648}",
+                            $_->[0] x $x . "\"iNU", $_->[1] . $y . "\"\x{064D}\x{0648}",
+
                             ( $option{'non-refined'} ? () : (
 
                             $_->[0] x $x . "\"uNA", $_->[1] . $y . "\"\x{064C}\x{0627}",
@@ -1315,8 +1323,6 @@ sub decoder ($@) {
                             $_->[0] x $x . "\"iNY", $_->[1] . $y . "\"\x{064D}\x{0649}",
 
                             $_->[0] x $x . "\"aNU", $_->[1] . $y . "\"\x{064B}\x{0648}",
-                            $_->[0] x $x . "\"uNU", $_->[1] . $y . "\"\x{064C}\x{0648}",
-                            $_->[0] x $x . "\"iNU", $_->[1] . $y . "\"\x{064D}\x{0648}",
 
                             $_->[0] x $x . "\"aW-a", $_->[1] . $y . "\"\x{064E}\x{0648}\x{064E}\x{0627}",
                             $_->[0] x $x . "\"aW-u", $_->[1] . $y . "\"\x{064E}\x{0648}\x{064F}\x{0627}",
@@ -1334,6 +1340,10 @@ sub decoder ($@) {
                             $_->[0] x $x . "aW-\"", $_->[1] . $y . "\x{064E}\x{0648}\"\x{0652}\x{0627}",
 
                             ) ),
+
+                            $_->[0] x $x . "\"a_W", $_->[1] . $y . "\"\x{064E}\x{0648}",
+                            $_->[0] x $x . "\"u_W", $_->[1] . $y . "\"\x{064F}\x{0648}",
+                            $_->[0] x $x . "\"i_W", $_->[1] . $y . "\"\x{0650}\x{0648}",
 
                             $_->[0] x $x . "\"aW", $_->[1] . $y . "\"\x{064E}\x{0648}\x{0652}\x{0627}",
                             $_->[0] x $x . "\"uW", $_->[1] . $y . "\"\x{064F}\x{0648}\x{0627}",
@@ -2379,7 +2389,7 @@ Encode::Arabic::ArabTeX - Interpreter of the ArabTeX notation of Arabic
 
 =head1 REVISION
 
-    $Revision: 842 $             $Date: 2009-04-20 21:18:56 +0200 (Mon, 20 Apr 2009) $
+    $Revision: 937 $             $Date: 2010-02-14 13:54:54 +0100 (Sun, 14 Feb 2010) $
 
 
 =head1 SYNOPSIS
@@ -2602,7 +2612,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003-2008 by Otakar Smrz
+Copyright 2003-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

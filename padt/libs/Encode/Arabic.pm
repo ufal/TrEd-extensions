@@ -2,11 +2,11 @@
 #
 # Encodings of Arabic ##########################################################################
 
-# $Id: Arabic.pm 808 2009-02-09 23:19:07Z smrz $
+# $Id: Arabic.pm 934 2010-02-13 16:26:58Z smrz $
 
 package Encode::Arabic;
 
-our $VERSION = '1.9' || do { q $Revision: 808 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
+our $VERSION = '1.9' || do { q $Revision: 934 $ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 
 
 sub import {            # perform import as if Encode were used one level before this module
@@ -86,7 +86,7 @@ Encode::Arabic - Encodings of Arabic
 
 =head1 REVISION
 
-    $Revision: 808 $        $Date: 2009-02-10 00:19:07 +0100 (Tue, 10 Feb 2009) $
+    $Revision: 934 $        $Date: 2010-02-13 17:26:58 +0100 (Sat, 13 Feb 2010) $
 
 
 =head1 SYNOPSIS
@@ -261,7 +261,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003-2009 by Otakar Smrz
+Copyright 2003-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

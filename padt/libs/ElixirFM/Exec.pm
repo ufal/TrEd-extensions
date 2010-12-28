@@ -2,13 +2,13 @@
 #
 # ElixirFM Executable ##############################################################################
 
-# $Id: Exec.pm 946 2010-04-12 19:27:23Z smrz $
+# $Id: Exec.pm 987 2010-11-03 11:11:31Z smrz $
 
 package ElixirFM::Exec;
 
 use strict;
 
-our $VERSION = join '.', '1.1', q $Revision: 946 $ =~ /(\d+)/;
+our $VERSION = join '.', '1.1', q $Revision: 987 $ =~ /(\d+)/;
 
 
 use Encode;
@@ -88,6 +88,8 @@ sub elixir {
 
     my $handle = new File::Temp;
 
+    local $\ = "";
+
     print $handle $code ? encode "utf8", $text : $text;
 
     my $data = scalar `"$system" $params < "$handle"`;
@@ -138,7 +140,7 @@ ElixirFM::Exec - Interface to the ElixirFM executable
 
 =head1 REVISION
 
-    $Revision: 946 $        $Date: 2010-04-12 21:27:23 +0200 (Mon, 12 Apr 2010) $
+    $Revision: 987 $        $Date: 2010-11-03 12:11:31 +0100 (Wed, 03 Nov 2010) $
 
 
 =head1 SYNOPSIS

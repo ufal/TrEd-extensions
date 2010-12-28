@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 944 2010-03-24 22:01:01Z smrz $
+# $Id: ElixirFM.pm 994 2010-12-28 12:40:04Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 944 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 994 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -55,6 +55,24 @@ sub nub (&@) {
     return grep { my $r = $fun->($_); exists $nub{$r} ? 0 : ++$nub{$r} } @lst;
 }
 
+sub groups ($@) {
+
+    my ($d, @d) = @_;
+
+    return @d unless $d > 0;
+
+    my $r = @d / $d;
+
+    my @r;
+
+    for (my $i = 0; $r * $i < @d; $i++) {
+
+        push @r, $r * ($i + 1) < 1 ? [] : [@d[$r * $i .. $r * ($i + 1) - 1 ]];
+    }
+
+    return @r;
+}
+
 sub tuples {
 
     my @data = @_;
@@ -82,12 +100,12 @@ sub concat {
 
 sub orth {
 
-    return decode "arabtex", $_[0];
+    return $_[0] eq '"' ? $_[0] : decode "arabtex", $_[0];
 }
 
 sub phon {
 
-    return decode "arabtex-zdmg", $_[0];
+    return $_[0] eq '"' ? $_[0] : decode "arabtex-zdmg", $_[0];
 }
 
 sub orph {
@@ -111,11 +129,13 @@ sub nice {
 
     $morphs->[0] = $morphs->[0] =~ /^(?:_____|Identity)$/ ? '_____' : merge("", $morphs->[0]);
 
+    $morphs->[0] =~ s/([FCL]|[KRDS])/|$1|/g;
+
     $morphs->[1] = [ map { $_ =~ /"/ ? showPrefix($_) : $_ } @{$morphs->[1]} ];
 
     $morphs->[2] = [ map { $_ =~ /"/ ? showSuffix($_) : $_ } @{$morphs->[2]} ];
 
-    return join "-", map { phon($_) } @{$morphs->[1]}, $morphs->[0], @{$morphs->[2]};
+    return join "-", map { $_ eq "iy" ? $_ : phon($_) } @{$morphs->[1]}, $morphs->[0], @{$morphs->[2]};
 }
 
 our $tagset = [
@@ -202,7 +222,7 @@ sub describe {
 
     my $i = 0;
 
-    my @slot = map { $i++ % 2 ? [ split //, $_ ] : map { [$_] } split //, $_ } split /[\[\]]/, $_[0];
+    my @slot = map { $i++ % 2 ? [ split //, $_ ] : map { [ $_ ne '-' ? $_ : () ] } split //, $_ } split /[\[\]]/, $_[0];
 
     my $terse = defined $_[1] ? $_[1] : '';
 
@@ -214,8 +234,6 @@ sub describe {
 
         push @slot, ([]) x ($dims - @slot);
     }
-
-    @slot = map { [ grep { $_ ne '-' } @{$_} ] } @slot;
 
     my @type = map { my $x = $_;
 
@@ -325,7 +343,7 @@ sub retrieve {
         $word =~ /^lift/i               and push @{$tags->[9]}, 'L' and next;
         $word =~ /^under/i              and push @{$tags->[9]}, 'L' and next;
 
-        if (@slot = $word =~ /\G([-A-Z1-4]|\[[A-Z1-4]+\])/g) {
+        if (@slot = $word =~ /\G([-A-Z1-4]|\[[-A-Z1-4]*\])/g) {
 
             if (@slot > $dims) {
 
@@ -704,7 +722,7 @@ sub clear {
 
 sub lists_trees {
 
-    my ($node, @data) = split /\n[\t ]*[:]{1}/, $_[0];
+    my ($node, @data) = split /^[\t ]*[:]{1}(?=[\t ]+)/m, $_[0];
 
     return  $node =~ /[()]/
 
@@ -786,35 +804,113 @@ sub parse_clear {
     return $data;
 }
 
-sub unpretty {
+sub unlines {
 
-    my ($data, $mode) = @_;
+    my ($data, $type) = @_;
 
-    my $type = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /^\s*[()]/ ? 'lookup' : $data =~ /^\s*[<>]/ ? 'lexicon' : '';
+    $type = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /^\s*[()]/ ? 'lookup' : $data =~ /^\s*[<>]/ ? 'lexicon' : '' unless defined $type;
 
     my @data;
 
     if ($type eq 'resolve') {
 
         @data = split /(?:(?<=\n\n)\n|(?<=^\n)\n|(?<=^)\n)/, $data, -1;
+    }
+    elsif ($type eq 'lookup') {
 
-        pop @data;
+        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
+    }
+    elsif ($type eq 'lexicon') {
+
+        @data = split /(?:(?<=<\/Cluster>)\s*|\s*(?=<Cluster>))/, $data, -1;
+
+        shift @data if @data and $data[0] !~ /^<Cluster>/;
+        pop @data if @data and $data[-1] !~ /<\/Cluster>$/;
+    }
+    else {
+
+        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
+    }
+
+    pop @data if @data and $data[-1] eq '';
+
+    return @data;
+}
+
+sub unwords {
+
+    my ($data, $type) = @_;
+
+    $type = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /^\s*[()]/ ? 'lookup' : $data =~ /^\s*[<>]/ ? 'lexicon' : '' unless defined $type;
+
+    my @data = unlines $data, $type;
+
+    if ($type eq 'resolve') {
 
         @data = map {
 
-            my (undef, @data) = split /[:]{4}/, $_;
+            split /^(?=[\t ]*[:]{4}[\t ]+)/m, $_
+
+        } @data;
+    }
+    elsif ($type eq 'lookup') {
+
+        @data = map {
+
+            split /(?<=<\/Nest>)\s*/, $_
+
+        } @data;
+    }
+    elsif ($type eq 'lexicon') {
+
+        @data = map {
+
+            split /(?:(?<=<\/Nest>)\s*|\s*(?=<Nest>))/, $_
+
+        } @data;
+
+        shift @data if @data and $data[0] !~ /^<Nest>/;
+        pop @data if @data and $data[-1] !~ /<\/Nest>$/;
+    }
+    else {
+
+        @data = map {
+
+            split /(?:(?<=\n)\n|(?<=^)\n)/, $_, -1
+
+        } @data;
+    }
+
+    return @data;
+}
+
+sub unpretty {
+
+    my ($data, $mode) = @_;
+
+    my $type = $data =~ /^\s*[:]{4}/ ? 'resolve' : $data =~ /^\s*[()]/ ? 'lookup' : $data =~ /^\s*[<>]/ ? 'lexicon' : '';
+
+    my @data = unlines $data, $type;
+
+    if ($type eq 'resolve') {
+
+        @data = map {
+
+            my @data = unwords $_, $type;
 
             [
                 map {
 
-                    my ($node, @data) = split /[:]{3}/, $_;
+                    my (undef, $data) = split /^[\t ]*[:]{4}[\t ]+/m, $_;
+
+                    my ($node, @data) = split /^[\t ]*[:]{3}[\t ]+/m, $data;
 
                     [
                         [ split ' ', $node ],
 
                         map {
 
-                            my ($node, @data) = split /[:]{2}/, $_;
+                            my ($node, @data) = split /^[\t ]*[:]{2}[\t ]+/m, $_;
 
                             [
                                 [ map { join ' ', split ' ' } split /(?<=[>])\s+(?=[<])/, $node ],
@@ -836,13 +932,9 @@ sub unpretty {
     }
     elsif ($type eq 'lookup') {
 
-        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
-
-        pop @data;
-
         @data = map {
 
-            my @data = split /\s*<\/Nest>\s*/, $_;
+            my @data = unwords $_, $type;
 
             [
                 map {
@@ -876,13 +968,9 @@ sub unpretty {
     }
     else {
 
-        @data = split /(?:(?<=\n)\n|(?<=^)\n)/, $data, -1;
-
-        pop @data if @data and $data[-1] eq '';
-
         @data = map {
 
-            my @data = split /\n/, $_;
+            my @data = unwords $_, $type;
 
             foldl {
 
@@ -899,6 +987,12 @@ sub unpretty {
             map {
 
                 [ split /\t/, $_ ]
+
+            }
+
+            map {
+
+                split /\n/, $_
 
             } @data
 
@@ -1067,14 +1161,26 @@ sub interlocks {
 
         $pattern = (substr $pattern, 0, -1) . 'm' if $pattern =~ /^(?:`an|min)$/
                                                   and @{$s} and $s->[0] eq '"mA"';
+
+        $pattern = (substr $pattern, 0, -1) . 'ah' if $pattern =~ /^(?:mA)$/
+                                                   and @{$s} and $s->[0] eq '"mA"';
+
+        $pattern = (substr $pattern, 0, -1) . 'l' if $pattern =~ /^(?:'an|'in)$/
+                                                  and @{$s} and $s->[0] eq '"lA"';
+
+        $pattern = (substr $pattern, 0, -1) . 'm' if $pattern =~ /^(?:'an|'in)$/
+                                                  and @{$s} and $s->[0] eq '"mA"';
     }
     elsif ($pattern =~ /[FCL]/) {
 
         @root = (@root, ('F', 'C', 'L')[@root .. 2]);
 
-        $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^(?:F[aiu]CLA'|F[IU]LA')$/
+        $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^F(?:[aiu]C|[IU])LA'$/
                                                   and @root and $root[-1] ne 'w'
                                                   and @{$s} and not $s->[0] =~ /^"[aiu]N?"$/;
+
+        $pattern =~ s/UC/U\|C/                    if $pattern =~ /^(?:Tu)?FUC(?:i?L|I)$/
+                                                  and @root > 1 and $root[1] eq 'w';
 
         $pattern =~ s/^H/'/;
         $pattern =~ s/^([IMNSTUY])/\l$1/;
@@ -1110,13 +1216,6 @@ sub interlocks {
     return $pattern;
 }
 
-sub isClosed {
-
-    return 0 if $_[0] =~ /^[aiuAIUY]/;
-
-    return 1;
-}
-
 our @sunny = ( "t", "_t", "d", "_d", "r", "z", "s", "^s",
                ".s", ".d", ".t", ".z", "l", "n" );
 
@@ -1124,6 +1223,44 @@ our @moony = ( "'", "b", "^g", ".h", "_h", "`", ".g",
                "f", "q", "k", "m", "h", "w", "y",
                "B", "p", "v", "g", "^c", "^z",
                "c", ",c", "^n", "^l", ".r" );
+
+our %sunny = map { $_, '' } @sunny;
+
+our %moony = map { $_, '' } @moony;
+
+sub letters {
+
+    return split /(?<![._^,])/, $_[0];
+}
+
+sub isSunny {
+
+    my @r = map { letters $_ } split " ", $_[0];
+
+    return exists $sunny{$r[0]};
+}
+
+sub isMoony {
+
+    return not isSunny $_[0];
+}
+
+sub isComplex {
+
+    my @r = map { letters $_ } split " ", $_[0];
+
+    return @r < 2 || $r[-2] eq $r[-1] || grep { /^['wy]$/ } @r;
+}
+
+sub isRegular {
+
+    return not isComplex $_[0];
+}
+
+sub isClosed {
+
+    return not $_[0] =~ /^[aiuAIUY]/;
+}
 
 sub mergePrefix {
 
@@ -1316,7 +1453,7 @@ ElixirFM - Interfaces to the ElixirFM system implementing Functional Arabic Morp
 
 =head1 REVISION
 
-    $Revision: 944 $        $Date: 2010-03-24 23:01:01 +0100 (Wed, 24 Mar 2010) $
+    $Revision: 994 $        $Date: 2010-12-28 13:40:04 +0100 (Tue, 28 Dec 2010) $
 
 
 =head1 SYNOPSIS
