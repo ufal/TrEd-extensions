@@ -215,10 +215,12 @@
             <member name="note" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
-            <member name="restrict" type="String"/>
-            <member name="inherit" type="String"/>
-            <member name="hide" type="String" role="#HIDE"/>
-            <member name="tips" type="String"/>
+            <member name="restrict">
+                <list type="String" ordered="1"/>
+            </member>
+            <member name="current">
+                <cdata format="nonNegativeInteger"/>
+            </member>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Partition" type="Partition.Lists"/>
@@ -234,10 +236,7 @@
             <member name="note" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
-            <member name="restrict" type="String"/>
-            <member name="inherit" type="String"/>
             <member name="hide" type="String" role="#HIDE"/>
-            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Group" type="Group.Lists"/>
@@ -253,10 +252,7 @@
             <member name="note" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
-            <member name="restrict" type="String"/>
-            <member name="inherit" type="String"/>
             <member name="hide" type="String" role="#HIDE"/>
-            <member name="tips" type="String"/>
             <member name="data">
                 <sequence>
                     <element name="Lexeme" type="Lexeme.Lists"/>
@@ -286,10 +282,7 @@
             <member name="note" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
-            <member name="restrict" type="String"/>
-            <member name="inherit" type="String"/>
             <member name="hide" type="String" role="#HIDE"/>
-            <member name="tips" type="String"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
                     <element name="Token" type="Token.Lists"/>

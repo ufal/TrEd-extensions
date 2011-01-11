@@ -605,17 +605,33 @@ sub change_slot_type {
 #bind delete_subtree Ctrl+d menu Edit: Delete Subtree
 sub delete_subtree {
 
+    ChangingFile(0);
+    
     my $node = $this->rbrother() || $this->lbrother() || $this->parent();
 
-    DeleteSubtree($this);
+    return unless defined $node;
+    
+    CutNode($this);
 
     $this = $node;
+
+    ChangingFile(1);
 }
 
 #bind cut_subtree Ctrl+x menu Edit: Cut Subtree
 sub cut_subtree {
 
-    TredMacro::CutToClipboard($this);
+    ChangingFile(0);
+    
+    my $node = $this->rbrother() || $this->lbrother() || $this->parent();
+
+    return unless defined $node;
+    
+    CutNode($this);
+
+    $this = $node;
+
+    ChangingFile(1);
 }
 
 #bind paste_subtree Ctrl+v menu Edit: Paste Subtree

@@ -20,6 +20,8 @@ use Algorithm::Diff;
 
 use List::Util 'reduce', 'max';
 
+use Scalar::Util 'reftype';
+
 use File::Spec;
 use File::Copy;
 
@@ -62,7 +64,7 @@ sub CreateStylesheets {
 
     return << '>>';
 
-rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && $MorphoTrees::review->{$grp}{'mode'} ?
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.0}' : '#{skipHiddenLevels:1}' ?>
 
@@ -78,7 +80,7 @@ style:<? my @child = $this->children();
             $score > 0.95 ? '#{Line-fill:darkviolet}' :
             $score > 0.90 ? '#{Line-fill:goldenrod}' :
             $score > 0.80 ? '#{Line-fill:tan}' : '' ) .
-          ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+          ( $MorphoTrees::review->{$grp}{'zoom'} && $MorphoTrees::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' ) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
@@ -108,13 +110,18 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                       ( $this->{'#name'} eq 'Unit'
                             ? ' ' . '#{black}' . MorphoTrees::idx($this) : '' ) ) ) ?>
 
-node:<? $this->{'#name'} eq 'Word'
+node:<? my $index = 0;
+        $this->{'#name'} eq 'Word'
             ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } map { $_->{'form'} } $this->children() )
             :
         $this->{'#name'} eq 'Token'
             ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
-            : ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
-                                             . $this->{'restrict'} : '' ) ?>
+            : $MorphoTrees::review->{$grp}{'mode'}
+                ? ( exists $this->{'restrict'} ? join "\n", map { $MorphoTrees::review->{$grp}{'mode'} == ++$index
+                                                                  ? '#{red}' . $_ : '#{orange}' . $_ } @{$this->{'restrict'}}
+                                               : '' )
+                : ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
+                                                 . $this->{'restrict'} : '' ) ?>
 
 node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
         ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
@@ -128,6 +135,8 @@ sub normalize {
     my $text = $_[0];
 
     $text =~ tr[\x{0640}\x{0652}][]d;
+
+    $text =~ s/-.*//g;
 
     $text =~ s/([\x{064B}-\x{0650}\x{0652}\x{0670}])\x{0651}/\x{0651}$1/g;
     $text =~ s/([\x{0627}\x{0649}])\x{064B}/\x{064B}$1/g;
@@ -369,8 +378,10 @@ sub focus_score {
 
     return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
 
-    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+    my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
 
+               grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+               
     return unless @node;
 
     my $score = max map { $_->{'score'} } @node;
@@ -422,7 +433,9 @@ sub update_morphology {
 
     update_zoom_tree();
 
-    my @node = grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
+    my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
+
+               grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
 
     if (@node) {
 
@@ -457,13 +470,13 @@ sub switch_review_mode {
 
     ChangingFile(0);
 
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if not $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
 
     update_zoom_tree();
 
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if not $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 }
 
 sub update_zoom_tree {
@@ -494,6 +507,10 @@ sub update_zoom_tree {
 
     if ($review->{$grp}{'mode'}) {
 
+        $review->{$grp}{'tree'} = $review->{$grp}{'data'};
+    }
+    else {
+
         my $node = Treex::PML::Factory->createTypedNode('Element.Trees', PML::Schema());
 
         $node->{'#name'} = 'Element';
@@ -503,10 +520,6 @@ sub update_zoom_tree {
         $node = couple($node);
 
         $review->{$grp}{'tree'} = $node;
-    }
-    else {
-
-        $review->{$grp}{'tree'} = $review->{$grp}{'data'};
     }
 }
 
@@ -579,7 +592,7 @@ sub compute_score {
         "sawfa" => ['F---------', 'F---------'],
         "qad"   => ['F---------', 'F---------'],
 
-        "li"    => ['P---------', 'P---------'],
+        "li"    => ['[PCF]---------', '[PCF]---------'],
         "bi"    => ['P---------', 'P---------'],
 
         "min"   => ['P---------', 'P---------'],
@@ -687,6 +700,13 @@ sub compute_score {
 
         my $group = $node->parent()->{'data'}[0][$i][1];
 
+        @node = split //, normalize $group->{'form'}  =~ /\p{InArabic}/ ? $group->{'form'}  : ElixirFM::orth $group->{'form'};
+        @done = split //, normalize $d[$i]->{'lemma'} =~ /\p{InArabic}/ ? $d[$i]->{'lemma'} : ElixirFM::orth $d[$i]->{'lemma'};
+
+        @diff = Algorithm::Diff::LCS([@node], [@done]);
+
+        $score{'lemma'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
+
         @node = exists $group->{'core'} && exists $group->{'core'}{'reflex'} ? sort @{$group->{'core'}{'reflex'}} : ();
         @done = exists $d[$i]->{'core'} && exists $d[$i]->{'core'}{'reflex'} ? sort @{$d[$i]->{'core'}{'reflex'}} : ();
 
@@ -734,7 +754,7 @@ sub compute_score {
 #bind switch_either_context Shift+space menu Switch Either Context
 sub switch_either_context {
 
-    $Redraw = 'win' unless $Redraw eq 'file' or $Redraw eq 'tree';
+    $Redraw = 'win';
 
     ChangingFile(0);
 
@@ -952,34 +972,6 @@ sub move_par_end {
 
     $Redraw = 'win';
     ChangingFile(0);
-}
-
-#bind tree_hide_mode Ctrl+equal menu Toggle Tree Hide Mode
-sub tree_hide_mode {
-
-    if ($review->{$grp}{'zoom'}) {
-
-        $option->{$grp}{'hide'} = not $option->{$grp}{'hide'};
-    }
-    else {
-
-        $option->{$grp}{'show'} = not $option->{$grp}{'show'};
-    }
-
-    ChangingFile(0);
-}
-#bind switch_review_mode Ctrl+M menu Switch Trees/Lists Mode
-sub switch_review_mode {
-
-    ChangingFile(0);
-
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
-
-    $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
-
-    update_zoom_tree();
-
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 }
 
 #bind move_to_root Ctrl+Shift+Up menu Move Up to Root
@@ -1803,7 +1795,7 @@ sub morphotrees {
 #bind annotate_morphology to space menu Annotate Morphology
 sub annotate_morphology {
 
-    $Redraw = 'win' unless $Redraw eq 'file' or $Redraw eq 'tree';
+    $Redraw = 'win';
 
     ChangingFile(0);
 
@@ -1825,6 +1817,48 @@ sub annotate_morphology {
     my $node = $this;
 
     if ($review->{$grp}{'mode'}) {
+
+        while ($node->{'#name'} ne 'Tuple' and @children = $node->children()) {
+
+            @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
+
+            last unless @children == 1;
+
+            $node = $children[0];
+        }
+
+        $node = $node->parent() if $node->{'#name'} eq 'Token';
+
+        if ($node->{'#name'} eq 'Tuple') {
+
+            $diff = $node->{'apply'} == 0 ? 1 : -1;
+
+            reflect_tuple($node, $diff);
+
+            $Redraw = 'tree';
+
+            ChangingFile(1);
+
+            if ($diff == 1 and not $quick) {
+
+                $node = $review->{$grp}{'zoom'}->rbrother();
+
+                if ($node) {
+
+                    $review->{$grp}{'zoom'} = $node;
+
+                    update_zoom_tree();
+
+                    $this = $review->{$grp}{'tree'};
+                }
+            }
+        }
+        else {
+
+            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0] if @children;
+        }
+    }
+    else {
 
         while (@children = $node->children()) {
 
@@ -1866,7 +1900,7 @@ sub annotate_morphology {
 
                 reflect_choice($done, $diff);
 
-                $Redraw = 'file';
+                $Redraw = 'tree';
 
                 ChangingFile(1);
 
@@ -1899,48 +1933,6 @@ sub annotate_morphology {
         else {
 
             $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
-        }
-    }
-    else {
-
-        while ($node->{'#name'} ne 'Tuple' and @children = $node->children()) {
-
-            @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
-
-            last unless @children == 1;
-
-            $node = $children[0];
-        }
-
-        $node = $node->parent() if $node->{'#name'} eq 'Token';
-
-        if ($node->{'#name'} eq 'Tuple') {
-
-            $diff = $node->{'apply'} == 0 ? 1 : -1;
-
-            reflect_tuple($node, $diff);
-
-            $Redraw = 'file';
-
-            ChangingFile(1);
-
-            if ($diff == 1 and not $quick) {
-
-                $node = $review->{$grp}{'zoom'}->rbrother();
-
-                if ($node) {
-
-                    $review->{$grp}{'zoom'} = $node;
-
-                    update_zoom_tree();
-
-                    $this = $review->{$grp}{'tree'};
-                }
-            }
-        }
-        else {
-
-            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0] if @children;
         }
     }
 }
@@ -2073,187 +2065,185 @@ sub restrict_hide {
 
     return unless $review->{$grp}{'zoom'};
 
-    $Redraw = 'tree' unless $Redraw eq 'file';
+    $Redraw = 'win';
 
     ChangingFile(1);
 
     if ($review->{$grp}{'mode'}) {
 
-        restrict_hide_morphotrees(@_);
+        restrict_hide_morpholists(@_);
     }
     else {
 
-        restrict_hide_morpholists(@_);
+        restrict_hide_morphotrees(@_);
     }
 }
 
 
 sub restrict_hide_morpholists {
 
-    my ($restrict, $context) = @_;
+    ChangingFile(0);
 
-    my $node = $this;
+    return unless $review->{$grp}{'mode'};
 
-    $node = $node->parent() if $node->{'#name'} eq 'Token';
-    $node = $node->parent() if $node->{'#name'} eq 'Tuple';
+    my $mode = int $review->{$grp}{'mode'};
 
-    my $roof = $node;
+    return unless $mode;
+
+    $mode -= 1 if $mode > 0;
+
+    my $restrict = $_[0];
+
+    my $node = $this->root();
+
+    $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]) unless exists $node->{'restrict'} and @{$node->{'restrict'}};
+
+    $mode %= @{$node->{'restrict'}};
 
     my (@tips, %tips, $orig, $diff);
 
-    if (defined $context) {
+    if ($restrict eq '-' x $dims) {
 
-        if ($context eq 'remove inherited') {
+        my $clear = 'clear';
 
-            delete $node->{'inherit'};
+        foreach (@{$node->{'restrict'}}) {
+
+            next if $_ eq '-' x $dims;
+
+            $_ = '-' x $dims;
+
+            $clear = '';
         }
-        elsif ($context eq 'remove induced') {
 
-            if ($node->{'restrict'} eq '') {
-
-                $context = 'remove induced clear';
-            }
-            else {
-
-                $node->{'restrict'} = '';
-
-                if ($node->parent()) {
-
-                    $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
-                    $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
-                }
-                else {
-
-                    $node->{'inherit'} = [];
-                }
-            }
-        }
+        $node->{'restrict'} = Treex::PML::Factory->createList() if $clear;
     }
+    elsif ($restrict eq '') {
 
-    $node->{'restrict'} = restrict($restrict, $node->{'restrict'}) unless $restrict eq '';
+        if ($node->{'restrict'}[$mode] eq '-' x $dims) {
 
-    while ($node = $node->following($roof)) {
+            splice @{$node->{'restrict'}}, $mode, 1;
 
-        if ($context eq 'remove induced clear') {
-
-            $node->{'restrict'} = '';
-            $node->{'inherit'} = $node->parent()->{'inherit'};
+            $mode = @{$node->{'restrict'}} - 1 unless $mode == 0 or $mode < @{$node->{'restrict'}};
         }
         else {
 
-            $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
-            $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
+            $node->{'restrict'}[$mode] = '-' x $dims;
         }
+    }
+    else {
 
-        if ($node->{'#name'} eq 'Token') {
+        $node->{'restrict'}[$mode] = restrict($restrict, $node->{'restrict'}[$mode]);
+    }
 
-            if (restrict($node->{'inherit'}, $node->{'tag'}) ne $node->{'tag'}) {
+    $review->{$grp}{'mode'} = $mode + 1;
 
-                $node->{'hide'} = 'hide';
+    reflect_restrict();
+}
+
+
+sub reflect_restrict {
+
+    return unless $review->{$grp}{'zoom'};
+
+    my $node = $this->root();
+
+    my $list = $node->{'restrict'};
+
+    foreach ($node->children()) {
+
+        foreach ($_->children()) {
+
+            foreach ($_->children()) {
+
+                my @tags = map { $_->{'tag'} } $_->children();
+
+                my $hide = restrict_comply($list, @tags) ? '' : 'hide';
+
+                $_->{'hide'} = $hide foreach $_->children(), $_;
             }
-            else {
 
-                $node->{'hide'} = '';
-                unshift @tips, $node;
-            }
+            $_->{'hide'} = (grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } $_->children()) ? '' : 'hide';
         }
-        else {
 
-            $node->{'hide'} = $option->{$grp}{'hide'} ? 'hide' : '';
-            $node->{'tips'} = 0;
-        }
+        $_->{'hide'} = (grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } $_->children()) ? '' : 'hide';
     }
 
-    $orig = defined $roof->{'tips'} && $roof->{'tips'} == 0 ? 0 : 1;
-    $roof->{'tips'} = 0;
+    $Redraw = 'win';
 
-    while ($node = shift @tips) {
+    ChangingFile(1);
+}
 
-        next if $node == $roof;
 
-        $node->{'hide'} = '';
+sub restrict_comply {
 
-        $node->parent()->{'tips'}++ unless $node->{'hide'} eq 'hide' or defined $node->{'tips'} and $node->{'tips'} == 0;
-        $tips{$node->parent()} = $node->parent();
+    my ($list, @tags) = @_;
 
-        unless (@tips) {
+    return unless defined $list and reftype $list eq 'ARRAY';
 
-            @tips = values %tips;
-            %tips = ();
+    return if @{$list} > @tags;
+
+    my $any = '';
+
+    for (my $i = 0; $i <= @tags - @{$list} and not $any; $i++) {
+
+        my $all = 'all';
+
+        for (my $j = 0; $j < @{$list} and $all; $j++) {
+
+            $all = '' unless restrict($list->[$j], $tags[$i + $j]) eq $tags[$i + $j];
         }
+
+        $any = 'any' if $all eq 'all';
     }
 
-    $node = $roof;
-
-    { do {
-
-        last if $node == $review->{$grp}{'tree'};   # ~~ # $root->parent(), $this->following() etc. are defined # ~~ # never hide the root
-
-        $node->{'hide'} = $option->{$grp}{'hide'} && $node->{'tips'} == 0 ? 'hide' : '';
-
-        if (defined $node->parent()->{'tips'}) {    # optimizing, if this is necessary ^^
-
-            $diff = ( $node->{'tips'} > 0 ? 1 : 0 ) - $orig;
-            $orig = $node->parent()->{'tips'} > 0 ? 1 : 0;
-            $node->parent()->{'tips'} += $diff;
-        }
-        else {
-
-            $orig = 1;
-            $node->parent()->{'tips'} = grep { not defined $_->{'tips'} or $_->{'tips'} > 0 } $node->parent()->children();
-        }
-    }
-    while $node = $node->parent(); }
-
-    ($this, @tips) = ($roof, $this);
-
-    annotate_morphology(undef, @tips) if $this->{'tips'} > 0 and not defined $context;
+    return $any eq 'any';
 }
 
 
 sub restrict_hide_morphotrees {
 
-    my ($restrict, $context) = @_;
+    my $restrict = $_[0];
 
     my $node = $this->{'#name'} eq 'Token' ? $this->parent() : $this;
     my $roof = $node;
 
-    my (@tips, %tips, $orig, $diff);
+    my (@tips, %tips, $orig, $diff, $clear);
 
-    if (defined $context) {
+    if ($restrict eq '-' x $dims) {
 
-        if ($context eq 'remove inherited') {
+        $node->{'restrict'} = $restrict;
 
-            $node->{'inherit'} = '';
+        $node->{'inherit'} = '';
+    }
+    elsif ($restrict eq '') {
+
+        if ($node->{'restrict'} eq '') {
+
+            $clear = 'clear';
         }
-        elsif ($context eq 'remove induced') {
+        else {
 
-            if ($node->{'restrict'} eq '') {
+            $node->{'restrict'} = $restrict;
 
-                $context = 'remove induced clear';
+            if ($node->parent()) {
+
+                $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
+                $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
             }
             else {
 
-                $node->{'restrict'} = '';
-
-                if ($node->parent()) {
-
-                    $node->{'inherit'} = restrict($node->parent()->{'restrict'}, $node->parent()->{'inherit'});
-                    $node->{'inherit'} = '' if $node->{'inherit'} eq '-' x $dims;
-                }
-                else {
-
-                    $node->{'inherit'} = '';
-                }
+                $node->{'inherit'} = '';
             }
         }
     }
+    else {
 
-    $node->{'restrict'} = restrict($restrict, $node->{'restrict'}) unless $restrict eq '';
+        $node->{'restrict'} = restrict($restrict, $node->{'restrict'});
+    }
 
     while ($node = $node->following($roof)) {
 
-        if ($context eq 'remove induced clear') {
+        if ($clear eq 'clear') {
 
             $node->{'restrict'} = '';
             $node->{'inherit'} = $node->parent()->{'inherit'};
@@ -2326,27 +2316,207 @@ sub restrict_hide_morphotrees {
 
     ($this, @tips) = ($roof, $this);
 
-    annotate_morphology(undef, @tips) if $this->{'tips'} > 0 and not defined $context;
+    annotate_morphology(undef, @tips) if $this->{'tips'} > 0 and $restrict ne '' and $restrict ne '-' x $dims;
 }
 
 
 #bind remove_induced_restrict Escape menu Remove Induced Restrict
 sub remove_induced_restrict {
 
-    restrict_hide('', 'remove induced');
+    restrict_hide('');
 }
 
 
 #bind remove_inherited_restrict Shift+Escape menu Remove Inherited Restrict
 sub remove_inherited_restrict {
 
-    restrict_hide('-' x $dims, 'remove inherited');
+    restrict_hide('-' x $dims);
 }
 
+#bind restrict_after plus
+sub restrict_after {
+
+    return unless $review->{$grp}{'mode'};
+
+    my $node = $this->root();
+
+    if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
+
+        $review->{$grp}{'mode'}++;
+
+        splice @{$node->{'restrict'}}, $review->{$grp}{'mode'} - 1, 0, '-' x $dims;
+    }
+    else {
+
+        $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims, '-' x $dims]);
+
+        $review->{$grp}{'mode'} = 2;
+    }
+
+    reflect_restrict();
+}
+
+#bind restrict_before underscore
+sub restrict_before {
+
+    return unless $review->{$grp}{'mode'};
+
+    my $node = $this->root();
+
+    if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
+
+        splice @{$node->{'restrict'}}, $review->{$grp}{'mode'} - 1, 0, '-' x $dims;
+    }
+    else {
+
+        $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims, '-' x $dims]);
+
+        $review->{$grp}{'mode'} = 1;
+    }
+
+    reflect_restrict();
+}
+
+#bind restrict_plus equal menu Token Index Plus
+sub restrict_plus {
+
+    return unless $review->{$grp}{'mode'};
+
+    my $node = $this->root();
+
+    if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
+
+        # $review->{$grp}{'mode'}--;
+        # $review->{$grp}{'mode'}++;
+        $review->{$grp}{'mode'} %= @{$node->{'restrict'}};
+        $review->{$grp}{'mode'}++;
+    }
+    else {
+
+        $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]);
+
+        $review->{$grp}{'mode'} = 1;
+    }
+}
+
+#bind restrict_minus minus menu Token Index Minus
+sub restrict_minus {
+
+    return unless $review->{$grp}{'mode'};
+
+    my $node = $this->root();
+
+    if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
+
+        $review->{$grp}{'mode'}--;
+        $review->{$grp}{'mode'}--;
+        $review->{$grp}{'mode'} %= @{$node->{'restrict'}};
+        $review->{$grp}{'mode'}++;
+    }
+    else {
+
+        $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]);
+
+        $review->{$grp}{'mode'} = 1;
+    }
+}
+
+#bind tree_hide_mode Ctrl+equal menu Toggle Tree Hide Mode
+sub tree_hide_mode {
+
+    if ($review->{$grp}{'zoom'}) {
+
+        $option->{$grp}{'hide'} = not $option->{$grp}{'hide'};
+    }
+    else {
+
+        $option->{$grp}{'show'} = not $option->{$grp}{'show'};
+    }
+
+    ChangingFile(0);
+}
 
 # ##################################################################################################
 #
 # ##################################################################################################
+
+#bind delete_subtree Ctrl+d menu Edit: Delete Subtree
+sub delete_subtree {
+
+    ChangingFile(0);
+
+    my $node = $this;
+
+    $node = $node->parent() if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Token';
+
+    my $done = $node->rbrother() || $node->lbrother() || $node->parent();
+
+    return unless defined $done;
+
+    CutNode($node);
+
+    $this = $done;
+
+    ChangingFile(1);
+}
+
+#bind cut_subtree Ctrl+x menu Edit: Cut Subtree
+sub cut_subtree {
+
+    ChangingFile(0);
+
+    my $node = $this;
+
+    $node = $node->parent() if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Token';
+
+    my $done = $node->rbrother() || $node->lbrother() || $node->parent();
+
+    return unless defined $done;
+
+    $TredMacro::nodeClipboard = CutNode($node);
+
+    $this = $done;
+
+    ChangingFile(1);
+}
+
+#bind paste_subtree Ctrl+v menu Edit: Paste Subtree
+sub paste_subtree {
+
+    ChangingFile(0);
+
+    return unless defined $TredMacro::nodeClipboard;
+
+    my $node = $this;
+
+    $node = $node->parent() if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Token';
+
+    if (not $node->test_child_type($TredMacro::nodeClipboard) and
+        $node->parent() and
+        $node->parent()->test_child_type($TredMacro::nodeClipboard)) {
+
+        PasteNodeAfter($TredMacro::nodeClipboard, $node);
+
+        $TredMacro::nodeClipboard = undef;
+    }
+    else {
+
+        TredMacro::PasteFromClipboard();
+    }
+
+    ChangingFile(1);
+}
+
+#bind copy_subtree Ctrl+c menu Edit: Copy Subtree
+sub copy_subtree {
+
+    my $node = $this;
+
+    $node = $node->parent() if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Token';
+
+    $TredMacro::nodeClipboard = CloneSubtree($node);
+}
+
 
 #bind restrict_verb v menu Restrict Verb
 sub restrict_verb {
@@ -2430,7 +2600,20 @@ sub restrict_imperfect {
 
 #bind restrict_imperative Ctrl+c menu Restrict Verb Imperative
 sub restrict_imperative {
-    restrict_hide('-C--------');
+
+    if ($review->{$grp}{'zoom'}) {
+
+        restrict_hide('-C--------');
+    }
+    else {
+
+        copy_subtree();
+    }
+}
+
+#bind restrict_two Y menu Restrict Numeral Two
+sub restrict_two {
+    restrict_hide('-Y--------');
 }
 
 #bind restrict_three V menu Restrict Numeral Three
@@ -2443,9 +2626,9 @@ sub restrict_ten {
     restrict_hide('-X--------');
 }
 
-#bind restrict_teen Y menu Restrict Numeral Teen
+#bind restrict_teen u menu Restrict Numeral Teen
 sub restrict_teen {
-    restrict_hide('-Y--------');
+    restrict_hide('-U--------');
 }
 
 #bind restrict_twenty l menu Restrict Numeral Twenty
@@ -2495,7 +2678,15 @@ sub restrict_active {
 
 #bind restrict_passive Ctrl+v menu Restrict Voice Passive
 sub restrict_passive {
-    restrict_hide('---P------');
+
+    if ($review->{$grp}{'zoom'}) {
+
+        restrict_hide('---P------');
+    }
+    else {
+
+        paste_subtree();
+    }
 }
 
 #bind restrict_first Ctrl+1 menu Restrict Person First
@@ -2535,7 +2726,15 @@ sub restrict_singular {
 
 #bind restrict_dual Ctrl+d menu Restrict Number Dual
 sub restrict_dual {
-    restrict_hide('-------D--');
+
+    if ($review->{$grp}{'zoom'}) {
+
+        restrict_hide('-------D--');
+    }
+    else {
+
+        delete_subtree();
+    }
 }
 
 #bind restrict_plural Ctrl+p menu Restrict Number Plural
@@ -2844,15 +3043,15 @@ sub open_level_elixir {
 
         if ($review->{$grp}{'mode'}) {
 
-            $node = $node->parent() unless $node->{'#name'} eq 'Lexeme';
-        }
-        else {
-
             my @data = map { $_->[1] } @{$node->parent()->parent()->{'data'}[0]};
 
             shift @data while $node = $node->lbrother();
 
             $node = shift @data;
+        }
+        else {
+
+            $node = $node->parent() unless $node->{'#name'} eq 'Lexeme';
         }
     }
 
