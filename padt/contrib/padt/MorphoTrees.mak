@@ -64,7 +64,7 @@ sub CreateStylesheets {
 
     return << '>>';
 
-rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && $MorphoTrees::review->{$grp}{'mode'} ?
+rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.0}' : '#{skipHiddenLevels:1}' ?>
 
@@ -80,7 +80,7 @@ style:<? my @child = $this->children();
             $score > 0.95 ? '#{Line-fill:darkviolet}' :
             $score > 0.90 ? '#{Line-fill:goldenrod}' :
             $score > 0.80 ? '#{Line-fill:tan}' : '' ) .
-          ( $MorphoTrees::review->{$grp}{'zoom'} && $MorphoTrees::review->{$grp}{'mode'} ?
+          ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' ) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
@@ -117,11 +117,11 @@ node:<? my $index = 0;
         $this->{'#name'} eq 'Token'
             ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
             : $MorphoTrees::review->{$grp}{'mode'}
-                ? ( exists $this->{'restrict'} ? join "\n", map { $MorphoTrees::review->{$grp}{'mode'} == ++$index
+                ? ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
+                                                 . $this->{'restrict'} : '' )
+                : ( exists $this->{'restrict'} ? join "\n", map { exists $this->{'current'} && $this->{'current'} == $index++
                                                                   ? '#{red}' . $_ : '#{orange}' . $_ } @{$this->{'restrict'}}
-                                               : '' )
-                : ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
-                                                 . $this->{'restrict'} : '' ) ?>
+                                               : '' ) ?>
 
 node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
         ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
@@ -381,7 +381,7 @@ sub focus_score {
     my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
 
                grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
-               
+
     return unless @node;
 
     my $score = max map { $_->{'score'} } @node;
@@ -470,13 +470,13 @@ sub switch_review_mode {
 
     ChangingFile(0);
 
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if not $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 
     $review->{$grp}{'mode'} = not $review->{$grp}{'mode'};
 
     update_zoom_tree();
 
-    $this = $review->{$grp}{'maps'}->{$this}[-1] if not $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
+    $this = $review->{$grp}{'maps'}->{$this}[-1] if $review->{$grp}{'mode'} and exists $review->{$grp}{'maps'}->{$this};
 }
 
 sub update_zoom_tree {
@@ -507,10 +507,6 @@ sub update_zoom_tree {
 
     if ($review->{$grp}{'mode'}) {
 
-        $review->{$grp}{'tree'} = $review->{$grp}{'data'};
-    }
-    else {
-
         my $node = Treex::PML::Factory->createTypedNode('Element.Trees', PML::Schema());
 
         $node->{'#name'} = 'Element';
@@ -520,6 +516,10 @@ sub update_zoom_tree {
         $node = couple($node);
 
         $review->{$grp}{'tree'} = $node;
+    }
+    else {
+
+        $review->{$grp}{'tree'} = $review->{$grp}{'data'};
     }
 }
 
@@ -1818,48 +1818,6 @@ sub annotate_morphology {
 
     if ($review->{$grp}{'mode'}) {
 
-        while ($node->{'#name'} ne 'Tuple' and @children = $node->children()) {
-
-            @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
-
-            last unless @children == 1;
-
-            $node = $children[0];
-        }
-
-        $node = $node->parent() if $node->{'#name'} eq 'Token';
-
-        if ($node->{'#name'} eq 'Tuple') {
-
-            $diff = $node->{'apply'} == 0 ? 1 : -1;
-
-            reflect_tuple($node, $diff);
-
-            $Redraw = 'tree';
-
-            ChangingFile(1);
-
-            if ($diff == 1 and not $quick) {
-
-                $node = $review->{$grp}{'zoom'}->rbrother();
-
-                if ($node) {
-
-                    $review->{$grp}{'zoom'} = $node;
-
-                    update_zoom_tree();
-
-                    $this = $review->{$grp}{'tree'};
-                }
-            }
-        }
-        else {
-
-            $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0] if @children;
-        }
-    }
-    else {
-
         while (@children = $node->children()) {
 
             @children = grep { $_->{'hide'} ne 'hide' and ( not defined $_->{'tips'} or $_->{'tips'} > 0 ) } @children;
@@ -1933,6 +1891,48 @@ sub annotate_morphology {
         else {
 
             $this = defined $tips[0] && ( grep { $tips[0] == $_ } @children ) ? $tips[0] : $children[0];
+        }
+    }
+    else {
+
+        while ($node->{'#name'} ne 'Tuple' and @children = $node->children()) {
+
+            @children = grep { $_->{'hide'} ne 'hide' } @children;
+
+            last unless @children == 1;
+
+            $node = $children[0];
+        }
+
+        $node = $node->parent() if $node->{'#name'} eq 'Token';
+
+        if ($node->{'#name'} eq 'Tuple') {
+
+            $diff = $node->{'apply'} == 0 ? 1 : -1;
+
+            reflect_tuple($node, $diff);
+
+            $Redraw = 'tree';
+
+            ChangingFile(1);
+
+            if ($diff == 1 and not $quick) {
+
+                $node = $review->{$grp}{'zoom'}->rbrother();
+
+                if ($node) {
+
+                    $review->{$grp}{'zoom'} = $node;
+
+                    update_zoom_tree();
+
+                    $this = $review->{$grp}{'tree'};
+                }
+            }
+        }
+        else {
+
+            $this = $children[0] if @children;
         }
     }
 }
@@ -2071,11 +2071,11 @@ sub restrict_hide {
 
     if ($review->{$grp}{'mode'}) {
 
-        restrict_hide_morpholists(@_);
+        restrict_hide_morphotrees(@_);
     }
     else {
 
-        restrict_hide_morphotrees(@_);
+        restrict_hide_morpholists(@_);
     }
 }
 
@@ -2084,23 +2084,17 @@ sub restrict_hide_morpholists {
 
     ChangingFile(0);
 
-    return unless $review->{$grp}{'mode'};
-
-    my $mode = int $review->{$grp}{'mode'};
-
-    return unless $mode;
-
-    $mode -= 1 if $mode > 0;
+    return if $review->{$grp}{'mode'};
 
     my $restrict = $_[0];
 
     my $node = $this->root();
 
+    $node->{'current'} = 0 unless exists $node->{'current'};
+
     $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]) unless exists $node->{'restrict'} and @{$node->{'restrict'}};
 
-    $mode %= @{$node->{'restrict'}};
-
-    my (@tips, %tips, $orig, $diff);
+    $node->{'current'} = exists $node->{'current'} ? $node->{'current'} % @{$node->{'restrict'}} : 0;
 
     if ($restrict eq '-' x $dims) {
 
@@ -2115,27 +2109,37 @@ sub restrict_hide_morpholists {
             $clear = '';
         }
 
-        $node->{'restrict'} = Treex::PML::Factory->createList() if $clear;
+        if ($clear) {
+
+            delete $node->{'restrict'};
+            delete $node->{'current'};
+        }
     }
     elsif ($restrict eq '') {
 
-        if ($node->{'restrict'}[$mode] eq '-' x $dims) {
+        if ($node->{'restrict'}[$node->{'current'}] eq '-' x $dims) {
 
-            splice @{$node->{'restrict'}}, $mode, 1;
+            splice @{$node->{'restrict'}}, $node->{'current'}, 1;
 
-            $mode = @{$node->{'restrict'}} - 1 unless $mode == 0 or $mode < @{$node->{'restrict'}};
+            if (@{$node->{'restrict'}}) {
+
+                $node->{'current'} = @{$node->{'restrict'}} - 1 unless $node->{'current'} < @{$node->{'restrict'}};
+            }
+            else {
+
+                delete $node->{'restrict'};
+                delete $node->{'current'};
+            }
         }
         else {
 
-            $node->{'restrict'}[$mode] = '-' x $dims;
+            $node->{'restrict'}[$node->{'current'}] = '-' x $dims;
         }
     }
     else {
 
-        $node->{'restrict'}[$mode] = restrict($restrict, $node->{'restrict'}[$mode]);
+        $node->{'restrict'}[$node->{'current'}] = restrict($restrict, $node->{'restrict'}[$node->{'current'}]);
     }
-
-    $review->{$grp}{'mode'} = $mode + 1;
 
     reflect_restrict();
 }
@@ -2147,7 +2151,7 @@ sub reflect_restrict {
 
     my $node = $this->root();
 
-    my $list = $node->{'restrict'};
+    my $list = exists $node->{'restrict'} ? $node->{'restrict'} : [];
 
     foreach ($node->children()) {
 
@@ -2336,21 +2340,21 @@ sub remove_inherited_restrict {
 #bind restrict_after plus
 sub restrict_after {
 
-    return unless $review->{$grp}{'mode'};
+    return if $review->{$grp}{'mode'};
 
     my $node = $this->root();
 
     if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
 
-        $review->{$grp}{'mode'}++;
+        $node->{'current'} = exists $node->{'current'} ? $node->{'current'} + 1 : @{$node->{'restrict'}};
 
-        splice @{$node->{'restrict'}}, $review->{$grp}{'mode'} - 1, 0, '-' x $dims;
+        splice @{$node->{'restrict'}}, $node->{'current'}, 0, '-' x $dims;
     }
     else {
 
         $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims, '-' x $dims]);
 
-        $review->{$grp}{'mode'} = 2;
+        $node->{'current'} = 1;
     }
 
     reflect_restrict();
@@ -2359,19 +2363,21 @@ sub restrict_after {
 #bind restrict_before underscore
 sub restrict_before {
 
-    return unless $review->{$grp}{'mode'};
+    return if $review->{$grp}{'mode'};
 
     my $node = $this->root();
 
     if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
 
-        splice @{$node->{'restrict'}}, $review->{$grp}{'mode'} - 1, 0, '-' x $dims;
+        $node->{'current'} = 0 unless exists $node->{'current'};
+
+        splice @{$node->{'restrict'}}, $node->{'current'}, 0, '-' x $dims;
     }
     else {
 
         $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims, '-' x $dims]);
 
-        $review->{$grp}{'mode'} = 1;
+        $node->{'current'} = 0;
     }
 
     reflect_restrict();
@@ -2380,44 +2386,42 @@ sub restrict_before {
 #bind restrict_plus equal menu Token Index Plus
 sub restrict_plus {
 
-    return unless $review->{$grp}{'mode'};
+    return if $review->{$grp}{'mode'};
 
     my $node = $this->root();
 
     if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
 
-        # $review->{$grp}{'mode'}--;
-        # $review->{$grp}{'mode'}++;
-        $review->{$grp}{'mode'} %= @{$node->{'restrict'}};
-        $review->{$grp}{'mode'}++;
+        $node->{'current'} = exists $node->{'current'} ? $node->{'current'} + 1 : 0;
+
+        $node->{'current'} %= @{$node->{'restrict'}};
     }
     else {
 
         $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]);
 
-        $review->{$grp}{'mode'} = 1;
+        $node->{'current'} = 0;
     }
 }
 
 #bind restrict_minus minus menu Token Index Minus
 sub restrict_minus {
 
-    return unless $review->{$grp}{'mode'};
+    return if $review->{$grp}{'mode'};
 
     my $node = $this->root();
 
     if (exists $node->{'restrict'} and @{$node->{'restrict'}}) {
 
-        $review->{$grp}{'mode'}--;
-        $review->{$grp}{'mode'}--;
-        $review->{$grp}{'mode'} %= @{$node->{'restrict'}};
-        $review->{$grp}{'mode'}++;
+        $node->{'current'} = exists $node->{'current'} ? $node->{'current'} - 1 : -1;
+
+        $node->{'current'} %= @{$node->{'restrict'}};
     }
     else {
 
         $node->{'restrict'} = Treex::PML::Factory->createList(['-' x $dims]);
 
-        $review->{$grp}{'mode'} = 1;
+        $node->{'current'} = 0;
     }
 }
 
@@ -3043,15 +3047,15 @@ sub open_level_elixir {
 
         if ($review->{$grp}{'mode'}) {
 
+            $node = $node->parent() unless $node->{'#name'} eq 'Lexeme';
+        }
+        else {
+
             my @data = map { $_->[1] } @{$node->parent()->parent()->{'data'}[0]};
 
             shift @data while $node = $node->lbrother();
 
             $node = shift @data;
-        }
-        else {
-
-            $node = $node->parent() unless $node->{'#name'} eq 'Lexeme';
         }
     }
 
