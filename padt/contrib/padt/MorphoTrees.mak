@@ -18,7 +18,7 @@ use Encode::Arabic ':modes';
 
 use Algorithm::Diff;
 
-use List::Util 'reduce', 'max';
+use List::Util 'reduce', 'max', 'min';
 
 use Scalar::Util 'reftype';
 
@@ -371,52 +371,146 @@ sub node_click_hook {
     return 'stop';
 }
 
-#bind focus_score to Ctrl+Shift+Down menu Focus Highest Score
-sub focus_score {
+#bind focus_score_ascending to Ctrl+Shift+Up menu Focus Score Ascending
+sub focus_score_ascending {
 
+    $Redraw = 'none';
+    ChangingFile(0);
+
+    if ($review->{$grp}{'zoom'} and $review->{$grp}{'tree'}) {
+
+        $this = $this->parent() until $this->{'#name'} eq 'Tuple' or $this->{'#name'} eq 'Element';
+
+        return if $this->{'#name'} eq 'Element';
+
+        my $score = exists $this->{'score'} ? $this->{'score'} : 0.0;
+
+        my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
+
+                   grep { exists $_->{'score'} and $_->{'score'} > $score }
+
+                   map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
+
+        $score = min map { $_->{'score'} } @node;
+
+        @node = grep { $_->{'score'} == $score } @node;
+
+        if (@node) {
+
+            $this = $node[0];
+        }
+        else {
+
+            $this = $review->{$grp}{'tree'};
+        }
+    }
+    else {
+
+        $this = $root;
+    }
+}
+
+#bind focus_score_descending to Ctrl+Shift+Down menu Focus Score Descending
+sub focus_score_descending {
+
+    $Redraw = 'none';
     ChangingFile(0);
 
     return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
 
+    my $node = $this;
+
+    $node = $node->parent() until $node->{'#name'} eq 'Tuple' or $node->{'#name'} eq 'Element';
+
+    my $score = exists $node->{'score'} ? $node->{'score'} : 1.1;
+
     my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
 
-               grep { exists $_->{'score'} and $_->{'score'} > 0 } $review->{$grp}{'tree'}->descendants();
+               grep { exists $_->{'score'} and $_->{'score'} < $score }
 
-    return unless @node;
+               map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
 
-    my $score = max map { $_->{'score'} } @node;
+    $score = max map { $_->{'score'} } @node;
 
     @node = grep { $_->{'score'} == $score } @node;
 
-    if (@node > 1) {
+    $this = $node[0] if @node;
+}
 
-        my $node = $this;
+#bind focus_score_preceding to Ctrl+Shift+Left menu Focus Equal Preceding
+sub focus_score_preceding {
 
-        while ($node = $node->following()) {
+    $Redraw = 'none';
+    ChangingFile(0);
 
-            last if $node->{'score'} == $score;
-        }
+    return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
 
-        unless ($node) {
+    my $node = $this;
 
-            $node = $review->{$grp}{'tree'};
+    $node = $node->parent() until $node->{'#name'} eq 'Tuple' or $node->{'#name'} eq 'Element';
 
-            while ($node = $node->following()) {
+    return unless exists $node->{'score'};
 
-                last if $node->{'score'} == $score;
-            }
-        }
+    my @node = grep { exists $_->{'score'} and $_->{'score'} == $node->{'score'} }
 
-        $this = $node;
+               map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
+
+    my @view = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } @node;
+
+    return unless @view;
+
+    if (@view > 1) {
+
+        @node = reverse @node;
+
+        my ($i) = grep { $node[$_] == $node } 0 .. @node - 1;
+
+        ($this) = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } @node[$i - @node + 1 .. @node - 1];
     }
     else {
 
-        $this = $node[0];
+        $this = $view[0];
+    }
+}
+
+#bind focus_score_succeeding to Ctrl+Shift+Right menu Focus Equal Succeeding
+sub focus_score_succeeding {
+
+    $Redraw = 'none';
+    ChangingFile(0);
+
+    return unless $review->{$grp}{'tree'} and $review->{$grp}{'zoom'};
+
+    my $node = $this;
+
+    $node = $node->parent() until $node->{'#name'} eq 'Tuple' or $node->{'#name'} eq 'Element';
+
+    return unless exists $node->{'score'};
+
+    my @node = grep { exists $_->{'score'} and $_->{'score'} == $node->{'score'} }
+
+               map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
+
+    my @view = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } @node;
+
+    return unless @view;
+
+    if (@view > 1) {
+
+        my ($i) = grep { $node[$_] == $node } 0 .. @node - 1;
+
+        ($this) = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' } @node[$i - @node + 1 .. @node - 1];
+    }
+    else {
+
+        $this = $view[0];
     }
 }
 
 #bind update_morphology to Ctrl+Shift+space menu Update the Annotation
 sub update_morphology {
+
+    my @restrict = grep { reftype $_ eq 'ARRAY' } @_;
 
     my $zoom = $review->{$grp}{'zoom'};
 
@@ -429,26 +523,43 @@ sub update_morphology {
         $review->{$grp}{'zoom'} = $this;
     }
 
-    $review->{$grp}{$_} = undef for 'data', 'tree';
+    if (exists $review->{$grp}{'data'} and exists $review->{$grp}{'data'}{'restrict'}) {
+
+        @restrict = ($review->{$grp}{'data'}{'restrict'}) if not @restrict;
+    }
+
+    @restrict = (Treex::PML::Factory->createList()) if not @restrict;
+
+    $review->{$grp}{$_} = undef for 'data', 'tree', 'mode';
 
     update_zoom_tree();
 
-    my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
+    foreach (@restrict) {
 
-               grep { exists $_->{'score'} and $_->{'score'} > 0.6 } $review->{$grp}{'tree'}->descendants();
+        $review->{$grp}{'tree'}{'restrict'} = $_;
 
-    if (@node) {
+        reflect_restrict();
 
-        my $score = max map { $_->{'score'} } @node;
+        my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
 
-        @node = grep { $_->{'score'} == $score } @node;
+                   grep { exists $_->{'score'} and $_->{'score'} > 0.6 }
 
-        foreach (@node) {
+                   map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
 
-            $this = $_;
+        if (@node) {
 
-            annotate_morphology('click');
+            my $score = max map { $_->{'score'} } @node;
+
+            @node = grep { $_->{'score'} == $score } @node;
+
+            foreach (@node) {
+
+                $this = $_;
+
+                annotate_morphology('click') unless $this->{'apply'} > 0;
+            }
         }
+
     }
 
     unless ($zoom) {
@@ -971,15 +1082,6 @@ sub move_par_end {
     $review->{$grp}{'zoom'} = undef;
 
     $Redraw = 'win';
-    ChangingFile(0);
-}
-
-#bind move_to_root Ctrl+Shift+Up menu Move Up to Root
-sub move_to_root {
-
-    $this = $review->{$grp}{'zoom'} ? $review->{$grp}{'tree'} : $root;
-
-    $Redraw = 'none';
     ChangingFile(0);
 }
 
@@ -2088,7 +2190,7 @@ sub restrict_hide_morpholists {
 
     my $restrict = $_[0];
 
-    my $node = $this->root();
+    my $node = $review->{$grp}{'data'};
 
     $node->{'current'} = 0 unless exists $node->{'current'};
 
@@ -2149,7 +2251,7 @@ sub reflect_restrict {
 
     return unless $review->{$grp}{'zoom'};
 
-    my $node = $this->root();
+    my $node = $review->{$grp}{'data'};
 
     my $list = exists $node->{'restrict'} ? $node->{'restrict'} : [];
 
