@@ -88,7 +88,13 @@ sub MouseEditLinks {
                               List($refid.'#'.$aid)));
         }
       }else{ # not current
+        my $before = GetAAuxNodes();
         PML_A::ANodeToAAuxRf($anode,$this,CurrentFile());
+        if($before == GetAAuxNodes()) { # the number of auxes did not change, it was already here, delete it
+          @{$this->{a}{'aux.rf'}} =
+            uniq(ListSubtract($this->attr('a/aux.rf'),
+                              List($refid.'#'.$aid)));
+        }
       }
     }
     ChangingFile(1);
