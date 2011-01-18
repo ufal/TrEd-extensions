@@ -606,11 +606,11 @@ sub change_slot_type {
 sub delete_subtree {
 
     ChangingFile(0);
-    
+
     my $node = $this->rbrother() || $this->lbrother() || $this->parent();
 
     return unless defined $node;
-    
+
     CutNode($this);
 
     $this = $node;
@@ -622,12 +622,12 @@ sub delete_subtree {
 sub cut_subtree {
 
     ChangingFile(0);
-    
+
     my $node = $this->rbrother() || $this->lbrother() || $this->parent();
 
     return unless defined $node;
-    
-    CutNode($this);
+
+    $TredMacro::nodeClipboard = CutNode($this);
 
     $this = $node;
 
@@ -1161,7 +1161,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2010 by Otakar Smrz
+Copyright 2006-2011 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

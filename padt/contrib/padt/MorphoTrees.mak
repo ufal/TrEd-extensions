@@ -2152,12 +2152,22 @@ sub reflect_tuple {
 }
 
 
+sub comply {
+
+    my @restrict = split //, length $_[0] == $dims ? $_[0] : '-' x $dims;
+    my @inherit = split //, $_[1];
+
+    return not grep { $restrict[$_] ne '-' && defined $inherit[$_] &&
+                      $inherit[$_] ne '-' && $restrict[$_] ne $inherit[$_] } 0 .. @restrict - 1;
+}
+
+
 sub restrict {
 
     my @restrict = split //, length $_[0] == $dims ? $_[0] : '-' x $dims;
     my @inherit = split //, $_[1];
 
-    return join '', map { $restrict[$_] eq '-' && defined $inherit[$_] ? $inherit[$_] : $restrict[$_] } 0 .. $#restrict;
+    return join '', map { $restrict[$_] eq '-' && defined $inherit[$_] ? $inherit[$_] : $restrict[$_] } 0 .. @restrict - 1;
 }
 
 
@@ -2296,7 +2306,7 @@ sub restrict_comply {
 
         for (my $j = 0; $j < @{$list} and $all; $j++) {
 
-            $all = '' unless restrict($list->[$j], $tags[$i + $j]) eq $tags[$i + $j];
+            $all = '' unless comply($list->[$j], $tags[$i + $j]);
         }
 
         $any = 'any' if $all eq 'all';
@@ -3358,7 +3368,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2010 by Otakar Smrz
+Copyright 2004-2011 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
