@@ -523,9 +523,12 @@ sub update_morphology {
         $review->{$grp}{'zoom'} = $this;
     }
 
-    if (exists $review->{$grp}{'data'} and exists $review->{$grp}{'data'}{'restrict'}) {
+    my $id = join 'e', split 'w', $review->{$grp}{'zoom'}->{'id'};
 
-        @restrict = ($review->{$grp}{'data'}{'restrict'}) if not @restrict;
+    if ($review->{$grp}{'data'} and $review->{$grp}{'data'}->{'id'} eq $id
+                         and exists $review->{$grp}{'data'}->{'restrict'}) {
+
+        @restrict = ($review->{$grp}{'data'}->{'restrict'}) if not @restrict;
     }
 
     @restrict = (Treex::PML::Factory->createList()) if not @restrict;
@@ -536,7 +539,7 @@ sub update_morphology {
 
     foreach (@restrict) {
 
-        $review->{$grp}{'tree'}{'restrict'} = $_;
+        $review->{$grp}{'data'}->{'restrict'} = $_;
 
         reflect_restrict();
 
@@ -544,7 +547,7 @@ sub update_morphology {
 
                    grep { exists $_->{'score'} and $_->{'score'} > 0.6 }
 
-                   map { $_->children() } map { $_->children() } $review->{$grp}{'tree'}->children();
+                   map { $_->children() } map { $_->children() } $review->{$grp}{'data'}->children();
 
         if (@node) {
 

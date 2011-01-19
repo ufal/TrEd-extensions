@@ -301,7 +301,6 @@
             <member name="sense" type="String"/>
             <member name="apply" type="String"/>
             <member name="score" type="Score"/>
-            <member name="inherit" type="String"/>
             <member name="hide" type="String" role="#HIDE"/>
         </structure>
     </type>
