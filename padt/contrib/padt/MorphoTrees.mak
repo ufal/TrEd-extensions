@@ -537,32 +537,33 @@ sub update_morphology {
 
     update_zoom_tree();
 
+    my @node = ();
+
     foreach (@restrict) {
 
         $review->{$grp}{'data'}->{'restrict'} = $_;
 
         reflect_restrict();
 
-        my @node = grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
+        push @node, grep { not exists $_->{'hide'} or $_->{'hide'} ne 'hide' }
 
-                   grep { exists $_->{'score'} and $_->{'score'} > 0.6 }
+                    grep { exists $_->{'score'} and $_->{'score'} > 0.6 }
 
-                   map { $_->children() } map { $_->children() } $review->{$grp}{'data'}->children();
+                    map { $_->children() } map { $_->children() } $review->{$grp}{'data'}->children();
+    }
 
-        if (@node) {
+    if (@node) {
 
-            my $score = max map { $_->{'score'} } @node;
+        my $score = max map { $_->{'score'} } @node;
 
-            @node = grep { $_->{'score'} == $score } @node;
+        @node = grep { $_->{'score'} == $score } @node;
 
-            foreach (@node) {
+        foreach (@node) {
 
-                $this = $_;
+            $this = $_;
 
-                annotate_morphology('click') unless $this->{'apply'} > 0;
-            }
+            annotate_morphology('click') unless $this->{'apply'} > 0;
         }
-
     }
 
     unless ($zoom) {
