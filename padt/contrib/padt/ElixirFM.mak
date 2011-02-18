@@ -738,7 +738,7 @@ node:<? $this->{'#name'} eq 'Entry'
 
 node:<? $this->{'#name'} eq 'Entry'
       ? ElixirFM::phon(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
-        '#{grey30}' . ( join "",
+        '#{slategrey}' . ( join "",
           map { "\n" . ElixirFM::phon(ElixirFM::merge($_->[0], $_->[1])) }
           map { [$this->parent()->{'root'}, $_] }
           ElixirFM::plurals($this),
@@ -748,7 +748,7 @@ node:<? $this->{'#name'} eq 'Entry'
 
 node:<? $this->{'#name'} eq 'Entry'
       ? ElixirFM::orth(ElixirFM::merge($this->parent()->{'root'}, $this->{'morphs'})) .
-        '#{grey30}' . ( join "",
+        '#{slategrey}' . ( join "",
           map { "\n" . ElixirFM::orth(ElixirFM::merge($_->[0], $_->[1])) }
           map { [$this->parent()->{'root'}, $_] }
           ElixirFM::plurals($this),
@@ -756,12 +756,15 @@ node:<? $this->{'#name'} eq 'Entry'
           ElixirFM::feminis($this) )
       : '' ?>
 
-node:<? $this->{'#name'} eq 'Entry'
-      ? '#{custom3}${reflex=' . (join ", ", @{$this->{'reflex'}}) . '}'
-      : join "\n", ( exists $this->{'reflex'}{'en'} ?
-        '#{custom2}${reflex=' . (join ", ", @{$this->{'reflex'}{'en'}}) . '}' : () ),
-                   ( exists $this->{'reflex'}{'cs'} ?
-        '#{custom6}${reflex=' . (join ", ", @{$this->{'reflex'}{'cs'}}) . '}' : () ) ?>
+node:<? join "\n", ( exists $this->{'reflex'}
+          ? $this->{'#name'} eq 'Entry'
+            ? '#{custom3}${reflex=' . (join ", ", @{$this->{'reflex'}}) . '}'
+            : ( ( exists $this->{'reflex'}{'en'} && @{$this->{'reflex'}{'en'}} ?
+                '#{custom2}${reflex=' . (join ", ", @{$this->{'reflex'}{'en'}}) . '}' : () ),
+                ( exists $this->{'reflex'}{'cs'} && @{$this->{'reflex'}{'cs'}} ?
+                '#{custom6}${reflex=' . (join ", ", @{$this->{'reflex'}{'cs'}}) . '}' : () ) )
+          : () ),
+        ( exists $this->{'note'} ? '#{darkgrey}${note=' . $this->{'note'} . '}' : () ) ?>
 
 >>
 }

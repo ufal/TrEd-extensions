@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.1.1</revision>
+    <revision>1.1.2</revision>
     <description>ElixirFM Lexicon</description>
 
     <root name="ElixirFM" type="Lexicon"/>
@@ -41,6 +41,7 @@
                     <element name="Entry" type="Entry"/>
                 </sequence>
             </member>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
@@ -51,6 +52,7 @@
             <member name="limits" type="Limits"/>
             <member name="reflex" type="Reflex" required="1"/>
             <member name="vallex" type="Vallex" role="#CHILDNODES"/>
+            <member name="note" type="String"/>
         </structure>
     </type>
 
@@ -279,6 +281,7 @@
                     <element name="Slot" type="Slot"/>
                 </sequence>
             </member>
+            <member name="note" type="String"/>
         </structure>
     </type>
 

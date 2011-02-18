@@ -692,7 +692,7 @@ sub compute_score {
 
         "kAn"   => ['V...-...--', 'V...-...--'],
         "qAl"   => ['V...-...--', 'V...-...--'],
-        "lays"  => ['VP.A-...--', 'V...-...--'],
+        "lays"  => ['VP.A-...--', 'V...-...--|FN--------'],
 
         "huwa"  => ['SP---....-', 'S.---....-'],
 
@@ -725,6 +725,7 @@ sub compute_score {
         "'amAma"    => ['PI------.-', 'P---------'],
         "warA'a"    => ['PI------.-', 'P---------'],
         "_hilAla"   => ['PI------.-', 'P---------'],
+        "'a_tnA'a"  => ['PI------.-', 'P---------'],
 
         "muqAbila"  => ['PI------.-', 'P---------|N-------..'],
 
@@ -734,7 +735,7 @@ sub compute_score {
         "ta.hta"    => ['PI------.-', 'P---------'],
         "fawqa"     => ['PI------.-', 'P---------'],
 
-        "mi_tla"    => ['PI------.-', 'P---------'],
+        "mi_tla"    => ['PI------.-', 'P---------|N-------..'],
         "wifqa"     => ['PI------.-', 'P---------'],
 
         "mun_du"    => ['P---------', 'P---------'],
@@ -742,6 +743,8 @@ sub compute_score {
         ".hay_tu"   => ['C---------', 'D---------'],
 
         "l_akin"    => ['C---------', 'C---------'],
+        "l_akinna"  => ['C---------', 'C---------'],
+
         "fImA"      => ['C---------', 'C---------'],
 
         "faqa.t"    => ['D---------', 'D---------'],
@@ -2590,6 +2593,24 @@ sub delete_subtree {
     CutNode($node);
 
     $this = $done;
+
+    ChangingFile(1);
+}
+
+#bind delete_neighbors Ctrl+D menu Edit: Delete Neighbors
+sub delete_neighbors {
+
+    ChangingFile(0);
+
+    my $node = $this;
+
+    $node = $node->parent() if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Token';
+
+    my @node = grep { $_ != $node } $node->parent()->children();
+
+    return unless @node;
+
+    CutNode($_) foreach @node;
 
     ChangingFile(1);
 }
