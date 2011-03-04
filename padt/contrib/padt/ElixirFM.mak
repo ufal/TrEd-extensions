@@ -401,6 +401,49 @@ sub enforce_string {
     ChangingFile(1);
 }
 
+#bind enforce_variant Ctrl+y menu Enforce Variant
+sub enforce_variant {
+
+    ChangingFile(0);
+
+    my $node = $this;
+
+    $node = $node->parent() if $node->{'#name'} eq 'Entry';
+
+    return unless $node->{'#name'} eq 'Nest';
+
+    my @root = split " ", $node->{'root'};
+
+    return unless @root == 3 and $root[-1] =~ /^[wy]$/;
+
+    foreach ($node->children()) {
+
+        foreach ($_->{'morphs'}, exists $_->{'entity'} ?
+                    ((exists $_->{'entity'}[0][0][1]{'plural'} ? @{$_->{'entity'}[0][0][1]{'plural'}} : ()),
+                     (exists $_->{'entity'}[0][0][1]{'femini'} ? @{$_->{'entity'}[0][0][1]{'femini'}} : ())) : ()) {
+
+            my $morphs = ElixirFM::morphs($_);
+                     
+            if ($root[-1] eq 'w') {
+
+                $morphs->[0] =~ s/L/w/g;
+                $morphs->[0] =~ s/y([^FCw]*)$/L$1/;
+            }
+            else {
+
+                $morphs->[0] =~ s/L/y/g;
+                $morphs->[0] =~ s/w([^FCy]*)$/L$1/;
+            }
+            
+            $_ =  ElixirFM::unmorphs($morphs);
+        }
+    }
+
+    $node->{'root'} = join ' ', @root[0, 1], $root[-1] eq 'w' ? 'y' : 'w';
+
+    ChangingFile(1);
+}
+
 #bind new_Nest Ctrl+n menu New Nest
 sub new_Nest {
 
