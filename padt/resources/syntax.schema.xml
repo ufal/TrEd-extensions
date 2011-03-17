@@ -3,9 +3,7 @@
     <revision>1.1.1</revision>
     <description>PADT Surface Syntax</description>
 
-    <reference name="morpho" readas="dom"/>
-
-    <root name="Analytic" type="Trees"/>
+    <reference name="morpho" readas="pml"/>
 
     <import schema="morpho.schema.xml" type="Unit"/>
 
@@ -42,6 +40,8 @@
     <import schema="morpho.schema.xml" type="Score"/>
 
     <import schema="morpho.schema.xml" type="ID"/>
+
+    <root name="Analytic" type="Trees"/>
 
     <type name="Trees">
         <structure>
