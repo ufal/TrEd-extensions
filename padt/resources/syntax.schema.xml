@@ -1,11 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.1.0</revision>
+    <revision>1.1.1</revision>
     <description>PADT Surface Syntax</description>
 
     <reference name="morpho" readas="dom"/>
 
     <root name="Analytic" type="Trees"/>
+
+    <import schema="morpho.schema.xml" type="Unit"/>
+
+    <derive type="Unit">
+        <structure>
+            <member name="id" as_attribute="1" required="1" role="#ID">
+                <cdata format="PMLREF"/>
+            </member>
+        </structure>
+    </derive>
+
+    <import schema="morpho.schema.xml" type="Word"/>
+
+    <derive type="Word">
+        <structure>
+            <member name="id" as_attribute="1" required="1" role="#ID">
+                <cdata format="PMLREF"/>
+            </member>
+        </structure>
+    </derive>
+
+    <import schema="morpho.schema.xml" type="Token"/>
+
+    <derive type="Token">
+        <structure>
+            <member name="id" as_attribute="1" required="1" role="#ID">
+                <cdata format="PMLREF"/>
+            </member>
+        </structure>
+    </derive>
+
+    <import schema="morpho.schema.xml" type="String"/>
+
+    <import schema="morpho.schema.xml" type="Score"/>
+
+    <import schema="morpho.schema.xml" type="ID"/>
 
     <type name="Trees">
         <structure>
@@ -71,7 +107,6 @@
             <member name="arabfa" type="String"/>
             <member name="coref" type="Coref"/>
             <member name="clause" type="Clause"/>
-            <member name="morpho" type="Morpho"/>
             <member name="hide" type="String" role="#HIDE"/>
             <member name="with" role="#CHILDNODES">
                 <sequence>
@@ -150,23 +185,5 @@
     <type name="Order">
         <cdata format="nonNegativeInteger"/>
     </type>
-
-    <type name="Morpho">
-        <structure>
-            <member name="Token" type="Token"/>
-            <member name="Lexeme" type="Lexeme"/>
-            <member name="Word" type="Word"/>
-        </structure>
-    </type>
-
-    <import schema="morpho.schema.xml" type="Word"/>
-
-    <import schema="morpho.schema.xml" type="Token"/>
-
-    <import schema="morpho.schema.xml" type="String"/>
-
-    <import schema="morpho.schema.xml" type="Score"/>
-
-    <import schema="morpho.schema.xml" type="ID"/>
 
 </pml_schema>

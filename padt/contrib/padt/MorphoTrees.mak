@@ -90,7 +90,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
             $this->{'#name'} eq 'Lexeme'
                 ? ( ( $MorphoTrees::review->{$grp}{'zoom'}
                         ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
-                                                            @{$this->{'core'}{'reflex'}} : () ) . ' '
+                                                          @{$this->{'core'}{'reflex'}} : () ) . ' '
                         : '' ) .
                     '#{darkmagenta}' .
                     ( $this->{'form'} eq '[DEFAULT]'

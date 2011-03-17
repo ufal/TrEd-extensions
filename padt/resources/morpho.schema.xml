@@ -96,7 +96,7 @@
 
     <type name="Token">
         <structure role="#NODE">
-            <member name="id" as_attribute="1" role="#ID" type="ID"/>
+            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
             <member name="morphs" type="Morphs"/>
             <member name="tag" type="Tags"/>
             <member name="form" type="String"/>
