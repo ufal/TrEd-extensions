@@ -3,7 +3,7 @@
     <revision>1.0.0</revision>
     <description>PADT Deep Syntax</description>
 
-    <reference name="syntax"/>
+    <reference name="syntax" readas="pml"/>
 
     <root name="DeepLevels" type="Trees"/>
 
@@ -30,7 +30,7 @@
     <type name="Tree">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="ord" required="1" role="#ORDER" type="ORDER"/>
             <member name="func" required="1">
                 <constant>SENT</constant>
             </member>
@@ -49,7 +49,7 @@
     <type name="Node">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="ord" required="1" role="#ORDER" type="ORDER"/>
             <member name="func" type="Functor" required="1"/>
             <member name="score" type="Score"/>
             <member name="note" type="String"/>
@@ -80,7 +80,7 @@
     <type name="Syntax">
         <structure>
             <!--<member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>-->
-            <member name="ord" type="Order"/>
+            <member name="ord" type="ORDER"/>
             <member name="afun" type="Afun"/>
             <member name="note" type="String"/>
             <member name="parallel" type="Parallel"/>
@@ -100,7 +100,7 @@
 
     <import schema="syntax.schema.xml" type="ID"/>
 
-    <import schema="syntax.schema.xml" type="Order"/>
+    <import schema="syntax.schema.xml" type="ORDER"/>
 
     <import schema="syntax.schema.xml" type="Afun"/>
 

@@ -464,7 +464,7 @@ sub morpho_structure {
 
     my $node = $this->root();
 
-    unless (exists $node->{'form'} or not exists $node->{'m'}{'tag'}) {
+    if (not exists $node->{'form'} and exists $node->{'m'} and exists $node->{'m'}{'tag'}) {
 
         $node->{'form'} = $node->{'m'}{'tag'};
 
@@ -926,33 +926,15 @@ sub enable_attr_hook {
 #bind edit_note to exclam menu Annotate: Edit Annotation Note
 sub edit_note {
 
-    $Redraw = 'none';
-    ChangingFile(0);
+    if (exists $this->{'note'} and $this->{'note'} ne "") {
 
-    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
-
-    unless (defined $note) {
-
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "No attribute for annotator's note in this file",
-            -title => 'Sorry',
-            -type => 'OK',
-        );
-
-        return;
+        delete $this->{'note'};
     }
+    else {
 
-    my $value = $this->{$note};
+        my $note = main::QueryString($grp->{framegroup}, "Enter the note", 'note');
 
-    $value = main::QueryString($grp->{framegroup}, "Enter note", $note, $value);
-
-    if (defined $value) {
-
-        $this->{$note} = $value;
-
-        $Redraw = 'tree';
-        ChangingFile(1);
+        $this->{'note'} = $note if defined $note;
     }
 }
 
@@ -1535,13 +1517,15 @@ sub open_level_morpho {
         return;
     }
 
-    my ($tree, $id) = (idx($root), join 'm-', split 's-', $this->{'id'});
+    my ($tree, %id) = (idx($root));
+
+    $id{$_} = exists $this->{$_} && exists $this->{$_}{'id'} ? $this->{$_}{'id'} : '' foreach 'm', 'w';
 
     if (Open($file[1])) {
 
         GotoTree($tree);
 
-        $this = PML::GetNodeByID($id);
+        $this = PML::GetNodeByID($id{'m'}) || PML::GetNodeByID($id{'w'}) || $root;
     }
     else {
 

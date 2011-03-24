@@ -69,7 +69,7 @@
             <member name="w.rf" role="#KNIT" type="Unit">
                 <cdata format="PMLREF"/>
             </member>
-            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="ord" required="1" role="#ORDER" type="ORDER"/>
             <member name="afun" required="1">
                 <choice>
                     <value>AuxS</value>
@@ -98,7 +98,7 @@
             <member name="m.rf" role="#KNIT" type="Token">
                 <cdata format="PMLREF"/>
             </member>
-            <member name="ord" required="1" role="#ORDER" type="Order"/>
+            <member name="ord" required="1" role="#ORDER" type="ORDER"/>
             <member name="afun" type="Afun" required="1"/>
             <member name="score" type="Score"/>
             <member name="note" type="String"/>
@@ -182,7 +182,7 @@
         </choice>
     </type>
 
-    <type name="Order">
+    <type name="ORDER">
         <cdata format="nonNegativeInteger"/>
     </type>
 
