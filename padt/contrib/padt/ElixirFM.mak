@@ -1025,6 +1025,46 @@ sub move_to_fork {
     ChangingFile(0);
 }
 
+#bind move_node_forward to Alt+Right menu Move Node Forward
+sub move_node_forward {
+
+    $Redraw = 'none';
+    ChangingFile(0);
+
+    my $p = $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode()
+            ? $this->lbrother() : $this->rbrother();
+
+    return unless $p;
+
+    my $c = $this;
+
+    CutPasteAfter($c, $p);
+    $this = $c;
+
+    $Redraw = 'tree';
+    ChangingFile(1);
+}
+
+#bind move_node_backward to Alt+Left menu Move Node Backward
+sub move_node_backward {
+
+    $Redraw = 'none';
+    ChangingFile(0);
+
+    my $p = $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode()
+            ? $this->rbrother() : $this->lbrother();
+
+    return unless $p;
+
+    my $c = $this;
+
+    CutPasteBefore($c, $p);
+    $this = $c;
+
+    $Redraw = 'tree';
+    ChangingFile(1);
+}
+
 #bind invoke_undo BackSpace menu Undo Action
 sub invoke_undo {
 
