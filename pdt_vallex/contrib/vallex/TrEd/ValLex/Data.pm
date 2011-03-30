@@ -286,6 +286,7 @@ Return only results whose POS matches $posfilter.
 
 sub getWordSubList {
   my ($self,$item,$slen,$posfilter)=@_;
+  $posfilter=~s/\*/ANVD/;
   my $doc=$self->doc();
   return unless $doc;
 #  use locale;
@@ -301,13 +302,15 @@ sub getWordSubList {
     $after = 2*$slen;
     $before = 1;
   } else {
+
     # search by lemma
     my $word = $self->getFirstWordNode();
     my $i=0;
-    WORD: while ($word) {
-      last if ($i++ % $slen == 0 &&
-	       $self->compare($self->conv()->encode($item),$word->getAttribute ("lemma"))<=0);
-      $word = $word->findNextSibling('word') || last;
+    my $encoded_item = $self->conv()->encode($item);
+  WORD: while ($word) {
+      last WORD if index($word->getAttribute("lemma"),lc $encoded_item) == 0
+        and index(uc($posfilter),uc($self->conv()->decode($word->getAttribute ("POS"))))>=0;
+      $word = $word->findNextSibling('word') || last WORD;
     }
     $milestone = $word;
     $before = $slen + $slen/2;
@@ -315,7 +318,6 @@ sub getWordSubList {
   }
   # get before list
   $i=0;
-  $posfilter=~s/\*/ANVD/;
   my $word = $milestone;
   while ($word and $i<$before) {
     my $pos = $self->conv()->decode($word->getAttribute ("POS"));
