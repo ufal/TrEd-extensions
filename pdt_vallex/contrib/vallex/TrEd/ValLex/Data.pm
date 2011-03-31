@@ -310,9 +310,13 @@ sub getWordSubList {
   WORD: while ($word) {
       last WORD if index($word->getAttribute("lemma"),lc $encoded_item) == 0
         and index(uc($posfilter),uc($self->conv()->decode($word->getAttribute ("POS"))))>=0;
-      $word = $word->findNextSibling('word') || last WORD;
+      $word = $word->findNextSibling('word');
     }
-    $milestone = $word;
+    if (defined $word) {
+      $milestone = $word;
+    } else {
+      return $self->getWordSubList(substr($item,0,-1),$slen,$posfilter);
+    }
     $before = $slen + $slen/2;
     $after = $slen/2;
   }
