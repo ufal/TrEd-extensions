@@ -2973,7 +2973,7 @@ sub inter_with_level ($) {
 
     my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml', '.exclude.xml', '.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml');
 
     ($name, undef, undef) = fileparse($name, ".$inter");
 
@@ -2986,8 +2986,8 @@ sub inter_with_level ($) {
                $level eq 'words'  ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = $level eq 'elixir' ? ( path $path, '..', '..', 'ElixirFM', 'elixir' )
-                                  : ( path $path, $name . ".$inter.xml.anno.xml" );
+    $file[3] = $level eq 'elixir' ? ( path $path, '..', '..', 'ElixirFM' )
+                                  : ( path $path, $name . ".$inter.pml.anno.pml" );
 
     unless ($file[0] eq $file) {
 
@@ -3057,7 +3057,7 @@ sub open_level_words {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
+                        "\nThere is no " . $name . ".$level.pml" . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -3069,8 +3069,8 @@ sub open_level_words {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'morpho', $name . ".$level.xml" ) . ".$fill",
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.pml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'morpho', $name . ".$level.pml" ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
@@ -3093,7 +3093,28 @@ sub open_level_words {
         move $file[2], $file[1];
     }
 
-    switch_the_levels($file[1]);
+    switch_either_context() if $review->{$grp}{'zoom'};
+
+    my $node = $this;
+
+    $node = $node->parent() while $node and not exists $node->{'w.rf'};
+
+    if (Open($file[1])) {
+
+	return unless exists $node->{'w.rf'};
+
+	my ($id, $tree) = $node->{'w.rf'} =~ /^w#(w-p([0-9]+).*)$/;
+
+	return unless defined $tree and defined $id;
+
+        GotoTree($tree);
+
+        $this = PML::GetNodeByID($id) || $root;
+    }
+    else {
+
+        SwitchContext('MorphoTrees');
+    }
 }
 
 #bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
@@ -3114,7 +3135,7 @@ sub open_level_syntax {
     unless (-f $file[1]) {
 
         my $reply = main::userQuery($grp,
-                        "\nThere is no " . $name . ".$level.xml" . " file.$fill" .
+                        "\nThere is no " . $name . ".$level.pml" . " file.$fill" .
                         "\nReally create a new one?$fill",
                         -bitmap=> 'question',
                         -title => "Creating",
@@ -3126,8 +3147,8 @@ sub open_level_syntax {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'morpho', $name . ".$level.xml" ) . ".$fill",
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.pml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'morpho', $name . ".$level.pml" ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
@@ -3153,7 +3174,22 @@ sub open_level_syntax {
         move $file[2], $file[1];
     }
 
-    switch_the_levels($file[1]);
+    switch_either_context() if $review->{$grp}{'zoom'};
+
+    my ($tree, $id) = (idx($root), join 's-', split 'm-', $this->{'id'});
+
+    if (Open($file[1])) {
+
+        GotoTree($tree);
+
+        $this = PML::GetNodeByID($id) ||
+                PML::GetNodeByID($id . 't1') ||
+                PML::GetNodeByID($id . 'l1t1') || $root;
+    }
+    else {
+
+        SwitchContext('MorphoTrees');
+    }
 }
 
 #bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
@@ -3169,7 +3205,7 @@ sub open_level_tecto {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
+            -message => "There is no " . $name . ".$level.pml" . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -3214,10 +3250,10 @@ sub open_level_elixir {
 
     return if $data->{'root'} eq '';
 
-    my $name = '-' . (ElixirFM::isSunny($data->{'root'}) ? 'sunny' : 'moony') .
-               '-' . (ElixirFM::isComplex($data->{'root'}) ? 'complex' : 'regular');
+    my $name = (ElixirFM::isSunny($data->{'root'}) ? 'sunny' : 'moony') . '-' .
+               (ElixirFM::isComplex($data->{'root'}) ? 'complex' : 'regular');
 
-    my (undef, undef, $path, @file) = inter_with_level 'elixir';
+    my ($level, undef, $path, @file) = inter_with_level 'elixir';
 
     unless (exists $ElixirFM::window->{$grp} and grep { $ElixirFM::window->{$grp} == $_ } TrEdWindows()) {
 
@@ -3230,7 +3266,7 @@ sub open_level_elixir {
 
     SetCurrentWindow($ElixirFM::window->{$grp});
 
-    if (Open($file[3] . $name . '.xml')) {
+    if (Open(path $file[3], $name . ".$level.pml")) {
 
         my $idx = CurrentTreeNumber();
 

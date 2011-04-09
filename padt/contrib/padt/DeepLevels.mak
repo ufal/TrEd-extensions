@@ -1445,7 +1445,7 @@ sub inter_with_level ($) {
 
     my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml');
 
     ($name, undef, undef) = fileparse($name, ".$inter");
 
@@ -1457,7 +1457,7 @@ sub inter_with_level ($) {
     $file[2] = $level eq 'others' ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = path $path . $inter, $name . ".$inter.xml.anno.xml";
+    $file[3] = path $path . $inter, $name . ".$inter.pml.anno.pml";
 
     unless ($file[0] eq $file) {
 
@@ -1499,7 +1499,7 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file.$fill\n" .
+                -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file.$fill\n" .
                             "Make sure you are working with complete data!$fill",
                 -title => 'Error',
                 -type => 'OK',
@@ -1507,7 +1507,7 @@ sub synchronize_file {
         }
         else {
 
-            warn "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!\n";
+            warn "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!\n";
         }
 
         return;
@@ -1519,15 +1519,15 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!$fill\n" .
-                            "Please remove " . ( path '..', "$level", $name . '.deeper.xml' ) . ".$fill",
+                -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.pml' ) . "!$fill\n" .
+                            "Please remove " . ( path '..', "$level", $name . '.deeper.pml' ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
         }
         else {
 
-            warn "Cannot create " . ( path '..', 'deeper', $name . '.deeper.xml' ) . "!\n";
+            warn "Cannot create " . ( path '..', 'deeper', $name . '.deeper.pml' ) . "!\n";
         }
 
         return;
@@ -1610,7 +1610,7 @@ sub open_level_first {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1656,7 +1656,7 @@ sub open_level_second {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . ( path '..', "$level", $name . ".$level.xml" ) . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );

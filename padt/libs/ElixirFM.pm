@@ -2,7 +2,7 @@
 #
 # ElixirFM Interfaces ##############################################################################
 
-# $Id: ElixirFM.pm 994 2010-12-28 12:40:04Z smrz $
+# $Id: ElixirFM.pm 1004 2011-03-24 11:35:59Z smrz $
 
 package ElixirFM;
 
@@ -10,7 +10,7 @@ use 5.008;
 
 use strict;
 
-our $VERSION = '1.1' || join '.', '1.1', q $Revision: 994 $ =~ /(\d+)/;
+our $VERSION = '1.1' || join '.', '1.1', q $Revision: 1004 $ =~ /(\d+)/;
 
 use Encode::Arabic;
 
@@ -100,12 +100,16 @@ sub concat {
 
 sub orth {
 
-    return $_[0] eq '"' ? $_[0] : decode "arabtex", $_[0];
+    my $text = decode "arabtex", $_[0];
+
+    return $_[0] eq '"' || $text eq '' ? $_[0] : $text;
 }
 
 sub phon {
 
-    return $_[0] eq '"' ? $_[0] : decode "arabtex-zdmg", $_[0];
+    my $text = decode "arabtex-zdmg", $_[0];
+
+    return $_[0] eq '"' || $text eq '' ? $_[0] : $text;
 }
 
 sub orph {
@@ -733,26 +737,21 @@ sub lists_trees {
                         [ split /[\n ]*\t/, $_ ]
                     }
 
-                    grep { $_ ne '' } split /[\n ]*(?=\([0-9]+,[0-9]+\)[\n ]*\t|$)/, $node
+                    grep { $_ ne '' } split /[\n ]*(?=\((?:[0-9]+,[0-9]+)?\)[\n ]*\t|$)/, $node
                 ],
 
                 map {
 
-                    my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+                    my ($i, $q) = /^(?:[\t ]*\n    )*([\t ]*)([^\t\n ](?:.*[^\t\n ])?)[\t\n ]*$/s;
 
-                    $i .= '    ';
-
-                    s/^[\t\n ]+//;
-                    s/[\t\n ]+$//;
-
-                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i    (?![\t\n ])/, $q;
 
                     [
                         [ join ' ', split ' ', $node ],
 
                         map {
 
-                            [ split /[\n ]*\t/, $_ ],
+                            [ split /[\n ]*\t/, $_ ]
 
                         } @data
                     ]
@@ -765,21 +764,16 @@ sub lists_trees {
 
                 map {
 
-                    my ($i) = /^(?:[\t ]*\n    )*([\t ]*)(?![\t\n ])/;
+                    my ($i, $q) = /^(?:[\t ]*\n    )*([\t ]*)([^\t\n ](?:.*[^\t\n ])?)[\t\n ]*$/s;
 
-                    $i .= '    ';
-
-                    s/^[\t\n ]+//;
-                    s/[\t\n ]+$//;
-
-                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i(?![\t\n ])/, $_;
+                    my ($node, @data) = split /(?<![\t\n ])(?:[\t ]*\n)+$i    (?![\t\n ])/, $q;
 
                     [
                         [ split /[\n ]*\t/, $node ],
 
                         map {
 
-                            [ split /[\n ]*\t/, $_ ],
+                            [ split /[\n ]*\t/, $_ ]
 
                         } @data
                     ]
@@ -1053,6 +1047,16 @@ sub morphs {
     return $morphs;
 }
 
+sub unmorphs {
+
+    my $morphs = $_[0];
+
+    @{$morphs->[1]} = map { /"/ ? $_ . " >>| " : $_ . " >| " } @{$morphs->[1]};
+    @{$morphs->[2]} = map { /"/ ? " |<< " . $_ : " |< " . $_ } @{$morphs->[2]};
+
+    return join '', @{$morphs->[1]}, $morphs->[0], @{$morphs->[2]};
+}
+
 sub showPrefix {
 
     my $text = $_[0];
@@ -1175,7 +1179,7 @@ sub interlocks {
 
         @root = (@root, ('F', 'C', 'L')[@root .. 2]);
 
-        $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^F(?:[aiu]C|[IU])LA'$/
+        $pattern = (substr $pattern, 0, -1) . 'w' if $pattern =~ /^F(?:aC[Ly]|[iu]CL|[IU]L)A'$/
                                                   and @root and $root[-1] ne 'w'
                                                   and @{$s} and not $s->[0] =~ /^"[aiu]N?"$/;
 
@@ -1224,9 +1228,9 @@ our @moony = ( "'", "b", "^g", ".h", "_h", "`", ".g",
                "B", "p", "v", "g", "^c", "^z",
                "c", ",c", "^n", "^l", ".r" );
 
-our %sunny = map { $_, '' } @sunny;
+our %sunny = map { $_ => '' } @sunny;
 
-our %moony = map { $_, '' } @moony;
+our %moony = map { $_ => '' } @moony;
 
 sub letters {
 
@@ -1453,7 +1457,7 @@ ElixirFM - Interfaces to the ElixirFM system implementing Functional Arabic Morp
 
 =head1 REVISION
 
-    $Revision: 994 $        $Date: 2010-12-28 13:40:04 +0100 (Tue, 28 Dec 2010) $
+    $Revision: 1004 $        $Date: 2011-03-24 14:35:59 +0300 (Thu, 24 Mar 2011) $
 
 
 =head1 SYNOPSIS
@@ -1476,7 +1480,7 @@ Otakar Smrz C<< <otakar smrz mff cuni cz> >>, L<http://ufal.mff.cuni.cz/~smrz/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright (C) 2005-2010 Otakar Smrz
+Copyright (C) 2005-2011 Otakar Smrz
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 3.

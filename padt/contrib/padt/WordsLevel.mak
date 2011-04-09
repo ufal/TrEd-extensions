@@ -426,7 +426,7 @@ sub inter_with_level ($) {
 
     my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml');
 
     ($name, undef, undef) = fileparse($name, ".$inter");
 
@@ -490,17 +490,32 @@ sub open_level_morpho {
 
     return unless defined $level;
 
-    my @id = idx($root);
-
-    my $id = join 'm-', split 'w-', $this->{'id'};
+    my $rf = 'w#' . $this->{'id'};
 
     if (Open($file[1])) {
 
-        GotoTree($id[0]);
+        my $idx = CurrentTreeNumber();
 
-        $this = PML::GetNodeByID($id) ||
-                PML::GetNodeByID($id . 't1') ||
-                PML::GetNodeByID($id . 'l1t1') || $root;
+        GotoTree(1);
+
+	{
+	    do {
+
+		do {
+
+		    last if exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf;
+		}
+		while $this = $this->following();
+	    }
+	    while NextTree();
+	}
+
+	unless (exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf) {
+
+	    GotoTree($idx + 1);
+
+	    $this = $root;
+	}
     }
     else {
 

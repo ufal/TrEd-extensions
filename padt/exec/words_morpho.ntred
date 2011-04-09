@@ -16,19 +16,23 @@ our ($root, $this, $morpho, $schema, $index);
 
 sub autostart {
 
-    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.words.xml');
+    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.words.pml');
 
     my $data = '<?xml version="1.0" encoding="utf-8"?>
                 <MorphoTrees xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
                   <head>
                     <schema href="morpho.schema.xml" />
+                    <references>
+                      <reffile id="m" name="words" href="' . $name . '.words.pml" />
+                    </references>
                   </head>
                   <meta>
                     <revision>$' . 'Revision: ' . '$</revision>
                     <date>$' . 'Date: ' . '$</date>
                   </meta>
-                  <data />
-                </MorphoTrees>';                                   # "
+                  <data>
+                  </data>
+                </MorphoTrees>';
 
     $morpho = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.morpho.pml' })->convert_to_fsfile();
 
@@ -64,7 +68,7 @@ sub pretty_unit {
 
     $tree->{'#name'} = 'Unit';
 
-    $tree->{'id'} = sprintf 'm-p%du%d', @id;
+    $tree->{'id'} = sprintf 'm-p%d', $index;                # sprintf 'm-p%du%d', @id;
 
     $tree->{'form'} = $unit->parent()->{'form'};
 
@@ -82,7 +86,7 @@ sub pretty_word {
 
     $node->{'#name'} = 'Word';
 
-    $node->{'id'} = sprintf 'm-p%du%dw%d', @id;
+    $node->{'id'} = sprintf 'm-p%dw%d', $index, $id[-1];    # sprintf 'm-p%du%dw%d', @id;
 
     $node->{'form'} = $word->{'form'};
 

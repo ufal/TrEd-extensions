@@ -31,7 +31,7 @@ while (my $text = decode "utf8", <>) {
         read_data_txt($text);
     }
 
-    open X, '>', $ARGV . '.words.xml';
+    open X, '>', $ARGV . '.words.pml';
 
     select X;
 
@@ -41,15 +41,14 @@ while (my $text = decode "utf8", <>) {
 
     print << "<?xml?>";
 <?xml version="1.0" encoding="utf-8"?>
-
 <WordsLevel xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
- <head>
-  <schema href="words.schema.xml" />
- </head>
- <meta>
+  <head>
+    <schema href="words.schema.xml" />
+  </head>
+  <meta>
 $meta
- </meta>
- <data>
+  </meta>
+  <data>
 <?xml?>
 
     my @id = (0);
@@ -84,7 +83,7 @@ $meta
     }
 
     print << "<?xml?>";
- </data>
+  </data>
 </WordsLevel>
 <?xml?>
 
@@ -95,6 +94,10 @@ $meta
 sub read_data_txt {
 
     my $text = $_[0];
+
+    $text =~ s/\&/\&amp;/g;
+    $text =~ s/\</\&lt;/g;
+    $text =~ s/\>/\&gt;/g;
 
     $data->{'document'} = fileparse($ARGV, qr/\.[a-z]+/);
 

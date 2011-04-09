@@ -1301,7 +1301,7 @@ sub inter_with_level ($) {
 
     my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, $exts) = fileparse($file, '.exclude.xml', '.xml');
+    ($name, $path, $exts) = fileparse($file, '.exclude.pml', '.pml');
 
     ($name, undef, undef) = fileparse($name, ".$inter");
 
@@ -1313,7 +1313,7 @@ sub inter_with_level ($) {
     $file[2] = $level eq 'morpho' ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = path $path, $name . ".$inter.xml.anno.xml";
+    $file[3] = path $path, $name . ".$inter.pml.anno.pml";
 
     unless ($file[0] eq $file) {
 
@@ -1355,7 +1355,7 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "There is no " . $name . ".$level.xml" . " file.$fill\n" .
+                -message => "There is no " . $name . ".$level.pml" . " file.$fill\n" .
                             "Make sure you are working with complete data!$fill",
                 -title => 'Error',
                 -type => 'OK',
@@ -1363,7 +1363,7 @@ sub synchronize_file {
         }
         else {
 
-            warn "There is no " . $name . ".$level.xml" . " file!\n";
+            warn "There is no " . $name . ".$level.pml" . " file!\n";
         }
 
         return;
@@ -1375,15 +1375,15 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.xml' ) . "!$fill\n" .
-                            "Please remove " . ( path '..', "$level", $name . '.syntax.xml' ) . ".$fill",
+                -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.pml' ) . "!$fill\n" .
+                            "Please remove " . ( path '..', "$level", $name . '.syntax.pml' ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
         }
         else {
 
-            warn "Cannot create " . $name . '.syntax.xml' . "!\n";
+            warn "Cannot create " . $name . '.syntax.pml' . "!\n";
         }
 
         return;
@@ -1472,7 +1472,7 @@ sub open_level_words {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . $name . ".$level.xml" . " file!$fill",
+            -message => "There is no " . $name . ".$level.pml" . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1563,8 +1563,8 @@ sub open_level_tecto {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.xml" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'syntax', $name . ".$level.xml" ) . ".$fill",
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.pml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'syntax', $name . ".$level.pml" ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );

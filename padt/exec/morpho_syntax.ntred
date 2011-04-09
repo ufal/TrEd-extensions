@@ -18,21 +18,25 @@ our ($syntax, $schema, $order);
 
 sub autostart {
 
-    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.morpho.xml');
+    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.morpho.pml');
 
     my $data = '<?xml version="1.0" encoding="utf-8"?>
                 <Analytic xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
                   <head>
                     <schema href="syntax.schema.xml" />
+                    <references>
+                      <reffile id="m" name="morpho" href="' . $name . '.morpho.pml" />
+                    </references>
                   </head>
                   <meta>
                     <revision>$' . 'Revision: ' . '$</revision>
                     <date>$' . 'Date: ' . '$</date>
                   </meta>
-                  <data />
-                </Analytic>';                                   # "
+                  <data>
+                  </data>
+                </Analytic>';
 
-    $syntax = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.xml' })->convert_to_fsfile();
+    $syntax = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.pml' })->convert_to_fsfile();
 
     $schema = $syntax->metaData('schema');
 
@@ -40,7 +44,7 @@ sub autostart {
 
     do {
 
-        pretty_para($root, $syntax->new_tree($index++)) if $root->{'#name'} eq 'Paragraph';
+        pretty_para($root, $syntax->new_tree($index++));
     }
     while NextTree();
 
@@ -103,14 +107,7 @@ sub pretty_word {
 
         $node->{'afun'} = '???';
 
-        $node->{'morpho'} = Treex::PML::Factory->createStructure();
-
-        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
-
-        foreach (qw 'form note') {
-
-            $node->{'morpho'}{'Word'}{$_} = $word->{$_} if exists $word->{$_};
-        }
+        $node->{'w.rf'} = "m#" . $word->{'id'};
 
         PasteNode($node, $tree, $syntax->FS);
     }
@@ -121,7 +118,7 @@ sub pretty_node {
 
     my ($word, $tree) = @_;
 
-    my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)l([0-9]+)t([0-9]+)$/;
+    my @id = $word->{'id'} =~ /^m-p([0-9]+)w([0-9]+)t([0-9]+)$/;
 
     my $node = Treex::PML::Factory->createTypedNode('Node', $schema);
 
@@ -129,39 +126,13 @@ sub pretty_node {
 
     $node->{'ord'} = ++$order;
 
-    $node->{'id'} = sprintf 's-p%dw%dl%dt%d', @id;
+    $node->{'id'} = sprintf 's-p%dw%dt%d', @id;
 
     $node->{'afun'} = '???';
 
-    $node->{'morpho'} = Treex::PML::Factory->createStructure();
+    $node->{'w.rf'} = "m#" . $word->parent()->parent()->{'id'};
 
-    $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStructure();
-
-    foreach (qw 'morphs tag form gloss note') {
-
-        $node->{'morpho'}{'Token'}{$_} = $word->{$_} if exists $word->{$_};
-    }
-
-    $word = $word->parent();
-
-    $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStructure();
-
-    foreach (qw 'root core form note') {
-
-        $node->{'morpho'}{'Lexeme'}{$_} = $word->{$_} if exists $word->{$_};
-    }
-
-    if ($id[2] == 1) {
-
-        $word = $word->parent();
-
-        $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
-
-        foreach (qw 'form note') {
-
-            $node->{'morpho'}{'Word'}{$_} = $word->{$_} if exists $word->{$_};
-        }
-    }
+    $node->{'m.rf'} = "m#" . $word->{'id'};
 
     PasteNode($node, $tree, $syntax->FS);
 }

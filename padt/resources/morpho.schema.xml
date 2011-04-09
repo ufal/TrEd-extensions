@@ -30,7 +30,7 @@
     <type name="Unit">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="w.rf" as_attribute="1">
+            <member name="w.rf">
                 <cdata format="PMLREF"/>
             </member>
             <member name="form" type="String"/>
@@ -43,31 +43,10 @@
         </structure>
     </type>
 
-    <type name="W.Unit">
-        <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="form" type="String"/>
-            <member name="note" type="String"/>
-            <member name="with" role="#CHILDNODES">
-                <sequence>
-                    <element name="Word" type="W.Word"/>
-                </sequence>
-            </member>
-        </structure>
-    </type>
-
-    <type name="W.Word">
-        <structure role="#NODE">
-            <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="form" type="String"/>
-            <member name="note" type="String"/>
-        </structure>
-    </type>
-
     <type name="Word">
         <structure role="#NODE">
             <member name="id" as_attribute="1" required="1" role="#ID" type="ID"/>
-            <member name="w.rf" as_attribute="1">
+            <member name="w.rf">
                 <cdata format="PMLREF"/>
             </member>
             <member name="form" type="String"/>

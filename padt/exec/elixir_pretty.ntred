@@ -142,7 +142,7 @@ sub pretty_words ($$) {
 
 sub autostart {
 
-    my (undef, $type, $group) = reverse split /[\-\.]/, FileName();
+    my (undef, undef, $type, $group) = reverse split /[\-\.\/\\]/, FileName();
 
     die "The group and type '$group'/'$type' cannot be empty" if $group eq '' or $type eq '';
 

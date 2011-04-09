@@ -423,7 +423,7 @@ sub enforce_variant {
                      (exists $_->{'entity'}[0][0][1]{'femini'} ? @{$_->{'entity'}[0][0][1]{'femini'}} : ())) : ()) {
 
             my $morphs = ElixirFM::morphs($_);
-                     
+
             if ($root[-1] eq 'w') {
 
                 $morphs->[0] =~ s/L/w/g;
@@ -434,7 +434,7 @@ sub enforce_variant {
                 $morphs->[0] =~ s/L/y/g;
                 $morphs->[0] =~ s/w([^FCy]*)$/L$1/;
             }
-            
+
             $_ =  ElixirFM::unmorphs($morphs);
         }
     }
@@ -1031,15 +1031,18 @@ sub move_node_forward {
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $p = $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode()
-            ? $this->lbrother() : $this->rbrother();
+	my $node = $this;
 
-    return unless $p;
+	if ($main::treeViewOpts->{reverseNodeOrder} and not InVerticalMode()) {
 
-    my $c = $this;
+ 		CutPasteBefore($node, $node->lbrother()) if $node->lbrother();
+	}
+	else {
 
-    CutPasteAfter($c, $p);
-    $this = $c;
+		CutPasteAfter($node, $node->rbrother()) if $node->rbrother();
+	}
+
+    $this = $node;
 
     $Redraw = 'tree';
     ChangingFile(1);
@@ -1051,15 +1054,18 @@ sub move_node_backward {
     $Redraw = 'none';
     ChangingFile(0);
 
-    my $p = $main::treeViewOpts->{reverseNodeOrder} && ! InVerticalMode()
-            ? $this->rbrother() : $this->lbrother();
+	my $node = $this;
 
-    return unless $p;
+	if ($main::treeViewOpts->{reverseNodeOrder} and not InVerticalMode()) {
 
-    my $c = $this;
+		CutPasteAfter($node, $node->rbrother()) if $node->rbrother();
+	}
+	else {
 
-    CutPasteBefore($c, $p);
-    $this = $c;
+		CutPasteBefore($node, $node->lbrother()) if $node->lbrother();
+	}
+
+    $this = $node;
 
     $Redraw = 'tree';
     ChangingFile(1);
@@ -1126,16 +1132,17 @@ sub path (@) {
 
 sub inter_with_level ($) {
 
-    my $level = $_[0];
+    my ($inter, $level) = ('elixir', $_[0]);
 
-    my (@file, $path, $name);
+    my ($path, $name);
 
-    my $thisfile = File::Spec->canonpath(FileName());
+    my $file = File::Spec->canonpath(FileName());
 
-    ($name, $path, undef) = fileparse($thisfile, '.xml');
+    ($name, $path, undef) = fileparse($file, '.pml');
+    ($name, undef, undef) = fileparse($name, ".$inter");
     (undef, $path, undef) = fileparse((substr $path, 0, -1), '');
 
-    return $level, $name, $path, @file;
+    return $level, $name, $path;
 }
 
 #bind open_level_morpho_prime to Alt+1

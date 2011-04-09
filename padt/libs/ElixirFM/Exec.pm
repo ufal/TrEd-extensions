@@ -140,7 +140,7 @@ ElixirFM::Exec - Interface to the ElixirFM executable
 
 =head1 REVISION
 
-    $Revision: 987 $        $Date: 2010-11-03 12:11:31 +0100 (Wed, 03 Nov 2010) $
+    $Revision: 987 $        $Date: 2010-11-03 14:11:31 +0300 (Wed, 03 Nov 2010) $
 
 
 =head1 SYNOPSIS

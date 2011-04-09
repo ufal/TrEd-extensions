@@ -18,7 +18,7 @@ our ($deeper, $schema);
 
 sub autostart {
 
-    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.syntax.xml');
+    my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.syntax.pml');
 
     my $data = '<?xml version="1.0" encoding="utf-8"?>
                 <DeepLevels xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
@@ -30,9 +30,9 @@ sub autostart {
                     <date>$' . 'Date: ' . '$</date>
                   </meta>
                   <data />
-                </DeepLevels>';                                   # "
+                </DeepLevels>';
 
-    $deeper = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.deeper.xml' })->convert_to_fsfile();
+    $deeper = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.deeper.pml' })->convert_to_fsfile();
 
     $schema = $deeper->metaData('schema');
 
