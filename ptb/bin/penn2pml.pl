@@ -72,7 +72,12 @@ if ($opts{'generate-schema'}) {
 my $nonbracketed_terminals = $opts{'nonbracketed-terminals'};
 my $bracketed_terminals = $opts{'bracketed-terminals'};
 
-foreach my $file (@ARGV){
+my @files = @ARGV;
+if ($^O eq 'MSWin32') {
+    @files = map { -r $_ ? $_ : glob ($_) } @ARGV;
+}
+
+foreach my $file (@files){
   my ($S,$T);
   if ($file=~/\.gz$/) {
     require IO::Uncompress::Gunzip;
