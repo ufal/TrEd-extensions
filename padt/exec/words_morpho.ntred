@@ -38,6 +38,8 @@ sub autostart {
 
     $schema = $morpho->metaData('schema');
 
+    $index = 0;
+
     do {
 
         pretty_para($root);
@@ -68,7 +70,9 @@ sub pretty_unit {
 
     $tree->{'#name'} = 'Unit';
 
-    $tree->{'id'} = sprintf 'm-p%d', $index;                # sprintf 'm-p%du%d', @id;
+    $tree->{'w.rf'} = 'w#' . $unit->{'id'};
+
+    $tree->{'id'} = sprintf 'm-p%d', $index;
 
     $tree->{'form'} = $unit->parent()->{'form'};
 
@@ -86,7 +90,9 @@ sub pretty_word {
 
     $node->{'#name'} = 'Word';
 
-    $node->{'id'} = sprintf 'm-p%dw%d', $index, $id[-1];    # sprintf 'm-p%du%dw%d', @id;
+    $node->{'w.rf'} = 'w#' . $word->{'id'};
+
+    $node->{'id'} = sprintf 'm-p%dw%d', $index, $id[-1];
 
     $node->{'form'} = $word->{'form'};
 
