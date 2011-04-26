@@ -2116,16 +2116,12 @@ sub reflect_tuple {
 
     $node->{'apply'} += $diff while $node = $node->parent();
 
-    my $hash = PML::GetNodeHash();
-
     my $zoom = $review->{$grp}{'zoom'};
 
     foreach ($zoom->children()) {
 
         next unless exists $done->{'score'} and $done->{'score'} == 1.0 or
                     exists $_->{'form'} and $_->{'form'} ne '';
-
-        delete $hash->{$_->{'id'}} foreach $_->children();
 
         CutNode($_);
     }
@@ -2142,8 +2138,6 @@ sub reflect_tuple {
         DetermineNodeType($tuple);
 
         $tuple->{'form'} = $tuple[$i - 1]->{'form'};
-
-        my $id = $zoom->{'id'} . (@tuple > 1 ? '-' . $i : '');
 
         my @group = map { $_->[1] } @{$tuple[$i - 1]->parent()->{'data'}[0]};
 
@@ -2163,9 +2157,7 @@ sub reflect_tuple {
 
             $token->{'lemma'} = $group[$j - 1]{'form'};
 
-            $token->{'id'} = $id . 't' . $j;
-
-            $hash->{$token->{'id'}} = $token;
+            $token->{'id'} = $zoom->{'id'} . 't' . $j . (@tuple > 1 ? '-' . $i : '');
         }
     }
 

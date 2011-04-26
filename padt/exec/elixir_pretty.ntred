@@ -214,8 +214,6 @@ import Elixir.Lexicon
 
     print << "    return;";
 
-version = revised "\$Revision: \$"
-
 lexicon = (concat . concat) chapter
 
     return;
@@ -244,8 +242,6 @@ module Elixir.Data.$group.$type.$module (section) where
 
 import Elixir.Lexicon
 
-
-version = revised "\$Revision: \$"
 
 lexicon = $listing
 
