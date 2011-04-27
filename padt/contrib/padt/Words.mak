@@ -1,10 +1,10 @@
 # ########################################################################## Otakar Smrz, 2009/08/12
 #
-# WordsLevel Context for the TrEd Environment ######################################################
+# PADT Words Context for the TrEd Environment ######################################################
 
 # $Id$
 
-package WordsLevel;
+package PADT::Words;
 
 use 5.008;
 
@@ -21,7 +21,7 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 #
 # ##################################################################################################
 
-#binding-context WordsLevel
+#binding-context PADT::Words
 
 BEGIN {
 
@@ -498,28 +498,28 @@ sub open_level_morpho {
 
         GotoTree(1);
 
-	{
-	    do {
+    {
+        do {
 
-		do {
+        do {
 
-		    last if exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf;
-		}
-		while $this = $this->following();
-	    }
-	    while NextTree();
-	}
+            last if exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf;
+        }
+        while $this = $this->following();
+        }
+        while NextTree();
+    }
 
-	unless (exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf) {
+    unless (exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf) {
 
-	    GotoTree($idx + 1);
+        GotoTree($idx + 1);
 
-	    $this = $root;
-	}
+        $this = $root;
+    }
     }
     else {
 
-        SwitchContext('WordsLevel');
+        SwitchContext('PADT::Words');
     }
 }
 
@@ -546,7 +546,7 @@ sub open_level_syntax {
     }
     else {
 
-        SwitchContext('WordsLevel');
+        SwitchContext('PADT::Words');
     }
 }
 
@@ -573,7 +573,7 @@ sub open_level_tecto {
     }
     else {
 
-        SwitchContext('WordsLevel');
+        SwitchContext('PADT::Words');
     }
 }
 
@@ -608,7 +608,7 @@ no strict;
 
 =head1 NAME
 
-WordsLevel - Context for Accessing the Words Level in the TrEd Environment
+PADT::Words - Context for Accessing the Words Level in the TrEd Environment
 
 
 =head1 REVISION
@@ -618,7 +618,7 @@ WordsLevel - Context for Accessing the Words Level in the TrEd Environment
 
 =head1 DESCRIPTION
 
-WordsLevel ...
+PADT::Words ...
 
 
 =head1 SEE ALSO

@@ -62,8 +62,7 @@ sub pre_switch_context_hook {
 
     return unless GUI();
 
-    return if $_[0] =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/ and
-              $_[1] =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/;
+    return if $_[0] =~ /ElixirFM|PADT/ and $_[1] =~ /ElixirFM|PADT/;
 
     initialize_direction('left-to-right', 'left');
 }
@@ -79,12 +78,11 @@ sub idx {
     return wantarray ? @idx : ( "#" . join "/", @idx );
 }
 
-#include "ElixirFM.mak"
-#include "MorphoTrees.mak"
-#include "Analytic.mak"
-#include "DeepLevels.mak"
-#include "WordsLevel.mak"
-#include "PhraseTrees.mak"
+#include "Morpho.mak"
+#include "Syntax.mak"
+#include "Deeper.mak"
+#include "Words.mak"
+#include "Phrase.mak"
 
 package TredMacro;
 
@@ -92,18 +90,18 @@ push @AUTO_CONTEXT_GUESSING, sub {
 
     my $schema = PML::SchemaName();
 
-    return $schema       if defined $schema and $schema =~ /ElixirFM|MorphoTrees|Analytic|DeepLevels|WordsLevel|PhraseTrees/;
+    return $schema       if defined $schema and $schema =~ /ElixirFM|PADT/;
 
-    return 'MorphoTrees' if $grp->{FSFile}->FS()->isList('type') and
+    return 'PADT::Morpho' if $grp->{FSFile}->FS()->isList('type') and
                             grep { /[EP]|paragraph|entity/ } $grp->{FSFile}->FS()->listValues('type');
 
-    return 'DeepLevels'  if $grp->{FSFile}->FS()->isList('func') and
+    return 'PADT::Deeper'  if $grp->{FSFile}->FS()->isList('func') and
                             grep { /ACT|PAT|ADDR|EFF|ORIG/ } $grp->{FSFile}->FS()->listValues('func');
 
-    return 'Analytic'    if $grp->{FSFile}->FS()->exists('afun') and
+    return 'PADT::Syntax'    if $grp->{FSFile}->FS()->exists('afun') and
                             $grp->{FSFile}->FS()->exists('arabclause');
 
-    return 'PhraseTrees' if $grp->{FSFile}->FS()->exists('label');
+    return 'PADT::Phrase' if $grp->{FSFile}->FS()->exists('label');
     return;
 };
 

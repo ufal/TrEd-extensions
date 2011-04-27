@@ -1,10 +1,10 @@
-# ########################################################################## Otakar Smrz, 2004/03/05
+# ########################################################################## Otakar Smrz, 2006/03/29
 #
-# Analytic Context for the TrEd Environment ########################################################
+# PADT Deeper Context for the TrEd Environment #####################################################
 
 # $Id$
 
-package Analytic;
+package PADT::Deeper;
 
 use 5.008;
 
@@ -23,7 +23,7 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 #
 # ##################################################################################################
 
-#binding-context Analytic
+#binding-context PADT::Deeper
 
 BEGIN {
 
@@ -42,22 +42,19 @@ our ($option, $fill) = ({}, ' ' x 4);
 #
 # ##################################################################################################
 
-sub AfunAssign {
+sub FuncAssign {
 
-    my $fullafun = $_[0];
-    my ($afun, $parallel, $paren) = ($fullafun =~ /^([^_]*)(?:_(Ap|Co))?(?:_(Pa))?/);
+    my $fullfunc = $_[0];
+    my ($func, $parallel, $paren) = ($fullfunc =~ /^([^_]*)(?:_(Ap|Co))?(?:_(Pa))?/);
 
-    if ($this->{'afun'} eq 'AuxS' or
-        $this->{'afun'} eq $afun and $this->{'parallel'} eq $parallel and $this->{'paren'} eq $paren) {
+    if ($this->{'func'} eq 'SENT' or $this->{'func'} eq $func) {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = $afun;
-        $this->{'parallel'} = $parallel;
-        $this->{'paren'} = $paren;
+        $this->{'func'} = $func;
 
         $this = $this->following();
 
@@ -65,70 +62,266 @@ sub AfunAssign {
     }
 }
 
-#bind afun_ExD to x menu Arabic: Assign afun ExD
-sub afun_ExD { AfunAssign('ExD') }
-#bind afun_ExD_Co to Ctrl+x
-sub afun_ExD_Co { AfunAssign('ExD_Co') }
-#bind afun_ExD_Ap to X
-sub afun_ExD_Ap { AfunAssign('ExD_Ap') }
-#bind afun_ExD_Pa to Ctrl+X
-sub afun_ExD_Pa { AfunAssign('ExD_Pa') }
+#bind func_CM to Ctrl+e menu Functor: CM
+#bind func_CNCS to Ctrl+c menu Functor: CNCS
 
-#bind afun_AuxE to e menu Arabic: Assign afun AuxE
-sub afun_AuxE { AfunAssign('AuxE') }
-#bind afun_AuxE_Co to Ctrl+e
-sub afun_AuxE_Co { AfunAssign('AuxE_Co') }
-#bind afun_AuxE_Ap to E
-sub afun_AuxE_Ap { AfunAssign('AuxE_Ap') }
-#bind afun_AuxE_Pa to Ctrl+E
-sub afun_AuxE_Pa { AfunAssign('AuxE_Pa') }
+#bind func_COND to Ctrl+d menu Functor: COND Condition, podmínka reálná (-li, jestlize, kdyz, az)
+#bind func_CONFR to O menu Functor: CONFR
+#bind func_CONTRD to Ctrl+O menu Functor: CONTRD
+#bind func_CPR to P menu Functor: CPR Porovnání (nez, jako, stejně jako)
+#bind func_CRIT to Ctrl+k menu Functor: CRIT Criterion, měřítko (podle něj, podle jeho slov)
+#bind func_CSQ to q menu Functor: CSQ Consequence, důsledek koord. (a proto, a tak, a tedy, pročez)
+#bind func_CTREF to Ctrl+f menu Functor: CTERF Counterfactual, ireálná podmínka (kdyby)
+#bind func_DENOM to n menu Functor: DENOM Pojmenování
+#bind func_DIFF to F menu Functor: DIFF Difference, rozdíl (oč)
+#bind func_DISJ to J menu Functor: DISJ Disjunction, rozlučovací koord. (nebo, anebo)
+#bind func_DPHR to X menu Functor: DPHR zavisla cast frazemu
+#bind func_ETHD to E menu Functor: ETHD Ethical Dative (já ti mám knih, děti nám nechodí včas)
+#bind func_FPHR to 6 menu Functor: FPHR fraze v cizim jazyce
+#bind func_GRAD to Ctrl+g menu Functor: GRAD Gradation, stupňovací koord (i, a také)
+#bind func_HER to H menu Functor: HER heritage, dědictví (po otci)
+#bind func_INTF to I menu Functor: INTF falesný podmět (To Karel jestě nepřisel?)
+#bind func_MANN to 9 menu Functor: MANN Manner, způsob (ústně, psát česky)
+#bind func_MAT to 4 menu Functor: MAT Partitiv (hrnek čaje)
+#bind func_MEANS to Ctrl+m menu Functor: MEANS Prostředek (psát rukou, tuzkou)
+#bind func_MOD to M menu Functor: MOD Adv. of modality (asi, mozná, to je myslím zlé)
+#bind func_NORM to N menu Functor: NORM Norma (ve shodě s, podle)
+#bind func_PAR to Ctrl+z menu Functor: PAR Parenthesis, vsuvka (myslím, věřím)
+#bind func_PARTL to A menu Functor: PARTL
+#bind func_PREC to Ctrl+p menu Functor: PREC Ref. to prec. text(na zač. věty:tedy, tudíz, totiz,protoze, ..)
+#bind func_REAS to Ctrl+r menu Functor: REAS Reason, důvod (nebot)
+#bind func_RESL to S menu Functor: RESL Účinek (takze)
+#bind func_RESTR to R menu Functor: RESTR Omezení (kromě, mimo)
+#bind func_RHEM to 7 menu Functor: RHEM Rhematizer (i, také, jenom,vůbec, NEG, nikoli)
+#bind func_SUBS to Ctrl+u menu Functor: SUBS Zastoupení (místo koho-čeho)
+#bind func_TFHL to Ctrl+h menu Functor: TFHL For how long, na jak dlouho (na věky)
+#bind func_TFRWH to W menu Functor: TFRWH From when, zekdy (zbylo od vánoc cukroví)
+#bind func_THL to Ctrl+l menu Functor: THL How long, jak dlouho (četl půl hodiny)
+#bind func_THO to Ctrl+o menu Functor: THO How often (často, mnohokrát...)
+#bind func_TOWH to Ctrl+w menu Functor: TOWH To when, nakdy (přelozí výuku na pátek)
+#bind func_TPAR to Ctrl+a menu Functor: TPAR Parallel (během, zatímco, za celý zápas, mezitím co)
+#bind func_TSIN to Ctrl+i menu Functor: TSIN Since, odkdy (od té doby co, ode dne podpisu)
+#bind func_TILL to Ctrl+t menu Functor: TTILL Till, dokdy (az do, dokud ne, nez)
+#bind func_TWHEN to w menu Functor: TWHEN When, kdy (loni, vstupuje v platnost dnem podpisu)
+#bind func_VOC to V menu Functor: VOC Vokativní věta (Jirko!)
+#bind func_VOCAT to K menu Functor: VOCAT Vokativ aponovaný (Pojď sem, Jirko!)
 
-#bind afun_AuxM to m menu Arabic: Assign afun AuxM
-sub afun_AuxM { AfunAssign('AuxM') }
-#bind afun_AuxM_Co to Ctrl+m
-sub afun_AuxM_Co { AfunAssign('AuxM_Co') }
-#bind afun_AuxM_Ap to M
-sub afun_AuxM_Ap { AfunAssign('AuxM_Ap') }
-#bind afun_AuxM_Pa to Ctrl+M
-sub afun_AuxM_Pa { AfunAssign('AuxM_Pa') }
 
-#bind afun_Ante to t menu Arabic: Assign afun Ante
-sub afun_Ante { AfunAssign('Ante') }
-#bind afun_Ante_Co to Ctrl+t
-sub afun_Ante_Co { AfunAssign('Ante_Co') }
-#bind afun_Ante_Ap to T
-sub afun_Ante_Ap { AfunAssign('Ante_Ap') }
-#bind afun_Ante_Pa to Ctrl+T
-sub afun_Ante_Pa { AfunAssign('Ante_Pa') }
+#bind func_PRED to  q menu Functor:  PRED    Predicate
+sub func_PRED { FuncAssign('PRED') }
 
-#bind assign_parallel to key 1 menu Arabic: Suffix Parallel
+
+#bind func_ACT to   a menu Functor:  ACT     Actor
+sub func_ACT { FuncAssign('ACT') }
+
+#bind func_PAT to   p menu Functor:  PAT     Patient
+sub func_PAT { FuncAssign('PAT') }
+
+#bind func_ADDR to  d menu Functor:  ADDR    Addressee
+sub func_ADDR { FuncAssign('ADDR') }
+
+#bind func_EFF to   e menu Functor:  EFF     Effect
+sub func_EFF { FuncAssign('EFF') }
+
+#bind func_ORIG to  o menu Functor:  ORIG    Origin
+sub func_ORIG { FuncAssign('ORIG') }
+
+
+#bind func_TWHEN to  menu Functor: TWHEN   When (generic)
+sub func_TWHEN { FuncAssign('TWHEN') }
+
+#bind func_TFHL to  menu Functor: TFHL    For how long
+sub func_TFHL { FuncAssign('TFHL') }
+
+#bind func_THL to  menu Functor: THL     How long
+sub func_THL { FuncAssign('THL') }
+
+#bind func_THO to  menu Functor: THO     How often
+sub func_THO { FuncAssign('THO') }
+
+#bind func_TPAR to  menu Functor: TPAR    During
+sub func_TPAR { FuncAssign('TPAR') }
+
+#bind func_TSIN to  menu Functor: TSIN    Since when
+sub func_TSIN { FuncAssign('TSIN') }
+
+#bind func_TTILL to  menu Functor: TTILL   Till when
+sub func_TTILL { FuncAssign('TTILL') }
+
+
+#bind func_LOC to   l menu Functor:  LOC     Where (generic)
+sub func_LOC { FuncAssign('LOC') }
+
+#bind func_DIR1 to  1 menu Functor:  DIR1    From where
+sub func_DIR1 { FuncAssign('DIR1') }
+
+#bind func_DIR2 to  2 menu Functor:  DIR2    Through where
+sub func_DIR2 { FuncAssign('DIR2') }
+
+#bind func_DIR3 to  3 menu Functor:  DIR3    To where
+sub func_DIR3 { FuncAssign('DIR3') }
+
+
+#bind func_MANN to  menu Functor: MANN    Manner (generic)
+sub func_MANN { FuncAssign('MANN') }
+
+#bind func_EXT to   x menu Functor:  EXT     Extent
+sub func_EXT { FuncAssign('EXT') }
+
+#bind func_REG to   g menu Functor:  REG     Regard
+sub func_REG { FuncAssign('REG') }
+
+#bind func_ACMP to  C menu Functor:  ACMP    Accompaniment
+sub func_ACMP { FuncAssign('ACMP') }
+
+#bind func_ATT to   t menu Functor:  ATT     Attitude
+sub func_ATT { FuncAssign('ATT') }
+
+#bind func_MEANS to  menu Functor: MEANS   Means
+sub func_MEANS { FuncAssign('MEANS') }
+
+#bind func_CRIT to  menu Functor: CRIT    Criterion
+sub func_CRIT { FuncAssign('CRIT') }
+
+#bind func_BEN to   b menu Functor: BEN     Benefactive
+sub func_BEN { FuncAssign('BEN') }
+
+#bind func_RESTR to  menu Functor: RESTR   Except
+sub func_RESTR { FuncAssign('RESTR') }
+
+
+#bind func_CAUS to  c  menu Functor: CAUS    Causative
+sub func_CAUS { FuncAssign('CAUS') }
+
+#bind func_COND to  menu Functor: COND    Condition
+sub func_COND { FuncAssign('COND') }
+
+#bind func_AIM to   I menu Functor:  AIM     Aim
+sub func_AIM { FuncAssign('AIM') }
+
+#bind func_CONFR to  menu Functor: CONFR   Confrontation
+sub func_CONFR { FuncAssign('CONFR') }
+
+#bind func_RESL to  r menu Functor:  RESL    Result
+sub func_RESL { FuncAssign('RESL') }
+
+#bind func_CPR to  menu Functor: CPR     Comparison
+sub func_CPR { FuncAssign('CPR') }
+
+#bind func_NORM to  n menu Functor: NORM    Normative
+sub func_NORM { FuncAssign('NORM') }
+
+
+#bind func_SUBS to  menu Functor: SUBS    Substitution
+sub func_SUBS { FuncAssign('SUBS') }
+
+#bind func_DPHR to  menu Functor: DPHR    Phraseme
+sub func_DPHR { FuncAssign('DPHR') }
+
+#bind func_CPHR to  menu Functor: CPHR    Phraseme class
+sub func_CPHR { FuncAssign('CPHR') }
+
+#bind func_INTT to  T menu Functor:  INTT    Intention
+sub func_INTT { FuncAssign('INTT') }
+
+#bind func_COMPL to L menu Functor:  COMPL   Complement
+sub func_COMPL { FuncAssign('COMPL') }
+
+
+#bind func_APP to   P menu Functor:  APP     Appurtenance
+sub func_APP { FuncAssign('APP') }
+
+#bind func_RSTR to  S menu Functor:  RSTR    Restrictive
+sub func_RSTR { FuncAssign('RSTR') }
+
+#bind func_DES to   D menu Functor:  DES     Descriptive
+sub func_DES { FuncAssign('DES') }
+
+
+#bind func_ID to    0 menu Functor:  ID      Identity
+sub func_ID { FuncAssign('ID') }
+
+#bind func_MAT to  menu Functor: MAT     Partitive
+sub func_MAT { FuncAssign('MAT') }
+
+#bind func_VOC to  menu Functor: VOC     Vocative
+sub func_VOC { FuncAssign('VOC') }
+
+
+#bind func_DISJ to  J menu Functor:  DISJ    Disjunction
+sub func_DISJ { FuncAssign('DISJ') }
+
+#bind func_CONJ to  j menu Functor:  CONJ    Conjunction
+sub func_CONJ { FuncAssign('CONJ') }
+
+#bind func_ADVS to  v menu Functor:  ADVS    Adversative
+sub func_ADVS { FuncAssign('ADVS') }
+
+#bind func_APPS to  s menu Functor:  APPS    Apposition
+sub func_APPS { FuncAssign('APPS') }
+
+# ##################################################################################################
+#
+# ##################################################################################################
+
+sub ContextAssign {
+
+    if ($this->{'func'} eq 'SENT' or $this->{'context'} eq $_[0]) {
+
+        $Redraw = 'none';
+        ChangingFile(0);
+    }
+    else {
+
+        $this->{'context'} = $_[0];
+
+        $this = $this->following();
+
+        $Redraw = 'tree';
+    }
+}
+
+#bind context_B to  Ctrl+b menu Context: B bound
+sub context_B { ContextAssign('B') }
+
+#bind context_N to  Ctrl+n menu Context: N non-bound
+sub context_N { ContextAssign('N') }
+
+#bind context_C to  Ctrl+c menu Context: C contrastive
+sub context_C { ContextAssign('C') }
+
+# ##################################################################################################
+#
+# ##################################################################################################
+
+##bind assign_parallel to key 1 menu Arabic: Suffix Parallel
 sub assign_parallel {
-  $this->{parallel}||='';
+  $this->{'parallel'}||='';
   EditAttribute($this,'parallel');
 }
 
-#bind assign_paren to key 2 menu Arabic: Suffix Paren
+##bind assign_paren to key 2 menu Arabic: Suffix Paren
 sub assign_paren {
   $this->{paren}||='';
   EditAttribute($this,'paren');
 }
 
-#bind assign_arabfa to key 3 menu Arabic: Suffix ArabFa
+##bind assign_arabfa to key 3 menu Arabic: Suffix ArabFa
 sub assign_arabfa {
   $this->{arabfa}||='';
   EditAttribute($this,'arabfa');
 }
 
-#bind assign_arabspec to key 4 menu Arabic: Suffix ArabSpec
-sub assign_arabspec {
-  $this->{arabspec}||='';
-  EditAttribute($this,'coref');
+##bind assign_coref to key 4 menu Arabic: Suffix Coref
+sub assign_coref {
+  $this->{s}{coref}||='';
+  EditAttribute($this,'s/coref');
 }
 
-#bind assign_arabclause to key 5 menu Arabic: Suffix ArabClause
-sub assign_arabclause {
-  $this->{arabclause}||='';
-  EditAttribute($this,'clause');
+##bind assign_clause to key 5 menu Arabic: Suffix Clause
+sub assign_clause {
+  $this->{s}{clause}||='';
+  EditAttribute($this,'s/clause');
 }
 
 # ##################################################################################################
@@ -433,162 +626,34 @@ sub CreateStylesheets {
 
     return << '>>';
 
-style:<? Analytic::isClauseHead() ? '#{Line-fill:gold}' : '' ?>
+style:<? ( PADT::Deeper::isClauseHead() ? '#{Line-fill:gold}' : '' ) .
+         ( $this->{'context'} eq 'B' ? '#{Node-shape:rectangle}#{Oval-fill:lightblue}' :
+           $this->{'context'} eq 'N' ? '#{Node-shape:rectangle}#{Oval-fill:magenta}' :
+           $this->{'context'} eq 'C' ? '#{Node-shape:rectangle}#{Oval-fill:blue}' : '' ) ?>
 
-node:<? $this->{'#name'} eq 'Tree' ? '#{custom2}${form} ' . Analytic::idx($this) :
-        exists $this->{'m'}
-            ? ElixirFM::orph($this->{'m'}{'form'}, InVerticalMode() ? " " : "\n")
-            : '#{custom6}${w/form}' ?>
+node:<? exists $this->{'morpho'}{'Lexeme'} ? '${morpho/Lexeme/form}' :
+        exists $this->{'morpho'}{'Token'} ? '${morpho/Token/form}' :
+        exists $this->{'morpho'}{'Word'} ? '#{custom6}${morpho/Word/form}' :
+        '#{custom2}${form} ' . PADT::Deeper::idx($this) ?>
 
-node:<? join '_', ( $this->{'afun'} eq '???' && exists $this->{'score'}
-                        ? '#{custom3}${score}'
-                        : '#{custom1}${afun}' ),
-                    map { '#{custom1}${' . $_ . '}' } grep { $this->attr($_) ne '' }
-                        qw 'parallel paren arabfa coref clause' ?>
+node:<? join '#{custom5}_', ( $this->{'func'} eq '???' && exists $this->{'syntax'}{'afun'}
+                                  ? '#{custom3}${syntax/afun}'
+                                  : '#{custom5}${func}' ),
+                            ( ( join '_', map { '${' . $_ . '}' } grep { $this->attr($_) ne '' }
+                                              qw 'parallel paren syntax/coref syntax/clause' ) || () ) ?>
 
-node:<? exists $this->{'m'} ? (
-        exists $this->{'m'}{'note'} &&
-               $this->{'m'}{'note'} ne '' ? '#{custom6}${m/note} << ' : ''
-        ) . '#{custom2}${m/tag}' : '' ?>
-
-hint:<? exists $this->{'m'} ? join "\n",
-        'tag: ${m/tag}',
-        'lemma: ${m/lemma}',
-        'morphs: ${m/morphs}',
-        'gloss: ${m/sense}',
-        'note: ${m/note}' : '' ?>
+hint:<? exists $this->{'morpho'}{'Token'} ? join "\n", 'tag: ${morpho/Token/tag}',
+                                                       'lemma: ${morpho/Lexeme/form}',
+                                                       'morphs: ${morpho/Token/morphs}',
+                                                       'gloss: ${morpho/Token/gloss}',
+                                                       'note: ${morpho/Token/note}' : '' ?>
 >>
 }
 
-sub morpho_structure {
+#bind hide_node to Ctrl+h menu Display: Hide / unhide the node
+sub hide_node {
 
-    my $node = $this->root();
-
-    if (not exists $node->{'form'} and exists $node->{'m'} and exists $node->{'m'}{'tag'}) {
-
-        $node->{'form'} = $node->{'m'}{'tag'};
-
-        delete $node->{'m'};
-    }
-
-    while ($node = $node->following()) {
-
-        next if exists $node->{'morpho'} or not exists $node->{'m'};
-
-        $node->{'morpho'} = Treex::PML::Factory->createStructure();
-
-        if (exists $node->{'m'}{'input'} and $node->{'m'}{'input'} ne '') {
-
-            $node->{'morpho'}{'Word'} = Treex::PML::Factory->createStructure();
-
-            $node->{'morpho'}{'Word'}{'form'} = $node->{'m'}{'input'};
-        }
-
-        if (exists $node->{'m'}{'lemma'} and $node->{'m'}{'lemma'} ne '') {
-
-            $node->{'morpho'}{'Lexeme'} = Treex::PML::Factory->createStructure();
-
-            $node->{'morpho'}{'Lexeme'}{'form'} = $node->{'m'}{'lemma'};
-        }
-
-        if (exists $node->{'m'}{'form'} and $node->{'m'}{'form'} ne '') {
-
-            $node->{'morpho'}{'Token'} = Treex::PML::Factory->createStructure();
-
-            $node->{'morpho'}{'Token'}{'form'} = $node->{'m'}{'form'};
-
-            if (exists $node->{'m'}{'morph'} and $node->{'m'}{'morph'} ne '') {
-
-                $node->{'morpho'}{'Token'}{'morphs'} = $node->{'m'}{'morph'};
-            }
-
-            if (exists $node->{'m'}{'tag'} and $node->{'m'}{'tag'} ne '') {
-
-                $node->{'morpho'}{'Token'}{'tag'} = $node->{'m'}{'tag'};
-            }
-
-            if (exists $node->{'m'}{'gloss'} and $node->{'m'}{'gloss'} ne '') {
-
-                $node->{'morpho'}{'Token'}{'gloss'} = $node->{'m'}{'gloss'};
-            }
-        }
-
-        if (exists $node->{'m'}{'note'} and $node->{'m'}{'note'} ne '') {
-
-            if (exists $node->{'morpho'}{'Token'}) {
-
-                $node->{'morpho'}{'Token'}{'note'} = $node->{'m'}{'note'};
-            }
-            elsif (exists $node->{'morpho'}{'Word'}) {
-
-                $node->{'morpho'}{'Word'}{'note'} = $node->{'m'}{'note'};
-            }
-            else {
-
-                warn "Problems with " . ThisAddress($node) . "\n" and next;
-            }
-        }
-
-        delete $node->{'m'};
-    }
-}
-
-sub get_auto_afun {
-
-    require Assign_arab_afun;
-
-    my ($ra, $rb, $rc) = Assign_arab_afun::afun($_[0]);
-
-    print STDERR "$this->{lemma} ($ra,$rb,$rc)\n";
-
-    return $ra =~ /^\s*$/ ? '' : $ra;
-}
-
-#bind request_auto_afun_node Ctrl+Shift+F9 menu Arabic: Request auto afun for current node
-sub request_auto_afun_node {
-
-    my $node = $_[0] eq __PACKAGE__ ? $this : $_[0];
-
-    unless ($node and $node->parent() and ($node->{'afun'} eq '???' or $node->{'afun'} eq '')) {
-
-        $Redraw = 'none';
-        ChangingFile(0);
-    }
-    else {
-
-        $node->{'afun'} = '???';    # it might have been empty
-        $node->{'score'} = get_auto_afun($node);
-
-        $Redraw = 'tree';
-    }
-}
-
-#bind request_auto_afun_subtree to Ctrl+Shift+F10 menu Arabic: Request auto afun for current subtree
-sub request_auto_afun_subtree {
-
-    my $node = $this;
-
-    request_auto_afun_node($node);      # more strict checks
-
-    while ($node = $node->following($this)) {
-
-        if ($node->{'afun'} eq '???' or $node->{'afun'} eq '') {
-
-            $node->{'afun'} = '???';    # it might have been empty
-            $node->{'score'} = get_auto_afun($node);
-        }
-    }
-
-    $Redraw = 'tree';
-}
-
-#bind hooks_request_mode Ctrl+Shift+F8 menu Arabic: Toggle request mode for auto afuns
-sub hooks_request_mode {
-
-    $option->{$grp}{'hook'} = not $option->{$grp}{'hook'};
-
-    $Redraw = 'none';
-    ChangingFile(0);
+    $this->{'hide'} = $this->{'hide'} eq 'hide' ? '' : 'hide';
 }
 
 sub get_value_line_hook {
@@ -605,8 +670,8 @@ sub get_value_line_hook {
 
                map {
 
-                   show_value_line_node($views, $_, exists $_->{'m'} && $_->{'m'}{'id'} !~ /t1$/ ? '' : $_->{'w'}{'form'},
-                                                    not exists $_->{'m'})
+                   show_value_line_node($views, $_, exists $_->{'morpho'}{'Word'} ? 'morpho/Word/form' : '',
+                                                    not exists $_->{'morpho'}{'Token'})
 
                } @{$nodes}[1 .. $#{$nodes}] ];
 
@@ -621,9 +686,10 @@ sub show_value_line_node {
 
     if (HiddenVisible()) {
 
-        return  unless exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
+        return  unless exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                   $node->{'morpho'}{'Word'}{'form'} ne '';
 
-        return  [ $text, $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
+        return  [ $node->attr($text), $node, exists $view->{$node->{'ord'}} ? $warn ? '-foreground => red' : ()
                                                                                     : '-foreground => gray' ],
                 [ " " ];
     }
@@ -633,9 +699,10 @@ sub show_value_line_node {
                 [ " " ]
                         if not exists $view->{$node->{'ord'}} and exists $view->{$node->{'ord'} - 1};
 
-        return  unless exists $view->{$node->{'ord'}} and exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
+        return  unless exists $view->{$node->{'ord'}} and exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                      $node->{'morpho'}{'Word'}{'form'} ne '';
 
-        return  [ $text, $node, $warn ? '-foreground => red' : () ],
+        return  [ $node->attr($text), $node, $warn ? '-foreground => red' : () ],
                 [ " " ];
     }
 }
@@ -644,28 +711,142 @@ sub highlight_value_line_tag_hook {
 
     my $node = $grp->{currentNode};
 
-    $node = PrevNodeLinear($node, 'ord') until !$node or exists $node->{'w'} and exists $node->{'w'}{'form'} and $node->{'w'}{'form'} ne '';
+    $node = PrevNodeLinear($node, 'syntax/ord') until !$node or exists $node->{'morpho'}{'Word'} and exists $node->{'morpho'}{'Word'}{'form'} and
+                                                                                                            $node->{'morpho'}{'Word'}{'form'} ne '';
 
     return $node;
 }
 
 sub node_release_hook {
 
-    my ($node, $done) = @_;
+    my ($node, $done, $mode) = @_;
     my (@line);
 
     return unless $done;
 
-    return unless $option->{$grp}{'hook'};
+    return 'stop' unless $node->parent();
 
-    until ($done->{'afun'} ne '???' or exists $done->{'score'} and @{$done->{'score'}} > 0) {
+    if ($mode eq 'Control') {
 
-        unshift @line, $done;
+        shuffle_tree($node, $done);
 
-        $done = $done->parent();
+        Redraw_FSFile_Tree();
+        main::centerTo($grp, $grp->{currentNode});
+        ChangingFile(1);
+
+        return 'stop';
+    }
+    elsif ($mode eq 'Shift') {
+
+        shuffle_node($node, $done);
+
+        Redraw_FSFile_Tree();
+        main::centerTo($grp, $grp->{currentNode});
+        ChangingFile(1);
+
+        return 'stop';
+    }
+    else {
+
+        return unless $option->{$grp}{'hook'};
+
+        while ($done->{'syntax'}{'afun'} eq '???' and $done->{'syntax'}{'afunaux'} eq '') {
+
+            unshift @line, $done;
+
+            $done = $done->parent();
+        }
+
+        request_auto_afun_node($_) foreach @line, $node;
+    }
+}
+
+sub shuffle_tree ($$) {
+
+    my ($node, $done) = @_;
+    my ($curr, $diff, $dirr, $etip, $itip);
+    my (@nodes, @extra, @intra, $inter);
+
+    $dirr = $node->{'ord'} <=> $done->{'ord'};
+    $diff = $dirr * ($node->{'ord'} - $done->{'ord'});
+
+    $etip = $node->root();
+    $itip = $node;
+
+    @nodes = ($etip);
+
+    while (@nodes) {
+
+        $curr = shift @nodes;
+
+        next if $curr == $node;
+
+        push @nodes, $curr->children();
+        push @extra, $curr;
+
+        $etip = $curr if ($etip->{'ord'} <=> $curr->{'ord'}) == $dirr;
     }
 
-    request_auto_afun_node($_) foreach @line, $node;
+    @nodes = ($itip);
+
+    while (@nodes) {
+
+        $curr = shift @nodes;
+
+        $diff-- if ($node->{'ord'} - $curr->{'ord'}) * ($done->{'ord'} - $curr->{'ord'}) < 0;
+
+        push @nodes, $curr->children();
+        push @intra, $curr;
+
+        $itip = $curr if ($itip->{'ord'} <=> $curr->{'ord'}) == $dirr;
+    }
+
+    return if $dirr * ($itip->{'ord'} - $etip->{'ord'}) < $diff;
+
+    @extra = sort { $a->{'ord'} <=> $b->{'ord'} } @extra;
+    @intra = sort { $a->{'ord'} <=> $b->{'ord'} } @intra;
+
+    @nodes = ();
+
+    $inter = $intra[0]->{'ord'} - $extra[0]->{'ord'} > 0 ? $intra[0]->{'ord'} - $extra[0]->{'ord'} : 0;
+
+    push @nodes, splice @extra, 0, $inter - $diff * $dirr;
+
+    while (@intra > 1) {
+
+        $inter = $intra[1]->{'ord'} - $intra[0]->{'ord'} - 1;
+
+        push @nodes, shift @intra, splice @extra, 0, $inter;
+    }
+
+    push @nodes, @intra, @extra;
+
+    for ($inter = 0; $inter < @nodes; $inter++) {
+
+        $nodes[$inter]->{'ord'} = $inter;
+    }
+
+    RepasteNode($node);
+}
+
+sub shuffle_node ($$) {
+
+    my ($node, $done) = @_;
+    my ($curr, $dirr);
+
+    $curr = $node->root();
+
+    $dirr = $node->{'ord'} <=> $done->{'ord'};
+
+    while ($curr = $curr->following()) {
+
+        $curr->{'ord'} += $dirr if ($node->{'ord'} - $curr->{'ord'}) * ($done->{'ord'} - $curr->{'ord'}) < 0;
+    }
+
+    $node->{'ord'} = $done->{'ord'};
+    $done->{'ord'} += $dirr;
+
+    RepasteNode($node);
 }
 
 sub node_moved_hook {
@@ -676,7 +857,7 @@ sub node_moved_hook {
 
     my @line;
 
-    until ($done->{'afun'} ne '???' or exists $done->{'score'} and @{$done->{'score'}} > 0) {
+    while ($done->{'syntax'}{'afun'} eq '???' and $done->{'syntax'}{'afunaux'} eq '') {
 
         unshift @line, $done;
 
@@ -684,14 +865,6 @@ sub node_moved_hook {
     }
 
     request_auto_afun_node($_) foreach @line;
-}
-
-# bind padt_auto_parse_tree to Ctrl+Shift+F2 menu Arabic: Parse the current sentence and build a tree
-sub padt_auto_parse_tree {
-
-    require Arab_parser;
-
-    Arab_parser::parse_sentence($grp,$root);
 }
 
 sub root_style_hook {
@@ -702,11 +875,11 @@ sub node_style_hook {
 
     my ($node, $styles) = @_;
 
-    if ($node->{'coref'} eq 'Ref') {
+    if ($node->{'syntax'}{'coref'} eq 'Ref') {
 
         my $T = << 'TARGET';
 [!
-    return Analytic::referring_Ref($this);
+    return PADT::Deeper::referring_Ref($this);
 !]
 TARGET
 
@@ -729,11 +902,11 @@ COORDS
     }
 
 
-    if ($node->{arabspec} eq 'Msd') {
+    if ($node->{'syntax'}{'coref'} eq 'Msd') {
 
         my $T = << 'TARGET';
 [!
-    return Analytic::referring_Msd($this);
+    return PADT::Deeper::referring_Msd($this);
 !]
 TARGET
 
@@ -764,10 +937,10 @@ sub isPredicate {
 
     my $this = defined $_[0] ? $_[0] : $this;
 
-    return $this->{'clause'} ne "" || exists $this->{'m'} &&
-                                             $this->{'m'}{'tag'} =~ /^V/ &&
-                                             $this->{'afun'} !~ /^Aux/
-                                   || $this->{'afun'} =~ /^Pred[ECMP]?$/;
+    return $this->{'syntax'}{'clause'} ne "" || exists $this->{'morpho'}{'Token'} &&
+                                                       $this->{'morpho'}{'Token'}{'tag'} =~ /^V/ &&
+                                                       $this->{'syntax'}{'afun'} !~ /^Aux/
+                                             || $this->{'syntax'}{'afun'} =~ /^Pred[ECMP]?$/;
 }
 
 sub theClauseHead ($;&) {
@@ -782,13 +955,13 @@ sub theClauseHead ($;&) {
 
     while ($head) {
 
-        $effect = $head->{'afun'};
+        $effect = $head->{'syntax'}{'afun'};
 
-        if ($head->{'afun'} =~ /^(?:Coord|Apos)$/) {
+        if ($head->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/) {
 
             @children = grep { $_->{'parallel'} =~ /^(?:Co|Ap)$/ } $head->children();
 
-            if (grep { $_->{'afun'} eq 'Atv' } @children) {
+            if (grep { $_->{'syntax'}{'afun'} eq 'Atv' } @children) {
 
                 $effect = 'Atv';
             }
@@ -796,13 +969,13 @@ sub theClauseHead ($;&) {
 
                 $effect = 'Pred';
             }
-            elsif (grep { $_->{'afun'} eq 'Pnom'} @children) {
+            elsif (grep { $_->{'syntax'}{'afun'} eq 'Pnom'} @children) {
 
                 $effect = 'Pnom';
             }
         }
 
-        if ($head->{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
+        if ($head->{'syntax'}{'afun'} =~ /^(?:Pnom|Atv)$/ or $effect =~ /^(?:Pnom|Atv)$/) {
 
             $main = $head;                      # {Pred} <- [Pnom] = [Pnom] and there exist [Verb] <- [Verb]
 
@@ -812,16 +985,16 @@ sub theClauseHead ($;&) {
 
                     $main = $main->parent();
                 }
-                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
+                while $main and $main->{'parallel'} =~ /^(?:Co|Ap)$/ and $main->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/;
 
-                $main = $head unless $main and $main->{'afun'} =~ /^(?:Coord|Apos)$/;
+                $main = $head unless $main and $main->{'syntax'}{'afun'} =~ /^(?:Coord|Apos)$/;
             }
 
             if ($main->parent() and isPredicate($main->parent())) {
 
                 return $main->parent();
             }
-            elsif ($head->{'afun'} eq 'Pnom') {
+            elsif ($head->{'syntax'}{'afun'} eq 'Pnom') {
 
                 return $head;
             }
@@ -857,8 +1030,8 @@ sub referring_Ref {
 
     $head = theClauseHead($head, sub {                  # attributive pseudo-clause .. approximation only
 
-            return $_[0] if $_[0]->{'afun'} eq 'Atr' and exists $_[0]->{'m'} and
-                                                                $_[0]->{'m'}{'tag'} =~ /^A/
+            return $_[0] if $_[0]->{'syntax'}{'afun'} eq 'Atr' and exists $_[0]->{'morpho'}{'Token'} and
+                                                                          $_[0]->{'morpho'}{'Token'}{'tag'} =~ /^A/
                             and $this->level() > $_[0]->level() + 1;
             return undef;
 
@@ -868,7 +1041,7 @@ sub referring_Ref {
 
         my $ante = $head;
 
-        $ante = $ante->following($head) while $ante and $ante->{'afun'} ne 'Ante' and $ante != $this;
+        $ante = $ante->following($head) while $ante and $ante->{'syntax'}{'afun'} ne 'Ante' and $ante != $this;
 
         unless ($ante) {
 
@@ -876,7 +1049,7 @@ sub referring_Ref {
 
             $ante = $head;
 
-            $ante = $ante->following($head) while $ante and $ante->{'afun'} ne 'Ante' and $ante != $this;
+            $ante = $ante->following($head) while $ante and $ante->{'syntax'}{'afun'} ne 'Ante' and $ante != $this;
         }
 
         $ante = $ante->parent() while $ante and $ante->{'parallel'} =~ /^(?:Co|Ap)$/;
@@ -906,10 +1079,10 @@ sub referring_Msd {
 
     my $head = $this->parent();                                                         # the token itself might feature the critical tags
 
-    $head = $head->parent() if $this->{'afun'} eq 'Atr';                                # constructs like <_hAfa 'a^sadda _hawfiN>
+    $head = $head->parent() if $this->{'syntax'}{'afun'} eq 'Atr';                      # constructs like <_hAfa 'a^sadda _hawfiN>
 
-    $head = $head->parent() until not $head or exists $head->{'m'} and
-                                                      $head->{'m'}{'tag'} =~ /^[VNA]/;  # the verb, governing masdar or participle
+    $head = $head->parent() until not $head or exists $head->{'morpho'}{'Token'} and
+                                                      $head->{'morpho'}{'Token'}{'tag'} =~ /^[VNA]/;    # the verb, governing masdar or participle
 
     return $head;
 }
@@ -920,21 +1093,39 @@ sub referring_Msd {
 
 sub enable_attr_hook {
 
-    return 'stop' if $_[0] =~ /^morpho(?!\w)/;
+    return 'stop' unless $_[0] =~ /^(?:func|context|note)$/;
 }
 
 #bind edit_note to exclam menu Annotate: Edit Annotation Note
 sub edit_note {
 
-    if (exists $this->{'note'} and $this->{'note'} ne "") {
+    $Redraw = 'none';
+    ChangingFile(0);
 
-        delete $this->{'note'};
+    my $note = $grp->{FSFile}->FS->exists('note') ? 'note' : undef;
+
+    unless (defined $note) {
+
+        ToplevelFrame()->messageBox (
+            -icon => 'warning',
+            -message => "No attribute for annotator's note in this file",
+            -title => 'Sorry',
+            -type => 'OK',
+        );
+
+        return;
     }
-    else {
 
-        my $note = main::QueryString($grp->{framegroup}, "Enter the note", 'note');
+    my $value = $this->{$note};
 
-        $this->{'note'} = $note if defined $note;
+    $value = main::QueryString($grp->{framegroup}, "Enter note", $note, $value);
+
+    if (defined $value) {
+
+        $this->{$note} = $value;
+
+        $Redraw = 'tree';
+        ChangingFile(1);
     }
 }
 
@@ -943,12 +1134,12 @@ sub default_ar_attrs {
 
     return unless $grp->{FSFile};
 
-    my ($type, $pattern) = ('node:', '#{custom2}${m/tag}');
+    my ($type, $pattern) = ('node:', '#{custom2}${morpho/Token/tag}');
 
-    my $code = q {<? exists $this->{'m'} ? (
-        exists $this->{'m'}{'note'} &&
-               $this->{'m'}{'note'} ne '' ? '#{custom6}${m/note} << ' : ''
-        ) . '#{custom2}${m/tag}' : '' ?>};
+    my $code = q {<? exists $this->{'morpho'}{'Token'} ? (
+        exists $this->{'morpho'}{'Token'}{'note'} &&
+               $this->{'morpho'}{'Token'}{'note'} ne '' ? '#{custom6}${morpho/Token/note} << ' : ''
+        ) . '#{custom2}${morpho/Token/tag}' : '' ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -975,9 +1166,9 @@ sub annotate_following {
 
     my $node = $this;
 
-    do { $this = $this->following() } while $this and $this->{'afun'} ne '???';
+    do { $this = $this->following() } while $this and $this->{'func'} ne '???';
 
-    $this = $node unless $this and $this->{'afun'} eq '???';
+    $this = $node unless $this and $this->{'func'} eq '???';
 
     $Redraw = 'none';
     ChangingFile(0);
@@ -988,62 +1179,60 @@ sub annotate_previous {
 
     my $node = $this;
 
-    do { $this = $this->previous() } while $this and $this->{'afun'} ne '???';
+    do { $this = $this->previous() } while $this and $this->{'func'} ne '???';
 
-    $this = $node unless $this and $this->{'afun'} eq '???';
+    $this = $node unless $this and $this->{'func'} eq '???';
 
     $Redraw = 'none';
     ChangingFile(0);
 }
 
-#bind accept_auto_afun Ctrl+space menu Arabic: Accept auto-assigned annotation
+##bind accept_auto_afun Ctrl+space menu Arabic: Accept auto-assigned annotation
 sub accept_auto_afun {
 
     my $node = $this;
 
-    if ($this->{'afun'} ne '???' or exists $this->{'score'}) {
+    unless ($this->{'syntax'}{'afun'} eq '???' and $this->{'syntax'}{'afunaux'} ne '') {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = $this->{'score'};
-        delete $this->{'score'};
+        $this->{'syntax'}{'afun'} = $this->{'syntax'}{'afunaux'};
+        $this->{'syntax'}{'afunaux'} = '';
 
         $Redraw = 'tree';
     }
 }
 
-#bind unset_afun to question menu Arabic: Unset afun to ???
-sub unset_afun {
+#bind unset_func to question menu Functor: unset to ???
+sub unset_func {
 
-    if ($this->{'afun'} eq 'AuxS' or $this->{'afun'} eq '???') {
+    if ($this->{'func'} eq 'SENT' or $this->{'func'} eq '???') {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = '???';
-        delete $this->{'score'};
+        $this->{'func'} = '???';
 
         $Redraw = 'tree';
     }
 }
 
-#bind unset_request_afun to Ctrl+question menu Arabic: Unset and request auto afun
-sub unset_request_afun {
+#bind unset_context to Ctrl+v menu Context: revert to unset
+sub unset_context {
 
-    if ($this->{'afun'} eq 'AuxS') {
+    if ($this->{'func'} eq 'SENT' or $this->{'context'} eq '') {
 
         $Redraw = 'none';
         ChangingFile(0);
     }
     else {
 
-        $this->{'afun'} = '???';
-        $this->{'score'} = get_auto_afun($this);
+        $this->{'context'} = '';
 
         $Redraw = 'tree';
     }
@@ -1126,51 +1315,6 @@ sub move_to_prev_paragraph {
     PrevTree();
 
     $Redraw = 'win';
-    ChangingFile(0);
-}
-
-#bind tree_hide_mode Ctrl+equal menu Toggle Children Hiding
-sub tree_hide_mode {
-
-    foreach my $node ($this->children()) {
-
-        $node->{'hide'} = $node->{'hide'} ? '' : 'hide';
-    }
-
-    ChangingFile(0);
-}
-
-#bind unhide_subtree Ctrl+plus menu Unhide Children Recursively
-sub unhide_subtree {
-
-    my $this = ref $_[0] ? $_[0] : $this;
-
-    $this->{'hide'} = '';
-
-    foreach my $node ($this->children()) {
-
-        unhide_subtree($node);
-    }
-
-    ChangingFile(0);
-}
-
-#bind hide_children Ctrl+minus menu Hide Children Subtrees
-sub hide_children {
-
-    foreach my $node ($this->children()) {
-
-        $node->{'hide'} = 'hide';
-    }
-
-    ChangingFile(0);
-}
-
-#bind hide_this Ctrl+underscore menu Hide This Subtree
-sub hide_this {
-
-    $this->{'hide'} = $this->{'hide'} ? '' : 'hide';
-
     ChangingFile(0);
 }
 
@@ -1295,7 +1439,7 @@ sub espace ($) {
 
 sub inter_with_level ($) {
 
-    my ($inter, $level) = ('syntax', $_[0]);
+    my ($inter, $level) = ('deeper', $_[0]);
 
     my (@file, $path, $name, $exts);
 
@@ -1310,10 +1454,10 @@ sub inter_with_level ($) {
     $file[1] = $level eq 'elixir' ? ( path $path, $name . ".$level" . (substr $exts, 0, -3) . "dat" )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[2] = $level eq 'morpho' ? ( path $path, $name . ".$inter" . $exts )
+    $file[2] = $level eq 'others' ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = path $path, $name . ".$inter.pml.anno.pml";
+    $file[3] = path $path . $inter, $name . ".$inter.pml.anno.pml";
 
     unless ($file[0] eq $file) {
 
@@ -1345,7 +1489,7 @@ sub synchronize_file {
 
     warn "Synchronizing ...\n";
 
-    my ($level, $name, $path, @file) = inter_with_level 'morpho';
+    my ($level, $name, $path, @file) = inter_with_level 'syntax';
 
     return unless defined $level;
 
@@ -1355,7 +1499,7 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "There is no " . $name . ".$level.pml" . " file.$fill\n" .
+                -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file.$fill\n" .
                             "Make sure you are working with complete data!$fill",
                 -title => 'Error',
                 -type => 'OK',
@@ -1363,7 +1507,7 @@ sub synchronize_file {
         }
         else {
 
-            warn "There is no " . $name . ".$level.pml" . " file!\n";
+            warn "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!\n";
         }
 
         return;
@@ -1375,15 +1519,15 @@ sub synchronize_file {
 
             ToplevelFrame()->messageBox (
                 -icon => 'warning',
-                -message => "Cannot create " . ( path '..', 'syntax', $name . '.syntax.pml' ) . "!$fill\n" .
-                            "Please remove " . ( path '..', "$level", $name . '.syntax.pml' ) . ".$fill",
+                -message => "Cannot create " . ( path '..', 'deeper', $name . '.deeper.pml' ) . "!$fill\n" .
+                            "Please remove " . ( path '..', "$level", $name . '.deeper.pml' ) . ".$fill",
                 -title => 'Error',
                 -type => 'OK',
             );
         }
         else {
 
-            warn "Cannot create " . $name . '.syntax.pml' . "!\n";
+            warn "Cannot create " . ( path '..', 'deeper', $name . '.deeper.pml' ) . "!\n";
         }
 
         return;
@@ -1415,12 +1559,12 @@ sub synchronize_file {
 
     move $file[0], $file[3];
 
-    system 'btred -QI ' . ( escape CallerDir('../../exec/morpho_syntax.ntred') ) .
+    system 'btred -QI ' . ( escape CallerDir('../../exec/syntax_deeper.ntred') ) .
                     ' ' . ( espace $file[1] );
 
     move $file[2], $file[0];
 
-    system 'btred -QI ' . ( escape CallerDir('../../exec/migrate_annotation_syntax.ntred') ) .
+    system 'btred -QI ' . ( escape CallerDir('../../exec/migrate_annotation_deeper.ntred') ) .
                     ' ' . ( espace $file[0] );
 
     warn "... succeeded.\n";
@@ -1435,69 +1579,26 @@ sub synchronize_file {
     }
 }
 
-#bind open_level_words_prime to Alt+0
-sub open_level_words_prime {
+#bind open_level_first_prime to Alt+1
+sub open_level_first_prime {
 
-    open_level_words();
+    open_level_first();
 }
 
-#bind open_level_morpho_prime to Alt+1
-sub open_level_morpho_prime {
+#bind open_level_second_prime to Alt+2
+sub open_level_second_prime {
 
-    open_level_morpho();
+    open_level_second();
 }
 
-#bind open_level_syntax_prime to Alt+2
-sub open_level_syntax_prime {
+#bind open_level_third_prime to Alt+3
+sub open_level_third_prime {
 
-    open_level_syntax();
+    open_level_third();
 }
 
-#bind open_level_tecto_prime to Alt+3
-sub open_level_tecto_prime {
-
-    open_level_tecto();
-}
-
-#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
-sub open_level_words {
-
-    ChangingFile(0);
-
-    my ($level, $name, $path, @file) = inter_with_level 'words';
-
-    return unless defined $level;
-
-    unless (-f $file[1]) {
-
-        ToplevelFrame()->messageBox (
-            -icon => 'warning',
-            -message => "There is no " . $name . ".$level.pml" . " file!$fill",
-            -title => 'Error',
-            -type => 'OK',
-        );
-
-        return;
-    }
-
-    my @id = idx($root);
-
-    my $id = join 'w-', split 's-', $this->{'id'};
-
-    if (Open($file[1])) {
-
-        GotoTree($id[0]);
-
-        $this = PML::GetNodeByID($id);
-    }
-    else {
-
-        SwitchContext('Analytic');
-    }
-}
-
-#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
-sub open_level_morpho {
+#bind open_level_first to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+sub open_level_first {
 
     ChangingFile(0);
 
@@ -1509,7 +1610,7 @@ sub open_level_morpho {
 
         ToplevelFrame()->messageBox (
             -icon => 'warning',
-            -message => "There is no " . $file[1] . " file!$fill",
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!$fill",
             -title => 'Error',
             -type => 'OK',
         );
@@ -1517,93 +1618,70 @@ sub open_level_morpho {
         return;
     }
 
-    my ($tree, %id) = (idx($root));
+    my ($tree, $node);
 
-    $id{$_} = exists $this->{$_} && exists $this->{$_}{'id'} ? $this->{$_}{'id'} : '' foreach 'm', 'w';
+    ($tree) = $root->{'x_id_ord'} =~ /^\#[0-9]+\_([0-9]+)$/;
+
+    unless ($this == $root) {
+
+        ($node) = $this->{'x_id_ord'} =~ /^\#[0-9]+\/([0-9]+)(:?\_[0-9]+)?$/;
+    }
+    else {
+
+        $node = 0;
+    }
 
     if (Open($file[1])) {
 
         GotoTree($tree);
 
-        $this = PML::GetNodeByID($id{'m'}) || PML::GetNodeByID($id{'w'}) || $root;
+        $this = ($this->children())[$node - 1] unless $node == 0;
     }
     else {
 
-        SwitchContext('Analytic');
+        SwitchContext('PADT::Deeper');
     }
 }
 
-#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
-sub open_level_syntax {
-
-    ChangingFile(0);
-}
-
-#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
-sub open_level_tecto {
+#bind open_level_second to Ctrl+Alt+2 menu Action: Edit Analytic File
+sub open_level_second {
 
     ChangingFile(0);
 
-    my ($level, $name, $path, @file) = inter_with_level 'deeper';
+    my ($level, $name, $path, @file) = inter_with_level 'syntax';
 
     return unless defined $level;
 
     unless (-f $file[1]) {
 
-        my $reply = main::userQuery($grp,
-                        "\nThere is no " . $file[1] . " file.$fill" .
-                        "\nReally create a new one?$fill",
-                        -bitmap=> 'question',
-                        -title => "Creating",
-                        -buttons => ['Yes', 'No']);
+        ToplevelFrame()->messageBox (
+            -icon => 'warning',
+            -message => "There is no " . ( path '..', "$level", $name . ".$level.pml" ) . " file!$fill",
+            -title => 'Error',
+            -type => 'OK',
+        );
 
-        return unless $reply eq 'Yes';
-
-        if (-f $file[2]) {
-
-            ToplevelFrame()->messageBox (
-                -icon => 'warning',
-                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.pml" ) . "!$fill\n" .
-                            "Please remove " . ( path '..', 'syntax', $name . ".$level.pml" ) . ".$fill",
-                -title => 'Error',
-                -type => 'OK',
-            );
-
-            return;
-        }
-
-        if (GetFileSaveStatus()) {
-
-            ToplevelFrame()->messageBox (
-                -icon => 'warning',
-                -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
-                -title => 'Error',
-                -type => 'OK',
-            );
-
-            return;
-        }
-
-        system 'btred -QI ' . ( escape CallerDir('../../exec/syntax_deeper.ntred') ) .
-                        ' ' . ( espace $file[0] );
-
-        mkdir path $path, "$level" unless -d path $path, "$level";
-
-        move $file[2], $file[1];
+        return;
     }
 
-    my ($tree, $node) = idx($this);
+    my ($tree, $node) = $this->{'x_id_ord'} =~ /^\#([0-9]+)\/([0-9]+)(:?\_[0-9]+)?$/;
 
     if (Open($file[1])) {
 
         GotoTree($tree);
 
-        $this = $this->following() until $this->{'y_ord'} eq $node;
+        $this = $this->following() until $this->{'ord'} eq $node;
     }
     else {
 
-        SwitchContext('Analytic');
+        SwitchContext('PADT::Deeper');
     }
+}
+
+#bind open_level_third to Ctrl+Alt+3 menu Action: Edit Deeper File
+sub open_level_third {
+
+    ChangingFile(0);
 }
 
 #bind ThisAddressClipBoard Ctrl+Return menu ThisAddress() to Clipboard
@@ -1637,7 +1715,7 @@ no strict;
 
 =head1 NAME
 
-Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment
+PADT::Deeper - Context for Annotation of Tectogrammatics and Deeper Levels in the TrEd Environment
 
 
 =head1 REVISION
@@ -1647,7 +1725,7 @@ Analytic - Context for Annotation of Analytical Syntax in the TrEd Environment
 
 =head1 DESCRIPTION
 
-For reference, see the list of Analytic macros and key-bindings in the User-defined menu item in TrEd.
+For reference, see the list of PADT::Deeper macros and key-bindings in the User-defined menu item in TrEd.
 
 
 =head1 SEE ALSO
@@ -1668,7 +1746,7 @@ Perl is also designed to make the easy jobs not that easy ;)
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2010 by Otakar Smrz
+Copyright 2006-2010 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -1,10 +1,10 @@
 # ########################################################################## Otakar Smrz, 2004/03/05
 #
-# MorphoTrees Context for the TrEd Environment #####################################################
+# PADT Morpho Context for the TrEd Environment #####################################################
 
 # $Id$
 
-package MorphoTrees;
+package PADT::Morpho;
 
 use 5.008;
 
@@ -37,7 +37,7 @@ our $VERSION = join '.', '1.1', q $Revision$ =~ /(\d+)/;
 #
 # ##################################################################################################
 
-#binding-context MorphoTrees
+#binding-context PADT::Morpho
 
 BEGIN {
 
@@ -64,7 +64,7 @@ sub CreateStylesheets {
 
     return << '>>';
 
-rootstyle:<? $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+rootstyle:<? $PADT::Morpho::review->{$grp}{'zoom'} && ! $PADT::Morpho::review->{$grp}{'mode'} ?
              '#{vertical}#{Node-textalign:left}#{Node-shape:rectangle}' .
              '#{skipHiddenLevels:1}#{lineSpacing:1.0}' : '#{skipHiddenLevels:1}' ?>
 
@@ -80,7 +80,7 @@ style:<? my @child = $this->children();
             $score > 0.95 ? '#{Line-fill:darkviolet}' :
             $score > 0.90 ? '#{Line-fill:goldenrod}' :
             $score > 0.80 ? '#{Line-fill:tan}' : '' ) .
-          ( $MorphoTrees::review->{$grp}{'zoom'} && ! $MorphoTrees::review->{$grp}{'mode'} ?
+          ( $PADT::Morpho::review->{$grp}{'zoom'} && ! $PADT::Morpho::review->{$grp}{'mode'} ?
             '#{Line-coords:n,n,p,n,p,p}' : '' ) ?>
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
@@ -88,7 +88,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
             ? ( ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
-                ? ( ( $MorphoTrees::review->{$grp}{'zoom'}
+                ? ( ( $PADT::Morpho::review->{$grp}{'zoom'}
                         ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
                                                           @{$this->{'core'}{'reflex'}} : () ) . ' '
                         : '' ) .
@@ -104,11 +104,11 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                     : $this->{'#name'} eq 'Tuple'
                     ? '#{orange}' . ElixirFM::phon($this->{'form'})
                     : ( $this->{'#name'} eq 'Element'
-                            ? '#{black}' . MorphoTrees::idx($this) . ' ' : '' ) .
+                            ? '#{black}' . PADT::Morpho::idx($this) . ' ' : '' ) .
                       ( $this->{apply} > 0
                             ? '#{red}${form}' : '#{black}${form}' ) .
                       ( $this->{'#name'} eq 'Unit'
-                            ? ' ' . '#{black}' . MorphoTrees::idx($this) : '' ) ) ) ?>
+                            ? ' ' . '#{black}' . PADT::Morpho::idx($this) : '' ) ) ) ?>
 
 node:<? my $index = 0;
         $this->{'#name'} eq 'Word'
@@ -116,7 +116,7 @@ node:<? my $index = 0;
             :
         $this->{'#name'} eq 'Token'
             ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
-            : $MorphoTrees::review->{$grp}{'mode'}
+            : $PADT::Morpho::review->{$grp}{'mode'}
                 ? ( exists $this->{'restrict'} ? ( exists $this->{'inherit'} && $this->{'inherit'} ne '' ? '#{orange}' : '#{red}' )
                                                  . $this->{'restrict'} : '' )
                 : ( exists $this->{'restrict'} ? join "\n", map { exists $this->{'current'} && $this->{'current'} == $index++
@@ -3037,7 +3037,7 @@ sub open_level_elixir_prime {
     open_level_elixir();
 }
 
-#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Analytic File
+#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Syntax File
 sub open_level_words {
 
     ChangingFile(0);
@@ -3093,11 +3093,11 @@ sub open_level_words {
 
     if (Open($file[1])) {
 
-	return unless exists $node->{'w.rf'};
+    return unless exists $node->{'w.rf'};
 
-	my ($id, $tree) = $node->{'w.rf'} =~ /^w#(w-p([0-9]+).*)$/;
+    my ($id, $tree) = $node->{'w.rf'} =~ /^w#(w-p([0-9]+).*)$/;
 
-	return unless defined $tree and defined $id;
+    return unless defined $tree and defined $id;
 
         GotoTree($tree);
 
@@ -3105,17 +3105,17 @@ sub open_level_words {
     }
     else {
 
-        SwitchContext('MorphoTrees');
+        SwitchContext('PADT::Morpho');
     }
 }
 
-#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit Morpho File
 sub open_level_morpho {
 
     ChangingFile(0);
 }
 
-#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Analytic File
+#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Syntax File
 sub open_level_syntax {
 
     ChangingFile(0);
@@ -3180,11 +3180,11 @@ sub open_level_syntax {
     }
     else {
 
-        SwitchContext('MorphoTrees');
+        SwitchContext('PADT::Morpho');
     }
 }
 
-#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit Deeper File
 sub open_level_tecto {
 
     ChangingFile(0);
@@ -3253,7 +3253,7 @@ sub open_level_elixir {
 
         $ElixirFM::window->{$grp} = $win;
 
-        $MorphoTrees::window->{$win} = $grp;
+        $PADT::Morpho::window->{$win} = $grp;
     }
 
     SetCurrentWindow($ElixirFM::window->{$grp});
@@ -3292,7 +3292,7 @@ sub open_level_elixir {
     }
     else {
 
-        SwitchContext('MorphoTrees');
+        SwitchContext('PADT::Morpho');
     }
 }
 
@@ -3314,7 +3314,7 @@ sub switch_the_levels {
     }
     else {
 
-        SwitchContext('MorphoTrees');
+        SwitchContext('PADT::Morpho');
     }
 }
 

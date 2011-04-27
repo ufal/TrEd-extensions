@@ -1,10 +1,10 @@
 # ########################################################################## Otakar Smrz, 2005/07/13
 #
-# PhraseTrees Context for the TrEd Environment #####################################################
+# PADT Phrase Context for the TrEd Environment #####################################################
 
 # $Id$
 
-package PhraseTrees;
+package PADT::Phrase;
 
 use 5.008;
 
@@ -16,7 +16,7 @@ our $VERSION = do { q $Revision$ =~ /(\d+)/; sprintf "%4.2f", $1 / 100 };
 #
 # ##################################################################################################
 
-#binding-context PhraseTrees
+#binding-context PADT::Phrase
 
 BEGIN {
 
@@ -514,7 +514,7 @@ no strict;
 
 =head1 NAME
 
-PhraseTrees - Context for Annotation of Constituency Syntax in the TrEd Environment
+PADT::Phrase - Context for Annotation of Constituency Syntax in the TrEd Environment
 
 
 =head1 REVISION
@@ -524,7 +524,7 @@ PhraseTrees - Context for Annotation of Constituency Syntax in the TrEd Environm
 
 =head1 DESCRIPTION
 
-For reference, see the list of PhraseTrees macros and key-bindings in the User-defined menu item in TrEd.
+For reference, see the list of PADT::Phrase macros and key-bindings in the User-defined menu item in TrEd.
 
 
 =head1 SEE ALSO
