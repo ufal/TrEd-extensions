@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="10764627">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="10764578">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>tectomt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>TectoMT base for TrEd applications</title>
-  <version>1.29</version>
+  <version>1.30</version>
   <copyright year="2008">Zdeněk Žabokrtský, Václav Klimeš</copyright>
   <require>
     <tred min_version="1.4375"/>

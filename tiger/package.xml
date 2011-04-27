@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="56941">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="56951">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>tiger</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>TIGER Corpus</title>
-  <version>1.26</version>
+  <version>1.27</version>
   <copyright year="2010">Petr Pajas, Maud Medves</copyright>
 
   <description>This package contains 

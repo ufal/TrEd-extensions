@@ -3,13 +3,13 @@
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
-  <pkgname>padt</pkgname>
-  <icon>icons/logo.png</icon>
+  <pkgname>elixir</pkgname>
+  <icon></icon>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
-  <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.59</version>
-  <copyright year="2004-2010">Otakar Smrž</copyright>
-  <description>Various annotation modes for Prague Arabic Dependency Treebank, including ElixirFM and MorphoTrees.</description>
+  <title>ElixirFM Lexicon</title>
+  <version>1.2.0.0</version>
+  <copyright year="2008-2011">Otakar Smrž</copyright>
+  <description>Editing, browsing, and processing of the lexicon of ElixirFM.</description>
   <require>
     <tred min_version="1.4484"/>
     <perl_module name="perl" min_version="5.008"/>
