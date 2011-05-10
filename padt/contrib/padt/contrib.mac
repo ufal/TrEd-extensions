@@ -1,4 +1,4 @@
-# -*- cperl -*-
+# -*- perl -*-
 
 #ifndef padt
 #define padt
@@ -90,18 +90,19 @@ push @AUTO_CONTEXT_GUESSING, sub {
 
     my $schema = PML::SchemaName();
 
-    return $schema       if defined $schema and $schema =~ /ElixirFM|PADT/;
+    return $schema        if defined $schema and $schema =~ s/PADT-/PADT::/;
 
     return 'PADT::Morpho' if $grp->{FSFile}->FS()->isList('type') and
-                            grep { /[EP]|paragraph|entity/ } $grp->{FSFile}->FS()->listValues('type');
+                             grep { /[EP]|paragraph|entity/ } $grp->{FSFile}->FS()->listValues('type');
 
-    return 'PADT::Deeper'  if $grp->{FSFile}->FS()->isList('func') and
-                            grep { /ACT|PAT|ADDR|EFF|ORIG/ } $grp->{FSFile}->FS()->listValues('func');
+    return 'PADT::Deeper' if $grp->{FSFile}->FS()->isList('func') and
+                             grep { /ACT|PAT|ADDR|EFF|ORIG/ } $grp->{FSFile}->FS()->listValues('func');
 
-    return 'PADT::Syntax'    if $grp->{FSFile}->FS()->exists('afun') and
-                            $grp->{FSFile}->FS()->exists('arabclause');
+    return 'PADT::Syntax' if $grp->{FSFile}->FS()->exists('afun') and
+                             $grp->{FSFile}->FS()->exists('arabclause');
 
     return 'PADT::Phrase' if $grp->{FSFile}->FS()->exists('label');
+
     return;
 };
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>1.1.1</revision>
+    <revision>1.1.2</revision>
     <description>PADT Surface Syntax</description>
 
     <reference name="morpho" readas="pml"/>
@@ -41,7 +41,7 @@
 
     <import schema="morpho.schema.xml" type="ID"/>
 
-    <root name="Analytic" type="Trees"/>
+    <root name="PADT-Syntax" type="Trees"/>
 
     <type name="Trees">
         <structure>

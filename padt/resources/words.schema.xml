@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <pml_schema version="1.1" xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/">
-    <revision>0.0.1</revision>
-    <description>PADT Words Level</description>
+    <revision>1.0.1</revision>
+    <description>PADT Words</description>
 
-    <root name="WordsLevel" type="Document"/>
+    <root name="PADT-Words" type="Document"/>
 
     <type name="Document">
         <structure>
