@@ -104,11 +104,13 @@
     <!-- Value of annotations here (embedded in features, edgelabels or secedgelabels) -->
 
     <xsl:template match="s:value">
-        <value>
-            <xsl:attribute name="name">
-                <xsl:value-of select="."/>
-            </xsl:attribute>
-        </value>
+        <xsl:if test="text() != '$'">
+            <value>
+                <xsl:attribute name="name">
+                      <xsl:value-of select="."/>
+                </xsl:attribute>
+            </value>
+        </xsl:if>
     </xsl:template>
 
     <!-- s info here (belongs to the body element)    -->
