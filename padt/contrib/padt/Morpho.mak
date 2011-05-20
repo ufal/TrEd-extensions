@@ -2978,7 +2978,7 @@ sub inter_with_level ($) {
                $level eq 'words'  ? ( path $path, $name . ".$inter" . $exts )
                                   : ( path $path, $name . ".$level" . $exts );
 
-    $file[3] = $level eq 'elixir' ? ( path $path, '..', '..', 'ElixirFM' )
+    $file[3] = $level eq 'elixir' ? ( path TrEd::Extensions::getExtensionsDir(), 'elixir', 'data' )
                                   : ( path $path, $name . ".$inter.pml.anno.pml" );
 
     unless ($file[0] eq $file) {
