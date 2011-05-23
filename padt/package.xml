@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>padt</pkgname>
-  <icon>icons/logo.png</icon>
+  <icon>icons/padt.png</icon>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Prague Arabic Dependency Treebank Annotation</title>
   <version>1.60</version>
