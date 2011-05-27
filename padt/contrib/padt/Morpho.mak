@@ -3391,46 +3391,21 @@ no strict;
 
 =head1 NAME
 
-MorphoTrees - Context for Annotation of Morphology in the TrEd Environment
-
-
-=head1 REVISION
-
-    $Revision$       $Date$
+PADT::Morpho - Context for Annotation of Morphology in the TrEd Environment
 
 
 =head1 DESCRIPTION
 
-MorphoTrees were first introduced in L<http://ufal.mff.cuni.cz/padt/docs/2004-nemlar-tred.pdf>.
-They have re-appeared in various papers and talks, esp. in the video-recorded lecture on the Prague
-Arabic Dependency Treebank, L<http://ufal.mff.cuni.cz/padt/online/2007/01/prague-treebanking-for-everyone-video.html>.
+Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
-Examples of MorphoTrees include L<http://ufal.mff.cuni.cz/padt/docs/morpho_fhm.gif>,
-L<http://ufal.mff.cuni.cz/padt/docs/morpho_AfrAd.gif>, or
-L<http://ufal.mff.cuni.cz/padt/docs/morpho_AmA.gif>.
-
-Paragraph annotation trees look like L<http://ufal.mff.cuni.cz/padt/docs/morpho_view.gif>.
-
-For further reference, see the list of MorphoTrees macros and key-bindings in the User-defined menu item in TrEd.
-
-MorphoTrees are closely related to the ElixirFM project, cf. <http://sf.net/projects/elixir-fm/> and
-<http://ufal.mff.cuni.cz/~smrz/elixir-thesis.pdf>.
-
-
-=head1 SEE ALSO
+ElixirFM L<http://sourceforge.net/projects/elixir-fm/>
 
 TrEd Tree Editor L<http://ufal.mff.cuni.cz/~pajas/tred/>
-
-Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
 
 =head1 AUTHOR
 
-Otakar Smrz, L<http://ufal.mff.cuni.cz/~smrz/>
-
-    eval { 'E<lt>' . ( join '.', qw 'otakar smrz' ) . "\x40" . ( join '.', qw 'mff cuni cz' ) . 'E<gt>' }
-
-Perl is also designed to make the easy jobs not that easy ;)
+Otakar Smrz E<lt>otakar.smrz mff.cuni.czE<gt>
 
 
 =head1 COPYRIGHT AND LICENSE

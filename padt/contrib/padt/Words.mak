@@ -611,35 +611,21 @@ no strict;
 PADT::Words - Context for Accessing the Words Level in the TrEd Environment
 
 
-=head1 REVISION
-
-    $Revision$       $Date$
-
-
 =head1 DESCRIPTION
 
-PADT::Words ...
-
-
-=head1 SEE ALSO
+Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
 TrEd Tree Editor L<http://ufal.mff.cuni.cz/~pajas/tred/>
-
-Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
 
 =head1 AUTHOR
 
-Otakar Smrz, L<http://ufal.mff.cuni.cz/~smrz/>
-
-    eval { 'E<lt>' . ( join '.', qw 'otakar smrz' ) . "\x40" . ( join '.', qw 'mff cuni cz' ) . 'E<gt>' }
-
-Perl is also designed to make the easy jobs not that easy ;)
+Otakar Smrz E<lt>otakar.smrz mff.cuni.czE<gt>
 
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2010 by Otakar Smrz
+Copyright 2006-2011 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
