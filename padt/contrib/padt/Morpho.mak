@@ -1026,7 +1026,9 @@ sub move_word_end {
     ChangingFile(0);
 }
 
-#bind move_next_home Ctrl+Home menu Move to First on Level
+OverrideBuiltinBinding(__PACKAGE__, "Shift+Home", [ MacroCallback('move_next_home'), 'Move to First on Level' ]);
+
+#bind move_next_home Shift+Home menu Move to First on Level
 sub move_next_home {
 
     my $node = $this;
@@ -1055,7 +1057,9 @@ sub move_next_home {
     ChangingFile(0);
 }
 
-#bind move_next_end Ctrl+End menu Move to Last on Level
+OverrideBuiltinBinding(__PACKAGE__, "Shift+End", [ MacroCallback('move_next_end'), 'Move to Last on Level' ]);
+
+#bind move_next_end Shift+End menu Move to Last on Level
 sub move_next_end {
 
     my $node = $this;

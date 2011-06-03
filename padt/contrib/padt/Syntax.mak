@@ -1009,7 +1009,9 @@ sub move_word_end {
     ChangingFile(0);
 }
 
-#bind move_deep_home Ctrl+Home menu Move to Rightmost Descendant
+OverrideBuiltinBinding(__PACKAGE__, "Shift+Home", [ MacroCallback('move_deep_home'), 'Move to Rightmost Descendant' ]);
+
+#bind move_deep_home Shift+Home menu Move to Rightmost Descendant
 sub move_deep_home {
 
     $this = $this->leftmost_descendant();
@@ -1020,7 +1022,9 @@ sub move_deep_home {
     ChangingFile(0);
 }
 
-#bind move_deep_end Ctrl+End menu Move to Leftmost Descendant
+OverrideBuiltinBinding(__PACKAGE__, "Shift+End", [ MacroCallback('move_deep_end'), 'Move to Leftmost Descendant' ]);
+
+#bind move_deep_end Shift+End menu Move to Leftmost Descendant
 sub move_deep_end {
 
     $this = $this->rightmost_descendant();
@@ -1031,7 +1035,7 @@ sub move_deep_end {
     ChangingFile(0);
 }
 
-#bind move_par_home Shift+Home menu Move to First Paragraph
+#bind move_par_home Ctrl+Home menu Move to First Paragraph
 sub move_par_home {
 
     GotoTree(1);
@@ -1040,7 +1044,7 @@ sub move_par_home {
     ChangingFile(0);
 }
 
-#bind move_par_end Shift+End menu Move to Last Paragraph
+#bind move_par_end Ctrl+End menu Move to Last Paragraph
 sub move_par_end {
 
     GotoTree($grp->{FSFile}->lastTreeNo + 1);

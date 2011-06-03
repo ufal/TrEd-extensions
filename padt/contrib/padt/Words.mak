@@ -275,7 +275,9 @@ sub move_word_end {
     ChangingFile(0);
 }
 
-#bind move_next_home Ctrl+Home menu Move to First Entry
+OverrideBuiltinBinding(__PACKAGE__, "Shift+Home", [ MacroCallback('move_next_home'), 'Move to First on Level' ]);
+
+#bind move_next_home Shift+Home menu Move to First on Level
 sub move_next_home {
 
     my $node = $this;
@@ -307,7 +309,9 @@ sub move_next_home {
     ChangingFile(0);
 }
 
-#bind move_next_end Ctrl+End menu Move to Last Entry
+OverrideBuiltinBinding(__PACKAGE__, "Shift+End", [ MacroCallback('move_next_end'), 'Move to Last on Level' ]);
+
+#bind move_next_end Shift+End menu Move to Last on Level
 sub move_next_end {
 
     my $node = $this;
@@ -339,7 +343,7 @@ sub move_next_end {
     ChangingFile(0);
 }
 
-#bind move_par_home Shift+Home menu Move to First Cluster
+#bind move_par_home Ctrl+Home menu Move to First Paragraph
 sub move_par_home {
 
     GotoTree(1);
@@ -348,7 +352,7 @@ sub move_par_home {
     ChangingFile(0);
 }
 
-#bind move_par_end Shift+End menu Move to Last Cluster
+#bind move_par_end Ctrl+End menu Move to Last Paragraph
 sub move_par_end {
 
     GotoTree($grp->{FSFile}->lastTreeNo + 1);
