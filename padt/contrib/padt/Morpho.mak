@@ -1088,7 +1088,7 @@ sub move_next_end {
     ChangingFile(0);
 }
 
-#bind move_par_home Shift+Home menu Move to First Paragraph
+#bind move_par_home Ctrl+Home menu Move to First Paragraph
 sub move_par_home {
 
     GotoTree(1);
@@ -1099,7 +1099,7 @@ sub move_par_home {
     ChangingFile(0);
 }
 
-#bind move_par_end Shift+End menu Move to Last Paragraph
+#bind move_par_end Ctrl+End menu Move to Last Paragraph
 sub move_par_end {
 
     GotoTree($grp->{'FSFile'}->lastTreeNo() + 1);
