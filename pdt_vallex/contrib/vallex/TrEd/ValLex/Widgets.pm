@@ -194,6 +194,8 @@ sub create_widget {
   $w->headerCreate(0,-itemtype=>'text', -text=>'Elements', -underline => 0);
   $top->toplevel->bind('<Alt-e>',sub { $w->focus() });
   return $w, {
+              new => $w->ItemStyle("imagetext", -foreground => '#707070',
+					-background => 'white', %style),
 	      obsolete => $w->ItemStyle("imagetext", -foreground => '#707070',
 					-background => 'white', %style),
 	      substituted => $w->ItemStyle("imagetext", -foreground => '#707070',
@@ -205,6 +207,7 @@ sub create_widget {
 	      deleted => $w->ItemStyle("imagetext", -foreground => '#707070',
 				       -background => '#e0e0e0', %style)
 	     },{
+                new => $w->Pixmap(-file => Tk::findINC("ValLex/question.xpm")),
 		obsolete => $w->Pixmap(-file => Tk::findINC("ValLex/stop.xpm")),
 		substituted => $w->Pixmap(-file => Tk::findINC("ValLex/reload.xpm")),
 		reviewed => $w->Pixmap(-file => Tk::findINC("ValLex/ok.xpm")),
