@@ -194,7 +194,7 @@ sub create_widget {
   $w->headerCreate(0,-itemtype=>'text', -text=>'Elements', -underline => 0);
   $top->toplevel->bind('<Alt-e>',sub { $w->focus() });
   return $w, {
-              new => $w->ItemStyle("imagetext", -foreground => '#707070',
+              new => $w->ItemStyle("imagetext", -foreground => '#0000ff',
 					-background => 'white', %style),
 	      obsolete => $w->ItemStyle("imagetext", -foreground => '#707070',
 					-background => 'white', %style),
