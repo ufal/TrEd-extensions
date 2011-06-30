@@ -6,5 +6,6 @@ WWW_TRED="$WWW"/tred
 WWW_EXT=ufal:/home/pajas/WWW/tred/extensions/
 
 for ext ; do
+    ext=${ext%/}
     rsync --exclude='*/.svn*' -avr "$WWW_TRED"/extensions/{$ext.zip,$ext,index.html} "$WWW_EXT"
 done
