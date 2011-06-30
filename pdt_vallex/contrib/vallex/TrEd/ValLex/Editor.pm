@@ -353,6 +353,13 @@ sub create_widget {
 						  );
     $confirmframe_button->pack(qw/-padx 5 -side left/);
 
+    my $markactive_button=$fbutton_frame->Button(-text => 'Mark as Active',
+						   -underline => 2,
+						   -command => [\&markactive_button_pressed,
+								$self]
+						  );
+    $markactive_button->pack(qw/-padx 5 -side left/);
+
     if ($reviewer_can_modify) {
       my $modifyframe_button=$fbutton_frame->Button(-text => 'Modify',
 						    -underline => 4,
@@ -1007,11 +1014,20 @@ sub confirm_button_pressed {
   return if $item eq "";
   my $frame=$fl->infoData($item);
   return unless ref($frame);
-  if ($self->data()->getFrameStatus($frame) eq 'reviewed') {
-    $self->data()->changeFrameStatus($frame,'active','unreview');
-  } else {
-    $self->data()->changeFrameStatus($frame,'reviewed','review');
-  }
+  $self->data()->changeFrameStatus($frame,'reviewed','review');
+  $self->wordlist_item_changed($self->subwidget('wordlist')->widget()->infoAnchor());
+  $self->framelist_item_changed($self->subwidget('framelist')->focus($frame));
+  $self->subwidget('framelist')->widget()->UpDown('next');
+}
+
+sub markactive_button_pressed {
+  my ($self)=@_;
+  my $fl=$self->subwidget('framelist')->widget();
+  my $item=$fl->infoAnchor();
+  return if $item eq "";
+  my $frame=$fl->infoData($item);
+  return unless ref($frame);
+  $self->data()->changeFrameStatus($frame,'active','activate');
   $self->wordlist_item_changed($self->subwidget('wordlist')->widget()->infoAnchor());
   $self->framelist_item_changed($self->subwidget('framelist')->focus($frame));
   $self->subwidget('framelist')->widget()->UpDown('next');
