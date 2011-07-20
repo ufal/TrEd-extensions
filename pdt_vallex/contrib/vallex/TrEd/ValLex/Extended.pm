@@ -2,6 +2,8 @@
 
 package TrEd::ValLex::Extended;
 
+use constant VALID_FRAME => qr/^active$|^reviewed$|^new-(?:complete|form)$/;
+
 sub user_cache {
   $self->[10] = {} unless defined($self->[10]);
   return $self->[10];
@@ -59,16 +61,14 @@ sub word {
 
 sub is_valid_frame {
   my ($self,$frame)=@_;
-  return ($frame->getAttribute('status')=~/^active$|^reviewed$/);
+  return ($frame->getAttribute('status') =~ VALID_FRAME);
 }
 
 sub valid_frames {
   my ($self,$word)=@_;
   return
-    grep { $_->getAttribute('status') eq 'active' or
-    		$_->getAttribute('status') eq 'reviewed'
-    	      }
-    $self->getFrameNodes($word);
+    grep { $_->getAttribute('status') =~ VALID_FRAME }
+      $self->getFrameNodes($word);
 }
 
 sub frame_status {
