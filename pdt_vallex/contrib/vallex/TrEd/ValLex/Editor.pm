@@ -1056,7 +1056,7 @@ sub obsolete_button_pressed {
   my $frame=$fl->infoData($item);
   return unless ref($frame);
   my $status=$self->data()->getFrameStatus($frame);
-  if ($status eq "active" or $status eq "reviewed") {
+  if ($status eq "active" or $status eq "reviewed" or $status =~ /^new-/) {
     $self->data()->changeFrameStatus($frame,'obsolete','obsolete');
     $self->wordlist_item_changed($self->subwidget('wordlist')->widget()->infoAnchor());
     $self->framelist_item_changed($self->subwidget('framelist')->focus($frame));
