@@ -1131,7 +1131,7 @@ sub addFrame {
   $frame->appendChild($elems);
   $self->addFrameLocalHistory($frame,"create");
   $self->set_change_status(1);
-  if ($self->[8]) {
+  if ('HASH' eq ref $self->[8] and %{$self->[8]}) {
       $self->[8]{$new_id} = $frame;
   }
   return $frame;
