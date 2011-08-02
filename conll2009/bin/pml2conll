@@ -51,8 +51,9 @@ sub pml2conll {
   }
 
   do {{
-    my $nodes = SortByOrd([$root->descendants]);
-    unshift @$nodes,$root if $opts{'technical-root'};
+    my $nodes = [$root, $root->descendants];
+    shift @$nodes if $opts{'technical-root'};
+    $nodes = SortByOrd($nodes);
 
     # correct PRED if needed:
     if ($apreds) {
