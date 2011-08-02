@@ -784,7 +784,6 @@ sub substitute_button_pressed {
     $self->subwidget('framelist')->fetch_data($word);
     $self->wordlist_item_changed($self->subwidget('wordlist')->focus($word));
     $self->framelist_item_changed($self->subwidget('framelist')->focus($new));
-    $self->data->_index_by_id;
     return $new;
   } else {
     return undef;

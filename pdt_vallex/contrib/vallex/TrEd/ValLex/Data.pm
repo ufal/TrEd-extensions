@@ -1060,6 +1060,7 @@ sub substituteFrame {
   $subst= $subst eq "" ? $new_id : "$subst $new_id";
   $frame->setAttribute("substituted_with",$subst);
   $self->set_change_status(1);
+  $self->_index_by_id;
   return $new;
 }
 
