@@ -76,5 +76,5 @@ for file ; do
 done
 
 for file ; do
-    $BTRED -qI "$bindir"/pml2conll -o $OPTS -- "$file" >> ${file%$STRIP}$ADD 
+    $BTRED -qI "$bindir"/pml2conll -o -r $OPTS -- "$file" >> ${file%$STRIP}$ADD 
 done
