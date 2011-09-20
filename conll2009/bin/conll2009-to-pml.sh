@@ -111,7 +111,7 @@ while (( $# )) ; do
 	if [ -n "$out_dir" ]; then
 	    out_prefix="$out_dir"/$(basename "$out_prefix")
 	fi
-        "$bin"/conll2pml --feat-columns FEAT,PFEAT -R conll2009 -r -o "$out_prefix" -m $sentences_per_file -c $columns$arglist "$1"
+        "$bin"/conll2pml --feat-columns FEAT,PFEAT -R conll2009 -r -i -o "$out_prefix" -m $sentences_per_file -c $columns$arglist "$1"
         sed -i~ 's%\(<s:member name="apred_1">\)%'"$apreds"'\1%' "${out_prefix}_schema.xml"
         "$btred" -q -S -I "$bin"/args.btred "$out_prefix"_*.pml
 	rm "${out_prefix}_schema.xml"
