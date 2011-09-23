@@ -228,6 +228,10 @@ sub RotateParenthesis{
   $this->{is_parenthesis}=!$this->{is_parenthesis};
 }#RotateParenthesis
 
+sub RotatePersonName {
+  $this->{is_name_of_person} = ! $this->{is_name_of_person};
+} # RotatePersonName
+
 sub EditFunctor{
   ChangingFile(EditAttribute($this,'functor'));
 }#EditFunctor

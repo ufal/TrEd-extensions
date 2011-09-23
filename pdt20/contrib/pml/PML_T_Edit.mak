@@ -22,6 +22,7 @@ package PML_T_Edit;
 #bind RotateGenerated to g menu Change is_generated
 #bind RotateMember to m menu Change is_member
 #bind RotateParenthesis to p menu Change is_parenthesis
+#bind RotatePersonName to " menu Change is_name_of_person
 #bind EditFunctor to f menu Edit Functor
 #bind EditTfa to t menu Edit TFA
 #bind EditTLemma to l menu Edit t_lemma
