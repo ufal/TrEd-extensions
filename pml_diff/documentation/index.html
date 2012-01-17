@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>Simple PML Diff Extension for TrEd</title>
+  </head>
+  <body>
+    <h1>Simple PML Diff Extension for TrEd</h1>
+    <p>
+      This extension provides the basic visual diffing
+      interface. It works only on simple annotation schemas where the
+      relation of tokens to nodes is 1:1 and the #ORDER role is defined.
+    </p>
+
+    <p>The extension is still under development. You have to manually
+    set up several things in order to get it work for your data:
+
+      <ol type=1>
+      <li>Open any pml file
+      <li>Click on Style name, select New From Current
+      <li>Enter diff as Name, click OK
+      <li>Click on the icon before diff, remove the <tt>context:</tt>
+        line, click OK
+      <li>Close TrEd
+    </ol>
+
+    <p>Now, you should be able to run the diff just by
+
+<pre>tred -t PML_Diff -s diff -p2 file1.pml file2.pml</pre>
+
+    <p>
+      Use arrow icons to browse the trees (both files should advance
+      simultaneously). Press <keyb>=</keyb> to view diff for the
+      current trees.  Press <keyb>Ctrl + =</keyb> to configure the
+      attributes to compare.  Use <keyb>Alt + =</keyb> to run diff on
+      the whole file. Use <keyb>Ctrl + Shift + =</keyb> to view some
+      statistics.
+    </p>
+
+  </body>
+</html>
