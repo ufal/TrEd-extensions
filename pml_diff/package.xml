@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="0">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="16599">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pml_diff</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
   <title>Simple PML Diff</title>
-  <version>0.1</version>
+  <version>0.2</version>
   <copyright year="2010">Jan Štěpánek</copyright>
   <description>This package provides the basic visual diffing
   interface. It works only on simple annotation schemas where the
