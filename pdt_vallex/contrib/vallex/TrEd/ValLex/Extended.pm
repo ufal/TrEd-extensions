@@ -165,7 +165,7 @@ sub element_frame {
 
 sub word_lemma {
   my ($self,$word) = @_;
-  return $word->getAttribute("lemma");
+  return $word->getAttribute('lemma');
 }
 
 sub remove_node {
@@ -206,6 +206,7 @@ sub serialize_element {
   my ($self,$element)=@_;
   if ($element->nodeName eq 'element') {
     my $functor = $element->getAttribute ("functor");
+    $functor .= '%' if $element->getAttribute('rare') == 1;
     my $type = $element->getAttribute("type");
     my $forms = $self->serialize_forms($element);
     return ($type eq "oblig" ? "" : "?")."$functor($forms)";
@@ -228,11 +229,14 @@ sub serialize_frame {
   foreach my $element (grep { !$self->isOblig($_) } @element_nodes) {
     push @elements,$self->serialize_element($element);
   }
+  my $ret;
   if (@elements) {
-    return join("  ", @elements);
+      $ret =  join('  ', @elements);
   } else {
-    return "EMPTY";
+      $ret = 'EMPTY';
   }
+  $ret .= ' %' if $frame->getAttribute('rare') == 1;
+  return $ret;
 }
 
 sub serialize_forms {

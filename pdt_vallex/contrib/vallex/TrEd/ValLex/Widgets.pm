@@ -450,7 +450,7 @@ sub create_widget {
   $top->toplevel->bind('<Alt-r>',sub { print STDERR "Alt-r\n"; $e->focus() });
 
   ## Word List
-  my $w = $frame->Scrolled(qw/HList -columns 3 -background white
+  my $w = $frame->Scrolled(qw/HList -columns 4 -background white
                               -selectmode browse
                               -scrollbars osoe
                               -header 1
@@ -540,22 +540,27 @@ sub fetch_data {
   $t->headerCreate(0,-itemtype=>'text', -text=>' ');
   $t->headerCreate(1,-itemtype=>'text', -text=>' ');
   $t->headerCreate(2,-itemtype=>'text', -text=>'lemma');
+  $t->headerCreate(3,-itemtype=>'text', -text=>' ');
   $t->columnWidth(0,'');
   $t->columnWidth(1,'');
   $t->columnWidth(2,'');
+  $t->columnWidth(3,'');
 
   foreach my $entry ($self->data()->getWordSubList
 		     ($word,$self->max_surrounding(),$self->pos_filter)) {
-    $e= $t->addchild("",-data => $entry->[0]);
-    $t->itemCreate($e, 0, -itemtype=>'text',
-		   -text=> ($entry->[4] ? "*" : ""),
-		   -style => $self->style());
-    $t->itemCreate($e, 1, -itemtype=>'text',
+    $e = $t->addchild(q'', -data => $entry->[0]);
+    $t->itemCreate($e, 0, -itemtype => 'text',
+		   -text  => ($entry->[4] ? '*' : q''),
+		   -style => $self->style);
+    $t->itemCreate($e, 1, -itemtype => 'text',
 		   -text=> $entry->[3],
-		   -style => $self->style());
-    $t->itemCreate($e, 2, -itemtype=>'text',
+		   -style => $self->style);
+    $t->itemCreate($e, 2, -itemtype => 'text',
 		   -text=> $entry->[2],
-		   -style => $self->style());
+		   -style => $self->style);
+    $t->itemCreate($e, 3, -itemtype => 'text',
+                   -text => ('%' x $entry->[5]),
+                   -style =>  $self->style);
   }
 }
 

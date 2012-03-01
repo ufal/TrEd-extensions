@@ -284,6 +284,15 @@ Return only results whose POS matches $posfilter.
 
 =cut
 
+sub _getWordToList {
+    my ($self, $word) = @_;
+    my $id        = $self->conv->decode($word->getAttribute('id'));
+    my $lemma     = $self->conv->decode($word->getAttribute('lemma'));
+    my $reviewed  = $self->wordReviewed($word);
+    my $rare      = $self->conv->decode($word->getAttribute('rare'));
+    return $id, $lemma, $reviewed, $rare;
+}
+
 sub getWordSubList {
   my ($self,$item,$slen,$posfilter)=@_;
   $posfilter=~s/\*/ANVD/;
@@ -326,10 +335,8 @@ sub getWordSubList {
   while ($word and $i<$before) {
     my $pos = $self->conv()->decode($word->getAttribute ("POS"));
     if (index(uc($posfilter),uc($pos))>=0) {
-      my $id = $self->conv()->decode($word->getAttribute ("id"));
-      my $lemma = $self->conv()->decode($word->getAttribute ("lemma"));
-      my $reviewed = $self->wordReviewed($word);
-      unshift @words, [$word,$id,$lemma,$pos,$reviewed];
+      my ($id, $lemma, $reviewed, $rare) = _getWordToList($self, $word);
+      unshift @words, [$word, $id, $lemma, $pos, $reviewed, $rare];
       $i++;
     }
     $word=$word->findPreviousSibling('word');
@@ -339,12 +346,10 @@ sub getWordSubList {
   $i=0;
   $word=$milestone->findNextSibling('word');
   while ($word and $word->nodeName eq 'word' and $i<$after) {
-    my $pos = $self->conv()->decode($word->getAttribute ("POS"));
+    my $pos = $self->conv->decode($word->getAttribute("POS"));
     if (index(uc($posfilter),uc($pos))>=0) {
-      my $id = $self->conv()->decode($word->getAttribute ("id"));
-      my $lemma = $self->conv()->decode($word->getAttribute ("lemma"));
-      my $reviewed = $self->wordReviewed($word);
-      push @words, [$word,$id,$lemma,$pos,$reviewed];
+      my ($id, $lemma, $reviewed, $rare) = _getWordToList($self, $word);
+      push @words, [$word, $id, $lemma, $pos, $reviewed, $rare];
       $i++;
     }
     $word=$word->findNextSibling('word');
@@ -487,11 +492,12 @@ sub getNormalFrameList {
 
 sub getOneFrameElementString {
   my ($self,$element)=@_;
-  my $functor = $self->conv->decode($element->getAttribute ("functor"));
-  $functor = '' if $functor eq '---';
-  my $type = $self->conv->decode($element->getAttribute("type"));
+  my $functor = $self->conv->decode($element->getAttribute('functor'));
+  $functor = q'' if $functor eq '---';
+  $functor .= '%' if $self->conv->decode($element->getAttribute('rare')) == 1;
+  my $type = $self->conv->decode($element->getAttribute('type'));
   my $forms = $self->getFrameElementFormsString($element);
-  return ($type eq "oblig" ? "" : "?")."$functor($forms)";
+  return ($type eq "oblig" ? q'' : '?') . "$functor($forms)"
 }
 
 sub getFrameElementAndAlternationString {
@@ -517,11 +523,14 @@ sub getFrameElementString {
   foreach my $element (grep { !$self->isOblig($_) } @element_nodes) {
     push @elements,$self->getFrameElementAndAlternationString($element);
   }
+  my $return;
   if (@elements) {
-    return join("  ", @elements);
+    $return = join('  ', @elements);
   } else {
-    return "EMPTY";
+    $return = 'EMPTY';
   }
+  $return .= ' %' if $frame->getAttribute('rare') == 1;
+  return $return;
 }
 
 sub getFirstWordNode {
@@ -555,6 +564,7 @@ sub serializeFormNodes {
       $ret .= serializeForm($element);
     }
   }
+  $ret .= '%' if $node->getAttribute('rare') == 1;
   return $ret;
 }
 
@@ -726,90 +736,112 @@ sub parseFormPart {
 }
 
 sub parseSerializedFrame {
-  my ($self, $elements, $dom)=@_;
-  $elements = expandFormAbbrevs($self->conv->encode($elements));
-  return 1 if ($elements=~/^\s*EMPTY\s*$/);
-  my $func = '|ACT|PAT|ADDR|EFF|ORIG|ACMP|ADVS|AIM|APP|APPS|AUTH|ATT|BEN|CAUS|CNCS|COMPL|COND|CONJ|CONFR|CONTRA|CONTRD|CPR|CRIT|CSQ|CTERF|DENOM|DES|DIFF|DIR1|DIR2|DIR3|DISJ|CPHR|DPHR|ETHD|EXT|FPHR|GRAD|HER|ID|INTF|INTT|LOC|MANN|MAT|MEANS|MOD|NA|NORM|OPER|PAR|PARTL|PN|PREC|PRED|REAS|REG|RESL|RESTR|RHEM|RSTR|SUBS|TFHL|TFRWH|THL|THO|TOWH|TPAR|TSIN|TTILL|TWHEN|VOC|VOCAT';
-  my @members = grep { $_ ne "" } split /\s+/,$elements;
-  unless (@members) {
-    warn "No members in $elements\n";
-    return undef;
-  }
-  my ($eldom,$formdom);
-  foreach my $member (@members) {
-    if ($member=~/^\||\|$/) {
-      warn "Invalid member alternation '$member'\n";
-      return undef;
-    }
-    my @alternations;
-    foreach (split /\|/,$member) {
-      if (/^(\?)?($func)\(([^)]*)\)$/) {
-	push @alternations,[$1,$2,$3];
-      } else {
-	warn "Invalid element '$_'\n";
-	return undef;
-      }
-    }
-    # don't allow alternating word-form () and FUNC()
-    # don't allow non-obligatory members in alternations
-    if (@alternations>1 and (grep { $_->[1] eq "" } @alternations or
-			     grep { $_->[0] eq "?" } @alternations)) {
-      warn "Invalid member alternation '$member'\n";
-    }
-    my $newdom = $dom;
-    if ($dom and (@alternations>1)) {
-      $newdom = $self->doc()->createElement('element_alternation');
-      $dom->appendChild($newdom);
-    }
-    foreach my $frame_element (@alternations) {
-      my ($type,$functor,$forms) = @$frame_element;
-      $functor = '---' if $functor eq "";
-      if ($dom) {
-	$eldom = $self->doc()->createElement('element');
-	$newdom->appendChild($eldom);
-	$eldom->setAttribute('functor',$functor);
-	$eldom->setAttribute('type',$type eq "?" ? 'non-oblig' : 'oblig');
-      }
-      my @forms = $forms=~m/\G((?:\\.|[^\\;]+)+)(?:;|$)/g;
-      return undef unless $forms eq join(";",@forms);
-      foreach my $form (@forms) {
-	if ($dom) {
-	  $formdom = $self->doc()->createElement('form');
-	  $eldom->appendChild($formdom);
-	}
-	unless ($form=~/^\&/) {
-	  do {{
-	    $form = eval { $self->parseFormPart($form,0,$formdom) };
-	    if ($@) {
-	      warn $@;
-	      return undef;
-	    }
-	  }} while ($form =~ s/^,//);
-	}
-	if ($form =~ s/^\&//) {
-	  $formdom->appendChild($self->doc()->createElement('parentpos')) if $dom;
-	  if ($form ne "") {
-	    do {{
-	      $form = eval { $self->parseFormPart($form,0,$formdom) };
-	      if ($@) {
-		warn $@;
-		return undef;
-	      }
-	    }} while ($form =~ s/^,//);
-	  }
-	}
+    my ($self, $elements, $dom) = @_;
+    $elements = expandFormAbbrevs($self->conv->encode($elements));
+    return 1 if $elements =~ /^\s*EMPTY\s*$/;
+    my $func = join '|', q'', qw/ACT PAT ADDR EFF ORIG ACMP ADVS AIM
+                                 APP APPS AUTH ATT BEN CAUS CNCS COMPL
+                                 COND CONJ CONFR CONTRA CONTRD CPR
+                                 CRIT CSQ CTERF DENOM DES DIFF DIR1
+                                 DIR2 DIR3 DISJ CPHR DPHR ETHD EXT
+                                 FPHR GRAD HER ID INTF INTT LOC MANN
+                                 MAT MEANS MOD NA NORM OPER PAR PARTL
+                                 PN PREC PRED REAS REG RESL RESTR RHEM
+                                 RSTR SUBS TFHL TFRWH THL THO TOWH
+                                 TPAR TSIN TTILL TWHEN VOC VOCAT/;
 
-	if ($form ne "") {
-	  warn "Unexpected tokens near '$form'\n";
-	  return undef;
-	}
-      }
+    my $rare_frame;
+    $elements =~ s/%$//;  # rare frame
+    $elements =~ s/\s+%/%/g;
+    my @members = grep { $_ ne "" } split /\s+/, $elements;
+    unless (@members) {
+        warn "No members in $elements\n";
+        return undef;
     }
-  }
-  if ($dom) {
-    print $dom->toString();
-  }
-  return 1;
+    my ($eldom, $formdom);
+    foreach my $member (@members) {
+        if ($member =~ /^\||\|$/) {
+            warn "Invalid member alternation '$member'\n";
+            return undef;
+        }
+        my @alternations;
+        foreach (split /\|/, $member) {
+            if (/^(\?)?((?:$func)%?)\(([^)]*)\)$/) {
+                push @alternations, [$1, $2, $3];
+            } else {
+                warn "Invalid element '$_'\n";
+                return undef;
+            }
+        }
+        # don't allow alternating word-form () and FUNC()
+        # don't allow non-obligatory members in alternations
+        if (@alternations > 1 and (grep { $_->[1] eq q'' } @alternations
+                                   or grep { $_->[0] eq "?" } @alternations)) {
+            warn "Invalid member alternation '$member'\n";
+        }
+        my $newdom = $dom;
+        if ($dom and (@alternations > 1)) {
+            $newdom = $self->doc->createElement('element_alternation');
+            $dom->appendChild($newdom);
+        }
+        foreach my $frame_element (@alternations) {
+            my ($type, $functor, $forms) = @$frame_element;
+            $functor = '---' if $functor eq q'';
+            my $rare_func;
+            if ($functor =~ s/%$//) {
+                $rare_func = 1;
+            }
+            if ($dom) {
+                $eldom = $self->doc->createElement('element');
+                $newdom->appendChild($eldom);
+                $eldom->setAttribute(functor => $functor);
+                $eldom->setAttribute('type', $type eq "?" ? 'non-oblig'
+                                                          : 'oblig');
+                $eldom->setAttribute(rare => 1) if $rare_func;
+            }
+            my @forms = $forms =~ /\G((?:\\.|[^\\;]+)+)(?:;|$)/g;
+            return undef unless $forms eq join(';', @forms);
+            foreach my $form (@forms) {
+                my $rare_form;
+                if ($form =~ s/%$//) {
+                    $rare_form = 1;
+                }
+                if ($dom) {
+                    $formdom = $self->doc->createElement('form');
+                    $formdom->setAttribute(rare => 1) if $rare_form;
+                    $eldom->appendChild($formdom);
+                }
+                unless ($form =~ /^\&/) {
+                    do {{
+                        eval {
+                            $form = $self->parseFormPart($form, 0, $formdom);
+                            1;
+                        } or warn($@), return undef;
+                    }} while ($form =~ s/^,//);
+                }
+                if ($form =~ s/^\&//) {
+                    $formdom->appendChild($self->doc->createElement('parentpos')) if $dom;
+                    if ($form ne q'') {
+                        do {{
+                            eval {
+                                $form = $self->parseFormPart($form, 0, $formdom);
+                                1;
+                            } or warn($@), return undef;
+                        }} while ($form =~ s/^,//);
+                    }
+                }
+
+                if ($form ne q'') {
+                    warn "Unexpected tokens near '$form'\n";
+                    return undef;
+                }
+            }
+        }
+    }
+    if ($dom) {
+        print $dom->toString();
+    }
+    return 1;
 }
 
 sub getFrameElementFormsString {
@@ -969,6 +1001,8 @@ sub generateNewWordId {
 
 sub addWord {
   my ($self,$lemma,$pos)=@_;
+  my $rare_word;
+  $rare_word++ while $lemma =~ s/ *%$//;
   return unless $lemma ne "";
   my $new_id = $self->generateNewWordId($lemma,$pos);
   return unless defined($new_id);
@@ -997,9 +1031,10 @@ sub addWord {
     print "append\n";
     $body->appendChild($word);
   }
-  $word->setAttribute("lemma",$self->conv->encode($lemma));
-  $word->setAttribute("POS",$pos);
-  $word->setAttribute("id",$new_id);
+  $word->setAttribute(lemma => $self->conv->encode($lemma));
+  $word->setAttribute(POS   => $pos);
+  $word->setAttribute(id    => $new_id);
+  $word->setAttribute(rare  => $rare_word) if $rare_word;
 
   my $valency_frames=$doc->createElement("valency_frames");
   $word->appendChild($valency_frames);
@@ -1017,7 +1052,8 @@ sub getPOS {
 sub getLemma {
   my ($self,$word)=@_;
   return unless ref($word);
-  return $self->conv->decode($word->getAttribute("lemma"));
+  return $self->conv->decode($word->getAttribute('lemma'))
+    . ('%' x $self->conv->decode($word->getAttribute('rare')));
 }
 
 sub addFrameLocalHistory {
@@ -1107,8 +1143,9 @@ sub addFrame {
   } else {
     $valency_frames->appendChild($frame);
   }
-  $frame->setAttribute("id",$new_id);
-  $frame->setAttribute("status","active");
+  $frame->setAttribute(id     => $new_id);
+  $frame->setAttribute(status => 'active');
+  $frame->setAttribute(rare   => 1) if '%' eq substr $elements, -1;
 
   my $ex=$doc->createElement("example");
   $frame->appendChild($ex);
