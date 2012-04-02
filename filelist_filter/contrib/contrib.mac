@@ -278,7 +278,13 @@ sub create_filelist_filter {
       # tilda is used in a special way in menu, we must repair it:
       $o->menu->entryconfigure($_,-underline=>-1, -label=>$opts[$_]) for 0..$#opts;
       my $e = $f->Entry(-textvariable=>\$filter[$c]{value})->pack(-expand => 1, -fill => 'x',-side=>'left');
-      $f->Button(-text=>'x',-command=>sub{ $f->packForget(); $f->destroy })->pack(-side=>'left') if $c>0;
+      $f->Button(-text => 'x',
+                 -command => sub {
+                     splice @filter, $c, 1, ();
+                     $f->packForget();
+                     $f->destroy;
+                 }
+                )->pack(-side => 'left') if $c > 0;
       $e->focus if ($c == 0);
     };
     my $count = scalar(@filter)||1;
@@ -340,6 +346,8 @@ sub create_filelist_filter {
 	print "Continuing\n";
 	next;
       }
+      my $top = ToplevelFrame();
+      $top->Busy;
       while ($line = get_line($fh,$input_type)) {
 	chomp $line;
 	@cols = split(/\t/,$line);
@@ -360,6 +368,7 @@ sub create_filelist_filter {
 	next unless
 	  QuestionQuery("No match","No rows match the given filter!","Change filter","Cancel") eq "Cancel";
       }
+      $top->Unbusy;
       last;
     }
     $d->destroy;
