@@ -529,7 +529,8 @@ sub getFrameElementString {
   } else {
     $return = 'EMPTY';
   }
-  $return .= ' %' if $frame->getAttribute('rare') == 1;
+  my $rare = $frame->getAttribute('rare');
+  $return .= ' ' . ('%' x $rare) if $rare;
   return $return;
 }
 
@@ -564,7 +565,8 @@ sub serializeFormNodes {
       $ret .= serializeForm($element);
     }
   }
-  $ret .= '%' if $node->getAttribute('rare') == 1;
+  my $rare = $node->getAttribute('rare');
+  $ret .= '%' x $rare if $rare;
   return $ret;
 }
 
@@ -751,7 +753,7 @@ sub parseSerializedFrame {
                                  TPAR TSIN TTILL TWHEN VOC VOCAT/;
 
     my $rare_frame;
-    $elements =~ s/%$//;  # rare frame
+    $elements =~ s/%+$//;  # rare frame
     $elements =~ s/\s+%/%/g;
     my @members = grep { $_ ne "" } split /\s+/, $elements;
     unless (@members) {
@@ -803,12 +805,12 @@ sub parseSerializedFrame {
             return undef unless $forms eq join(';', @forms);
             foreach my $form (@forms) {
                 my $rare_form;
-                if ($form =~ s/%$//) {
-                    $rare_form = 1;
+                if ($form =~ s/(%+)$//) {
+                    $rare_form = length $1;
                 }
                 if ($dom) {
                     $formdom = $self->doc->createElement('form');
-                    $formdom->setAttribute(rare => 1) if $rare_form;
+                    $formdom->setAttribute(rare => $rare_form) if $rare_form;
                     $eldom->appendChild($formdom);
                 }
                 unless ($form =~ /^\&/) {
@@ -1002,7 +1004,8 @@ sub generateNewWordId {
 sub addWord {
   my ($self,$lemma,$pos)=@_;
   my $rare_word;
-  $rare_word++ while $lemma =~ s/ *%$//;
+  my $simple_lemma = $lemma;
+  $rare_word++ while $simple_lemma =~ s/ *%$//;
   return unless $lemma ne "";
   my $new_id = $self->generateNewWordId($lemma,$pos);
   return unless defined($new_id);
@@ -1025,13 +1028,11 @@ sub addWord {
   }
   my $word=$doc->createElement("word");
   if ($n) {
-    print "insert before\n";
     $body->insertBefore($word,$n);
   } else {
-    print "append\n";
     $body->appendChild($word);
   }
-  $word->setAttribute(lemma => $self->conv->encode($lemma));
+  $word->setAttribute(lemma => $self->conv->encode($simple_lemma));
   $word->setAttribute(POS   => $pos);
   $word->setAttribute(id    => $new_id);
   $word->setAttribute(rare  => $rare_word) if $rare_word;
@@ -1039,7 +1040,6 @@ sub addWord {
   my $valency_frames=$doc->createElement("valency_frames");
   $word->appendChild($valency_frames);
   $self->set_change_status(1);
-  print "Added $word\n";
   return $word;
 }
 
@@ -1145,7 +1145,7 @@ sub addFrame {
   }
   $frame->setAttribute(id     => $new_id);
   $frame->setAttribute(status => 'active');
-  $frame->setAttribute(rare   => 1) if '%' eq substr $elements, -1;
+  $frame->setAttribute(rare   => length $1) if $elements =~ /(%+)$/;
 
   my $ex=$doc->createElement("example");
   $frame->appendChild($ex);

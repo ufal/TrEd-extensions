@@ -235,7 +235,8 @@ sub serialize_frame {
   } else {
       $ret = 'EMPTY';
   }
-  $ret .= ' %' if $frame->getAttribute('rare') == 1;
+  my $rare = $frame->getAttribute('rare');
+  $ret .= ' ' . ('%' x $rare) if $rare;
   return $ret;
 }
 
