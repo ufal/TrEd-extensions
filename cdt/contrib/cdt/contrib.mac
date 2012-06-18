@@ -1,0 +1,66 @@
+# -*- mode: cperl; encoding: utf-8 -*-
+
+#ifndef cdt
+#define cdt
+
+{
+package CDT;
+BEGIN { import TredMacro; }
+
+use utf8;
+
+#binding-context CDT
+#include <contrib/treex/Treex_mode.inc>
+
+sub node_release_hook {
+    my ($node, $target, $mod) = @_;
+    return $tredview->node_release_hook(@_) unless $mod;
+    my @zones = map $_->get_zone, $node, $target;
+    return 'stop' if $zones[0] != $zones[1];
+    my $types;
+
+    if ('Control' eq $mod) {
+        $types = [qw{coref ref coref-var coref-iden coref-res
+                   CONJ:elab assoc-const *coref CONJ:add/(og)
+                   +CONJ:elab +SCENE assoc-telic +CONJ:add/(og) +CONJ
+                   pnct# assoc-loc ²pnct CONJ:elab/ATTR coref*
+                }];
+
+    } elsif ('Alt' eq $mod) {
+        $types = [qw{{arg} {loc} {patient} {agent} {source} {other}
+                     {time} {goal}# {const} {about} {quant} {goal}
+                     {apart} {arg}# {poss} {patient}# {const}#
+                     {about}# {form} {experiencer}
+                }];
+
+    } elsif ('Shift' eq $mod) {
+        $types = [qw{[subj] [dobj] *[subj] [nobj] [expl] [*subj] [mod]
+                     [pred] [man] [preds] [pobj] [subj]¹ [subj]*
+                     *[subj]¹ [iobj] [aobj] ¹[subj] $*[subj] [other]
+                     [@loc]
+                }];
+    }
+
+    my $type = ListQuery('Select the relation type',
+                         'browse',
+                         $types,
+                         undef,
+                        );
+    return unless $type;
+
+    ChangingFile(1);
+    $type = $types->[$type->[0]];
+    if ($node->is_aligned_to($target, qr{\Q$type})) {
+        $node->delete_aligned_node($target, $type);
+    } else {
+        $node->add_aligned_node($target, $type);
+    }
+    TredMacro::Redraw();
+}
+
+1;
+
+
+}
+
+#endif cdt
