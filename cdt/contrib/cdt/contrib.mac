@@ -8,54 +8,82 @@ package CDT;
 BEGIN { import TredMacro; }
 
 use utf8;
-
 #binding-context CDT
 #include <contrib/treex/Treex_mode.inc>
+
+my $arrow_types = { 1 => [qw{coref ref coref-var coref-iden coref-res
+                           CONJ:elab assoc-const *coref CONJ:add/(og)
+                           +CONJ:elab +SCENE assoc-telic
+                           +CONJ:add/(og) +CONJ pnct# assoc-loc ²pnct
+                           CONJ:elab/ATTR coref*
+                        }],
+                    2 => [qw{{arg} {loc} {patient} {agent} {source}
+                             {other} {time} {goal}# {const} {about}
+                             {quant} {goal} {apart} {arg}# {poss}
+                             {patient}# {const}# {about}# {form}
+                             {experiencer}
+                        }],
+                    3 => [qw{[subj] [dobj] *[subj] [nobj] [expl]
+                             [*subj] [mod] [pred] [man] [preds]
+                             [pobj] [subj]¹ [subj]* *[subj]¹ [iobj]
+                             [aobj] ¹[subj] $*[subj] [other] [@loc]
+                        }]
+                  };
+
+sub create_arrow {
+    my ($source, $target, $arrow_type) = @_;
+    return if $source == $target; # no loops
+    return unless exists $arrow_types->{$arrow_type};
+    my $type = ListQuery('Select the relation type',
+                         'browse',
+                         $arrow_types->{$arrow_type},
+                         undef,
+                        );
+
+    return unless $type;
+
+    ChangingFile(1);
+    $type = $arrow_types->{$arrow_type}->[$type->[0]];
+    if ($source->is_aligned_to($target, qr{\Q$type})) {
+        $source->delete_aligned_node($target, $type);
+    } else {
+        $source->add_aligned_node($target, $type);
+    }
+    TredMacro::Redraw();
+}
 
 sub node_release_hook {
     my ($node, $target, $mod) = @_;
     return $tredview->node_release_hook(@_) unless $mod;
     my @zones = map $_->get_zone, $node, $target;
     return 'stop' if $zones[0] != $zones[1];
-    my $types;
+    my $mods = {Control => 1,
+                Alt     => 2,
+                Shift   => 3};
+    create_arrow($node, $target, $mods->{$mod});
+}
 
-    if ('Control' eq $mod) {
-        $types = [qw{coref ref coref-var coref-iden coref-res
-                   CONJ:elab assoc-const *coref CONJ:add/(og)
-                   +CONJ:elab +SCENE assoc-telic +CONJ:add/(og) +CONJ
-                   pnct# assoc-loc ²pnct CONJ:elab/ATTR coref*
-                }];
+my $marked_for_arrow;
+sub MarkForArrow {
+    ChangingFile(0);
+    $marked_for_arrow = $this;
+}
 
-    } elsif ('Alt' eq $mod) {
-        $types = [qw{{arg} {loc} {patient} {agent} {source} {other}
-                     {time} {goal}# {const} {about} {quant} {goal}
-                     {apart} {arg}# {poss} {patient}# {const}#
-                     {about}# {form} {experiencer}
-                }];
+sub DrawArrow {
+    return unless $marked_for_arrow;
+    create_arrow($this, $marked_for_arrow, $_[0]);
+}
 
-    } elsif ('Shift' eq $mod) {
-        $types = [qw{[subj] [dobj] *[subj] [nobj] [expl] [*subj] [mod]
-                     [pred] [man] [preds] [pobj] [subj]¹ [subj]*
-                     *[subj]¹ [iobj] [aobj] ¹[subj] $*[subj] [other]
-                     [@loc]
-                }];
-    }
 
-    my $type = ListQuery('Select the relation type',
-                         'browse',
-                         $types,
-                         undef,
-                        );
-    return unless $type;
-
-    ChangingFile(1);
-    $type = $types->[$type->[0]];
-    if ($node->is_aligned_to($target, qr{\Q$type})) {
-        $node->delete_aligned_node($target, $type);
-    } else {
-        $node->add_aligned_node($target, $type);
-    }
-    TredMacro::Redraw();
+Bind('MarkForArrow' => { key => 'k',
+                         menu => 'Mark for arrow'});
+my %arrow_bindings = ('Ctrl+k' => 1,
+                      'Alt+k'     => 2,
+                      K           => 3);
+for my $key (keys %arrow_bindings) {
+    Bind(sub {DrawArrow($arrow_bindings{$key})}
+         => { key  => $key,
+              menu => "Draw arrow type $arrow_bindings{$key}"});
 }
 
 1;
