@@ -70,7 +70,9 @@ sub MarkForArrow {
 }
 
 sub DrawArrow {
+    ChangingFile(0);
     return unless $marked_for_arrow;
+    return if $this->language ne $marked_for_arrow->language;
     create_arrow($this, $marked_for_arrow, $_[0]);
 }
 
