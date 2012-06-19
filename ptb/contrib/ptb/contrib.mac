@@ -43,11 +43,36 @@ sub switch_context_hook {
 }
 
 # prevent re-ordering by the order attribute (nonterminals are not ordered)
+# Taken from tiger/contrib.mac
 sub get_nodelist_hook {
-  my ($fsfile,$tree_no,$current,$showHidden)=@_;
-  my $tree = $fsfile && $fsfile->tree($tree_no)
-    or return;
-  return [[ $tree->descendants ], $current];
+    my ($fsfile, $tree_no, $current, $showHidden) = @_;
+    my $tree = $fsfile->tree($tree_no);
+    my @nodes = $tree->descendants;
+    my @terminals =
+        sort { $a->{order} <=> $b->{order} }
+        grep { $_->{'#name'} eq 'terminal' } @nodes;
+
+    my %order;
+    @order{@terminals} = (0 .. $#terminals);
+    my @nonterminals = grep { $_->{'#name'} eq 'nonterminal' } @nodes;
+
+    my %span;
+    for my $node ($tree, reverse @nodes) {
+        next unless $node->parent;
+        my $is_terminal = $node->{'#name'} eq 'terminal' ? 1 : 0;
+        if (! $is_terminal ) {
+            $order{$node} = ($order{$span{$node}[1]}
+                             + $order{$span{$node}[0]}) / 2;
+        }
+        if (! $node->lbrother) {
+            $span{$node->parent}[0] = $node; #$is_terminal ? $node : $span{$node}[0]
+    }
+        if (! $node->rbrother) {
+            $span{$node->parent}[1] = $node; #$is_terminal ? $node : $span{$node}[1]
+        }
+    }
+
+    return [[sort { $order{$a} <=> $order{$b} } ($tree, @nodes)], $current];
 }
 
 
