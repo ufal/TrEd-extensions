@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
+  <description>Generated schema for converted MRG PTB Data</description>
+  <import schema="pennmrg_schema.xml"/>
+
+  <type name="postag.type">
+    <choice>
+      <value>CC</value>
+      <value>CD</value>
+      <value>DT</value>
+      <value>EX</value>
+      <value>IN</value>
+      <value>JJ</value>
+      <value>JJR</value>
+      <value>JJS</value>
+      <value>MD</value>
+      <value>NN</value>
+      <value>NNP</value>
+      <value>NNPS</value>
+      <value>NNS</value>
+      <value>PDT</value>
+      <value>POS</value>
+      <value>PRP</value>
+      <value>RB</value>
+      <value>RBR</value>
+      <value>RBS</value>
+      <value>RP</value>
+      <value>SYM</value>
+      <value>TO</value>
+      <value>UH</value>
+      <value>VB</value>
+      <value>VBD</value>
+      <value>VBG</value>
+      <value>VBN</value>
+      <value>VBP</value>
+      <value>VBZ</value>
+      <value>WDT</value>
+      <value>WP</value>
+      <value>WRB</value>
+      <value>XXX</value>
+    </choice>
+  </type>
+  <type name="cat.type">
+    <choice>
+      <value>ADJP</value>
+      <value>ADVP</value>
+      <value>FRAG</value>
+      <value>INTJ</value>
+      <value>NP</value>
+      <value>NX</value>
+      <value>PP</value>
+      <value>PRT</value>
+      <value>QP</value>
+      <value>S</value>
+      <value>SBAR</value>
+      <value>SBARQ</value>
+      <value>SQ</value>
+      <value>VP</value>
+      <value>WHADJP</value>
+      <value>WHADVP</value>
+      <value>WHNP</value>
+      <value>X</value>
+    </choice>
+  </type>
+  <type name="function.type">
+    <choice>
+      <value>CLR</value>
+      <value>DIR</value>
+      <value>LGS</value>
+      <value>LOC</value>
+      <value>NOM</value>
+      <value>PRD</value>
+      <value>SBJ</value>
+      <value>TMP</value>
+      <value>TPC</value>
+    </choice>
+  </type>
+</pml_schema>
