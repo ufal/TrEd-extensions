@@ -88,6 +88,38 @@ for my $key (keys %arrow_bindings) {
               menu => "Draw arrow type $arrow_bindings{$key}"});
 }
 
+
+my @deprels = qw{ nobj pnct subj vobj attr dobj pobj mod conj coord
+                  preds time possd namef quant neg relr loc man other
+                  rel qobj @loc @dir eval pobj.dobj add expl appa appr
+                  cause scene goal avobj part robj iobj cond focal
+                  title prg aobj xpl name inst epi accom lobj nobj#
+                  pobj.subj iter cons conc contr @time list pobj.pobj
+                  exem resem elab attr# pobj# relpa namel agent predo
+                  modp xtop relelab correl tobj numm fpreds dir event
+                  discmark source voc ¹vobj ¹nobj fpredo err gobj +
+                  possr attrr# concom nobj.dobj ¹pnct aobj.dobj obl
+                  avobj# gobj.dobj attrg numa ¹cause other# aobj.subj
+                  ¹conj pnct² nobj³ nobj² mods vobj¹ ¹pobj gobj.subj
+                  const pobj.iobj pnct?  nobj.subj
+            };
+sub SetDeprel {
+    ChangingFile(0);
+    return unless $this->get_parent;
+    my $deprel = ListQuery('Select the relation type',
+                         'browse',
+                         [@deprels],
+                         undef,
+                        );
+    return unless $deprel;
+    $this->set_attr('conll/deprel', $deprels[ $deprel->[0] ]);
+    ChangingFile(1);
+    recompute_visualization();
+}
+
+Bind( \&SetDeprel => { key => 'd',
+                       menu => 'Set deprel'});
+
 1;
 
 
