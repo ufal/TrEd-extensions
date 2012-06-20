@@ -11,23 +11,20 @@ use utf8;
 #binding-context CDT
 #include <contrib/treex/Treex_mode.inc>
 
-my $arrow_types = { discourse => [qw{AGENTIVE AGENTIVE:expl
-                                         AGENTIVE:reas AGENTIVE:sbj TELIC
-                                         TELIC:goal TELIC:cons.dir
-                                         TELIC:cons.sbj CONST CONST:exem
-                                         CONST:apart CONST:rest FORMAL
-                                         FORMAL:descr FORMAL:eval CONC COND
-                                         TIME TIME:cont TIME:pre TIME:post
-                                         CONJ CONJ:add CONJ:elab CONJ:seq
-                                         CONTR CONTR:dir CONTR:sbj DISJ
-                                         DISJ:dir DISJ:sbj
+my $arrow_types = { discourse => [qw{AGENTIVE AGENTIVE:expl AGENTIVE:reas
+                                   AGENTIVE:sbj TELIC TELIC:goal
+                                   TELIC:cons.dir TELIC:cons.sbj CONST
+                                   CONST:exem CONST:apart CONST:rest FORMAL
+                                   FORMAL:descr FORMAL:eval CONC COND TIME
+                                   TIME:cont TIME:pre TIME:post CONJ CONJ:add
+                                   CONJ:elab CONJ:seq CONTR CONTR:dir
+                                   CONTR:sbj DISJ DISJ:dir DISJ:sbj
 
-                                         QUEST ANSW DIREC EXPR INTACT
-                                         INTACT:start INTACT:attn INTACT:inter
-                                         INTACT:stop CONSOL CONSOL:source
-                                         CONSOL:inst CONSOL:motiv
+                                   QUEST ANSW DIREC EXPR INTACT INTACT:start
+                                   INTACT:attn INTACT:inter INTACT:stop CONSOL
+                                   CONSOL:source CONSOL:inst CONSOL:motiv
 
-                                         SCENE REP JOINT
+                                   SCENE REP JOINT
                                       }],
                     curly => [qw{arg loc patient agent source other time const
                                  about quant goal apart poss form experiencer
