@@ -5,13 +5,13 @@
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
 
   <title>Copenhagen Dependency Treebank Annotation Mode</title>
-  <version>1.0</version>
+  <version>1.0.0</version>
   <copyright year="2012">
     Jan Štěpánek
   </copyright>
   <require>
     <tred min_version="2.4878"/>
-    <extension name="easytreex" min_version="0.08893"/>
+    <extension name="easytreex" min_version="1.0.1"/>
   </require>
   <description>Mode for annotation of Copenhagen Dependency Treebank
   and similar data developed at the Department of International Language
