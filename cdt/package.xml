@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml" install_size="1" package_size="1">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="1" package_size="1">
   <head><schema href="tred_extension_schema.xml"/></head>
   <pkgname>cdt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
