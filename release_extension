@@ -165,8 +165,10 @@ fi
 mkdir "$tmp"/remote
 echo Transfering "$tmp/remote" to "$sshfs"... >&2
 sshfs "$sshfs" "$tmp"/remote
-mkdir "$tmp"/remote/"$name"
-[[ -f "$tmp/new/$icon" ]] && mkdir "$tmp"/remote/"$name"/icons/
+[[ -d "$tmp"/remote/"$name" ]] || mkdir "$tmp"/remote/"$name"
+if [[ -f "$tmp/new/$icon" && ! -d "$tmp"/remote/"$name"/icons/ ]] ; then
+    mkdir "$tmp"/remote/"$name"/icons/
+fi
                                      cp    "$tmp"/extensions.lst    "$tmp"/remote/
                                      cp    "$tmp"/new.zip           "$tmp"/remote/"$name".zip
                                      cp    "$tmp"/new/package.xml   "$tmp"/remote/"$name"/
