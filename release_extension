@@ -176,6 +176,8 @@ fi
 [[ -d "$tmp"/new/documentation ]] && cp -r "$tmp"/new/documentation "$tmp"/remote/"$name"
 fusermount -u "$tmp"/remote
 
+# TODO: index.html
+
 rm -rf "$tmp"
 echo "Package $zip successfully created!" >&2
 

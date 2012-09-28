@@ -1,5 +1,12 @@
 * TrEd Extensions Releasing
 
+** TODO Still missing [0/2]
+
+- [ ] generate index.html
+
+- [ ] releasing all extensions should *not* remove
+      the additional ones installed from different places.
+
 ** Features: [0/4]
 
 - [ ] extensions should be released together with TrEd
