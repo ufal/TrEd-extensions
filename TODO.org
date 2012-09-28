@@ -1,0 +1,25 @@
+* TrEd Extensions Releasing
+
+** Features: [0/4]
+
+- [ ] extensions should be released together with TrEd
+
+- [ ] extension can be released without releasing the others
+
+- [ ] extension not coming from the SVN can be released
+
+- [ ] version number should not be changed, but the release should
+  stop if the files are different but the version is the same
+
+** Details
+
+*** Repository:
+
+- URL and rsync address
+
+- extensions.lst contains the list of extensions provided (also listed
+  in index.html)
+
+** SYNOPSIS
+
+release_extension -u URL -r RSYNC -n NAME -d dir -p VALIDATE

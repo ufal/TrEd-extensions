@@ -1,0 +1,179 @@
+#! /bin/bash -e
+
+function make_zip () {
+    z="$1"
+    d="$2"
+    pushd "$d" > /dev/null
+    rm -f "$z"
+
+    touch "$z"
+    if
+	! zip -9 \
+	    "${z}.part" \
+	    `find -L -not -wholename "*/.svn*"` \
+	    -x '*~' \
+	    -x '#*'
+    then
+	rm -f "$z"
+	rm -f "${z}.part"
+	echo "Failed to create package $z!" >&2
+	exit 1
+    fi
+    chmod --reference="$z" "${z}.part"
+    mv "${z}.part" "$z"
+    popd > /dev/null
+}
+
+
+function exit_rm () {
+    rm -rf "$tmp"
+    exit 1
+}
+
+
+while getopts 'u:r:n:d:p:' option ; do
+    case $option in
+        (u) url=$OPTARG ;;
+        (r) sshfs=$OPTARG ;;
+        (n) name=$OPTARG ;;
+        (d) dir=$OPTARG ;;
+        (p) validate=$OPTARG ;;
+        (*) exit 1 ;;
+    esac
+done
+if [[ ${!OPTIND} ]] ; then
+    echo Invalid argument ${!OPTIND} >&2
+    exit 1
+fi
+if [[ -z $dir ]] ; then
+    echo Dir not specified >&2
+    exit 1
+fi
+dir=${dir%/}
+
+# Set default values
+: ${url:=http://ufal.mff.cuni.cz/tred/extensions/}
+: ${sshfs:=ufal:/var/www/html/project/tred/extensions}
+: ${validate:=pml_validate}
+if [[ -z $name ]] ; then
+    name=${dir##*/}
+fi
+
+bindir=$(readlink -f ${0%/*})
+meta="$dir"/package.xml
+
+(
+    shopt -s nullglob
+    xmllint --noout  "$meta" "$dir"/resources/*.xml
+)
+
+if which $validate &>/dev/null && $validate -c &>/dev/null; then
+    if ! $validate -p "$bindir/../tred/resources" "$meta"; then
+	which $validate
+	echo $validate -p "$bindir/../tred/resources" "$meta" >&2
+	echo "Package meta file $meta is not a valid PML tred_package instance!" >&2
+	exit 1
+    fi
+else
+    echo "WARNING: will not validate package.xml (PML validator pml_validate not found in PATH or not working)" >&2
+fi
+
+icon=$(perl -ne 'print $1 if m{<icon>([^<]+)</icon>}' "$meta" /dev/null)
+if [[ $icon ]] ; then
+    echo "Icon $icon" >&2
+else
+    echo Icon not found. >&2
+fi
+
+size=
+s=$(du -sb --exclude '*/.svn*' --exclude '*~' --exclude '#*' "$dir" | cut -f1)
+while [[ $s != "$size" ]] ; do
+    size=$s
+    echo "Updating install size to: $size" >&2
+    perl -MXML::LibXML -e '
+      ($f, $size) = @ARGV;
+      $p = XML::LibXML->new->parse_file($f);
+      if ($p->documentElement->getAttribute("install_size") != $size) {
+          $p->documentElement->setAttribute("install_size", "$size");
+          rename $f, $f . "~";
+          $p->toFile($f);
+      }' \
+          "$meta" $size;
+
+  s=$(du -sb --exclude '*/.svn*' --exclude '*~' --exclude '#*' "$dir" | cut -f1)
+done
+
+tmp=$(mktemp --tmpdir -d)
+found=1
+wget -qO "$tmp"/old.zip "$url/$name".zip || found=0
+if ((found)) ; then
+    mkdir "$tmp"/old
+    unzip -qd "$tmp"/old "$tmp"/old.zip
+    sed -i 's, install_size="[0-9]*",,g' "$tmp"/old/package.xml
+fi
+make_zip "$tmp"/new.zip "$dir" > /dev/null
+mkdir "$tmp"/new
+unzip -qd "$tmp"/new "$tmp"/new.zip
+sed -i.~size~ 's, install_size="[0-9]*",,g' "$tmp"/new/package.xml
+
+up_to_date=1
+if ((!found)) || diff -Nur "$tmp/old" "$tmp/new" | grep -q . ; then
+    up_to_date=0
+fi
+if ((up_to_date)) ; then
+    echo PACKAGE "$name" IS UP-TO-DATE >&2
+    exit_rm
+fi
+mv "$tmp"/new/package.xml{.~size~,}
+script='print $1 if m{<version>([0-9.]+)</version>}'
+prev_ver=$(perl -ne "$script" "$tmp/old/package.xml" /dev/null)
+pkg_ver=$(perl -ne "$script" "$meta")
+rm -rf "$tmp"/old
+if [[ -n $prev_ver && -n $pkg_ver ]] ; then
+    if [[ $prev_ver == $pkg_ver ]]; then
+        echo Version $pkg_ver not changed. >&2
+        exit_rm
+    elif [[ $prev_ver > $pkg_ver ]] ; then
+        echo New version $pkg_ver precedes the old version $prev_ver. >&2
+        exit_rm
+    else
+        echo Version change: "$prev_ver -> $pkg_ver" >&2
+    fi
+elif [[ -z $pkg_ver ]] ; then
+    echo No version specified. >&2
+    exit_rm
+fi
+
+zip_size=$(du -sb "$tmp/new.zip" | cut -f1)
+echo "Zip size: $zip_size" >&2
+perl -MXML::LibXML -e '
+  $f = shift;
+  print STDERR "File: $f\n";
+  $p = XML::LibXML->new->parse_file($f);
+  $p->documentElement->setAttribute("package_size","'$zip_size'");
+  $p->toFile($f);
+' "$tmp/new/package.xml"
+
+wget -qO "$tmp"/extensions.lst "$url"/extensions.lst
+if grep -Eq "^!? *$name *$" "$tmp"/extensions.lst ; then
+    echo $name already in list. >&2
+else
+    echo Adding $name to list. >&2
+    echo "$name" >> "$tmp"/extensions.lst
+fi
+
+mkdir "$tmp"/remote
+echo Transfering "$tmp/remote" to "$sshfs"... >&2
+sshfs "$sshfs" "$tmp"/remote
+mkdir "$tmp"/remote/"$name"
+[[ -f "$tmp/new/$icon" ]] && mkdir "$tmp"/remote/"$name"/icons/
+                                     cp    "$tmp"/extensions.lst    "$tmp"/remote/
+                                     cp    "$tmp"/new.zip           "$tmp"/remote/"$name".zip
+                                     cp    "$tmp"/new/package.xml   "$tmp"/remote/"$name"/
+[[ -f "$tmp/new/$icon" ]] &&         cp    "$tmp"/new/"$icon"       "$tmp"/remote/"$name"/icons/
+[[ -d "$tmp"/new/documentation ]] && cp -r "$tmp"/new/documentation "$tmp"/remote/"$name"
+fusermount -u "$tmp"/remote
+
+rm -rf "$tmp"
+echo "Package $zip successfully created!" >&2
+
