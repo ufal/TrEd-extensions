@@ -31,6 +31,39 @@ function exit_rm () {
 }
 
 
+function version_newer () {
+    old=$1
+    new=$2
+
+    _IFS=$IFS
+    IFS=.
+    old_split=($old)
+    new_split=($new)
+    IFS=$_IFS
+
+    for i in 0 1 2 ; do
+        if (( old_split[i] < new_split[i] )) ; then 
+            return 0
+        elif (( old_split[i] > new_split[i] )) ; then
+            return 1
+        fi
+    done
+    return 1
+}
+
+if ((! $# )) || [[ $1 =~ --?h.* ]]; then
+    cat << '__HELP__'
+release_extension -u URL -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
+    URL :     URL of the extension repository.
+    REMOTE:   host:path/to/repo, to be mounted via sshfs.
+    NAME:     Name of the extension. If not given, equals to DIR.
+    DIR:      The dir containing the extension to release.
+    VALIDATE: Full path to pml_validate (if not in $PATH).
+__HELP__
+    exit
+fi
+
+
 while getopts 'u:r:n:d:p:' option ; do
     case $option in
         (u) url=$OPTARG ;;
@@ -133,7 +166,7 @@ if [[ -n $prev_ver && -n $pkg_ver ]] ; then
     if [[ $prev_ver == $pkg_ver ]]; then
         echo Version $pkg_ver not changed. >&2
         exit_rm
-    elif [[ $prev_ver > $pkg_ver ]] ; then
+    elif version_newer $pkg_ver $prev_ver ; then
         echo New version $pkg_ver precedes the old version $prev_ver. >&2
         exit_rm
     else
@@ -165,18 +198,35 @@ fi
 mkdir "$tmp"/remote
 echo Transfering "$tmp/remote" to "$sshfs"... >&2
 sshfs "$sshfs" "$tmp"/remote
-[[ -d "$tmp"/remote/"$name" ]] || mkdir "$tmp"/remote/"$name"
-if [[ -f "$tmp/new/$icon" && ! -d "$tmp"/remote/"$name"/icons/ ]] ; then
-    mkdir "$tmp"/remote/"$name"/icons/
+new="$name.$HOSTNAME.$USER.$$"
+[[ -d "$tmp"/remote/"$new" ]] && rm -rf "$tmp"/remote/"$new"
+mkdir "$tmp"/remote/"$new"
+if [[ -f "$tmp/new/$icon" ]] ; then
+    mkdir "$tmp"/remote/"$new"/icons/
 fi
-                                     cp    "$tmp"/extensions.lst    "$tmp"/remote/
-                                     cp    "$tmp"/new.zip           "$tmp"/remote/"$name".zip
-                                     cp    "$tmp"/new/package.xml   "$tmp"/remote/"$name"/
-[[ -f "$tmp/new/$icon" ]] &&         cp    "$tmp"/new/"$icon"       "$tmp"/remote/"$name"/icons/
-[[ -d "$tmp"/new/documentation ]] && cp -r "$tmp"/new/documentation "$tmp"/remote/"$name"
-fusermount -u "$tmp"/remote
+cp                                          "$tmp"/new/package.xml              "$tmp"/remote/"$new"/
+[[ -f "$tmp/new/$icon" ]]          && cp    "$tmp"/new/"$icon"                  "$tmp"/remote/"$new"/icons/
+[[ -d "$tmp"/new/documentation ]]  && cp -r "$tmp"/new/documentation            "$tmp"/remote/"$new"/
+cp                                          "$tmp"/extensions.lst               "$tmp"/remote/extensions.lst."$new"
+cp                                          "$tmp"/new.zip                      "$tmp"/remote/"$name".zip."$new"
 
-# TODO: index.html
+[[ -f "$tmp"/remote/"$name".zip ]] && cp    "$tmp"/remote/"$name".zip           "$tmp"/remote/old-"$new".zip
+rm                                          "$tmp"/remote/"$name".zip
+mv                                          "$tmp"/remote/"$name".zip."$new"    "$tmp"/remote/"$name".zip
+
+[[ -d "$tmp"/remote/"$name" ]]     && mv    "$tmp"/remote/"$name"               "$tmp"/remote/old-"$new"
+mv                                          "$tmp"/remote/"$new"                "$tmp"/remote/"$name"
+rm -rf                                      "$tmp"/remote/old-"$new"
+
+cp                                          "$tmp"/remote/extensions.lst        "$tmp"/remote/extensions.lst.old-"$new"
+
+# Cannot mv here: permission denied if the owner is someone else
+rm                                          "$tmp"/remote/extensions.lst
+mv                                          "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst
+
+rm -f "$tmp"/remote/old-"$new".zip "$tmp"/remote/extensions.lst.old-"$new"
+
+fusermount -u "$tmp"/remote
 
 rm -rf "$tmp"
 echo "Package $zip successfully created!" >&2
