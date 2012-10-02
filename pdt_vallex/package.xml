@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt_vallex</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>PDT-ValLex Editor</title>
   <version>1.50</version>
   <copyright year="2004-2011">Petr Pajas, Jan Štěpánek</copyright>

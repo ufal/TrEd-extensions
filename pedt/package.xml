@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pedt</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Prague English Treebank Annotation</title>
   <version>1.105</version>
   <copyright year="2005-2008">Josef Toman</copyright>

@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>cz_t_analysis</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Simple Czech Tectogrammatical Parser</title>
   <version>1.32</version>
   <copyright year="2008">Zdeněk Žabokrtský, Václav Klimeš, Petr Pajas</copyright>
@@ -14,8 +14,8 @@
   </description>
   <require>
     <tred min_version="1.4375"/>
-    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
-    <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/tectomt"/>
-    <extension name="pdt_auto_afun" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_auto_afun"/>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
+    <extension name="tectomt" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/tectomt"/>
+    <extension name="pdt_auto_afun" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt_auto_afun"/>
   </require>
 </tred_extension>

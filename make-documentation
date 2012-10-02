@@ -72,7 +72,7 @@ EOF
 
   cat <<EOF >> "$index"
 <h3>Installation</h3>
-<p>This extension can be installed directly from <a href="http://ufal.mff.cuni.cz/~pajas/tred">TrEd</a>, using
+<p>This extension can be installed directly from <a href="http://ufal.mff.cuni.cz/tred">TrEd</a>, using
 <b>Setup >> Manage Extensions >> Get New Extensions</b>; just make sure
 the repository <tt>$repo</tt> is enabled in <b>Setup >> Manage Extensions >> Edit Repositories</b>.
 <p>

@@ -3404,7 +3404,7 @@ Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
 ElixirFM L<http://sourceforge.net/projects/elixir-fm/>
 
-TrEd Tree Editor L<http://ufal.mff.cuni.cz/~pajas/tred/>
+TrEd Tree Editor L<http://ufal.mff.cuni.cz/tred/>
 
 
 =head1 AUTHOR

@@ -5,7 +5,7 @@
   </head>
   <pkgname>filelist_filter</pkgname>
   <icon>icons/view_filter.png</icon>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Create a file-list by filtering text file columns</title>
   <version>1.7</version>
   <copyright year="2009">Petr Pajas, Jan Stepanek</copyright>

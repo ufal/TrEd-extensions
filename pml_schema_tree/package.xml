@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pml_schema_tree</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Display and Edit PML Schemas as Trees in TrEd</title>
   <version>1.10</version>
   <copyright year="2009">Petr Pajas</copyright>

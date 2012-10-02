@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>remote_control</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Remote Control for TrEd</title>
   <version>1.19</version>
   <copyright year="2008">Petr Pajas</copyright>

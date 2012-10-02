@@ -619,7 +619,7 @@ PADT::Words - Context for Accessing the Words Level in the TrEd Environment
 
 Prague Arabic Dependency Treebank L<http://ufal.mff.cuni.cz/padt/online/>
 
-TrEd Tree Editor L<http://ufal.mff.cuni.cz/~pajas/tred/>
+TrEd Tree Editor L<http://ufal.mff.cuni.cz/tred/>
 
 
 =head1 AUTHOR

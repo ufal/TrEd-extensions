@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>conll2009</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>CoNLL 2009 Shared Task</title>
   <version>1.37</version>
   <copyright year="2009">Jan Štěpánek</copyright>

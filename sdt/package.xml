@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>sdt</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Slovene Dependency Treebank Annotation</title>
   <version>1.20</version>
   <copyright year="2003">Zdeněk Žabokrtský</copyright>
@@ -13,7 +13,7 @@
   a simple rule-based Slovene parser.
   </description>
   <require>
-    <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt10"/>
+    <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt10"/>
     <tred min_version="1.4375"/>
   </require>
 </tred_extension>

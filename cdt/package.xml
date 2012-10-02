@@ -2,7 +2,7 @@
 <tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="1" package_size="1">
   <head><schema href="tred_extension_schema.xml"/></head>
   <pkgname>cdt</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
 
   <title>Copenhagen Dependency Treebank Annotation Mode</title>
   <version>1.0.0</version>

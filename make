@@ -20,7 +20,7 @@ else
 fi
 
 WWW_TRED=$WWW/tred
-REPO=$WWW_TRED/extensions
+REPO=$WWW_TRED/extensions/core
 DEVEL=$(readlink -fen $EXTDIR/../tred/devel)
 PACKER=$DEVEL/pack_extension.sh
 
@@ -40,15 +40,17 @@ for d in "${dirs[@]%/}"; do
 
 done
 
+
+# Deprectated. The HTML index will be replaced with dynamic php index.
 # update repository HTML index
-(
-cd $REPO;
-echo '<extensions>';
-for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*(-|\w)+\s*$'`; do
-    if [ -f "$d/package.xml" ]; then
-	cat "$d/package.xml" |grep -v '^<?xml'
-    fi
-done;
-echo '</extensions>';
-) | xsltproc "$EXTDIR"/package2html.xsl - > "$REPO/index.html"
+#(
+#cd $REPO;
+#echo '<extensions>';
+#for d in `cat extensions.lst |grep -v '^!' | grep -E '^\s*(-|\w)+\s*$'`; do
+#    if [ -f "$d/package.xml" ]; then
+#	cat "$d/package.xml" |grep -v '^<?xml'
+#    fi
+#done;
+#echo '</extensions>';
+#) | xsltproc "$EXTDIR"/package2html.xsl - > "$REPO/index.html"
 

@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>show_valency</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Highlight Valency in PDT Trees</title>
   <version>1.22</version>
   <copyright year="2008">Petr Pajas</copyright>
@@ -12,7 +12,7 @@
   highlights obligatory nodes according to assigned valency frames.
   </description>
   <require>
-    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt20"/>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
     <tred min_version="1.4375"/>
   </require>
 </tred_extension>

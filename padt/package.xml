@@ -5,7 +5,7 @@
   </head>
   <pkgname>padt</pkgname>
   <icon>icons/padt.png</icon>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Prague Arabic Dependency Treebank Annotation</title>
   <version>1.62</version>
   <copyright year="2004-2011">Otakar Smrž</copyright>

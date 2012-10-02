@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt20</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Prague Dependency Treebank 2.0 Annotation</title>
   <version>1.58</version>
   <copyright year="2008">Petr Pajas</copyright>
@@ -14,7 +14,7 @@
   </description>
   <icon>icons/tree.png</icon>
   <require>
-    <extension name="pdt_vallex" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_vallex"/>
+    <extension name="pdt_vallex" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt_vallex"/>
     <tred min_version="1.4375"/>
   </require>
 </tred_extension>

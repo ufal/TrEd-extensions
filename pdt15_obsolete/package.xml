@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt15_obsolete</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/"/>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Pre-PDT 2.0 Tectogrammatical Annotation (OBSOLETE)</title>
   <version>1.24</version>
   <copyright year="2008">Petr Pajas</copyright>
@@ -13,8 +13,8 @@
     new PML-based system of annotation layers).
   </description>
   <require>
-    <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt10"/>
-    <extension name="pdt_vallex" min_version="1.0" href="http://ufal.mff.cuni.cz/~pajas/tred/extensions/pdt_vallex"/>
+    <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt10"/>
+    <extension name="pdt_vallex" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt_vallex"/>
     <tred min_version="1.4375"/>
   </require>
 </tred_extension>
