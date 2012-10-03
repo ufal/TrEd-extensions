@@ -24,6 +24,7 @@ REPO=$WWW_TRED/extensions/core
 DEVEL=$(readlink -fen $EXTDIR/../tred/devel)
 PACKER=$DEVEL/pack_extension.sh
 
+mkdir -p "$REPO"
 
 for d in "${dirs[@]%/}"; do
     echo "*** Building extension $d"
