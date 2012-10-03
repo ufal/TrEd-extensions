@@ -219,6 +219,7 @@ p {
     font-size: 7pt;
     font-style: italic;
     color: #666;
+	margin-bottom: 10px;
 }
 .moreinfo a {
     font-size: 8pt;
