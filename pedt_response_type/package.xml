@@ -6,10 +6,11 @@
   <pkgname>pedt_response_type</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>PEDT Response Type Annotation</title>
-  <version>1.26</version>
+  <version>1.27</version>
   <copyright year="2008">Josef Toman</copyright>
   <description>Provides a mode for annotation of response type over tectogrammatical layer of PEDT.</description>
   <require>
     <extension name="pedt" min_version="1.26" href="http://ufal.mff.cuni.cz/tred/extensions/core/pedt"/>
-  <tred min_version="1.4375"/></require>
+    <tred min_version="2.4936"/>
+  </require>
 </tred_extension>

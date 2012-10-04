@@ -6,11 +6,11 @@
   <pkgname>parallel</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Extension for parallel treebank alignment</title>
-  <version>1.7</version>
+  <version>1.8</version>
   <copyright year="2009">Petr Pajas</copyright>
   <description>Provides schema, annotation mode, and PML-TQ extensions for node-to-node stand-off parallel treebank alignment.
   </description>
   <require>
-    <tred min_version="1.4375"/>
+    <tred min_version="2.4936"/>
   </require>
 </tred_extension>

@@ -7,7 +7,7 @@
   <icon>icons/view_filter.png</icon>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Create a file-list by filtering text file columns</title>
-  <version>1.7</version>
+  <version>1.9</version>
   <copyright year="2009">Petr Pajas, Jan Stepanek</copyright>
   <description>
     Add a function Macros-&gt;TredMacro-&gt;File-list Filter (F10) that
@@ -17,6 +17,6 @@
     The selection is then based on the values in the other columns.
   </description>
   <require>
-    <tred min_version="1.4375"/>
+    <tred min_version="2.4936"/>
   </require>
 </tred_extension>

@@ -6,12 +6,12 @@
   <pkgname>pdt20_sample</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Prague Dependency Treebank 2.0 Sample Data</title>
-  <version>1.27</version>
+  <version>1.28</version>
   <copyright year="2006">UFAL MFF UK</copyright>
   <description>Contains 10 a-layer and 10 t-layer sample files from PDT 2.0
   and adds corresponding file list items to the Session menu.
   </description>
   <require>
     <extension name="pdt20"/>
-  <tred min_version="1.4375"/></require>
+  <tred min_version="2.4936"/></require>
 </tred_extension>

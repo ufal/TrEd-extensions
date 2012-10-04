@@ -6,7 +6,7 @@
   <pkgname>sdt</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Slovene Dependency Treebank Annotation</title>
-  <version>1.20</version>
+  <version>1.21</version>
   <copyright year="2003">Zdeněk Žabokrtský</copyright>
   <description>Provides an annotation mode for syntactical dependency annotaiton 
   of Slovene corpus in the style of PDT 1.0. The package contains also
@@ -14,6 +14,6 @@
   </description>
   <require>
     <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt10"/>
-    <tred min_version="1.4375"/>
+    <tred min_version="2.4936"/>
   </require>
 </tred_extension>

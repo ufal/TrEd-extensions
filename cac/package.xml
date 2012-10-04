@@ -6,10 +6,11 @@
   <pkgname>cac</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Czech Academic Corpus Annotation</title>
-  <version>1.30</version>
+  <version>1.31</version>
   <copyright year="2006-2008">Petr Pajas, Kiril Ribarov, Barbora Hladká</copyright>
   <description>Provides annotation mode for the Czech Academic Corpus project.</description>
   <require>
+    <tred min_version="2.4936"/>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
   </require>
 </tred_extension>

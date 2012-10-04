@@ -6,11 +6,13 @@
   <pkgname>pml_diff</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Simple PML Diff</title>
-  <version>0.2</version>
+  <version>0.3</version>
   <copyright year="2010">Jan Štěpánek</copyright>
   <description>This package provides the basic visual diffing
   interface. It works only on simple annotation schemas where the
   relation of tokens to nodes is 1:1.
   </description>
-  <require/>
+  <require>
+    <tred min_version="2.4936"/>
+  </require>
 </tred_extension>

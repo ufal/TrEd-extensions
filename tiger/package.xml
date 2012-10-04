@@ -6,7 +6,7 @@
   <pkgname>tiger</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>TIGER Corpus</title>
-  <version>1.31</version>
+  <version>1.33</version>
   <copyright year="2010">Petr Pajas, Maud Medves</copyright>
 
   <description>This package contains 
@@ -14,4 +14,7 @@
     and a stylesheets for visualization of the resulting PML in TrEd.
   </description>
   <icon>icons/tiger.png</icon>
+  <require>
+    <tred min_version="2.4936"/>
+  </require>
 </tred_extension>

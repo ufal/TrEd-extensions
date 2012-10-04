@@ -7,11 +7,11 @@
   <icon>icons/padt.png</icon>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.62</version>
+  <version>1.64</version>
   <copyright year="2004-2011">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank.</description>
   <require>
-    <tred min_version="1.4484"/>
+    <tred min_version="2.4936"/>
     <extension name="elixir"/>
     <perl_module name="perl" min_version="5.008"/>
     <perl_module name="Algorithm::Diff">

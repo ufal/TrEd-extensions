@@ -6,12 +6,12 @@
   <pkgname>pdt_vallex</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>PDT-ValLex Editor</title>
-  <version>1.50</version>
+  <version>1.63</version>
   <copyright year="2004-2011">Petr Pajas, Jan Štěpánek</copyright>
   <description>Provides GUI interface for TrEd to the Czech valency lexicon PDT-ValLex
     with browse, search, edit and annotate capabilities.
   </description>
   <require>
-    <tred min_version="1.4375"/>
+    <tred min_version="2.4936"/>
   </require>
 </tred_extension>
