@@ -53,29 +53,36 @@ function version_newer () {
 
 if ((! $# )) || [[ $1 =~ --?h.* ]]; then
     cat << '__HELP__'
-release_extension -u URL -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
+release_extension -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
     URL :     URL of the extension repository.
     REMOTE:   host:path/to/repo, to be mounted via sshfs.
     NAME:     Name of the extension. If not given, equals to DIR.
     DIR:      The dir containing the extension to release.
     VALIDATE: Full path to pml_validate (if not in $PATH).
+    METHOD:   How the REMOTE dir should be reached?
+              's' for sshfs, 'r' for rsync, 'l' for local (default).
 __HELP__
     exit
 fi
 
 
-while getopts 'u:r:n:d:p:' option ; do
+while getopts 'u:r:n:d:p:m:' option ; do
     case $option in
         (u) url=$OPTARG ;;
-        (r) sshfs=$OPTARG ;;
+        (r) remote=$OPTARG ;;
         (n) name=$OPTARG ;;
         (d) dir=$OPTARG ;;
         (p) validate=$OPTARG ;;
+        (m) method=$OPTARG ;;
         (*) exit 1 ;;
     esac
 done
 if [[ ${!OPTIND} ]] ; then
     echo Invalid argument ${!OPTIND} >&2
+    exit 1
+fi
+if [[ -z $remote ]] ; then
+    echo Remote not specified >&2
     exit 1
 fi
 if [[ -z $dir ]] ; then
@@ -85,12 +92,14 @@ fi
 dir=${dir%/}
 
 # Set default values
-: ${url:=http://ufal.mff.cuni.cz/tred/extensions/}
-: ${sshfs:=ufal:/var/www/html/project/tred/extensions}
+: ${url:=http://ufal.mff.cuni.cz/tred/extensions/external}
+#: ${remote:=ufal:/var/www/html/project/tred/extensions/external}
 : ${validate:=pml_validate}
+: ${method:=l}
 if [[ -z $name ]] ; then
     name=${dir##*/}
 fi
+
 
 bindir=$(readlink -f ${0%/*})
 meta="$dir"/package.xml
@@ -110,6 +119,13 @@ if which $validate &>/dev/null && $validate -c &>/dev/null; then
 else
     echo "WARNING: will not validate package.xml (PML validator pml_validate not found in PATH or not working)" >&2
 fi
+
+pkgname=$(xmllint --shell "$meta" <<<'cat //*[name()="pkgname"]/text()' | sed -n 3p)
+if [[ $pkgname != $name ]] ; then
+    echo "Invalid package name: $pkgname != $name." >&2
+    exit 1
+fi
+
 
 icon=$(perl -ne 'print $1 if m{<icon>([^<]+)</icon>}' "$meta" /dev/null)
 if [[ $icon ]] ; then
@@ -196,8 +212,14 @@ else
 fi
 
 mkdir "$tmp"/remote
-echo Transfering "$tmp/remote" to "$sshfs"... >&2
-sshfs "$sshfs" "$tmp"/remote
+
+if [[ $method == s ]] ; then
+    echo Transfering "$tmp/remote" to "$remote"... >&2
+    sshfs "$remote" "$tmp"/remote
+else
+    cp "$tmp"/extensions.lst "$tmp"/remote/
+fi
+
 new="$name.$HOSTNAME.$USER.$$"
 [[ -d "$tmp"/remote/"$new" ]] && rm -rf "$tmp"/remote/"$new"
 mkdir "$tmp"/remote/"$new"
@@ -211,7 +233,7 @@ cp                                          "$tmp"/extensions.lst               
 cp                                          "$tmp"/new.zip                      "$tmp"/remote/"$name".zip."$new"
 
 [[ -f "$tmp"/remote/"$name".zip ]] && cp    "$tmp"/remote/"$name".zip           "$tmp"/remote/old-"$new".zip
-rm                                          "$tmp"/remote/"$name".zip
+[[ -f "$tmp"/remote/"$name".zip ]] && rm    "$tmp"/remote/"$name".zip
 mv                                          "$tmp"/remote/"$name".zip."$new"    "$tmp"/remote/"$name".zip
 
 [[ -d "$tmp"/remote/"$name" ]]     && mv    "$tmp"/remote/"$name"               "$tmp"/remote/old-"$new"
@@ -226,8 +248,12 @@ mv                                          "$tmp"/remote/extensions.lst."$new" 
 
 rm -f "$tmp"/remote/old-"$new".zip "$tmp"/remote/extensions.lst.old-"$new"
 
-fusermount -u "$tmp"/remote
+case $method in
+    (s) fusermount -u "$tmp"/remote ;;
+    (l) cp -r "$tmp"/remote "$remote"/ ;;
+    (r) echo 'Running rsync...' >&2
+        rsync -avr "$tmp"/remote/ "$remote" ;;
+esac
 
 rm -rf "$tmp"
 echo "Package $zip successfully created!" >&2
-
