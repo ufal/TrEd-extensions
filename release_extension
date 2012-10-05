@@ -243,8 +243,8 @@ rm -rf                                      "$tmp"/remote/old-"$new"
 cp                                          "$tmp"/remote/extensions.lst        "$tmp"/remote/extensions.lst.old-"$new"
 
 # Cannot mv here: permission denied if the owner is someone else
-rm                                          "$tmp"/remote/extensions.lst
-mv                                          "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst
+mv                                          "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst \
+|| rm "$tmp"/remote/extensions.lst && mv    "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst
 
 rm -f "$tmp"/remote/old-"$new".zip "$tmp"/remote/extensions.lst.old-"$new"
 
