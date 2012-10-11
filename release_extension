@@ -51,6 +51,13 @@ function version_newer () {
     return 1
 }
 
+
+function get_size () {
+    du -L -sb --exclude '*/.svn*' --exclude '*~' --exclude '#*' "$dir" | cut -f1
+}
+
+
+
 if ((! $# )) || [[ $1 =~ --?h.* ]]; then
     cat << '__HELP__'
 release_extension -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
@@ -135,7 +142,7 @@ else
 fi
 
 size=
-s=$(du -sb --exclude '*/.svn*' --exclude '*~' --exclude '#*' "$dir" | cut -f1)
+s=$(get_size)
 while [[ $s != "$size" ]] ; do
     size=$s
     echo "Updating install size to: $size" >&2
@@ -149,7 +156,7 @@ while [[ $s != "$size" ]] ; do
       }' \
           "$meta" $size;
 
-  s=$(du -sb --exclude '*/.svn*' --exclude '*~' --exclude '#*' "$dir" | cut -f1)
+  s=$(get_size)
 done
 
 tmp=$(mktemp --tmpdir -d)
@@ -244,7 +251,7 @@ cp                                          "$tmp"/remote/extensions.lst        
 
 # Cannot mv here: permission denied if the owner is someone else
 mv                                          "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst \
-|| rm "$tmp"/remote/extensions.lst && mv    "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst
+|| ( rm "$tmp"/remote/extensions.lst && mv  "$tmp"/remote/extensions.lst."$new" "$tmp"/remote/extensions.lst )
 
 rm -f "$tmp"/remote/old-"$new".zip "$tmp"/remote/extensions.lst.old-"$new"
 
