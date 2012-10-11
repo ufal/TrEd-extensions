@@ -55,7 +55,7 @@ if ((! $# )) || [[ $1 =~ --?h.* ]]; then
     cat << '__HELP__'
 release_extension -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
     URL :     URL of the extension repository.
-    REMOTE:   host:path/to/repo, to be mounted via sshfs.
+    REMOTE:   The target url or directory (depends on METHOD).
     NAME:     Name of the extension. If not given, equals to DIR.
     DIR:      The dir containing the extension to release.
     VALIDATE: Full path to pml_validate (if not in $PATH).
