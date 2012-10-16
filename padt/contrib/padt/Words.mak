@@ -680,7 +680,7 @@ TrEd Tree Editor L<http://ufal.mff.cuni.cz/tred/>
 
 =head1 AUTHOR
 
-Otakar Smrz E<lt>otakar.smrz mff.cuni.czE<gt>
+Otakar Smrz E<lt>otakar.smrz seznam.czE<gt>
 
 
 =head1 COPYRIGHT AND LICENSE
