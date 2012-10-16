@@ -41,7 +41,7 @@ while (my $text = decode "utf8", <>) {
 
     print << "<?xml?>";
 <?xml version="1.0" encoding="utf-8"?>
-<WordsLevel xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+<PADT-Words xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
   <head>
     <schema href="words.schema.xml" />
   </head>
@@ -84,7 +84,7 @@ $meta
 
     print << "<?xml?>";
   </data>
-</WordsLevel>
+</PADT-Words>
 <?xml?>
 
     close X;

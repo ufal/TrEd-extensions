@@ -422,6 +422,20 @@ sub path (@) {
     return File::Spec->join(@_);
 }
 
+sub escape ($) {
+
+    return $^O eq 'MSWin32' ? '"' . $_[0] . '"' : "'" . $_[0] . "'";
+}
+
+sub espace ($) {
+
+    my $name = $_[0];
+
+    $name =~ s/\\/\//g if $^O eq 'MSWin32' and $name =~ / /;
+
+    return escape $name;
+}
+
 sub inter_with_level ($) {
 
     my ($inter, $level) = ('words', $_[0]);
@@ -494,6 +508,48 @@ sub open_level_morpho {
 
     return unless defined $level;
 
+    unless (-f $file[1]) {
+
+        my $reply = main::userQuery($grp,
+                        "\nThere is no " . $name . ".$level.pml" . " file.$fill" .
+                        "\nReally create a new one?$fill",
+                        -bitmap=> 'question',
+                        -title => "Creating",
+                        -buttons => ['Yes', 'No']);
+
+        return unless $reply eq 'Yes';
+
+        if (-f $file[2]) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "Cannot create " . ( path '..', "$level", $name . ".$level.pml" ) . "!$fill\n" .
+                            "Please remove " . ( path '..', 'morpho', $name . ".$level.pml" ) . ".$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+
+            return;
+        }
+
+        if (GetFileSaveStatus()) {
+
+            ToplevelFrame()->messageBox (
+                -icon => 'warning',
+                -message => "The current file has been modified. Either save it, or reload it discarding the changes.$fill",
+                -title => 'Error',
+                -type => 'OK',
+            );
+
+            return;
+        }
+
+        system 'btred -QI ' . ( escape CallerDir('../../exec/words_morpho.ntred') ) .
+                        ' ' . ( espace $file[0] );
+
+        move $file[2], $file[1];
+    }
+
     my $rf = 'w#' . $this->{'id'};
 
     if (Open($file[1])) {
@@ -502,24 +558,24 @@ sub open_level_morpho {
 
         GotoTree(1);
 
-    {
-        do {
+        {
+            do {
 
-        do {
+                do {
 
-            last if exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf;
+                    last if exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf;
+                }
+                while $this = $this->following();
+            }
+            while NextTree();
         }
-        while $this = $this->following();
+
+        unless (exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf) {
+
+            GotoTree($idx + 1);
+
+            $this = $root;
         }
-        while NextTree();
-    }
-
-    unless (exists $this->{'w.rf'} and $this->{'w.rf'} eq $rf) {
-
-        GotoTree($idx + 1);
-
-        $this = $root;
-    }
     }
     else {
 

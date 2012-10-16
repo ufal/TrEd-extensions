@@ -19,7 +19,7 @@ sub autostart {
     my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.words.pml');
 
     my $data = '<?xml version="1.0" encoding="utf-8"?>
-                <MorphoTrees xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+                <PADT-Morpho xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
                   <head>
                     <schema href="morpho.schema.xml" />
                     <references>
@@ -32,7 +32,7 @@ sub autostart {
                   </meta>
                   <data>
                   </data>
-                </MorphoTrees>';
+                </PADT-Morpho>';
 
     $morpho = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.morpho.pml' })->convert_to_fsfile();
 

@@ -21,7 +21,7 @@ sub autostart {
     my ($name, $path, undef) = File::Basename::fileparse(FileName(), '.morpho.pml');
 
     my $data = '<?xml version="1.0" encoding="utf-8"?>
-                <Analytic xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
+                <PADT-Syntax xmlns="http://ufal.mff.cuni.cz/pdt/pml/">
                   <head>
                     <schema href="syntax.schema.xml" />
                     <references>
@@ -34,7 +34,7 @@ sub autostart {
                   </meta>
                   <data>
                   </data>
-                </Analytic>';
+                </PADT-Syntax>';
 
     $syntax = Treex::PML::Instance->load({ 'string' => $data, 'filename' => $path . '/' . $name . '.syntax.pml' })->convert_to_fsfile();
 
