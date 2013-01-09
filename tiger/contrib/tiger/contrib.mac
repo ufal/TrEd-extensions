@@ -5,7 +5,7 @@
 
 {
 package Tiger_Corpus;
-
+our $previous_tiger_stylesheet;
 #binding-context Tiger_Corpus
 
 #include <contrib/support/fold_subtree.inc>
@@ -30,11 +30,21 @@ push @TredMacro::AUTO_CONTEXT_GUESSING, sub {
   return;
 };
 
+sub file_close_hook {
+    $previous_tiger_stylesheet = GetCurrentStylesheet();
+    return;
+}
+
 sub allow_switch_context_hook {
   return 'stop' unless detect();
 }
+
 sub switch_context_hook {
-  SetCurrentStylesheet('Tiger_Corpus');
+  my $current_stylesheet = GetCurrentStylesheet();
+  if (STYLESHEET_FROM_FILE() eq $current_stylesheet) {
+      my $stylesheet = $previous_tiger_stylesheet // 'Tiger_Corpus';
+      SetCurrentStylesheet($stylesheet);
+  }
   Redraw() if GUI();
 }
 
