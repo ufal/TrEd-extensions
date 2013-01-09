@@ -40,8 +40,7 @@ sub allow_switch_context_hook {
 }
 
 sub switch_context_hook {
-  my $current_stylesheet = GetCurrentStylesheet();
-  if (STYLESHEET_FROM_FILE() eq $current_stylesheet) {
+  if (STYLESHEET_FROM_FILE() eq GetCurrentStylesheet()) {
       my $stylesheet = $previous_tiger_stylesheet // 'Tiger_Corpus';
       SetCurrentStylesheet($stylesheet);
   }
