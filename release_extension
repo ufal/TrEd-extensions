@@ -133,6 +133,15 @@ if [[ $pkgname != $name ]] ; then
     exit 1
 fi
 
+repository=$(xmllint --shell "$meta" <<<'cat //*[name()="repository"]/@href' \
+    | grep 'href=')
+repository=${repository## }
+repository=${repository%/[\"\']}
+if [[ $repository != href=[\'\"]${url%/} ]] ; then
+    echo 'Repository reference does not match url:' \
+        $'\n'"$repository vs. $url." >&2
+    exit 1
+fi
 
 icon=$(perl -ne 'print $1 if m{<icon>([^<]+)</icon>}' "$meta" /dev/null)
 if [[ $icon ]] ; then
