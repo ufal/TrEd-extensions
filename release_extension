@@ -136,7 +136,8 @@ fi
 repository=$(xmllint --shell "$meta" <<<'cat //*[name()="repository"]/@href' \
     | grep 'href=')
 repository=${repository## }
-repository=${repository%/[\"\']}
+repository=${repository%[\"\']}
+repository=${repository%/}
 if [[ $repository != href=[\'\"]${url%/} ]] ; then
     echo 'Repository reference does not match url:' \
         $'\n'"$repository vs. $url." >&2
