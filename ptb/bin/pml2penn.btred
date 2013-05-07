@@ -1,0 +1,62 @@
+#!btred -T -e pml2penn()
+#-*- cperl -*-
+
+
+=head1 NAME
+
+pml2penn.btred
+
+=head1 SYNOPSIS
+
+ btred -I pml2penn penn*.pml
+
+=head1 DESCRIPTION
+
+Converts the PML data back to the Penn Treebank format.
+
+=head1 AUTHOR
+
+(c) Jan Stepanek, 2013
+
+=cut
+
+
+sub pml2penn {
+    my @children = $this->children;
+    die 'Invalid number of children at ' . ThisAddress() if @children != 1;
+
+    my $not_indexed = 1000;
+    for my $node ($root->descendants) {
+        my $coindex_rf = $node->{'coindex.rf'};
+        if ($coindex_rf) {
+            my ($conode) = grep $_->{id} eq $coindex_rf, $root->descendants;
+            (my $coindex = $node->{form}) =~ s/.*-/-/;
+            if (not $coindex) {
+                $coindex = '-' . $not_indexed++;
+                ($node->{equalsign} = $coindex) =~ s/-/=/;
+            }
+            $conode->{coindex} = $coindex;
+        }
+    }
+
+    print_node($children[0]);
+    print "\n";
+}
+
+
+sub print_node {
+    my $node = shift;
+    print '(';
+
+    my $type = $node->type->get_structure_name;
+    if ('terminal' eq $type) {
+        print $node->{pos}, ' ', $node->{form}, $node->{coindex};
+    } else { # nonterminal
+        print join '|', AltV($node->{cat});
+        print join '-', q(), ListV($node->{functions}) if $node->{functions};
+        print $node->{equalsign};
+        print $node->{coindex};
+        print_node($_) for $node->children;
+    }
+    print ")";
+}
