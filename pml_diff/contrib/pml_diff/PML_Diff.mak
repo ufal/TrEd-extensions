@@ -5,11 +5,13 @@
 
 {
 
+package TrEd::Macro;
+our ($grp, $this, $Redraw);
+
+
 package PML_Diff;
 
 BEGIN { import PML; }
-
-use Data::Dumper;
 
 use strict;
 
@@ -82,7 +84,7 @@ sub find_next_difference {
         $node = $node->following;
     }
     $this = $node if ($node);
-    $FileChanged = 0;
+    ChangingFile(0);
     $Redraw = 'none';
 }
 
@@ -106,7 +108,7 @@ sub find_next_difference_in_file {
     } else {
         $Redraw = 'tie'
     }
-    $FileChanged = 0;
+    ChangingFile(0);
 }
 
 
@@ -268,7 +270,7 @@ sub DiffFiles_with_summary {
     $t->BindMouseWheelHoriz("Shift");
     $t->focus;
     $d->Show();
-    $FileChanged = 0;
+    ChangingFile(0);
 }
 
 sub DiffFiles {
