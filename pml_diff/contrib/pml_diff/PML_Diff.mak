@@ -5,7 +5,7 @@
 
 {
 
-package TrEd::Macro;
+package TredMacro;
 our ($grp, $this, $Redraw);
 
 
@@ -275,7 +275,7 @@ sub DiffFiles_with_summary {
 
 sub DiffFiles {
     my ($class, $summary) = @_;
-    my $fg = $TredMacro::grp->{framegroup};
+    my $fg = $grp->{framegroup};
     my @T;
     my ($fs, $tree);
     foreach my $win (@{$fg->{treeWindows}}) {
@@ -298,7 +298,7 @@ sub DiffFiles {
 
 sub DiffWholeFiles {
     my ($class, $summary)=@_;
-    my $fg = $TredMacro::grp->{framegroup};
+    my $fg = $grp->{framegroup};
     my @T;
     my $i = 0;
     do {
