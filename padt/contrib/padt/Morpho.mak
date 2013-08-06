@@ -2762,9 +2762,9 @@ sub restrict_imperative {
     }
 }
 
-#bind restrict_two Y menu Restrict Numeral Two
+#bind restrict_two U menu Restrict Numeral Two
 sub restrict_two {
-    restrict_hide('-Y--------');
+    restrict_hide('-U--------');
 }
 
 #bind restrict_three V menu Restrict Numeral Three
@@ -2777,9 +2777,9 @@ sub restrict_ten {
     restrict_hide('-X--------');
 }
 
-#bind restrict_teen u menu Restrict Numeral Teen
+#bind restrict_teen Y menu Restrict Numeral Teen
 sub restrict_teen {
-    restrict_hide('-U--------');
+    restrict_hide('-Y--------');
 }
 
 #bind restrict_twenty l menu Restrict Numeral Twenty
@@ -3409,12 +3409,12 @@ TrEd Tree Editor L<http://ufal.mff.cuni.cz/tred/>
 
 =head1 AUTHOR
 
-Otakar Smrz E<lt>otakar.smrz seznam.czE<gt>
+Otakar Smrz C<< <otakar-smrz users.sf.net> >>, L<http://otakar-smrz.users.sf.net/>
 
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2011 by Otakar Smrz
+Copyright 2004-2013 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

@@ -680,12 +680,12 @@ TrEd Tree Editor L<http://ufal.mff.cuni.cz/tred/>
 
 =head1 AUTHOR
 
-Otakar Smrz E<lt>otakar.smrz seznam.czE<gt>
+Otakar Smrz C<< <otakar-smrz users.sf.net> >>, L<http://otakar-smrz.users.sf.net/>
 
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2006-2011 by Otakar Smrz
+Copyright 2006-2013 by Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
