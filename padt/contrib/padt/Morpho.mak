@@ -85,7 +85,9 @@ style:<? my @child = $this->children();
 
 node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'} =~ /^(?:Token|Unit)$/
    ?><? $this->{'#name'} eq 'Token'
-            ? ( ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
+            ? ( $this->{'form'} =~ /\p{InArabic}/
+                    ? ( $this->{"form"} . ( InVerticalMode() ? " " : "\n" ) . PADT::Morpho::encode("buckwalter", $this->{'form'}) )
+                    : ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
             $this->{'#name'} eq 'Lexeme'
                 ? ( ( $PADT::Morpho::review->{$grp}{'zoom'}
@@ -112,7 +114,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
 
 node:<? my $index = 0;
         $this->{'#name'} eq 'Word'
-            ? '#{orange}' . ( join " ", map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } map { $_->{'form'} } $this->children() )
+            ? '#{orange}' . ( join " ", grep { split '' } map { ElixirFM::phon($_) } ElixirFM::nub { $_[0] } map { $_->{'form'} } $this->children() )
             :
         $this->{'#name'} eq 'Token'
             ? (( $this->{'note'} ne '' ? '#{goldenrod}${note} << ' : '' ) . '#{darkred}' . $this->{'tag'} )
@@ -126,7 +128,9 @@ node:<? my $index = 0;
 node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
         ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
 
-hint:<? '${sense}' if $this->{'#name'} eq 'Token' ?>
+hint:<? join "\n", (exists $this->{'sense'} ? '"' . $this->{'sense'} . '"' : ()),
+                   (exists $this->{'core'}{'reflex'} ?
+                         @{$this->{'core'}{'reflex'}} : ()) if $this->{'#name'} eq 'Token' ?>
 >>
 }
 

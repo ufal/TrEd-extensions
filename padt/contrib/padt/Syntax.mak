@@ -461,7 +461,9 @@ node:<? ( $this->{'note'} ne '' ? '#{magenta}${note} ' : '' ) .
                     map { '#{darkviolet}${' . $_ . '}' }
                     grep { $this->attr($_) ne '' } qw 'parallel paren arabfa coref clause' ) ?>
 
-hint:<? PADT::Syntax::describe($this->{"afun"}) ?>
+hint:<? join "\n", (exists $this->{'m'}{'sense'} ? '"' . $this->{'m'}{'sense'} . '"' : ()),
+                   (exists $this->{'m'}{'core'}{'reflex'} ?
+                         @{$this->{'m'}{'core'}{'reflex'}} : ()) if exists $this->{'m'} ?>
 >>
 }
 
