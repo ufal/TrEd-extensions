@@ -511,6 +511,52 @@ sub focus_score_succeeding {
     }
 }
 
+sub restrict_morphology {
+
+    my ($node, @restrict) = @_;
+
+    @restrict = grep { reftype $_ eq 'ARRAY' } @restrict;
+
+    return unless $node->{'#name'} eq 'Word';
+    return unless @restrict;
+
+    my @tuple = ();
+
+    foreach my $tuple ($node->children()) {
+
+        next unless exists $tuple->{'form'} and $tuple->{'form'} ne '';
+
+        my @tags = map { $_->{'tag'} } $tuple->children();
+
+        if (grep { restrict_comply($_, @tags) } @restrict) {
+
+            push @tuple, $tuple;
+        }
+        else {
+
+            CutNode($tuple);
+        }
+    }
+
+    if (@tuple == 1) {
+
+        my $tuple = $tuple[0];
+        my @token = $tuple->children();
+
+        $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ foreach 1 .. @token;
+    }
+    else {
+
+        foreach my $i (1 .. @tuple) {
+
+            my $tuple = $tuple[$i - 1];
+            my @token = $tuple->children();
+
+            $token[$_ - 1]->{'id'} = $node->{'id'} . '-' . $i . 't' . $_ foreach 1 .. @token;
+        }
+    }
+}
+
 #bind update_morphology to Ctrl+Shift+space menu Update the Annotation
 sub update_morphology {
 
@@ -1399,7 +1445,7 @@ sub lexicon {
     return $elixir->{'lexicon'}[$n][$e];
 }
 
-#bind elixir_dictionary to Ctrl+D menu ElixirFM Dictionary
+# #bind elixir_dictionary to Ctrl+D menu ElixirFM Dictionary
 
 sub elixir_dictionary {
 
@@ -3418,7 +3464,7 @@ Otakar Smrz C<< <otakar-smrz users.sf.net> >>, L<http://otakar-smrz.users.sf.net
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2013 by Otakar Smrz
+Copyright (C) 2004-2013 Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

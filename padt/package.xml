@@ -7,7 +7,7 @@
   <icon>icons/padt.png</icon>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
   <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.64</version>
+  <version>1.66</version>
   <copyright year="2004-2011">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank.</description>
   <require>
