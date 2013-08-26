@@ -552,7 +552,7 @@ sub restrict_morphology {
             my $tuple = $tuple[$i - 1];
             my @token = $tuple->children();
 
-            $token[$_ - 1]->{'id'} = $node->{'id'} . '-' . $i . 't' . $_ foreach 1 .. @token;
+            $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ . '-' . $i foreach 1 .. @token;
         }
     }
 }
