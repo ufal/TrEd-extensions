@@ -49,8 +49,9 @@ sub AfunAssign {
     my $fullafun = $_[0];
     my ($afun, $parallel, $paren) = ($fullafun =~ /^([^_]*)(?:_(Ap|Co))?(?:_(Pa))?/);
 
-    if ($this->{'afun'} eq 'AuxS' or
-        $this->{'afun'} eq $afun and $this->{'parallel'} eq $parallel and $this->{'paren'} eq $paren) {
+    if ($this == $root or
+        $this->{'afun'} eq $afun and
+        $this->{'parallel'} eq $parallel and $this->{'paren'} eq $paren) {
 
         $Redraw = 'none';
         ChangingFile(0);
@@ -67,77 +68,185 @@ sub AfunAssign {
     }
 }
 
-#bind afun_ExD to x menu Arabic: Assign afun ExD
-sub afun_ExD { AfunAssign('ExD') }
-#bind afun_ExD_Co to Ctrl+x
-sub afun_ExD_Co { AfunAssign('ExD_Co') }
-#bind afun_ExD_Ap to X
-sub afun_ExD_Ap { AfunAssign('ExD_Ap') }
-#bind afun_ExD_Pa to Ctrl+X
-sub afun_ExD_Pa { AfunAssign('ExD_Pa') }
+#bind afun_Pred q menu Assign Pred
+sub afun_Pred { AfunAssign("Pred") }
+#bind afun_Pred_Co Ctrl+q menu Assign Pred_Co
+sub afun_Pred_Co { AfunAssign("Pred_Co") }
 
-#bind afun_AuxE to e menu Arabic: Assign afun AuxE
-sub afun_AuxE { AfunAssign('AuxE') }
-#bind afun_AuxE_Co to Ctrl+e
-sub afun_AuxE_Co { AfunAssign('AuxE_Co') }
-#bind afun_AuxE_Ap to E
-sub afun_AuxE_Ap { AfunAssign('AuxE_Ap') }
-#bind afun_AuxE_Pa to Ctrl+E
-sub afun_AuxE_Pa { AfunAssign('AuxE_Pa') }
+#bind afun_Pnom n menu Assign Pnom
+sub afun_Pnom { AfunAssign("Pnom") }
+#bind afun_Pnom_Co Ctrl+n menu Assign Pnom_Co
+sub afun_Pnom_Co { AfunAssign("Pnom_Co") }
 
-#bind afun_AuxM to m menu Arabic: Assign afun AuxM
-sub afun_AuxM { AfunAssign('AuxM') }
-#bind afun_AuxM_Co to Ctrl+m
-sub afun_AuxM_Co { AfunAssign('AuxM_Co') }
-#bind afun_AuxM_Ap to M
-sub afun_AuxM_Ap { AfunAssign('AuxM_Ap') }
-#bind afun_AuxM_Pa to Ctrl+M
-sub afun_AuxM_Pa { AfunAssign('AuxM_Pa') }
+#bind afun_Pred Q menu Assign _Pred
+sub afun_Pred {
+    return if $this == $root;
+    $this->{'clause'} = $this->{'clause'} eq 'Pred' ? '' : 'Pred';
+}
 
-#bind afun_Ante to t menu Arabic: Assign afun Ante
-sub afun_Ante { AfunAssign('Ante') }
-#bind afun_Ante_Co to Ctrl+t
-sub afun_Ante_Co { AfunAssign('Ante_Co') }
-#bind afun_Ante_Ap to T
-sub afun_Ante_Ap { AfunAssign('Ante_Ap') }
-#bind afun_Ante_Pa to Ctrl+T
-sub afun_Ante_Pa { AfunAssign('Ante_Pa') }
+#bind afun_Pnom N menu Assign _Pnom
+sub afun_Pnom {
+    return if $this == $root;
+    $this->{'clause'} = $this->{'clause'} eq 'Pnom' ? '' : 'Pnom';
+}
 
-#bind assign_parallel to key 1 menu Arabic: Suffix Parallel
+#bind afun_PredE E menu Assign PredE
+sub afun_PredE {
+    return if $this == $root;
+    if ($this->{'afun'} eq '???') {
+        $this->{'afun'} = 'PredE';
+    }
+    else {
+        $this->{'clause'} = $this->{'clause'} eq 'PredE' ? '' : 'PredE';
+    }
+}
+#bind afun_PredE_Co Ctrl+E menu Assign PredE_Co
+sub afun_PredE_Co { AfunAssign("PredE_Co") }
+
+#bind afun_PredC C menu Assign PredC
+sub afun_PredC {
+    return if $this == $root;
+    if ($this->{'afun'} eq '???') {
+        $this->{'afun'} = 'PredC';
+    }
+    else {
+        $this->{'clause'} = $this->{'clause'} eq 'PredC' ? '' : 'PredC';
+    }
+}
+#bind afun_PredC_Co Ctrl+C menu Assign PredC_Co
+sub afun_PredC_Co { AfunAssign("PredC_Co") }
+
+#bind afun_PredM M menu Assign PredM
+sub afun_PredM {
+    return if $this == $root;
+    if ($this->{'afun'} eq '???') {
+        $this->{'afun'} = 'PredM';
+    }
+    else {
+        $this->{'clause'} = $this->{'clause'} eq 'PredM' ? '' : 'PredM';
+    }
+}
+#bind afun_PredM_Co Ctrl+M menu Assign PredM_Co
+sub afun_PredM_Co { AfunAssign("PredM_Co") }
+
+#bind afun_PredP P menu Assign PredP
+sub afun_PredP {
+    return if $this == $root;
+    if ($this->{'afun'} eq '???') {
+        $this->{'afun'} = 'PredP';
+    }
+    else {
+        $this->{'clause'} = $this->{'clause'} eq 'PredP' ? '' : 'PredP';
+    }
+}
+#bind afun_PredP_Co Ctrl+P menu Assign PredP_Co
+sub afun_PredP_Co { AfunAssign("PredP_Co") }
+
+#bind afun_Sb s menu Assign Sb
+sub afun_Sb { AfunAssign("Sb") }
+#bind afun_Sb_Co Ctrl+s menu Assign Sb_Co
+sub afun_Sb_Co { AfunAssign("Sb_Co") }
+
+#bind afun_Obj o menu Assign Obj
+sub afun_Obj { AfunAssign("Obj") }
+#bind afun_Obj_Co Ctrl+o menu Assign Obj_Co
+sub afun_Obj_Co { AfunAssign("Obj_Co") }
+
+#bind afun_Adv d menu Assign Adv
+sub afun_Adv { AfunAssign("Adv") }
+#bind afun_Adv_Co Ctrl+d menu Assign Adv_Co
+sub afun_Adv_Co { AfunAssign("Adv_Co") }
+
+#bind afun_Atr a menu Assign Atr
+sub afun_Atr { AfunAssign("Atr") }
+#bind afun_Atr_Co Ctrl+a menu Assign Atr_Co
+sub afun_Atr_Co { AfunAssign("Atr_Co") }
+
+#bind afun_Atv v menu Assign Atv
+sub afun_Atv { AfunAssign("Atv") }
+#bind afun_Atv_Co Ctrl+v menu Assign Atv_Co
+sub afun_Atv_Co { AfunAssign("Atv_Co") }
+
+#bind afun_ExD x menu Assign ExD
+sub afun_ExD { AfunAssign("ExD") }
+#bind afun_ExD_Co Ctrl+x menu Assign ExD_Co
+sub afun_ExD_Co { AfunAssign("ExD_Co") }
+
+#bind afun_Coord w menu Assign Coord
+sub afun_Coord { AfunAssign("Coord") }
+#bind afun_Coord_Co Ctrl+w menu Assign Coord_Co
+sub afun_Coord_Co { AfunAssign("Coord_Co") }
+
+#bind afun_Apos u menu Assign Apos
+sub afun_Apos { AfunAssign("Apos") }
+#bind afun_Apos_Co Ctrl+u menu Assign Apos_Co
+sub afun_Apos_Co { AfunAssign("Apos_Co") }
+
+#bind afun_Ante t menu Assign Ante
+sub afun_Ante { AfunAssign("Ante") }
+#bind afun_Ante_Co Ctrl+t menu Assign Ante_Co
+sub afun_Ante_Co { AfunAssign("Ante_Co") }
+
+#bind afun_AuxC c menu Assign AuxC
+sub afun_AuxC { AfunAssign("AuxC") }
+#bind afun_AuxC_Co Ctrl+c menu Assign AuxC_Co
+sub afun_AuxC_Co { AfunAssign("AuxC_Co") }
+
+#bind afun_AuxP p menu Assign AuxP
+sub afun_AuxP { AfunAssign("AuxP") }
+#bind afun_AuxP_Co Ctrl+p menu Assign AuxP_Co
+sub afun_AuxP_Co { AfunAssign("AuxP_Co") }
+
+#bind afun_AuxE e menu Assign AuxE
+sub afun_AuxE { AfunAssign("AuxE") }
+#bind afun_AuxE_Co Ctrl+e menu Assign AuxE_Co
+sub afun_AuxE_Co { AfunAssign("AuxE_Co") }
+
+#bind afun_AuxM m menu Assign AuxM
+sub afun_AuxM { AfunAssign("AuxM") }
+#bind afun_AuxM_Co Ctrl+m menu Assign AuxM_Co
+sub afun_AuxM_Co { AfunAssign("AuxM_Co") }
+
+#bind afun_AuxY y menu Assign AuxY
+sub afun_AuxY { AfunAssign("AuxY") }
+#bind afun_AuxY_Co Ctrl+y menu Assign AuxY_Co
+sub afun_AuxY_Co { AfunAssign("AuxY_Co") }
+
+#bind afun_AuxG g menu Assign AuxG
+sub afun_AuxG { AfunAssign("AuxG") }
+#bind afun_AuxG_Co Ctrl+g menu Assign AuxG_Co
+sub afun_AuxG_Co { AfunAssign("AuxG") }
+
+#bind afun_AuxK k menu Assign AuxK
+sub afun_AuxK { AfunAssign("AuxK") }
+#bind afun_AuxK_Co Ctrl+k menu Assign AuxK_Co
+sub afun_AuxK_Co { AfunAssign("AuxK") }
+
+#bind assign_parallel 1 menu Assign Suffix Parallel
 sub assign_parallel {
-  $this->{parallel}||='';
-  EditAttribute($this,'parallel');
+    EditAttribute($this, 'parallel');
 }
 
-#bind assign_paren to key 2 menu Arabic: Suffix Paren
+#bind assign_paren 2 menu Assign Suffix Paren
 sub assign_paren {
-  $this->{paren}||='';
-  EditAttribute($this,'paren');
+    EditAttribute($this, 'paren');
 }
 
-#bind assign_arabfa to key 3 menu Arabic: Suffix ArabFa
-sub assign_arabfa {
-  $this->{arabfa}||='';
-  EditAttribute($this,'arabfa');
+#bind assign_coref 3 menu Assign Suffix Coref
+sub assign_coref {
+    EditAttribute($this, 'coref');
 }
 
-#bind assign_arabspec to key 4 menu Arabic: Suffix ArabSpec
-sub assign_arabspec {
-  $this->{arabspec}||='';
-  EditAttribute($this,'coref');
-}
-
-#bind assign_arabclause to key 5 menu Arabic: Suffix ArabClause
-sub assign_arabclause {
-  $this->{arabclause}||='';
-  EditAttribute($this,'clause');
+#bind assign_clause 4 menu Assign Suffix Clause
+sub assign_clause {
+    EditAttribute($this,'clause');
 }
 
 # ##################################################################################################
 #
 # ##################################################################################################
 
-#bind thisToParent to Alt+Up menu Annotate: Current node up one level to grandparent
+#bind thisToParent Alt+Up menu Annotate: Current node up one level to grandparent
 sub thisToParent {
 
     $Redraw = 'none';
@@ -155,7 +264,7 @@ sub thisToParent {
     ChangingFile(1);
 }
 
-#bind thisToRBrother to Alt+Left menu Annotate: Current node to brother on the left
+#bind thisToRBrother Alt+Left menu Annotate: Current node to brother on the left
 sub thisToRBrother {
 
     $Redraw = 'none';
@@ -175,7 +284,7 @@ sub thisToRBrother {
     ChangingFile(1);
 }
 
-#bind thisToLBrother to Alt+Right menu Annotate: Current node to brother on the right
+#bind thisToLBrother Alt+Right menu Annotate: Current node to brother on the right
 sub thisToLBrother {
 
     $Redraw = 'none';
@@ -195,7 +304,7 @@ sub thisToLBrother {
     ChangingFile(1);
 }
 
-#bind thisToParentRBrother to Alt+Shift+Left menu Annotate: Current node to uncle on the left
+#bind thisToParentRBrother Alt+Shift+Left menu Annotate: Current node to uncle on the left
 sub thisToParentRBrother {
 
     $Redraw = 'none';
@@ -217,7 +326,7 @@ sub thisToParentRBrother {
     ChangingFile(1);
 }
 
-#bind thisToParentLBrother to Alt+Shift+Right menu Annotate: Current node to uncle on the right
+#bind thisToParentLBrother Alt+Shift+Right menu Annotate: Current node to uncle on the right
 sub thisToParentLBrother {
 
     $Redraw = 'none';
@@ -239,7 +348,7 @@ sub thisToParentLBrother {
     ChangingFile(1);
 }
 
-#bind thisToEitherBrother to Alt+Down menu Annotate: Current node to either side brother if unique
+#bind thisToEitherBrother Alt+Down menu Annotate: Current node to either side brother if unique
 sub thisToEitherBrother {
 
     $Redraw = 'none';
@@ -260,7 +369,7 @@ sub thisToEitherBrother {
     ChangingFile(1);
 }
 
-#bind SwapNodesUp to Alt+Shift+Down menu Annotate: Current node exchanged with parent
+#bind SwapNodesUp Alt+Shift+Down menu Annotate: Current node exchanged with parent
 sub SwapNodesUp {
 
     $Redraw = 'none';
@@ -284,7 +393,7 @@ sub SwapNodesUp {
     ChangingFile(1);
 }
 
-##bind SwapNodesDown to Alt+Shift+Down menu Annotate: Current node exchanged with son if unique
+##bind SwapNodesDown Alt+Shift+Down menu Annotate: Current node exchanged with son if unique
 sub SwapNodesDown {
 
     $Redraw = 'none';
@@ -305,7 +414,7 @@ sub SwapNodesDown {
     ChangingFile(1);
 }
 
-#bind thisToRoot to Alt+Shift+Up menu Annotate: Current node to the root
+#bind thisToRoot Alt+Shift+Up menu Annotate: Current node to the root
 sub thisToRoot {
 
     $Redraw = 'none';
@@ -321,7 +430,7 @@ sub thisToRoot {
     ChangingFile(1);
 }
 
-#bind thisToLeftClauseHead to Ctrl+Alt+Right menu Annotate: Current node to preceeding clause head
+#bind thisToLeftClauseHead Ctrl+Alt+Right menu Annotate: Current node to preceeding clause head
 sub thisToLeftClauseHead {
 
     $Redraw = 'none';
@@ -334,7 +443,7 @@ sub thisToLeftClauseHead {
         thisToNextClauseHead();
 }
 
-#bind thisToRightClauseHead to Ctrl+Alt+Left menu Annotate: Current node to following clause head
+#bind thisToRightClauseHead Ctrl+Alt+Left menu Annotate: Current node to following clause head
 sub thisToRightClauseHead {
 
     $Redraw = 'none';
@@ -386,7 +495,7 @@ sub thisToNextClauseHead {
     ChangingFile(1);
 }
 
-#bind thisToSuperClauseHead to Ctrl+Alt+Up menu Annotate: Current node to superior clause head
+#bind thisToSuperClauseHead Ctrl+Alt+Up menu Annotate: Current node to superior clause head
 sub thisToSuperClauseHead {
 
     $Redraw = 'none';
@@ -406,7 +515,7 @@ sub thisToSuperClauseHead {
     ChangingFile(1);
 }
 
-#bind thisToInferClauseHead to Ctrl+Alt+Down menu Annotate: Current node to inferior clause head
+#bind thisToInferClauseHead Ctrl+Alt+Down menu Annotate: Current node to inferior clause head
 sub thisToInferClauseHead {
 
     $Redraw = 'none';
@@ -459,7 +568,7 @@ node:<? exists $this->{'m'} ? (
 node:<? ( $this->{'note'} ne '' ? '#{magenta}${note} ' : '' ) .
         ( join '_', '#{darkviolet}${afun}',
                     map { '#{darkviolet}${' . $_ . '}' }
-                    grep { $this->attr($_) ne '' } qw 'parallel paren arabfa coref clause' ) ?>
+                    grep { $this->attr($_) ne '' } qw 'parallel paren coref clause' ) ?>
 
 hint:<? join "\n", (exists $this->{'m'}{'sense'} ? '"' . $this->{'m'}{'sense'} . '"' : ()),
                    (exists $this->{'m'}{'core'}{'reflex'} ?
@@ -467,7 +576,7 @@ hint:<? join "\n", (exists $this->{'m'}{'sense'} ? '"' . $this->{'m'}{'sense'} .
 >>
 }
 
-#bind ChangeStylesheet to F8 menu Change Stylesheet
+#bind ChangeStylesheet F8 menu Change Stylesheet
 sub ChangeStylesheet {
 
     return unless $grp->{FSFile};
@@ -482,7 +591,7 @@ sub ChangeStylesheet {
     my $role = q {<? ( $this->{'note'} ne '' ? '#{magenta}${note} ' : '' ) .
         ( join '_', '#{darkviolet}${afun}',
                     map { '#{darkviolet}${' . $_ . '}' }
-                    grep { $this->attr($_) ne '' } qw 'parallel paren arabfa coref clause' ) ?>};
+                    grep { $this->attr($_) ne '' } qw 'parallel paren coref clause' ) ?>};
 
     my ($hint, $cntxt, $style) = GetStylesheetPatterns();
 
@@ -504,7 +613,7 @@ sub get_auto_afun {
     return $ra =~ /^\s*$/ ? '' : $ra;
 }
 
-#bind request_auto_afun_node Ctrl+Shift+F9 menu Arabic: Request auto afun for current node
+# #bind request_auto_afun_node Ctrl+Shift+F9 menu Arabic: Request auto afun for current node
 sub request_auto_afun_node {
 
     my $node = $_[0] eq __PACKAGE__ ? $this : $_[0];
@@ -523,7 +632,7 @@ sub request_auto_afun_node {
     }
 }
 
-#bind request_auto_afun_subtree to Ctrl+Shift+F10 menu Arabic: Request auto afun for current subtree
+# #bind request_auto_afun_subtree Ctrl+Shift+F10 menu Arabic: Request auto afun for current subtree
 sub request_auto_afun_subtree {
 
     my $node = $this;
@@ -542,7 +651,7 @@ sub request_auto_afun_subtree {
     $Redraw = 'tree';
 }
 
-#bind hooks_request_mode Ctrl+Shift+F8 menu Arabic: Toggle request mode for auto afuns
+# #bind hooks_request_mode Ctrl+Shift+F8 menu Arabic: Toggle request mode for auto afuns
 sub hooks_request_mode {
 
     $option->{$grp}{'hook'} = not $option->{$grp}{'hook'};
@@ -647,7 +756,7 @@ sub node_moved_hook {
     request_auto_afun_node($_) foreach @line;
 }
 
-# bind padt_auto_parse_tree to Ctrl+Shift+F2 menu Arabic: Parse the current sentence and build a tree
+# # bind padt_auto_parse_tree Ctrl+Shift+F2 menu Arabic: Parse the current sentence and build a tree
 sub padt_auto_parse_tree {
 
     require Arab_parser;
@@ -884,7 +993,7 @@ sub enable_attr_hook {
     return 'stop' if $_[0] =~ /^morpho(?!\w)/;
 }
 
-#bind edit_note to exclam menu Annotate: Edit Annotation Note
+#bind edit_note exclam menu Annotate: Edit Annotation Note
 sub edit_note {
 
     if (exists $this->{'note'} and $this->{'note'} ne "") {
@@ -936,7 +1045,7 @@ sub annotate_previous {
     ChangingFile(0);
 }
 
-#bind accept_auto_afun Ctrl+space menu Arabic: Accept auto-assigned annotation
+# #bind accept_auto_afun Ctrl+space menu Arabic: Accept auto-assigned annotation
 sub accept_auto_afun {
 
     my $node = $this;
@@ -955,7 +1064,7 @@ sub accept_auto_afun {
     }
 }
 
-#bind unset_afun to question menu Arabic: Unset afun to ???
+#bind unset_afun question menu Assign ???
 sub unset_afun {
 
     if ($this->{'afun'} eq 'AuxS' or $this->{'afun'} eq '???') {
@@ -972,7 +1081,7 @@ sub unset_afun {
     }
 }
 
-#bind unset_request_afun to Ctrl+question menu Arabic: Unset and request auto afun
+# #bind unset_request_afun Ctrl+question menu Arabic: Unset and request auto afun
 sub unset_request_afun {
 
     if ($this->{'afun'} eq 'AuxS') {
@@ -1275,7 +1384,7 @@ sub inter_with_level ($) {
     return $level, $name, $path, @file;
 }
 
-#bind synchronize_file to Ctrl+Alt+equal menu Action: Synchronize Annotations
+#bind synchronize_file Ctrl+Alt+equal menu Action: Synchronize Annotations
 sub synchronize_file {
 
     ChangingFile(0);
@@ -1379,31 +1488,31 @@ sub synchronize_file {
     }
 }
 
-#bind open_level_words_prime to Alt+0
+#bind open_level_words_prime Alt+0
 sub open_level_words_prime {
 
     open_level_words();
 }
 
-#bind open_level_morpho_prime to Alt+1
+#bind open_level_morpho_prime Alt+1
 sub open_level_morpho_prime {
 
     open_level_morpho();
 }
 
-#bind open_level_syntax_prime to Alt+2
+#bind open_level_syntax_prime Alt+2
 sub open_level_syntax_prime {
 
     open_level_syntax();
 }
 
-#bind open_level_tecto_prime to Alt+3
+#bind open_level_tecto_prime Alt+3
 sub open_level_tecto_prime {
 
     open_level_tecto();
 }
 
-#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Syntax File
+#bind open_level_words Ctrl+Alt+0 menu Action: Edit Syntax File
 sub open_level_words {
 
     ChangingFile(0);
@@ -1440,7 +1549,7 @@ sub open_level_words {
     }
 }
 
-#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit MorphoTrees File
+#bind open_level_morpho Ctrl+Alt+1 menu Action: Edit MorphoTrees File
 sub open_level_morpho {
 
     ChangingFile(0);
@@ -1477,13 +1586,13 @@ sub open_level_morpho {
     }
 }
 
-#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Syntax File
+#bind open_level_syntax Ctrl+Alt+2 menu Action: Edit Syntax File
 sub open_level_syntax {
 
     ChangingFile(0);
 }
 
-#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit DeepLevels File
+#bind open_level_tecto Ctrl+Alt+3 menu Action: Edit DeepLevels File
 sub open_level_tecto {
 
     ChangingFile(0);
@@ -1598,7 +1707,7 @@ Otakar Smrz C<< <otakar-smrz users.sf.net> >>, L<http://otakar-smrz.users.sf.net
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004-2013 by Otakar Smrz
+Copyright (C) 2004-2013 Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

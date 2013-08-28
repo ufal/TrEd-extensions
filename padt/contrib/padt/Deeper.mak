@@ -306,24 +306,6 @@ sub assign_paren {
   EditAttribute($this,'paren');
 }
 
-##bind assign_arabfa to key 3 menu Arabic: Suffix ArabFa
-sub assign_arabfa {
-  $this->{arabfa}||='';
-  EditAttribute($this,'arabfa');
-}
-
-##bind assign_coref to key 4 menu Arabic: Suffix Coref
-sub assign_coref {
-  $this->{s}{coref}||='';
-  EditAttribute($this,'s/coref');
-}
-
-##bind assign_clause to key 5 menu Arabic: Suffix Clause
-sub assign_clause {
-  $this->{s}{clause}||='';
-  EditAttribute($this,'s/clause');
-}
-
 # ##################################################################################################
 #
 # ##################################################################################################
@@ -1185,25 +1167,6 @@ sub annotate_previous {
 
     $Redraw = 'none';
     ChangingFile(0);
-}
-
-##bind accept_auto_afun Ctrl+space menu Arabic: Accept auto-assigned annotation
-sub accept_auto_afun {
-
-    my $node = $this;
-
-    unless ($this->{'syntax'}{'afun'} eq '???' and $this->{'syntax'}{'afunaux'} ne '') {
-
-        $Redraw = 'none';
-        ChangingFile(0);
-    }
-    else {
-
-        $this->{'syntax'}{'afun'} = $this->{'syntax'}{'afunaux'};
-        $this->{'syntax'}{'afunaux'} = '';
-
-        $Redraw = 'tree';
-    }
 }
 
 #bind unset_func to question menu Functor: unset to ???

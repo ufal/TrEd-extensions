@@ -375,7 +375,7 @@ sub node_click_hook {
     return 'stop';
 }
 
-#bind focus_score_ascending to Ctrl+Shift+Up menu Focus Score Ascending
+#bind focus_score_ascending Ctrl+Shift+Up menu Focus Score Ascending
 sub focus_score_ascending {
 
     $Redraw = 'none';
@@ -414,7 +414,7 @@ sub focus_score_ascending {
     }
 }
 
-#bind focus_score_descending to Ctrl+Shift+Down menu Focus Score Descending
+#bind focus_score_descending Ctrl+Shift+Down menu Focus Score Descending
 sub focus_score_descending {
 
     $Redraw = 'none';
@@ -441,7 +441,7 @@ sub focus_score_descending {
     $this = $node[0] if @node;
 }
 
-#bind focus_score_preceding to Ctrl+Shift+Left menu Focus Equal Preceding
+#bind focus_score_preceding Ctrl+Shift+Left menu Focus Equal Preceding
 sub focus_score_preceding {
 
     $Redraw = 'none';
@@ -477,7 +477,7 @@ sub focus_score_preceding {
     }
 }
 
-#bind focus_score_succeeding to Ctrl+Shift+Right menu Focus Equal Succeeding
+#bind focus_score_succeeding Ctrl+Shift+Right menu Focus Equal Succeeding
 sub focus_score_succeeding {
 
     $Redraw = 'none';
@@ -557,7 +557,7 @@ sub restrict_morphology {
     }
 }
 
-#bind update_morphology to Ctrl+Shift+space menu Update the Annotation
+#bind update_morphology Ctrl+Shift+space menu Update the Annotation
 sub update_morphology {
 
     my @restrict = grep { reftype $_ eq 'ARRAY' } @_;
@@ -624,7 +624,7 @@ sub update_morphology {
     }
 }
 
-#bind annotate_morphology_click to Ctrl+space menu Annotate as if by Clicking
+#bind annotate_morphology_click Ctrl+space menu Annotate as if by Clicking
 sub annotate_morphology_click {
 
     annotate_morphology('click');
@@ -1330,7 +1330,7 @@ sub invoke_redo {
     ChangingFile(0);
 }
 
-#bind edit_note to exclam menu Edit Annotation Note
+#bind edit_note exclam menu Edit Annotation Note
 sub edit_note {
 
     return if $review->{$grp}{'zoom'};
@@ -1353,7 +1353,7 @@ sub edit_note {
 #
 # ##################################################################################################
 
-#bind display_elixir_lexicon to Ctrl+L menu ElixirFM Lexicon
+#bind display_elixir_lexicon Ctrl+L menu ElixirFM Lexicon
 
 sub display_elixir_lexicon {
 
@@ -1445,7 +1445,7 @@ sub lexicon {
     return $elixir->{'lexicon'}[$n][$e];
 }
 
-# #bind elixir_dictionary to Ctrl+D menu ElixirFM Dictionary
+# #bind elixir_dictionary Ctrl+D menu ElixirFM Dictionary
 
 sub elixir_dictionary {
 
@@ -1633,7 +1633,7 @@ sub entity {
     return $data;
 }
 
-#bind elixir_resolve to Ctrl+R menu ElixirFM Resolve
+#bind elixir_resolve Ctrl+R menu ElixirFM Resolve
 
 sub elixir_resolve {
 
@@ -1969,7 +1969,7 @@ sub morphotrees {
 #
 # ##################################################################################################
 
-#bind annotate_morphology to space menu Annotate Morphology
+#bind annotate_morphology space menu Annotate Morphology
 sub annotate_morphology {
 
     $Redraw = 'win';
@@ -3051,7 +3051,7 @@ sub inter_with_level ($) {
     return $level, $name, $path, @file;
 }
 
-#bind synchronize_file to Ctrl+Alt+equal menu Action: Synchronize Annotations
+#bind synchronize_file Ctrl+Alt+equal menu Action: Synchronize Annotations
 sub synchronize_file {
 
     ChangingFile(0);
@@ -3061,37 +3061,37 @@ sub synchronize_file {
     Analytic::synchronize_file();
 }
 
-#bind open_level_words_prime to Alt+0
+#bind open_level_words_prime Alt+0
 sub open_level_words_prime {
 
     open_level_words();
 }
 
-#bind open_level_morpho_prime to Alt+1
+#bind open_level_morpho_prime Alt+1
 sub open_level_morpho_prime {
 
     open_level_morpho();
 }
 
-#bind open_level_syntax_prime to Alt+2
+#bind open_level_syntax_prime Alt+2
 sub open_level_syntax_prime {
 
     open_level_syntax();
 }
 
-#bind open_level_tecto_prime to Alt+3
+#bind open_level_tecto_prime Alt+3
 sub open_level_tecto_prime {
 
     open_level_tecto();
 }
 
-#bind open_level_elixir_prime to Alt+9
+#bind open_level_elixir_prime Alt+9
 sub open_level_elixir_prime {
 
     open_level_elixir();
 }
 
-#bind open_level_words to Ctrl+Alt+0 menu Action: Edit Syntax File
+#bind open_level_words Ctrl+Alt+0 menu Action: Edit Syntax File
 sub open_level_words {
 
     ChangingFile(0);
@@ -3163,13 +3163,13 @@ sub open_level_words {
     }
 }
 
-#bind open_level_morpho to Ctrl+Alt+1 menu Action: Edit Morpho File
+#bind open_level_morpho Ctrl+Alt+1 menu Action: Edit Morpho File
 sub open_level_morpho {
 
     ChangingFile(0);
 }
 
-#bind open_level_syntax to Ctrl+Alt+2 menu Action: Edit Syntax File
+#bind open_level_syntax Ctrl+Alt+2 menu Action: Edit Syntax File
 sub open_level_syntax {
 
     ChangingFile(0);
@@ -3238,7 +3238,7 @@ sub open_level_syntax {
     }
 }
 
-#bind open_level_tecto to Ctrl+Alt+3 menu Action: Edit Deeper File
+#bind open_level_tecto Ctrl+Alt+3 menu Action: Edit Deeper File
 sub open_level_tecto {
 
     ChangingFile(0);
@@ -3262,7 +3262,7 @@ sub open_level_tecto {
     switch_the_levels($file[1]);
 }
 
-#bind open_level_elixir to Ctrl+Alt+9 menu Action: Display ElixirFM Lexicon
+#bind open_level_elixir Ctrl+Alt+9 menu Action: Display ElixirFM Lexicon
 sub open_level_elixir {
 
     ChangingFile(0);
