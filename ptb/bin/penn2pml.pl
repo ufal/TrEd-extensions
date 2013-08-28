@@ -231,6 +231,7 @@ HEADER
 	}
 	if ($cat =~ s/\-(.*)//) {
 	  my @functions = grep {!/^\d+$/} split /-/,$1;
+          die "Undefined function at $sentence_id before $1 followed by $sentence.\n" if grep 0 == length, @functions;
 	  @function_values{@functions}=() if $opts{'generate-schema'};
 	  push @{$node->{-children}}, {
 	    -name => 'functions',
