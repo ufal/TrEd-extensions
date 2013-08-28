@@ -1531,7 +1531,6 @@ sub resolve {
                             $_->[4],                 #   "qAl"
                             $JSON->decode($_->[5]),  #   "q w l"
                             $_->[6],                 #   "FAL"
-                            $_->[2],                 #   "Verb [] [FUL] []"
                             $JSON->decode($_->[1])   #   ["say","tell"]
                          ];
                 }
@@ -1556,8 +1555,7 @@ sub lexeme {
     $data->{'core'} = Treex::PML::Factory->createStructure();
 
     $data->{'core'}{'morphs'} = $text->[2];
-    $data->{'core'}{'entity'} = entity($text->[3]);
-    $data->{'core'}{'reflex'} = Treex::PML::Factory->createList($text->[4]);
+    $data->{'core'}{'reflex'} = Treex::PML::Factory->createList($text->[3]);
 
     return $data;
 }
@@ -1572,65 +1570,9 @@ sub identity {
     $text->[1] = $data->{'root'};
     $text->[2] = $data->{'core'}{'morphs'};
 
-    $text->[3] = join " ", $_->[0], ( $_->[0] eq 'Verb' ?
-
-                                        (exists $_->[1]{'pfirst'} ? "[" . ( join ",", @{$_->[1]{'pfirst'}} ) . "]" : "[]",
-                                         exists $_->[1]{'imperf'} ? "[" . ( join ",", @{$_->[1]{'imperf'}} ) . "]" : "[]",
-                                         exists $_->[1]{'second'} ? "[" . ( join ",", @{$_->[1]{'second'}} ) . "]" : "[]")
-
-                                    : $_->[0] eq 'Noun' ?
-
-                                        (exists $_->[1]{'plural'} ? "[" . ( join ",", @{$_->[1]{'plural'}} ) . "]" : "[]")
-
-                                    : $_->[0] eq 'Adj' || $_->[0] eq 'Num' ?
-
-                                        (exists $_->[1]{'plural'} ? "[" . ( join ",", @{$_->[1]{'plural'}} ) . "]" : "[]",
-                                         exists $_->[1]{'femini'} ? "[" . ( join ",", @{$_->[1]{'femini'}} ) . "]" : "[]")
-
-                                    : () )
-
-                                    for $data->{'core'}{'entity'}[0][0];
-
-    $text->[4] = [ @{$data->{'core'}{'reflex'}} ];
+    $text->[3] = [ @{$data->{'core'}{'reflex'}} ];
 
     return $JSON->encode($text);
-}
-
-sub entity {
-
-    my ($text, @text) = split /\s+(?=\[)/, $_[0];
-
-    my $data = Treex::PML::Factory->createSeq();
-
-    my @data = map { [ grep { $_ ne '' } split /\s*[\[,\]]\s*/, $_ ] } @text;
-
-    if ($text eq 'Verb') {
-
-        $data->push_element($text, Treex::PML::Factory->createStructure());
-
-        $data->[0][0][1]{'pfirst'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
-        $data->[0][0][1]{'imperf'} = Treex::PML::Factory->createList($data[1]) if @{$data[1]};
-        $data->[0][0][1]{'second'} = Treex::PML::Factory->createList($data[2]) if @{$data[2]};
-    }
-    elsif ($text eq 'Noun') {
-
-        $data->push_element($text, Treex::PML::Factory->createStructure());
-
-        $data->[0][0][1]{'plural'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
-    }
-    elsif ($text eq 'Adj' or $text eq 'Num') {
-
-        $data->push_element($text, Treex::PML::Factory->createStructure());
-
-        $data->[0][0][1]{'plural'} = Treex::PML::Factory->createList($data[0]) if @{$data[0]};
-        $data->[0][0][1]{'femini'} = Treex::PML::Factory->createList($data[1]) if @{$data[1]};
-    }
-    else {
-
-        $data->push_element($text, Treex::PML::Factory->createContainer());
-    }
-
-    return $data;
 }
 
 #bind elixir_resolve Ctrl+R menu ElixirFM Resolve
@@ -1935,7 +1877,7 @@ sub morphotrees {
 
                 $node->{'core'} = Treex::PML::Factory->createStructure();
 
-                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'entity', 'reflex';
+                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'reflex';
 
                 foreach my $t (sort keys %{$tree->{$p}[$c]{$l}}) {
 
@@ -3332,8 +3274,6 @@ sub open_level_elixir {
                                 $node->{'morphs'} . ' |< aT' eq $data->{'core'}{'morphs'} and
                                 exists $node->{'entity'}[0][0][1]{'derive'} and
                                 $node->{'entity'}[0][0][1]{'derive'} eq '------F---';
-
-                    next unless $node->{'entity'}[0][0][0] eq $data->{'core'}{'entity'}[0][0][0];
 
                     GotoTree($i < 0 ? $i + @tree + 1 : $i + 1);
 
