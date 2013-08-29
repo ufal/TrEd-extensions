@@ -1469,9 +1469,9 @@ sub elixir_dictionary {
 
         open F, '<', -f $file[1] ? $file[1] : $file[2] or return;
 
-        local $/ = undef;
+        local $/ = "";
 
-        dictionary($_) foreach ElixirFM::unwords(decode "utf8", <F>);
+        dictionary($_) foreach decode "utf8", <F>;
 
         close F;
     }
@@ -1481,11 +1481,9 @@ sub dictionary {
 
     my ($text) = @_;
 
-    my (undef, $word) = split /^[\t ]*[:]{3,4}[\t ]+/m, $text;
+    my ($word, $data) = split "\t", $text, 2;
 
-    $word = join " ", split " ", $word;
-
-    $elixir->{'dictionary'}{$word} = $text;
+    $elixir->{'dictionary'}{$word} = $text if defined $data and split " ", $data;
 }
 
 sub resolve {
@@ -1504,7 +1502,7 @@ sub resolve {
 
         my $none = join " ", @none;
 
-        my $data = ElixirFM::Exec::elixir('resolve', ['--lists'], $none);
+        my $data = ElixirFM::Exec::elixir('resolve', $none);
 
         my @data = ElixirFM::unwords $data;
 
@@ -1515,29 +1513,53 @@ sub resolve {
 
         my ($data) = exists $elixir->{'dictionary'}{$_}
                         ? ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_}
-                        : [[$_]];
+                        : [$_];
 
-        my (undef, @data) = @{$data};
+        my ($tree, $hash) = ([], {});
+
+        my ($word, @data) = @{$data};
 
         foreach (@data) {
 
-            my (undef, @data) = @{$_};
+            my ($form, @data) = @{$_};
+
+            my @path;
 
             foreach (@data) {
 
-                foreach (@{$_->[0]}) {
-
-                    $_ = [
-                            $_->[4],                 #   "qAl"
-                            $JSON->decode($_->[5]),  #   "q w l"
-                            $_->[6],                 #   "FAL"
-                            $JSON->decode($_->[1])   #   ["say","tell"]
-                         ];
-                }
+                $_ = [
+                        $_->[0],
+                        $_->[1][0],
+                        $_->[1][1][0],
+                        $_->[1][1][1][0],
+                        $_->[1][1][1][1][0],
+                        $_->[1][1][1][1][1][0],
+                        $_->[1][1][1][1][1][1][1][0],
+                    ];
             }
+
+            demode "arabtex", "noneplus";
+
+            $path[0] = join " ", ElixirFM::nub { $_[0] } map { ElixirFM::orth $_->[1] } @data;
+
+            demode "arabtex", "default";
+
+            $path[1] = join "  ", map { join " ", @{$_}[3 .. 6] } @data;
+
+            for (@data) {
+
+                $_->[3] = $JSON->decode($_->[3]);
+                $_->[6] = $JSON->decode($_->[6]);
+            }
+
+            push @{$tree}, [$path[0]] and $hash->{$path[0]} = {} unless exists $hash->{$path[0]};
+
+            push @{$tree->[-1]}, [[ map { [ @{$_}[5, 3, 4, 6] ] } @data ]] unless $hash->{$path[0]}{$path[1]}++;
+
+            push @{$tree->[-1][-1]}, [ $form, map { [ @{$_}[0, 1, 3, 2] ] } @data ];
         }
 
-        $elixir->{'resolve'}{$_} = $data;
+        $elixir->{'resolve'}{$_} = [$word, @{$tree}];
     }
 
     return map { $elixir->{'resolve'}{$_} } @word;
@@ -1588,7 +1610,7 @@ sub morpholists {
 
     my ($form, @data) = @{$resolve};
 
-    $node->{'form'} = $form->[0];
+    $node->{'form'} = $form;
 
     foreach (reverse @data) {
 
@@ -1616,7 +1638,7 @@ sub morpholists {
 
                 DetermineNodeType($node);
 
-                $node->{'form'} = substr $_->[0][0], 1, -1;
+                $node->{'form'} = $_->[0];
 
                 my (undef, @data) = @{$_};
 
@@ -1797,7 +1819,7 @@ sub morphotrees {
 
     my ($form, @data) = @{$resolve};
 
-    $done->{'form'} = $form->[0];
+    $done->{'form'} = $form;
 
     foreach (@data) {
 
