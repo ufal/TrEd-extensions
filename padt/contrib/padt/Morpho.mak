@@ -91,14 +91,14 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
             : (
             $this->{'#name'} eq 'Lexeme'
                 ? ( ( $PADT::Morpho::review->{$grp}{'zoom'}
-                        ? '#{purple}' . ( join ", ", exists $this->{'core'}{'reflex'} ?
-                                                          @{$this->{'core'}{'reflex'}} : () ) . ' '
+                        ? '#{purple}' . ( join ", ", exists $this->{'cite'}{'reflex'} ?
+                                                          @{$this->{'cite'}{'reflex'}} : () ) . ' '
                         : '' ) .
                     '#{darkmagenta}' .
                     ( $this->{'form'} eq '[DEFAULT]'
                         ? $this->{'form'}
                         : $this->{'form'} =~ /^\([0-9]+,[0-9]+\)$/
-                            ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'core'}{'morphs'}))
+                            ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'cite'}{'morphs'}))
                             : ElixirFM::phor($this->{'form'}) ) )
                 : (
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
@@ -126,11 +126,11 @@ node:<? my $index = 0;
                                                : '' ) ?>
 
 node:<? $this->{'#name'} eq 'Group' ? '#{purple}' .
-        ( join "\n", map { join ", ", @{$_->[1]{'core'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
+        ( join "\n", map { join ", ", @{$_->[1]{'cite'}{'reflex'}} } @{$this->{'data'}[0]} ) : '' ?>
 
 hint:<? join "\n", (exists $this->{'sense'} ? '"' . $this->{'sense'} . '"' : ()),
-                   (exists $this->{'core'}{'reflex'} ?
-                         @{$this->{'core'}{'reflex'}} : ()) if $this->{'#name'} eq 'Token' ?>
+                   (exists $this->{'cite'}{'reflex'} ?
+                         @{$this->{'cite'}{'reflex'}} : ()) if $this->{'#name'} eq 'Token' ?>
 >>
 }
 
@@ -881,14 +881,14 @@ sub compute_score {
         my $group = $node->parent()->{'data'}[0][$i][1];
 
         @node = split //, normalize $group->{'form'}  =~ /\p{InArabic}/ ? $group->{'form'}  : ElixirFM::orth $group->{'form'};
-        @done = split //, normalize $d[$i]->{'lemma'} =~ /\p{InArabic}/ ? $d[$i]->{'lemma'} : ElixirFM::orth $d[$i]->{'lemma'};
+        @done = split //, normalize $d[$i]->{'cite'}{'form'} =~ /\p{InArabic}/ ? $d[$i]->{'cite'}{'form'} : ElixirFM::orth $d[$i]->{'cite'}{'form'};
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
-        $score{'lemma'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
+        $score{'cite'}{'form'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
 
-        @node = exists $group->{'core'} && exists $group->{'core'}{'reflex'} ? sort @{$group->{'core'}{'reflex'}} : ();
-        @done = exists $d[$i]->{'core'} && exists $d[$i]->{'core'}{'reflex'} ? sort @{$d[$i]->{'core'}{'reflex'}} : ();
+        @node = exists $group->{'cite'} && exists $group->{'cite'}{'reflex'} ? sort @{$group->{'cite'}{'reflex'}} : ();
+        @done = exists $d[$i]->{'cite'} && exists $d[$i]->{'cite'}{'reflex'} ? sort @{$d[$i]->{'cite'}{'reflex'}} : ();
 
         @node = split '', join " ", @node;
         @done = split '', join " ", @done;
@@ -913,14 +913,14 @@ sub compute_score {
 
             delete $score{'reflex'};
             delete $score{'sense'};
-            delete $score{'lemma'};
+            delete $score{'cite'}{'form'};
         }
 
         if ($n[$i]->{'tag'} =~ /^Q[^IY]..-.....$/) {
 
             delete $score{'reflex'};
             delete $score{'sense'};
-            delete $score{'lemma'};
+            delete $score{'cite'}{'form'};
         }
 
         # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
@@ -1404,11 +1404,11 @@ sub elixir_lexicon {
                 my $lexeme = Treex::PML::Factory->createStructure();
 
                 $lexeme->{'root'} = $nest->{'root'};
-                $lexeme->{'core'} = Treex::PML::Factory->createStructure();
+                $lexeme->{'cite'} = Treex::PML::Factory->createStructure();
 
                 foreach my $key (grep { not /^[_#]/ } keys %$entry) {
 
-                    $lexeme->{'core'}{$key} = $entry->{$key};
+                    $lexeme->{'cite'}{$key} = $entry->{$key};
                 }
 
                 $lexicon->[$nest_idx][$entry_idx] = $lexeme;
@@ -1471,7 +1471,7 @@ sub elixir_dictionary {
 
         local $/ = "";
 
-        dictionary($_) foreach decode "utf8", <F>;
+        dictionary(decode "utf8", $_) while <F>;
 
         close F;
     }
@@ -1574,10 +1574,10 @@ sub lexeme {
     $data->{'form'} = $text->[0];
     $data->{'root'} = $text->[1];
 
-    $data->{'core'} = Treex::PML::Factory->createStructure();
+    $data->{'cite'} = Treex::PML::Factory->createStructure();
 
-    $data->{'core'}{'morphs'} = $text->[2];
-    $data->{'core'}{'reflex'} = Treex::PML::Factory->createList($text->[3]);
+    $data->{'cite'}{'morphs'} = $text->[2];
+    $data->{'cite'}{'reflex'} = Treex::PML::Factory->createList($text->[3]);
 
     return $data;
 }
@@ -1590,9 +1590,9 @@ sub identity {
 
     $text->[0] = $data->{'form'};
     $text->[1] = $data->{'root'};
-    $text->[2] = $data->{'core'}{'morphs'};
+    $text->[2] = $data->{'cite'}{'morphs'};
 
-    $text->[3] = [ @{$data->{'core'}{'reflex'}} ];
+    $text->[3] = [ @{$data->{'cite'}{'reflex'}} ];
 
     return $JSON->encode($text);
 }
@@ -1769,7 +1769,7 @@ sub couple {
 
                 my $lexeme = lexeme($JSON->decode($l));
 
-                $node->{$_} = $lexeme->{$_} foreach 'root', 'form', 'core';
+                $node->{$_} = $lexeme->{$_} foreach 'root', 'form', 'cite';
 
                 foreach my $t (sort keys %{$hash->{$p}[$c]{$l}}) {
 
@@ -1897,9 +1897,9 @@ sub morphotrees {
 
                 $node->{'root'} = $lexeme->{'root'};
 
-                $node->{'core'} = Treex::PML::Factory->createStructure();
+                $node->{'cite'} = Treex::PML::Factory->createStructure();
 
-                $node->{'core'}{$_} = $lexeme->{'core'}{$_} foreach 'morphs', 'reflex';
+                $node->{'cite'}{$_} = $lexeme->{'cite'}{$_} foreach 'morphs', 'reflex';
 
                 foreach my $t (sort keys %{$tree->{$p}[$c]{$l}}) {
 
@@ -2171,9 +2171,9 @@ sub reflect_tuple {
 
             $token->{$_} = $token[$j - 1]{$_} foreach 'morphs', 'tag', 'form', 'note', 'sense', 'score';
 
-            $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'core';
+            $token->{$_} = $group[$j - 1]{$_} foreach 'root', 'cite';
 
-            $token->{'lemma'} = $group[$j - 1]{'form'};
+            $token->{'cite'}{'form'} = $group[$j - 1]{'form'};
 
             $token->{'id'} = $zoom->{'id'} . 't' . $j . (@tuple > 1 ? '-' . $i : '');
         }
@@ -3238,7 +3238,7 @@ sub open_level_elixir {
 
     if ($node->root()->{'#name'} eq 'Unit') {
 
-        return unless exists $node->{'root'} and exists $node->{'core'};
+        return unless exists $node->{'root'} and exists $node->{'cite'};
     }
     else {
 
@@ -3256,7 +3256,7 @@ sub open_level_elixir {
         }
     }
 
-    $data->{$_} = $node->{$_} foreach 'root', 'core';
+    $data->{$_} = $node->{$_} foreach 'root', 'cite';
 
     return if $data->{'root'} eq '';
 
@@ -3292,8 +3292,8 @@ sub open_level_elixir {
 
                 foreach my $node ($node->children()) {
 
-                    next unless $node->{'morphs'} eq $data->{'core'}{'morphs'} or
-                                $node->{'morphs'} . ' |< aT' eq $data->{'core'}{'morphs'} and
+                    next unless $node->{'morphs'} eq $data->{'cite'}{'morphs'} or
+                                $node->{'morphs'} . ' |< aT' eq $data->{'cite'}{'morphs'} and
                                 exists $node->{'entity'}[0][0][1]{'derive'} and
                                 $node->{'entity'}[0][0][1]{'derive'} eq '------F---';
 

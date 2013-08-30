@@ -571,8 +571,8 @@ node:<? ( $this->{'note'} ne '' ? '#{magenta}${note} ' : '' ) .
                     grep { $this->attr($_) ne '' } qw 'parallel paren coref clause' ) ?>
 
 hint:<? join "\n", (exists $this->{'m'}{'sense'} ? '"' . $this->{'m'}{'sense'} . '"' : ()),
-                   (exists $this->{'m'}{'core'}{'reflex'} ?
-                         @{$this->{'m'}{'core'}{'reflex'}} : ()) if exists $this->{'m'} ?>
+                   (exists $this->{'m'}{'cite'}{'reflex'} ?
+                         @{$this->{'m'}{'cite'}{'reflex'}} : ()) if exists $this->{'m'} ?>
 >>
 }
 
@@ -608,7 +608,7 @@ sub get_auto_afun {
 
     my ($ra, $rb, $rc) = Assign_arab_afun::afun($_[0]);
 
-    print STDERR "$this->{lemma} ($ra,$rb,$rc)\n";
+    print STDERR "$this->{cite}{form} ($ra,$rb,$rc)\n";
 
     return $ra =~ /^\s*$/ ? '' : $ra;
 }
