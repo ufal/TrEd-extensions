@@ -1384,7 +1384,7 @@ sub inter_with_level ($) {
     return $level, $name, $path, @file;
 }
 
-#bind synchronize_file Ctrl+Alt+equal menu Action: Synchronize Annotations
+# #bind synchronize_file Ctrl+Alt+equal menu Action: Synchronize Annotations
 sub synchronize_file {
 
     ChangingFile(0);
@@ -1677,6 +1677,95 @@ sub ThisAddressClipBoard {
 
     $Redraw = 'none';
     ChangingFile(0);
+}
+
+#bind synchronize Ctrl+Alt+equal menu Synchronize with Morpho
+sub synchronize {
+
+    my ($file) = GetSecondaryFiles();
+
+    print "Problems ... " . $file . "\n";
+
+    return unless defined $file;
+
+    my $m = [ map { my @group = grep { exist $_->{"form"} and $_->{"form"} ne "" } $_->children();
+
+                    @group == 1 ? $group[0]->children() : $_
+              }
+              map { $_->children() } $file->trees() ];
+    my $s = [ map { sort { $a->{'ord'} <=> $b->{'ord'} } GetNodes($_) } GetTrees() ];
+
+    print "Synchronizing ... " . (scalar @{$m}) . " " . (scalar @{$s}) . "\n";
+
+    Algorithm::Diff::traverse_balanced($m, $s, {
+
+        'MATCH' => sub {
+
+            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+
+                if (exists $s->[$_[1]]->{'m'} and exists $s->[$_[1]]->{'m'}{'id'}) {
+
+                    warn "W" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
+                    warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+                }
+            }
+            else {
+
+                $s->[$_[1]]->{'m'} = Treex::PML::Factory->createStructure() unless exists $s->[$_[1]]->{'m'};
+
+                if (exist $s->[$_[1]]->{'m'}{'id'} and $s->[$_[1]]->{'m'}{'id'} ne $m->[$_[0]]->{'id'}) {
+
+                    warn "T" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
+                    warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+                }
+                else {
+
+                    $s->[$_[1]]->{'m'}{'id'} = $m->[$_[0]]->{'id'};
+                }
+            }
+        },
+
+        'CHANGE' => sub {
+
+            # $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
+
+            warn "--" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
+            warn "++" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+        },
+
+        'DISCARD_A' => sub {
+
+            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+
+                # create a new node pointing to word
+            }
+            else {
+
+                # create new nodes pointing to tokens
+            }
+
+            warn "--" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
+        },
+
+        'DISCARD_B' => sub {
+
+            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+
+            }
+            else {
+
+                # discard from syntax
+            }
+
+            warn "++" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+        },
+
+    }, sub { $_[0]->{'#name'} eq 'Word' ? $_[0]->{'id'}
+             : $_[0]->{'#name'} eq 'Token' ? $_[0]->parent()->parent()->{'id'}
+             : exists $_[0]->{'w'} ? $_[0]->{'w'}{'id'}
+             : '' });
+
+    ChangingFile(1);
 }
 
 # ##################################################################################################

@@ -89,7 +89,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                     ? ( $this->{"form"} . ( InVerticalMode() ? " " : "\n" ) . PADT::Morpho::encode("buckwalter", $this->{'form'}) )
                     : ElixirFM::orph($this->{'form'}, InVerticalMode() ? " " : "\n") )
             : (
-            $this->{'#name'} eq 'Lexeme'
+            $this->{'#name'} =~ /^(?:Group|Lexeme)$/
                 ? ( ( $PADT::Morpho::review->{$grp}{'zoom'}
                         ? '#{purple}' . ( join ", ", exists $this->{'cite'}{'reflex'} ?
                                                           @{$this->{'cite'}{'reflex'}} : () ) . ' '
@@ -99,7 +99,7 @@ node:<? '#{magenta}${note} << ' if $this->{'note'} ne '' and not $this->{'#name'
                         ? $this->{'form'}
                         : $this->{'form'} =~ /^\([0-9]+,[0-9]+\)$/
                             ? ElixirFM::phor(ElixirFM::merge($this->{'root'}, $this->{'cite'}{'morphs'}))
-                            : ElixirFM::phor($this->{'form'}) ) )
+                            : join "\n", map { ElixirFM::phor($_) } split " ", $this->{'form'} ) )
                 : (
                 $this->{'#name'} =~ /^(?:Component|Partition)$/
                     ? $this->{'form'}
@@ -1515,9 +1515,9 @@ sub resolve {
                         ? ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_}
                         : [$_];
 
-        my ($tree, $hash) = ([], {});
-
         my ($word, @data) = @{$data};
+
+        my (@twig, %twig) = ();
 
         foreach (@data) {
 
@@ -1540,7 +1540,7 @@ sub resolve {
 
             demode "arabtex", "noneplus";
 
-            $path[0] = join " ", ElixirFM::nub { $_[0] } map { ElixirFM::orth $_->[1] } @data;
+            $path[0] = join " ", map { ElixirFM::orth $_->[1] } @data;
 
             demode "arabtex", "default";
 
@@ -1552,14 +1552,33 @@ sub resolve {
                 $_->[6] = $JSON->decode($_->[6]);
             }
 
-            push @{$tree}, [$path[0]] and $hash->{$path[0]} = {} unless exists $hash->{$path[0]};
+            unless (exists $twig{$path[1]}) {
 
-            push @{$tree->[-1]}, [[ map { [ @{$_}[5, 3, 4, 6] ] } @data ]] unless $hash->{$path[0]}{$path[1]}++;
+                $twig{$path[1]} = scalar keys %twig;
+                $twig[$twig{$path[1]}] = [[], [[ map { [ @{$_}[5, 3, 4, 6] ] } @data ]]];
+            }
 
-            push @{$tree->[-1][-1]}, [ $form, map { [ @{$_}[0, 1, 3, 2] ] } @data ];
+            push @{$twig[$twig{$path[1]}][0]}, $path[0];
+            push @{$twig[$twig{$path[1]}][1]}, [ $form, map { [ @{$_}[0, 1, 3, 2] ] } @data ];
         }
 
-        $elixir->{'resolve'}{$_} = [$word, @{$tree}];
+        my (@tree, %tree) = ();
+
+        foreach (@twig) {
+
+            my $path = join "  ", ElixirFM::nub { $_[0] } @{$_->[0]};
+            my $data = $_->[1];
+
+            unless (exists $tree{$path}) {
+
+                $tree{$path} = scalar keys %tree;
+                $tree[$tree{$path}] = [$path];
+            }
+
+            push @{$tree[$tree{$path}]}, $data;
+        }
+
+        $elixir->{'resolve'}{$_} = [$word, @tree];
     }
 
     return map { $elixir->{'resolve'}{$_} } @word;
@@ -1618,7 +1637,9 @@ sub morpholists {
 
         DetermineNodeType($node);
 
-        my (undef, @data) = @{$_};
+        my ($form, @data) = @{$_};
+
+        $node->{'form'} = $form;
 
         foreach (reverse @data) {
 
@@ -1631,6 +1652,8 @@ sub morpholists {
             $node->{'data'} = Treex::PML::Factory->createSeq();
 
             $node->{'data'}->push_element('Lexeme', lexeme($_)) foreach @{$data};
+
+            $node->{'form'} = join " ", map { $_->[0] } @{$data};
 
             foreach (reverse @data) {
 
@@ -1653,19 +1676,7 @@ sub morpholists {
                     $node->{'morphs'} = $_->[3];
                 }
             }
-
-            demode "arabtex", "noneplus";
-
-            $node->{'form'} = join "  ", ElixirFM::nub { $_[0] } map { join " ", map {
-
-                                                ElixirFM::orth $_->{'form'}
-
-                                            } $_->children() } $node->children();
-
-            demode "arabtex", "default";
         }
-
-        $node->{'form'} = join "    ", ElixirFM::nub { $_[0] } map { $_->{'form'} } $node->children();
     }
 
     return $node;
@@ -1813,7 +1824,9 @@ sub morphotrees {
 
     my ($resolve, $done) = @_;
 
-    my $tree = {};
+    # my ($tree, $hash) = ([], {});
+
+    my ($tree, $hash) = ({}, {});
 
     # my $element;
 
@@ -1825,13 +1838,13 @@ sub morphotrees {
 
         # my $partition;
 
-        my (undef, @data) = @{$_};
+        my ($form, @data) = @{$_};
 
         foreach (@data) {
 
             # my $group;
 
-            my ($node, @data) = @{$_};
+            my ($data, @data) = @{$_};
 
             foreach (@data) {
 
@@ -1843,11 +1856,13 @@ sub morphotrees {
 
                 my @path;
 
-                demode "arabtex", "noneplus";
+                $path[0] = $form;
 
-                $path[0] = ElixirFM::orth join " ", @form;
+                # demode "arabtex", "noneplus";
 
-                demode "arabtex", "default";
+                # $path[0] = ElixirFM::orth join " ", @form;
+
+                # demode "arabtex", "default";
 
                 for (0 .. @data - 1) {
 
@@ -1855,11 +1870,17 @@ sub morphotrees {
 
                     $path[1] = $_;
 
-                    $path[2] = $node->[$_][0];
+                    $path[2] = $data->[$_][0];
 
                     $path[3] = join " ", @{$data[$_]}[3, 0];
 
                     $tree->{$path[0]}[$path[1]]{$path[2]}{$path[3]} = $data[$_];
+
+                    # push @{$tree}, [$path[0]] and $hash->{$path[0]} = {} unless exists $hash->{$path[0]};
+
+                    # push @{$tree->[-1]}, [[ map { [ @{$_}[5, 3, 4, 6] ] } @data ]] unless $hash->{$path[0]}{$path[1]}++;
+
+                    # push @{$tree->[-1][-1]}, [ $form, map { [ @{$_}[0, 1, 3, 2] ] } @data ];
                 }
             }
         }
@@ -3015,16 +3036,6 @@ sub inter_with_level ($) {
     return $level, $name, $path, @file;
 }
 
-#bind synchronize_file Ctrl+Alt+equal menu Action: Synchronize Annotations
-sub synchronize_file {
-
-    ChangingFile(0);
-
-    open_level_syntax();
-
-    Analytic::synchronize_file();
-}
-
 #bind open_level_words_prime Alt+0
 sub open_level_words_prime {
 
@@ -3354,7 +3365,8 @@ sub ThisAddressClipBoard {
     ChangingFile(0);
 }
 
-sub update_references {
+#bind synchronize Ctrl+Alt+equal menu Synchronize with Words
+sub synchronize {
 
     my ($file) = GetSecondaryFiles();
 
@@ -3369,26 +3381,32 @@ sub update_references {
 
                     $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
 
+                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                        unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 
             'CHANGE' => sub {
 
                     $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\n";
-                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\n";
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
+                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
+
+                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                        unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 
             'DISCARD_A' => sub {
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\n";
+                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
                 },
 
             'DISCARD_B' => sub {
 
-                    delete $m->[$_[1]]->{'w.rf'};
+                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
 
-                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\n";
+                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                        unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 
         }, sub { $_[0]->{'form'} });
