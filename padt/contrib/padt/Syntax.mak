@@ -1682,17 +1682,19 @@ sub ThisAddressClipBoard {
 #bind synchronize Ctrl+Alt+equal menu Synchronize with Morpho
 sub synchronize {
 
-    my ($file) = GetSecondaryFiles();
-
-    print "Problems ... " . $file . "\n";
-
+    my $name = $grp->{'FSFile'}->referenceNameHash()->{'morpho'};
+    my $file = $grp->{'FSFile'}->referenceObjectHash()->{$name}->convert_to_fsfile();
+    
     return unless defined $file;
 
-    my $m = [ map { my @group = grep { exist $_->{"form"} and $_->{"form"} ne "" } $_->children();
-
+    my $m = [ map { $_, map {
+        
+                    my @group = grep { exists $_->{"form"} and $_->{"form"} ne "" } $_->children();
+                    
                     @group == 1 ? $group[0]->children() : $_
-              }
-              map { $_->children() } $file->trees() ];
+            
+                    } $_->children() } $file->trees() ];
+    
     my $s = [ map { sort { $a->{'ord'} <=> $b->{'ord'} } GetNodes($_) } GetTrees() ];
 
     print "Synchronizing ... " . (scalar @{$m}) . " " . (scalar @{$s}) . "\n";
@@ -1709,18 +1711,18 @@ sub synchronize {
                     warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
                 }
             }
-            else {
+            if ($m->[$_[0]]->{'#name'} eq 'Token') {
 
                 $s->[$_[1]]->{'m'} = Treex::PML::Factory->createStructure() unless exists $s->[$_[1]]->{'m'};
 
-                if (exist $s->[$_[1]]->{'m'}{'id'} and $s->[$_[1]]->{'m'}{'id'} ne $m->[$_[0]]->{'id'}) {
+                if (exists $s->[$_[1]]->{'m'}{'id'} and $s->[$_[1]]->{'m'}{'id'} ne $m->[$_[0]]->{'id'}) {
 
                     warn "T" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
                     warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
                 }
                 else {
 
-                    $s->[$_[1]]->{'m'}{'id'} = $m->[$_[0]]->{'id'};
+                    $s->[$_[1]]->{'m'}{'id'} = 'm#' . $m->[$_[0]]->{'id'};
                 }
             }
         },
@@ -1760,9 +1762,10 @@ sub synchronize {
             warn "++" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
         },
 
-    }, sub { $_[0]->{'#name'} eq 'Word' ? $_[0]->{'id'}
+    }, sub { $_[0]->{'#name'} eq 'Unit' ? $_[0]->{'id'}
+             : $_[0]->{'#name'} eq 'Word' ? $_[0]->{'id'}
              : $_[0]->{'#name'} eq 'Token' ? $_[0]->parent()->parent()->{'id'}
-             : exists $_[0]->{'w'} ? $_[0]->{'w'}{'id'}
+             : exists $_[0]->{'w'} ? exists $_[0]->{'w'}{'id'} ? $_[0]->{'w'}{'id'} : ''
              : '' });
 
     ChangingFile(1);
