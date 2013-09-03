@@ -1683,75 +1683,89 @@ sub ThisAddressClipBoard {
 sub synchronize {
 
     my $name = $grp->{'FSFile'}->referenceNameHash()->{'morpho'};
-    my $file = $grp->{'FSFile'}->referenceObjectHash()->{$name}->convert_to_fsfile();
-    
+    my $file = $grp->{'FSFile'}->referenceObjectHash()->{$name};
+
     return unless defined $file;
 
-    my $m = [ map { $_, map {
-        
+    my @m = map { $_, map {
+
                     my @group = grep { exists $_->{"form"} and $_->{"form"} ne "" } $_->children();
-                    
+
                     @group == 1 ? $group[0]->children() : $_
-            
-                    } $_->children() } $file->trees() ];
-    
-    my $s = [ map { sort { $a->{'ord'} <=> $b->{'ord'} } GetNodes($_) } GetTrees() ];
 
-    print "Synchronizing ... " . (scalar @{$m}) . " " . (scalar @{$s}) . "\n";
+                    } $_->children() } @{$file->get_trees()};
 
-    Algorithm::Diff::traverse_balanced($m, $s, {
+    my @s = map { sort { $a->{'ord'} <=> $b->{'ord'} } GetNodes($_) } GetTrees();
+
+    print "Synchronizing ... " . (scalar @m) . " : " . (scalar @s) . "\n";
+
+    my $m = [ map { $_->{'#name'} eq 'Token' ? $_->parent()->parent()->{'id'} : $_->{'id'} } @m ];
+    my $s = [ map { exists $_->{'w'} && exists $_->{'w'}{'id'} ? $_->{'w'}{'id'} : '' } @s ];
+
+    Algorithm::Diff::traverse_sequences($m, $s, {
 
         'MATCH' => sub {
 
-            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+            if ($m[$_[0]]->{'#name'} eq 'Word') {
 
-                if (exists $s->[$_[1]]->{'m'} and exists $s->[$_[1]]->{'m'}{'id'}) {
+                if (exists $s[$_[1]]->{'m'} and exists $s[$_[1]]->{'m'}{'id'}) {
 
-                    warn "W" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
-                    warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+                    warn "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
                 }
             }
-            if ($m->[$_[0]]->{'#name'} eq 'Token') {
+            if ($m[$_[0]]->{'#name'} eq 'Token') {
 
-                $s->[$_[1]]->{'m'} = Treex::PML::Factory->createStructure() unless exists $s->[$_[1]]->{'m'};
+                if (exists $s[$_[1]]->{'m'}{'id'} and $s[$_[1]]->{'m'}{'id'} ne $m[$_[0]]->{'id'}) {
 
-                if (exists $s->[$_[1]]->{'m'}{'id'} and $s->[$_[1]]->{'m'}{'id'} ne $m->[$_[0]]->{'id'}) {
-
-                    warn "T" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
-                    warn "N" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+                    warn "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
                 }
                 else {
 
-                    $s->[$_[1]]->{'m'}{'id'} = 'm#' . $m->[$_[0]]->{'id'};
+                    $s[$_[1]]->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
+                    $s[$_[1]]->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'};
+
+                    # THIS WORKS FINE, TOO:
+                    # $s[$_[1]]->{'m'}{'#knit_prefix'} = 'm';
+                    # $s[$_[1]]->{'m'}{'id'} = $m[$_[0]]->{'id'};
+
+                    # THIS NEVER WORKS, PREFIX IS MISSING:
+                    # $s[$_[1]]->{'m'} = $m[$_[0]];
                 }
             }
-        },
-
-        'CHANGE' => sub {
-
-            # $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
-
-            warn "--" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
-            warn "++" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
         },
 
         'DISCARD_A' => sub {
 
-            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+            if ($m[$_[0]]->{'#name'} eq 'Word') {
 
-                # create a new node pointing to word
+                my $node = NewSon($s[$_[1]]);
+
+                DetermineNodeType($node);
+
+                $node->{'afun'} = '???';
+
+                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
+                $node->{'w.rf'} = 'm#' . $m[$_[0]]->{'id'};
             }
             else {
 
-                # create new nodes pointing to tokens
+                my $node = NewSon($s[$_[1]]);
+
+                DetermineNodeType($node);
+
+                $node->{'afun'} = '???';
+
+                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
+                $node->{'w.rf'} = 'm#' . $m[$_[0]]->parent()->parent()->{'id'};
+                $node->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'};
             }
 
-            warn "--" . "\t" . ThisAddress($m->[$_[0]], $file) . "\t" . $m->[$_[0]]->{'id'} . "\n";
+            # warn "--" . "\t" . ThisAddress($m[$_[0]], $file) . "\t" . $m[$_[0]]->{'id'} . "\n";
         },
 
         'DISCARD_B' => sub {
 
-            if ($m->[$_[0]]->{'#name'} eq 'Word') {
+            if ($m[$_[0]]->{'#name'} eq 'Word') {
 
             }
             else {
@@ -1759,14 +1773,10 @@ sub synchronize {
                 # discard from syntax
             }
 
-            warn "++" . "\t" . ThisAddress($s->[$_[1]]) . "\t" . $s->[$_[1]]->{'id'} . "\n";
+            warn "++" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\n";
         },
 
-    }, sub { $_[0]->{'#name'} eq 'Unit' ? $_[0]->{'id'}
-             : $_[0]->{'#name'} eq 'Word' ? $_[0]->{'id'}
-             : $_[0]->{'#name'} eq 'Token' ? $_[0]->parent()->parent()->{'id'}
-             : exists $_[0]->{'w'} ? exists $_[0]->{'w'}{'id'} ? $_[0]->{'w'}{'id'} : ''
-             : '' });
+    });
 
     ChangingFile(1);
 }
