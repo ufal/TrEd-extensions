@@ -3381,7 +3381,7 @@ sub synchronize {
 
                     $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
 
-                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                    print "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
                         unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 
@@ -3389,23 +3389,23 @@ sub synchronize {
 
                     $m->[$_[1]]->{'w.rf'} = 'w#' . $w->[$_[0]]->{'id'};
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
-                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
+                    print "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
+                    print "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
 
-                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                    print "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
                         unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 
             'DISCARD_A' => sub {
 
-                    warn "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
+                    print "--" . "\t" . ThisAddress($w->[$_[0]], $file) . "\t" . $w->[$_[0]]->{'id'} . "\n";
                 },
 
             'DISCARD_B' => sub {
 
-                    warn "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
+                    print "++" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $m->[$_[1]]->{'id'} . "\n";
 
-                    warn "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
+                    print "==" . "\t" . ThisAddress($m->[$_[1]]) . "\t" . $w->[$_[0]]->{'id'} . "\t" . $m->[$_[1]]->{'id'} . "\n"
                         unless $m->[$_[1]]->{'id'} eq join "m-", split "w-", $w->[$_[0]]->{'id'};
                 },
 

@@ -1697,13 +1697,13 @@ sub synchronize {
 
     my @s = map { sort { $a->{'ord'} <=> $b->{'ord'} } GetNodes($_) } GetTrees();
 
-    print "Synchronizing ... " . (scalar @m) . " : " . (scalar @s) . "\n";
+    warn "Synchronizing ... " . (scalar @m) . " : " . (scalar @s) . "\n";
 
     my $m = [ map { $_->{'#name'} eq 'Token' ? $_->parent()->parent()->{'id'} : $_->{'id'} } @m ];
     my $s = [ map { exists $_->{'w'} && exists $_->{'w'}{'id'} ? $_->{'w'}{'id'} : '' } @s ];
 
     my %node = ();
-    
+
     Algorithm::Diff::traverse_sequences($m, $s, {
 
         'MATCH' => sub {
@@ -1712,14 +1712,14 @@ sub synchronize {
 
                 if (exists $s[$_[1]]->{'m'} and exists $s[$_[1]]->{'m'}{'id'}) {
 
-                    warn "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
+                    print "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
                 }
             }
             if ($m[$_[0]]->{'#name'} eq 'Token') {
 
                 if (exists $s[$_[1]]->{'m'}{'id'} and $s[$_[1]]->{'m'}{'id'} ne $m[$_[0]]->{'id'}) {
 
-                    warn "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
+                    print "==" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
                 }
                 else {
 
@@ -1738,43 +1738,32 @@ sub synchronize {
 
         'DISCARD_A' => sub {
 
+            my $id = $s[$_[1] - 1]->{'id'};
+
+            $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
+
+            my $node = NewSon($node{$id});
+
+            DetermineNodeType($node);
+
+            $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
+
             if ($m[$_[0]]->{'#name'} eq 'Token') {
 
-                my $id = $m[$_[0]]->parent()->parent()->{'id'};
-                
-                $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
-                
-                my $node = NewSon($node{$id});
-
-                DetermineNodeType($node);
-
-                $node->{'afun'} = '???';
-
-                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
                 $node->{'w.rf'} = 'm#' . $m[$_[0]]->parent()->parent()->{'id'};
                 $node->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'};
 
-                $node{$id} = $node;
             }
             else {
 
-                my $id = $m[$_[0]]->{'id'};
-                
-                $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
-                
-                my $node = NewSon($node{$id});
-
-                DetermineNodeType($node);
-
-                $node->{'afun'} = '???';
-
-                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
                 $node->{'w.rf'} = 'm#' . $m[$_[0]]->{'id'};
-
-                $node{$id} = $node;
             }
 
-            # warn "--" . "\t" . ThisAddress($m[$_[0]], $file) . "\t" . $m[$_[0]]->{'id'} . "\n";
+            $node->{'afun'} = '???';
+
+            $node{$id} = $node;
+
+            print "--" . "\t" . ThisAddress($node{$id}) . "\t" . $node{$id}->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
         },
 
         'DISCARD_B' => sub {
@@ -1787,7 +1776,7 @@ sub synchronize {
                 # discard from syntax
             }
 
-            warn "++" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\n";
+            print "++" . "\t" . ThisAddress($s[$_[1]]) . "\t" . $s[$_[1]]->{'id'} . "\t" . $m[$_[0] - 1]->{'id'} . "\n";
         },
 
     });
