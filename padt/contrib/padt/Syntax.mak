@@ -1702,6 +1702,8 @@ sub synchronize {
     my $m = [ map { $_->{'#name'} eq 'Token' ? $_->parent()->parent()->{'id'} : $_->{'id'} } @m ];
     my $s = [ map { exists $_->{'w'} && exists $_->{'w'}{'id'} ? $_->{'w'}{'id'} : '' } @s ];
 
+    my %node = ();
+    
     Algorithm::Diff::traverse_sequences($m, $s, {
 
         'MATCH' => sub {
@@ -1736,20 +1738,13 @@ sub synchronize {
 
         'DISCARD_A' => sub {
 
-            if ($m[$_[0]]->{'#name'} eq 'Word') {
+            if ($m[$_[0]]->{'#name'} eq 'Token') {
 
-                my $node = NewSon($s[$_[1]]);
-
-                DetermineNodeType($node);
-
-                $node->{'afun'} = '???';
-
-                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
-                $node->{'w.rf'} = 'm#' . $m[$_[0]]->{'id'};
-            }
-            else {
-
-                my $node = NewSon($s[$_[1]]);
+                my $id = $m[$_[0]]->parent()->parent()->{'id'};
+                
+                $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
+                
+                my $node = NewSon($node{$id});
 
                 DetermineNodeType($node);
 
@@ -1758,6 +1753,25 @@ sub synchronize {
                 $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
                 $node->{'w.rf'} = 'm#' . $m[$_[0]]->parent()->parent()->{'id'};
                 $node->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'};
+
+                $node{$id} = $node;
+            }
+            else {
+
+                my $id = $m[$_[0]]->{'id'};
+                
+                $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
+                
+                my $node = NewSon($node{$id});
+
+                DetermineNodeType($node);
+
+                $node->{'afun'} = '???';
+
+                $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
+                $node->{'w.rf'} = 'm#' . $m[$_[0]]->{'id'};
+
+                $node{$id} = $node;
             }
 
             # warn "--" . "\t" . ThisAddress($m[$_[0]], $file) . "\t" . $m[$_[0]]->{'id'} . "\n";
