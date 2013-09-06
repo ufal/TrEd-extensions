@@ -1708,6 +1708,10 @@ sub synchronize {
 
         'MATCH' => sub {
 
+            my $word = $m[$_[0]]->{'#name'} eq 'Token' ? $m[$_[0]]->parent()->parent() : $m[$_[0]];
+
+            $node{$word->{'id'}} = $s[$_[1]];
+
             if ($m[$_[0]]->{'#name'} eq 'Word') {
 
                 if (exists $s[$_[1]]->{'m'} and exists $s[$_[1]]->{'m'}{'id'}) {
@@ -1738,32 +1742,22 @@ sub synchronize {
 
         'DISCARD_A' => sub {
 
-            my $id = $s[$_[1] - 1]->{'id'};
+            my $word = $m[$_[0]]->{'#name'} eq 'Token' ? $m[$_[0]]->parent()->parent() : $m[$_[0]];
 
-            $node{$id} = $s[$_[1] - 1] unless exists $node{$id};
-
-            my $node = NewSon($node{$id});
+            my $node = exists $node{$word->{'id'}} ? NewSon($node{$word->{'id'}}) : NewLBrother($s[$_[1]]);
 
             DetermineNodeType($node);
 
             $node->{'id'} = join "s-", split "m-", $m[$_[0]]->{'id'};
 
-            if ($m[$_[0]]->{'#name'} eq 'Token') {
-
-                $node->{'w.rf'} = 'm#' . $m[$_[0]]->parent()->parent()->{'id'};
-                $node->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'};
-
-            }
-            else {
-
-                $node->{'w.rf'} = 'm#' . $m[$_[0]]->{'id'};
-            }
+            $node->{'w.rf'} = 'm#' . $word->{'id'};
+            $node->{'m.rf'} = 'm#' . $m[$_[0]]->{'id'} if $m[$_[0]]->{'#name'} eq 'Token';
 
             $node->{'afun'} = '???';
 
-            $node{$id} = $node;
+            $node{$word->{'id'}} = $node;
 
-            print "--" . "\t" . ThisAddress($node{$id}) . "\t" . $node{$id}->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
+            print "--" . "\t" . ThisAddress($node) . "\t" . $node->{'id'} . "\t" . $m[$_[0]]->{'id'} . "\n";
         },
 
         'DISCARD_B' => sub {
