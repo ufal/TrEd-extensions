@@ -78,14 +78,14 @@ sub afun_Pnom { AfunAssign("Pnom") }
 #bind afun_Pnom_Co Ctrl+n menu Assign Pnom_Co
 sub afun_Pnom_Co { AfunAssign("Pnom_Co") }
 
-#bind afun_Pred Q menu Assign _Pred
-sub afun_Pred {
+#bind afun__Pred Q menu Assign _Pred
+sub afun__Pred {
     return if $this == $root;
     $this->{'clause'} = $this->{'clause'} eq 'Pred' ? '' : 'Pred';
 }
 
-#bind afun_Pnom N menu Assign _Pnom
-sub afun_Pnom {
+#bind afun__Pnom N menu Assign _Pnom
+sub afun__Pnom {
     return if $this == $root;
     $this->{'clause'} = $this->{'clause'} eq 'Pnom' ? '' : 'Pnom';
 }
