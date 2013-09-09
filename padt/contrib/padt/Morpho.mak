@@ -699,7 +699,7 @@ sub score_nodes {
 
     return unless @zoom;
 
-    my @none  = grep { not exists $_->{'form'} or $_->{'form'} eq '' } @zoom;
+    my @none = grep { not exists $_->{'form'} or $_->{'form'} eq '' } @zoom;
 
     @zoom = @none if @none;
 
@@ -880,12 +880,12 @@ sub compute_score {
 
         my $group = $node->parent()->{'data'}[0][$i][1];
 
-        @node = split //, normalize $group->{'form'}  =~ /\p{InArabic}/ ? $group->{'form'}  : ElixirFM::orth $group->{'form'};
+        @node = split //, normalize $group->{'form'}  =~ /\p{InArabic}/ ? $group->{'form'} : ElixirFM::orth $group->{'form'};
         @done = split //, normalize $d[$i]->{'cite'}{'form'} =~ /\p{InArabic}/ ? $d[$i]->{'cite'}{'form'} : ElixirFM::orth $d[$i]->{'cite'}{'form'};
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
-        $score{'cite'}{'form'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
+        $score{'cite/form'} = @node + @done == 0 ? 1.0 : 2 * @diff / (@node + @done);
 
         @node = exists $group->{'cite'} && exists $group->{'cite'}{'reflex'} ? sort @{$group->{'cite'}{'reflex'}} : ();
         @done = exists $d[$i]->{'cite'} && exists $d[$i]->{'cite'}{'reflex'} ? sort @{$d[$i]->{'cite'}{'reflex'}} : ();
@@ -895,7 +895,7 @@ sub compute_score {
 
         @diff = Algorithm::Diff::LCS([@node], [@done]);
 
-        $score{'reflex'} = @done ? 2 * @diff / (@node + @done) : 1.0;
+        $score{'cite/reflex'} = @done ? 2 * @diff / (@node + @done) : 1.0;
 
         if (exists $d[$i]->{'sense'} and $d[$i]->{'sense'} ne '') {
 
@@ -911,21 +911,17 @@ sub compute_score {
         if (exists $except{$group->{'form'}} and $n[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[0])$/
                                              and $d[$i]->{'tag'} =~ /^(?:$except{$group->{'form'}}->[1])$/) {
 
-            delete $score{'reflex'};
+            delete $score{'cite/form'};
+            delete $score{'cite/reflex'};
             delete $score{'sense'};
-            delete $score{'cite'}{'form'};
         }
 
         if ($n[$i]->{'tag'} =~ /^Q[^IY]..-.....$/) {
 
-            delete $score{'reflex'};
+            delete $score{'cite/form'};
+            delete $score{'cite/reflex'};
             delete $score{'sense'};
-            delete $score{'cite'}{'form'};
         }
-
-        # $score{'reflex'} = @node + @done == 0 ? 1 : 2 * @diff / (@node + @done);
-
-        # $score[$i] = reduce { $a * $b } map { $score{$_} } keys %score;
 
         $score[$i] = harmonic values %score;
     }
