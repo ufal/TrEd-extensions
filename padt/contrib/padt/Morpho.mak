@@ -511,6 +511,33 @@ sub focus_score_succeeding {
     }
 }
 
+sub identify_tokens {
+
+    my ($node, @tuple) = @_;
+
+    return unless defined $node and $node->{'#name'} eq 'Word';
+
+    @tuple = grep { exists $_->{'form'} and $_->{'form'} ne '' } $node->children() unless @tuple;
+
+    if (@tuple == 1) {
+
+        my $tuple = $tuple[0];
+        my @token = $tuple->children();
+
+        $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ foreach 1 .. @token;
+    }
+    else {
+
+        foreach my $i (1 .. @tuple) {
+
+            my $tuple = $tuple[$i - 1];
+            my @token = $tuple->children();
+
+            $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ . '-' . $i foreach 1 .. @token;
+        }
+    }
+}
+
 sub restrict_morphology {
 
     my ($node, @restrict) = @_;
@@ -538,23 +565,7 @@ sub restrict_morphology {
         }
     }
 
-    if (@tuple == 1) {
-
-        my $tuple = $tuple[0];
-        my @token = $tuple->children();
-
-        $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ foreach 1 .. @token;
-    }
-    else {
-
-        foreach my $i (1 .. @tuple) {
-
-            my $tuple = $tuple[$i - 1];
-            my @token = $tuple->children();
-
-            $token[$_ - 1]->{'id'} = $node->{'id'} . 't' . $_ . '-' . $i foreach 1 .. @token;
-        }
-    }
+    identify_tokens($node, @tuple);
 }
 
 #bind update_morphology Ctrl+Shift+space menu Update the Annotation
@@ -2619,6 +2630,10 @@ sub delete_subtree {
 
     CutNode($node);
 
+    $node = $done->parent() || $done;
+
+    identify_tokens($node) if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Word';
+
     $this = $done;
 
     ChangingFile(1);
@@ -2638,6 +2653,10 @@ sub delete_neighbors {
     return unless @node;
 
     CutNode($_) foreach @node;
+
+    $node = $node->parent();
+
+    identify_tokens($node) if not $review->{$grp}{'zoom'} and $node->{'#name'} eq 'Word';
 
     ChangingFile(1);
 }
