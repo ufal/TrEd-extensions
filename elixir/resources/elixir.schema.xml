@@ -86,16 +86,21 @@
             <element name="Noun">
                 <structure>
                     <member name="plural" type="Plural"/>
+                    <member name="femini" type="Femini"/>
                     <member name="except" type="Except"/>
-                    <member name="gender" type="Gender"/>
                     <member name="derive" type="Derive"/>
+                    <!--
+                    <member name="gender" type="Gender"/>
+                    -->
                 </structure>
             </element>
             <element name="Adj" >
                 <structure>
                     <member name="plural" type="Plural"/>
                     <member name="femini" type="Femini"/>
+                    <!--
                     <member name="number" type="Number"/>
+                    -->
                 </structure>
             </element>
             <element name="Pron">
