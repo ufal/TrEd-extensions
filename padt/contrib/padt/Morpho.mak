@@ -803,8 +803,8 @@ sub compute_score {
 
         ".hay_tu"   => ['C---------', 'D---------'],
 
-        "l_akin"    => ['C---------', 'C---------'],
-        "l_akinna"  => ['C---------', 'C---------'],
+        # "l_akin"    => ['C---------', 'C---------'],
+        # "l_akinna"  => ['C---------', 'C---------'],
 
         "fImA"      => ['C---------', 'C---------'],
 
@@ -927,7 +927,7 @@ sub compute_score {
             delete $score{'sense'};
         }
 
-        if ($n[$i]->{'tag'} =~ /^Q[^IY]..-.....$/) {
+        if ($n[$i]->{'tag'} =~ /^Q[^IU]..-.....$/) {
 
             delete $score{'cite/form'};
             delete $score{'cite/reflex'};
