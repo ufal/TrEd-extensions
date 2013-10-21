@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="556469">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="560754">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>padt</pkgname>
   <icon>icons/padt.png</icon>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
-  <title>Prague Arabic Dependency Treebank Annotation</title>
-  <version>1.66</version>
-  <copyright year="2004-2011">Otakar Smrž</copyright>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Prague Arabic Dependency Treebank</title>
+  <version>1.68</version>
+  <copyright year="2004-2013">Otakar Smrž</copyright>
   <description>Various annotation modes for Prague Arabic Dependency Treebank.</description>
   <require>
     <tred min_version="2.4936"/>
