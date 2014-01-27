@@ -962,6 +962,8 @@ sub switch_either_context {
         $review->{$grp}{'zoom'} = $this;
 
         update_zoom_tree();
+
+        $this = $review->{$grp}{'tree'};
     }
 }
 
@@ -1520,7 +1522,10 @@ sub resolve {
 
         my ($data) = exists $elixir->{'dictionary'}{$_}
                         ? ElixirFM::concat ElixirFM::unpretty $elixir->{'dictionary'}{$_}
-                        : [$_];
+                        : /$PADT::regexQ/
+                            ? reduce { [$b, $a] } reverse
+                              ($_, $_, 'Q---------', $_, '"' . $_ . '"', '""', '""', '', '(0,2)', ['[]'])
+                            : [$_];
 
         my ($word, @data) = @{$data};
 
@@ -3459,7 +3464,7 @@ Otakar Smrz C<< <otakar-smrz users.sf.net> >>, L<http://otakar-smrz.users.sf.net
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2004-2013 Otakar Smrz
+Copyright (C) 2004-2014 Otakar Smrz
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
