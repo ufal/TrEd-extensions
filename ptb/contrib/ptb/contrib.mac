@@ -75,6 +75,49 @@ sub get_nodelist_hook {
     return [[sort { $order{$a} <=> $order{$b} } ($tree, @nodes)], $current];
 }
 
+sub after_redraw_hook {
+  my $treeview = shift;
+
+  return unless $root->attr('mwes');
+
+  # The same colours as those used in the annotation tool sem-ann, 
+  # except for red for 'real mwes' - i.e. SemLex entries other than NEs
+  my %mwe_colours = ( 
+    lexeme      => 'red', #originally 'maroon'
+    person      => 'olive drab',
+    institution => 'hot pink',
+    location    => 'turquoise1',
+    object      => 'plum',
+    address     => 'light slate blue',
+    time        => 'lime green',
+    biblio      => '#8aa3ff',
+    foreign     => '#8a535c',
+    number      => 'orange1'
+  );
+  my @stipples = (qw(dense1 dense2 dense5 dense6));
+
+  my @groups;
+  my @group_colors;
+  my @group_stipples;
+  
+  foreach my $snode ( ListV( $root->attr('mwes') || ()) ) {
+    my $mwe_type = $snode->{type};
+    my @group = map { PML::GetNodeByID($_) } ListV( $snode->{'terminal.rfs'} );
+    push @groups, [@group];
+    push @group_colors, 'red';
+    push @group_stipples, 'dense1';
+  }
+
+  TrEd::NodeGroups::draw_groups(
+    $grp,
+    \@groups,
+    {
+      colors   => \@group_colors,
+      stipples => \@group_stipples,
+      group_line_width => 20
+    }
+  );
+}
 
 }
 1;
