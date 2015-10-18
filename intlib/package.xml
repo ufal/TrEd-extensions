@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="75766">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>intlib</pkgname>
+  <icon>icons/logo.png</icon>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>INTLIB Annotation</title>
+  <version>1.00</version>
+  <copyright year="2015">Vincent Kríž, Barbora Hladká</copyright>
+  <description>Provides new features, macros and attributes for annotation of the Czech legal texts.</description>
+  <require>
+    <tred min_version="2.4936"/>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
+  </require>
+</tred_extension>

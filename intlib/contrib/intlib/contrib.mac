@@ -1,0 +1,7 @@
+#ifndef intlib
+#define intlib
+
+#binding-context PML_INTLIB_A_Edit
+#include "PML_INTLIB_A_Edit.mak"
+
+#endif intlib
