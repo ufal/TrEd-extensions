@@ -11,7 +11,7 @@ text: <?
   : () ?>
 
 
-rootstyle:
+rootstyle: #{balance:spread}
   #{skipHiddenLevels:1}
   #{CurrentTextBox-fill:red}
   #{nodeXSkip:4}
