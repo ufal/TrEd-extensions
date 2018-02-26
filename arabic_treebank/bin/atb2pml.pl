@@ -50,7 +50,7 @@ for my $f (@ARGV) {
   $out = File::Spec->catfile($opts{'output-dir'}, $base);
 
   print "$f => $out\n" unless $opts{quiet};
-  my $doc = Treex::PML::Factory->createDocument($f);
+  my $doc = Treex::PML::Factory->createDocumentFromFile($f);
   if ( -f $out ) {
     if ( -f $out.'~' ) {
       unlink $out.'~';
