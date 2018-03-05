@@ -62,6 +62,7 @@ sub ag_attr {
 
 sub open_signal_file {
   my ($sigfile, $input)=@_;
+  $input = File::Spec->rel2abs($input);
   my $abs  = URI->new($sigfile)->abs($input);
   unless ($abs->scheme) {
     $abs->scheme('file');
