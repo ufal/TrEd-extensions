@@ -45,7 +45,7 @@ sub detransliterate {
   $decode=~s/\(null\)//g;
   eval {
     $decode =~ tr[,;?'|>&<}AbptvjHxd*rzs$SDTZEg_fqklmnhwYyFNKaui~o`{PJRVG0-9]
-		 [\x{060C}\x{061B}\x{061F}\x{0621}-\x{063A}\x{0640}-\x{0652}\x{0670}\x{0671}\x{067E}\x{0686}\x{0698}\x{06A4}\x{06AF}\x{0660}-\x{0669}];
+         [\x{060C}\x{061B}\x{061F}\x{0621}-\x{063A}\x{0640}-\x{0652}\x{0670}\x{0671}\x{067E}\x{0686}\x{0698}\x{06A4}\x{06AF}\x{0660}-\x{0669}];
   };
   return $decode;
 }
@@ -73,20 +73,20 @@ sub open_signal_file {
     $filename = $abs->file;
     unless (-f $filename) {
       if ($filename=~m{/mnt/unagi/spd24/arabic-pos/UMAAH/sgm/processed/([^/]*)$} and -f File::Spec->catfile($base,'..','..','sgm',$1)) {
-	$filename = File::Spec->catfile($base,'..','..','sgm',$1);
+        $filename = File::Spec->catfile($base,'..','..','sgm',$1);
       } else {
-	(undef,undef,$filename) = File::Spec->splitpath($filename);
-	my $rel = File::Spec->catfile('sgm',$filename);
-	for (0..2) {
-	  my $try = File::Spec->catfile($base,$rel);
-	  if (-f $try) {
-	    $filename = $try;
-	  }
-	  $rel = File::Spec->catfile('..',$rel);
-	}
+        (undef,undef,$filename) = File::Spec->splitpath($filename);
+        my $rel = File::Spec->catfile('sgm',$filename);
+        for (0..2) {
+          my $try = File::Spec->catfile($base,$rel);
+          if (-f $try) {
+            $filename = $try;
+          }
+          $rel = File::Spec->catfile('..',$rel);
+        }
       }
       warn("Warning: xlink:href leads to a non-existing signal file, will try $filename\n")
-	if $Treex::PML::Debug;
+        if $Treex::PML::Debug;
     }
   }
   return Treex::PML::IO::open_backend($filename,'r');
@@ -126,9 +126,9 @@ EOF
 
   my $output=$input; # $output=~s/\.xml$//; $output.='.pml';
   Treex::PML::Instance->load({string   => $pml,
-		     filename => $output,
-		     config   => $Treex::PML::Backend::PML::config
-		    })->convert_to_fsfile($fsfile);
+             filename => $output,
+             config   => $Treex::PML::Backend::PML::config
+            })->convert_to_fsfile($fsfile);
   # $fsfile->changeBackend('PML');
   $fsfile->delete_tree(0);
   delete $fsfile->appData('id-hash')->{foo};
@@ -140,11 +140,11 @@ EOF
   my $sigfh = open_signal_file($sigfile,$input)
     or die "Can't open $sigfile. Aborting!\n";
   my $sigdom=eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
-					  "<!DOCTYPE DOC [\n".
-					  "<!ENTITY HT ''>\n".
-					  "<!ENTITY QC ''>\n".
-					  "]>".join("",<$sigfh>)
-					 ) };
+                      "<!DOCTYPE DOC [\n".
+                      "<!ENTITY HT ''>\n".
+                      "<!ENTITY QC ''>\n".
+                      "]>".join("",<$sigfh>)
+                     ) };
   close ($sigfh);
   unless ($sigdom) {
     die "Error parsing $sigfile ($@). Aborting!\n";
@@ -182,30 +182,30 @@ EOF
       $token =~ s/\s+$//;
       my $id = ag_attr($annotation,'id'); $id=~tr[:][-];
       my $node=Treex::PML::Factory->createTypedNode($terminal_type,{
-	'#name'=>'terminal',
-	id=> $id,
-	token => $token,
-	lookup_word => xp($xpc,$annotation,q{ string(ag:Feature[@name='lookup-word']) }),
-	comment => xp($xpc,$annotation,q{ string(ag:Feature[@name='comment']) }),
+    '#name'=>'terminal',
+    id=> $id,
+    token => $token,
+    lookup_word => xp($xpc,$annotation,q{ string(ag:Feature[@name='lookup-word']) }),
+    comment => xp($xpc,$annotation,q{ string(ag:Feature[@name='comment']) }),
       },1);
       $node->{_start}=$start;
       $node->{_end}=$end;
       my $selection_id=xp($xpc,$annotation,q{ string(ag:Feature[@name='selection']) });
       my ($selection)=
-	$xpc->findnodes(qq{ (id("$selection_id")|//ag:Annotation[\@id="$selection_id"])[1] },$annotation);
+    $xpc->findnodes(qq{ (id("$selection_id")|//ag:Annotation[\@id="$selection_id"])[1] },$annotation);
       if ($selection) {
-	$node->{gloss}=xp($xpc,$selection,q{ string(ag:Feature[@name='gloss']) });
-	my $solution=xp($xpc,$selection,q{ string(ag:Feature[@name='solution']) });
-	my $lemmatag;
-	($node->{translit},$lemmatag)=($solution=~m{^\(([^)]+)\)\s+(.*)$});
-	my @lemmatag=split /\+/,$lemmatag;
-	$node->{lemma}=join '+', map { m{^(.*)/}; $1 } @lemmatag;
-	$node->{morph}=join '+',map { m{^.*/(.*)}; $1 } @lemmatag;
+    $node->{gloss}=xp($xpc,$selection,q{ string(ag:Feature[@name='gloss']) });
+    my $solution=xp($xpc,$selection,q{ string(ag:Feature[@name='solution']) });
+    my $lemmatag;
+    ($node->{translit},$lemmatag)=($solution=~m{^\(([^)]+)\)\s+(.*)$});
+    my @lemmatag=split /\+/,$lemmatag;
+    $node->{lemma}=join '+', map { m{^(.*)/}; $1 } @lemmatag;
+    $node->{morph}=join '+',map { m{^.*/(.*)}; $1 } @lemmatag;
       }
       if ($node->{translit} ne "") {
-	$node->{form}=detransliterate($node->{translit});
+    $node->{form}=detransliterate($node->{translit});
       } else {
-	$node->{form}=$node->{token};
+    $node->{form}=$node->{token};
       }
       push @nodes,$node;
     }
@@ -221,11 +221,11 @@ EOF
     my $lastord;
     $tree=~s{ (?:(\d+)|(\*\S*))(?= )}{
       if ($1 ne "") {
-	$lastord=$1;
-	" $1"
+    $lastord=$1;
+    " $1"
       } else {
-	$lastord+=0.01;
-	" $lastord$2"
+    $lastord+=0.01;
+    " $lastord$2"
       }
     }eg;
 
@@ -237,55 +237,55 @@ EOF
       my $cat=shift @children;
       my $node;
       if ($cat eq 'Paragraph') {
-	$node=Treex::PML::Factory->createTypedNode($root_type,{
-	  id => $tree_id.'-s1',
-	  para_id => $tree_id,
-	  comment => $comment,
-	  para=>$para,
-	  sent_no => 1,
-	},1);
+    $node=Treex::PML::Factory->createTypedNode($root_type,{
+      id => $tree_id.'-s1',
+      para_id => $tree_id,
+      comment => $comment,
+      para=>$para,
+      sent_no => 1,
+    },1);
       } else {
-	my $id = $tree_id.'-nt'.$nt;
-	$node=Treex::PML::Factory->createTypedNode($nonterminal_type,{
-	  '#name'=>'nonterminal',
-	  id => $id,
-	},1);
-	if ($cat=~s/=(\d+)$//) {
-	  if ($gapping{$1}) {
-	    $node->{'gapping.rf'}=$gapping{$1};
-	  }
-	  $gapping{$1}=$id;
-	}
-	if ($cat=~s/-(\d+)$//) {
-	  if ($coref{$1}) {
-	    $node->{'coref.rf'}=$coref{$1};
-	  }
-	  $coref{$1}=$id;
-	}
-	my @functions = split '-',$cat;
-	$node->{cat}=shift @functions;
-	$node->{functions}=Treex::PML::Factory->createList(\@functions,1);
+    my $id = $tree_id.'-nt'.$nt;
+    $node=Treex::PML::Factory->createTypedNode($nonterminal_type,{
+      '#name'=>'nonterminal',
+      id => $id,
+    },1);
+    if ($cat=~s/=(\d+)$//) {
+      if ($gapping{$1}) {
+        $node->{'gapping.rf'}=$gapping{$1};
+      }
+      $gapping{$1}=$id;
+    }
+    if ($cat=~s/-(\d+)$//) {
+      if ($coref{$1}) {
+        $node->{'coref.rf'}=$coref{$1};
+      }
+      $coref{$1}=$id;
+    }
+    my @functions = split '-',$cat;
+    $node->{cat}=shift @functions;
+    $node->{functions}=Treex::PML::Factory->createList(\@functions,1);
       }
       foreach (reverse @children) { # reverse because paste_on pastes before first son
-	my $child;
-	if (/^nt(\d+)$/) {
-	  $child=$nts[$1];
-	} elsif (/^(\d+)$/) {
-	  die "no word has index $_ in $agid:\n$origtree\n" if $_ >$#nodes;
-	  $child=$nodes[$_];
-	} elsif (/^(\d+(?:\.\d+))(\*.*)$/) {
-	  my $type = $2;
-	  $type=~s/^\*\|\*$//g;
-	  $child=Treex::PML::Factory->createTypedNode($trace_type,{
-	    '#name'=>'trace',
-	    id => $tree_id.'-trace'.($trace++),
-	    type=>$type,
-	  });
-	} else {
-	  die "unrecoginzed token $_! Aborting\n";
-	}
-	die "malformed tree?\n" unless ref($child);
-	$child->paste_on($node);
+    my $child;
+    if (/^nt(\d+)$/) {
+      $child=$nts[$1];
+    } elsif (/^(\d+)$/) {
+      die "no word has index $_ in $agid:\n$origtree\n" if $_ >$#nodes;
+      $child=$nodes[$_];
+    } elsif (/^(\d+(?:\.\d+))(\*.*)$/) {
+      my $type = $2;
+      $type=~s/^\*\|\*$//g;
+      $child=Treex::PML::Factory->createTypedNode($trace_type,{
+        '#name'=>'trace',
+        id => $tree_id.'-trace'.($trace++),
+        type=>$type,
+      });
+    } else {
+      die "unrecoginzed token $_! Aborting\n";
+    }
+    die "malformed tree?\n" unless ref($child);
+    $child->paste_on($node);
       }
       $nts[$nt]=$node;
       $nt++;
@@ -297,16 +297,16 @@ EOF
       # split paragraph into several sentences:
       my @c = $root->children;
       if (@c > 1) {
-	for my $i (1..$#c) {
-	  my $node=Treex::PML::Factory->createTypedNode($root_type,{
-	    id => $root->{id}.'-s'.($i+1),
-	    para=>$root->{para},
-	    para_id=>$root->{para_id},
-	    sent_no => $i+1,
-	  },1);
-	  $c[$i]->cut()->paste_on($node);
-	  $fsfile->insert_tree($node,$fsfile->lastTreeNo()+1);
-	}
+    for my $i (1..$#c) {
+      my $node=Treex::PML::Factory->createTypedNode($root_type,{
+        id => $root->{id}.'-s'.($i+1),
+        para=>$root->{para},
+        para_id=>$root->{para_id},
+        sent_no => $i+1,
+      },1);
+      $c[$i]->cut()->paste_on($node);
+      $fsfile->insert_tree($node,$fsfile->lastTreeNo()+1);
+    }
       }
     } else {
       warn "Failed to create a tree from $agid\n";
