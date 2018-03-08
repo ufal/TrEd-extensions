@@ -125,6 +125,11 @@ sub read_signal_file_tdf {
   return [@file_content];
 }
 
+sub fix_sgm_content {
+  my $content = shift;
+  $content =~ s/ id=(\d+)/ id="$1"/g; # apostrophize attribute id
+  return $content;
+}
 sub read {
   my ($input, $fsfile)=@_;
   die "Filename required, not a reference ($input)!" if ref($input);
@@ -181,7 +186,7 @@ EOF
                       "<!DOCTYPE DOC [\n".
                       "<!ENTITY HT ''>\n".
                       "<!ENTITY QC ''>\n".
-                      "]>".join("",<$sigfh>)
+                      "]>".fix_sgm_content(join("", <$sigfh>))
                      ) };
     close ($sigfh);
     unless ($sigdom) {
