@@ -7,6 +7,7 @@ use strict;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 use File::Spec;
+use IO::String;
 use 5.008;
 
 =item open_backend (filename,mode)
@@ -93,6 +94,37 @@ sub open_signal_file {
   return Treex::PML::IO::open_backend($filename,'r');
 }
 
+sub read_signal_file_tdf {
+  my ($sigfile, $input)=@_;
+  $input = File::Spec->rel2abs($input);
+  my $abs  = URI->new($sigfile)->abs($input);
+  unless ($abs->scheme) {
+    $abs->scheme('file');
+  }
+  my $filename = $sigfile;
+  if ($abs->scheme eq 'file') {
+    my ($base_vol,$base_dir) = File::Spec->splitpath($input);
+    my $base = File::Spec->catpath($base_vol,$base_dir);
+    $filename = $abs->file;
+    (undef,undef,$filename) = File::Spec->splitpath($filename);
+    my $rel = File::Spec->catfile('tdf',$filename);
+    for (0..2) {
+      my $try = File::Spec->catfile($base,$rel);
+      if (-f $try) {
+        $filename = $try;
+      }
+      $rel = File::Spec->catfile('..',$rel);
+    }
+  }
+  my $fh = new IO::File();
+  $fh->open($filename,'r') || return;
+  my @file_content = map { (split /\t/, $_)[7];  } grep {$_ !~ m/^;/} <$fh>;
+  shift @file_content;
+  print STDERR "TODO file_content\n\t$filename\n",join("\n",@file_content),"\n";
+
+  return [@file_content];
+}
+
 sub read {
   my ($input, $fsfile)=@_;
   die "Filename required, not a reference ($input)!" if ref($input);
@@ -109,6 +141,7 @@ sub read {
   $agdom->validate();
 
   my (undef,undef,$input_base) = File::Spec->splitpath($input);
+  my $is_sgm_type;
 
   my $pml = <<"EOF";
 <?xml version="1.0" encoding="utf-8"?>
@@ -138,17 +171,24 @@ EOF
   $xpc->registerNs(ag=>'http://www.ldc.upenn.edu/atlas/ag/');
 
   my $sigfile = xp($xpc,$agdom, q{ string(//ag:Signal/@xlink:href) } );
-  my $sigfh = open_signal_file($sigfile,$input)
+  $is_sgm_type = ( $sigfile =~ m/\.sgm$/);
+  my $sigfh = $is_sgm_type ? open_signal_file($sigfile,$input) : read_signal_file_tdf($sigfile,$input)
     or die "Can't open $sigfile. Aborting!\n";
-  my $sigdom=eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
+  my $sigdom;
+  my @sigtdf;
+    if($is_sgm_type){
+    $sigdom= eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
                       "<!DOCTYPE DOC [\n".
                       "<!ENTITY HT ''>\n".
                       "<!ENTITY QC ''>\n".
                       "]>".join("",<$sigfh>)
                      ) };
-  close ($sigfh);
-  unless ($sigdom) {
-    die "Error parsing $sigfile ($@). Aborting!\n";
+    close ($sigfh);
+    unless ($sigdom) {
+      die "Error parsing $sigfile ($@). Aborting!\n";
+    }
+  } else {
+    @sigtdf = @$sigfh;
   }
 
   my %_id_hash = map { ag_attr($_,'id') => $_ }
@@ -163,7 +203,7 @@ EOF
     my $comment=xp($xpc,$ag,q{ string(descendant::ag:OtherMetadata[@name='tbcomment']|
                                  descendant::ag:MetadataElement[@name='tbcomment']) });
 
-    my $paratxt=xp($xpc,$sigdom, qq{ string(//P[$para]) });
+    my $paratxt=$is_sgm_type ? xp($xpc,$sigdom, qq{ string(//P[$para]) }) : shift @sigtdf;
     $paratxt=~s/^\n//;
     my @nodes;
 
