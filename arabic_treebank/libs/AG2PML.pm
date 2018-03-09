@@ -265,6 +265,11 @@ EOF
     my $trace=0;
 
     my $lastord;
+
+    if($tree=~s/(Paragraph\s*)(\(\s*[^\s\)]*(?<!S)(?<!FRAG) [\d\(].*\d\s*\))$/$1( S $2 )/) {
+      warn("$tree_id: Terminal directly under paragraph -> adding sentence node\n");
+    }
+
     $tree=~s{ (?:(\d+)|(\*\S*))(?= )}{
       if ($1 ne "") {
     $lastord=$1;
