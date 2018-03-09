@@ -120,8 +120,6 @@ sub read_signal_file_tdf {
   $fh->open($filename,'r') || return;
   my @file_content = map { (split /\t/, $_)[7];  } grep {$_ !~ m/^;/} <$fh>;
   shift @file_content;
-  print STDERR "TODO file_content\n\t$filename\n",join("\n",@file_content),"\n";
-
   return [@file_content];
 }
 
