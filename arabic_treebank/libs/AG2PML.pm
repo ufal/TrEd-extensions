@@ -283,55 +283,55 @@ EOF
       my $cat=shift @children;
       my $node;
       if ($cat eq 'Paragraph') {
-    $node=Treex::PML::Factory->createTypedNode($root_type,{
-      id => $tree_id.'-s1',
-      para_id => $tree_id,
-      comment => $comment,
-      para=>$para,
-      sent_no => 1,
-    },1);
+        $node=Treex::PML::Factory->createTypedNode($root_type,{
+          id => $tree_id.'-s1',
+          para_id => $tree_id,
+          comment => $comment,
+          para=>$para,
+          sent_no => 1,
+        },1);
       } else {
-    my $id = $tree_id.'-nt'.$nt;
-    $node=Treex::PML::Factory->createTypedNode($nonterminal_type,{
-      '#name'=>'nonterminal',
-      id => $id,
-    },1);
-    if ($cat=~s/=(\d+)$//) {
-      if ($gapping{$1}) {
-        $node->{'gapping.rf'}=$gapping{$1};
-      }
-      $gapping{$1}=$id;
-    }
-    if ($cat=~s/-(\d+)$//) {
-      if ($coref{$1}) {
-        $node->{'coref.rf'}=$coref{$1};
-      }
-      $coref{$1}=$id;
-    }
-    my @functions = split '-',$cat;
-    $node->{cat}=shift @functions;
-    $node->{functions}=Treex::PML::Factory->createList(\@functions,1);
+        my $id = $tree_id.'-nt'.$nt;
+        $node=Treex::PML::Factory->createTypedNode($nonterminal_type,{
+          '#name'=>'nonterminal',
+          id => $id,
+        },1);
+        if ($cat=~s/=(\d+)$//) {
+          if ($gapping{$1}) {
+            $node->{'gapping.rf'}=$gapping{$1};
+          }
+          $gapping{$1}=$id;
+        }
+        if ($cat=~s/-(\d+)$//) {
+          if ($coref{$1}) {
+            $node->{'coref.rf'}=$coref{$1};
+          }
+          $coref{$1}=$id;
+        }
+        my @functions = split '-',$cat;
+        $node->{cat}=shift @functions;
+        $node->{functions}=Treex::PML::Factory->createList(\@functions,1);
       }
       foreach (reverse @children) { # reverse because paste_on pastes before first son
-    my $child;
-    if (/^nt(\d+)$/) {
-      $child=$nts[$1];
-    } elsif (/^(\d+)$/) {
-      die "no word has index $_ in $agid:\n$origtree\n" if $_ >$#nodes;
-      $child=$nodes[$_];
-    } elsif (/^(\d+(?:\.\d+))(\*.*)$/) {
-      my $type = $2;
-      $type=~s/^\*\|\*$//g;
-      $child=Treex::PML::Factory->createTypedNode($trace_type,{
-        '#name'=>'trace',
-        id => $tree_id.'-trace'.($trace++),
-        type=>$type,
-      });
-    } else {
-      die "unrecoginzed token $_! Aborting\n";
-    }
-    die "malformed tree?\n" unless ref($child);
-    $child->paste_on($node);
+        my $child;
+        if (/^nt(\d+)$/) {
+          $child=$nts[$1];
+        } elsif (/^(\d+)$/) {
+          die "no word has index $_ in $agid:\n$origtree\n" if $_ >$#nodes;
+          $child=$nodes[$_];
+        } elsif (/^(\d+(?:\.\d+))(\*.*)$/) {
+          my $type = $2;
+          $type=~s/^\*\|\*$//g;
+          $child=Treex::PML::Factory->createTypedNode($trace_type,{
+            '#name'=>'trace',
+            id => $tree_id.'-trace'.($trace++),
+            type=>$type,
+          });
+        } else {
+          die "unrecoginzed token $_! Aborting\n";
+        }
+        die "malformed tree?\n" unless ref($child);
+        $child->paste_on($node);
       }
       $nts[$nt]=$node;
       $nt++;
@@ -343,16 +343,16 @@ EOF
       # split paragraph into several sentences:
       my @c = $root->children;
       if (@c > 1) {
-    for my $i (1..$#c) {
-      my $node=Treex::PML::Factory->createTypedNode($root_type,{
-        id => $root->{id}.'-s'.($i+1),
-        para=>$root->{para},
-        para_id=>$root->{para_id},
-        sent_no => $i+1,
-      },1);
-      $c[$i]->cut()->paste_on($node);
-      $fsfile->insert_tree($node,$fsfile->lastTreeNo()+1);
-    }
+        for my $i (1..$#c) {
+          my $node=Treex::PML::Factory->createTypedNode($root_type,{
+            id => $root->{id}.'-s'.($i+1),
+            para=>$root->{para},
+            para_id=>$root->{para_id},
+            sent_no => $i+1,
+          },1);
+          $c[$i]->cut()->paste_on($node);
+          $fsfile->insert_tree($node,$fsfile->lastTreeNo()+1);
+        }
       }
     } else {
       warn "Failed to create a tree from $agid\n";
