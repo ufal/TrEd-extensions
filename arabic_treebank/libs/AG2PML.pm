@@ -119,7 +119,8 @@ sub read_signal_file_tdf {
   my $fh = new IO::File();
   $fh->open($filename,'r') || return;
   my @file_content = map { (split /\t/, $_)[7];  } grep {$_ !~ m/^;/} <$fh>;
-  shift @file_content;
+  shift @file_content; # removing header
+  @file_content = map {print STDERR "REMOVING $_\n" if m/<.+?>/;s/<.+?>//g;$_} @file_content; # removing xml elements
   return [@file_content];
 }
 
