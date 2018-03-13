@@ -208,7 +208,7 @@ EOF
     my $comment=xp($xpc,$ag,q{ string(descendant::ag:OtherMetadata[@name='tbcomment']|
                                  descendant::ag:MetadataElement[@name='tbcomment']) });
 
-    my $paratxt=$is_sgm_type ? xp($xpc,$sigdom, qq{ string(//P[$para]) }) : shift @sigtdf;
+    my $paratxt=$is_sgm_type ? xp($xpc,$sigdom, qq{ string(//*[name()='p' or name()='P'][$para]) }) : shift @sigtdf;
     $paratxt=~s/^\n//;
     my @nodes;
 
