@@ -175,8 +175,9 @@ EOF
   $xpc->registerNs(ag=>'http://www.ldc.upenn.edu/atlas/ag/');
 
   my $sigfile = xp($xpc,$agdom, q{ string(//ag:Signal/@xlink:href) } );
+  my $sigfile_encoding = xp($xpc,$agdom, q{ string(//ag:Signal/@encoding) } );
   $is_sgm_type = ( $sigfile =~ m/\.sgm$/);
-  my $sigfh = $is_sgm_type ? open_signal_file($sigfile,$input) : read_signal_file_tdf($sigfile,$input)
+  my $sigfh = $is_sgm_type ? open_signal_file($sigfile,$input, $sigfile_encoding) : read_signal_file_tdf($sigfile,$input, $sigfile_encoding)
     or die "Can't open $sigfile. Aborting!\n";
   my $sigdom;
   my @sigtdf;
