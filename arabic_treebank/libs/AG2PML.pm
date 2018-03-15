@@ -95,7 +95,7 @@ sub open_signal_file {
 }
 
 sub read_signal_file_tdf {
-  my ($sigfile, $input)=@_;
+  my ($sigfile, $input, $encoding)=@_;
   $input = File::Spec->rel2abs($input);
   my $abs  = URI->new($sigfile)->abs($input);
   unless ($abs->scheme) {
@@ -118,9 +118,12 @@ sub read_signal_file_tdf {
   }
   my $fh = new IO::File();
   $fh->open($filename,'r') || return;
+  eval {
+    binmode($fh,":raw:perlio:encoding($encoding)");
+  };
+  warn $@ if $@;
   my @file_content = map { (split /\t/, $_)[7];  } grep {$_ !~ m/^;/} <$fh>;
   shift @file_content; # removing header
-  @file_content = map {print STDERR "REMOVING $_\n" if m/<.+?>/;s/<.+?>//g;$_} @file_content; # removing xml elements
   return [@file_content];
 }
 
