@@ -132,6 +132,37 @@ sub fix_sgm_content {
   $content =~ s/ id=(\d+)/ id="$1"/g; # apostrophize attribute id
   return $content;
 }
+
+sub get_signal {
+  my ($sigfile, $input, $encoding)=@_;
+  my $is_sgm_type;
+  $is_sgm_type = ( $sigfile =~ m/\.sgm$/);
+  if($is_sgm_type){
+    my $parser = XML::LibXML->new();
+    $parser->load_ext_dtd(1);
+    $parser->validation(0);
+    my $xpc = XML::LibXML::XPathContext->new();
+    $xpc->registerNs(ag=>'http://www.ldc.upenn.edu/atlas/ag/');
+
+    my $sigfh = open_signal_file($sigfile,$input, $encoding) or die "Can't open $sigfile. Aborting!\n"; 
+    my $sigdom= eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
+                      "<!DOCTYPE DOC [\n".
+                      "<!ENTITY HT ''>\n".
+                      "<!ENTITY QC ''>\n".
+                      "]>".fix_sgm_content(join("", <$sigfh>))
+                     ) };
+    close ($sigfh);
+    unless ($sigdom) {
+      die "Error parsing $sigfile ($@). Aborting!\n";
+    }
+    my @paratxt=$xpc->findnodes( qq{ //*[name()='P'] | //seg }, $sigdom)->to_literal_list();
+    return [map {s/^\n//;$_} @paratxt ];
+  } else {
+    return read_signal_file_tdf($sigfile,$input, $encoding);
+  }
+}
+
+
 sub read {
   my ($input, $fsfile)=@_;
   die "Filename required, not a reference ($input)!" if ref($input);
@@ -148,7 +179,6 @@ sub read {
   $agdom->validate();
 
   my (undef,undef,$input_base) = File::Spec->splitpath($input);
-  my $is_sgm_type;
 
   my $pml = <<"EOF";
 <?xml version="1.0" encoding="utf-8"?>
@@ -179,25 +209,7 @@ EOF
 
   my $sigfile = xp($xpc,$agdom, q{ string(//ag:Signal/@xlink:href) } );
   my $sigfile_encoding = xp($xpc,$agdom, q{ string(//ag:Signal/@encoding) } );
-  $is_sgm_type = ( $sigfile =~ m/\.sgm$/);
-  my $sigfh = $is_sgm_type ? open_signal_file($sigfile,$input, $sigfile_encoding) : read_signal_file_tdf($sigfile,$input, $sigfile_encoding)
-    or die "Can't open $sigfile. Aborting!\n";
-  my $sigdom;
-  my @sigtdf;
-    if($is_sgm_type){
-    $sigdom= eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
-                      "<!DOCTYPE DOC [\n".
-                      "<!ENTITY HT ''>\n".
-                      "<!ENTITY QC ''>\n".
-                      "]>".fix_sgm_content(join("", <$sigfh>))
-                     ) };
-    close ($sigfh);
-    unless ($sigdom) {
-      die "Error parsing $sigfile ($@). Aborting!\n";
-    }
-  } else {
-    @sigtdf = @$sigfh;
-  }
+  my @signal = @{get_signal($sigfile,$input, $sigfile_encoding)};
 
   my %_id_hash = map { ag_attr($_,'id') => $_ }
     $xpc->findnodes(q{ //ag:Anchor|//ag:Annotation },$agdom);
@@ -211,8 +223,7 @@ EOF
     my $comment=xp($xpc,$ag,q{ string(descendant::ag:OtherMetadata[@name='tbcomment']|
                                  descendant::ag:MetadataElement[@name='tbcomment']) });
 
-    my $paratxt=$is_sgm_type ? xp($xpc,$sigdom, qq{ string(//*[name()='P'][$para] | (//seg)[position()=$para]) }) : shift @sigtdf;
-    $paratxt=~s/^\n//;
+    my $paratxt = @signal[$para-1];
     my @nodes;
 
     my $schema = $fsfile->metaData('schema');
