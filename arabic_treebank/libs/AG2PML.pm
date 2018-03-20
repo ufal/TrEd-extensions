@@ -145,13 +145,28 @@ sub get_signal {
     $xpc->registerNs(ag=>'http://www.ldc.upenn.edu/atlas/ag/');
 
     my $sigfh = open_signal_file($sigfile,$input, $encoding) or die "Can't open $sigfile. Aborting!\n"; 
-    my $sigdom= eval { $parser->parse_string("<?xml version='1.0' encoding='utf-8'?>\n".
+    my $xml = "<?xml version='1.0' encoding='utf-8'?>\n".
                       "<!DOCTYPE DOC [\n".
                       "<!ENTITY HT ''>\n".
                       "<!ENTITY QC ''>\n".
-                      "]>".fix_sgm_content(join("", <$sigfh>))
-                     ) };
+                      "]>".fix_sgm_content(join("", <$sigfh>));
+    my $sigdom = eval { $parser->parse_string($xml) };
     close ($sigfh);
+    FIXING_LOOP:while (! $sigdom) {
+      my $error_msg = $@;
+      warn "Error parsing $sigfile ($error_msg). Trying to fix it !!!\n";
+      if($error_msg =~ m/Entity '(.*?)' not defined/){
+        my $entity=$1;
+        $xml =~ s/(&$entity;)/'#'x(length($1))/eg;
+        warn "$sigfile: Replacing '&$entity;' with '##".'#'x(length($entity))."'\n"
+      } elsif($error_msg =~ m/xmlParseEntityRef: no name/) {
+        $xml =~ s/&(\s)/#$1/g;
+        warn "$sigfile: Replacing '&' with '#'\n"
+      } else {
+        last FIXING_LOOP;
+      }
+      $sigdom = eval { $parser->parse_string($xml) };
+    }
     unless ($sigdom) {
       die "Error parsing $sigfile ($@). Aborting!\n";
     }
