@@ -7,7 +7,6 @@ use strict;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
 use File::Spec;
-use IO::String;
 use 5.008;
 
 =item open_backend (filename,mode)
