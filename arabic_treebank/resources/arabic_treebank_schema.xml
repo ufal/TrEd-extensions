@@ -119,6 +119,9 @@
       <value>WHNP</value>
       <value>WHPP</value>
       <value>X</value>
+      <value>PARAGRAPH</value>
+      <value>EDITED</value>
+      <value>INTERJ</value>
     </choice>
   </type>
   <type name="function.type">
@@ -143,6 +146,8 @@
       <value>TPC</value>
       <value>TTL</value>
       <value>VOC</value>
+      <value>UNF</value>
+      <value>ETC</value>
     </choice>
   </type>
 
