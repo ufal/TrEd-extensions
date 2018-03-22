@@ -292,24 +292,23 @@ EOF
     my $nt=0;
     my $trace=0;
 
-    if($tree=~m/\d\s*\)$/){
-      $_=$tree;
-      s/^\(\s*Paragraph\s*//;
-      s/\s*\)\s*$//;
-      while(/
-           \G \s*+ ( (?&WORD) | (?&BRACKETED) )
-           (?(DEFINE)
-              (?<WORD>      [^\(\)]+ )
-              (?<BRACKETED> \s* \( (?&TEXT)? \s* \) )
-              (?<TEXT>      (?: (?&WORD) | (?&BRACKETED) )+ )
-           )
-        /xg ){
-          if ($1 =~ /^\s*[\d\*\A-Z]+\s*$/){
-            $tree =~ s/(Paragraph\s*)(\(.*\))$/$1( PARAGRAPH $2 )/;
-            warn("$tree_id: Terminal directly under paragraph -> adding PARAGRAPH root node\n");
-            last;
-          }
-        }
+    $_=$tree;
+    s/^\(\s*Paragraph\s*//;
+    s/\s*\)\s*$//;
+    while(/
+       \G \s*+ ( (?&WORD) | (?&BRACKETED) )
+       (?(DEFINE)
+          (?<WORD>      [^\(\)]+ )
+          (?<BRACKETED> \s* \( (?&TEXT)? \s* \) )
+          (?<TEXT>      (?: (?&WORD) | (?&BRACKETED) )+ )
+       )
+      /xg ){
+      if ($1 =~ /^\s*[\d\*\A-Z]+\s*$/){
+        $tree =~ s/(Paragraph\s*)(\(.*\))$/$1( PARAGRAPH $2 )/;
+        print STDERR "$tree\n";
+        warn("$tree_id: Terminal directly under paragraph -> adding PARAGRAPH root node\n");
+        last;
+      }
     }
 
     my $lastord;
