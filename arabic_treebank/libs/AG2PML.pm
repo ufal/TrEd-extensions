@@ -292,11 +292,27 @@ EOF
     my $nt=0;
     my $trace=0;
 
-    my $lastord;
-
-    if($tree=~s/(Paragraph\s*)(\(\s*[^\s\)]*(?<!S)(?<!FRAG) [\d\(].*\d\s*\))$/$1( S $2 )/) {
-      warn("$tree_id: Terminal directly under paragraph -> adding sentence node\n");
+    if($tree=~m/\d\s*\)$/){
+      $_=$tree;
+      s/^\(\s*Paragraph\s*//;
+      s/\s*\)\s*$//;
+      while(/
+           \G \s*+ ( (?&WORD) | (?&BRACKETED) )
+           (?(DEFINE)
+              (?<WORD>      [^\(\)]+ )
+              (?<BRACKETED> \s* \( (?&TEXT)? \s* \) )
+              (?<TEXT>      (?: (?&WORD) | (?&BRACKETED) )+ )
+           )
+        /xg ){
+          if ($1 =~ /^\s*[\d\*\A-Z]+\s*$/){
+            $tree =~ s/(Paragraph\s*)(\(.*\))$/$1( PARAGRAPH $2 )/;
+            warn("$tree_id: Terminal directly under paragraph -> adding PARAGRAPH root node\n");
+            last;
+          }
+        }
     }
+
+    my $lastord;
 
     $tree=~s{ (?:(\d+)|(\*\S*))(?= )}{
       if ($1 ne "") {
