@@ -43,47 +43,41 @@
    </member>
    <member name="deprel">
     <choice>
-      <value>acl</value><!-- clausal modifier of noun (adjectival clause) -->
-      <value>advcl</value><!-- adverbial clause modifier -->
-      <value>advmod</value><!-- adverbial modifier -->
-      <value>amod</value><!-- adjectival modifier -->
-      <value>appos</value><!-- appositional modifier -->
-      <value>aux</value><!-- auxiliary -->
-      <value>case</value><!-- case marking -->
-      <value>cc</value><!-- coordinating conjunction -->
-      <value>ccomp</value><!-- clausal complement -->
-      <value>clf</value><!-- classifier -->
-      <value>compound</value><!-- compound -->
-      <value>conj</value><!-- conjunct -->
-      <value>cop</value><!-- copula -->
-      <value>csubj</value><!-- clausal subject -->
-      <value>dep</value><!-- unspecified dependency -->
-      <value>det</value><!-- determiner -->
-      <value>discourse</value><!-- discourse element -->
-      <value>dislocated</value><!-- dislocated elements -->
-      <value>expl</value><!-- expletive -->
-      <value>fixed</value><!-- fixed multiword expression -->
-      <value>flat</value><!-- flat multiword expression -->
-      <value>goeswith</value><!-- goes with -->
-      <value>iobj</value><!-- indirect object -->
-      <value>list</value><!-- list -->
-      <value>mark</value><!-- marker -->
-      <value>nmod</value><!-- nominal modifier -->
-      <value>nsubj</value><!-- nominal subject -->
-      <value>nummod</value><!-- numeric modifier -->
-      <value>obj</value><!-- object -->
-      <value>obl</value><!-- oblique nominal -->
-      <value>orphan</value><!-- orphan -->
-      <value>parataxis</value><!-- parataxis -->
-      <value>punct</value><!-- punctuation -->
-      <value>reparandum</value><!-- overridden disfluency -->
-      <value>root</value><!-- root -->
-      <value>vocative</value><!-- vocative -->
-      <value>xcomp</value><!-- open clausal complement -->
-      <value>ROOT</value>
-      <value>idafa</value>
-      <value>fidafa</value>
-      <value>kccmp</value>
+      <value>adv</value><!--Adverbial modifier; includes adverbs as well as other words used adverbially including various preposition-like nouns and other words.-->
+      <value>advcl</value><!--Adverbial clause or adverbial clause-like structure.-->
+      <value>amod</value><!--Adjectival modifier.-->
+      <value>appos</value><!--Apposition. (Ryding, 2005; pp. 224–227)-->
+      <value>cc</value><!--Connects a coordinating conjunction with a preceding conjunct. Note that lakinna, a sister of inna that translates as “however” or “but,” may occur with this dependency despite being labeled as an INNA and not a CONJ.-->
+      <value>ccomp</value><!--Clausal complement.-->
+      <value>combo</value><!--Combination. This is currently only used with a handful of multi-word coordinating conjunction expressions.-->
+      <value>conj</value><!--Connects a conjunct with a preceding coordinating conjunction or conjunct.-->
+      <value>cop</value><!--Complement of copula.-->
+      <value>dep</value><!--Other or unknown dependency.-->
+      <value>det</value><!--Determiner.-->
+      <value>fidafa</value><!--“False” idafa. Unlike typical idafa constructions, which are headed by nouns, these are headed by adjectives. (Ryding, 2005; pp. 221–223)-->
+      <value>flat</value><!--Flat. This is used for names and similar phenomena that lack syntactic structure, or at least any syntactic annotation.-->
+      <value>icc</value><!--Initial coordinating conjunction. Arabic sentences frequently begin with a coordinating conjunction. For this and similar situations, icc is used instead of connecting the head of the sentence to the coordinating conjunction via a conj dependency.-->
+      <value>idafa</value><!--Idafa construction. Note that in the AADT, the "Quotation or title relationship'"(cf. Ryding, 2005; p.210) is treated as apposition rather than idafa.-->
+      <value>intj</value><!--Interjection.-->
+      <value>iobj</value><!--Indirect object.-->
+      <value>kccomp</value><!--Clausal complement of kAna. This is separated from the more general ccomp dependency because the verb kAna, following another verb, can be used to express continued or habitual action in the past (Ryding, 2005; pp. 446–447).-->
+      <value>neg</value><!--Negation.-->
+      <value>obj</value><!--Direct object.-->
+      <value>ocomp</value><!--Object complement.-->
+      <value>parataxis</value><!--Parataxis. Used to connect to sentences together that are written next to each other but that are not connected by an explicit coordinating conjunction.-->
+      <value>part</value><!--Particle modifier. Used with a variety of different particles, including the future particle. Note that NEG_PART will typically appear with a neg dependency and FOCUS_PART is treated as if it were a preposition.-->
+      <value>pcomp</value><!--Object/complement of a true preposition.-->
+      <value>prep</value><!--Preposition modifier. Links a true preposition to its governor.-->
+      <value>punct</value><!--Punctuation. -->
+      <value>reladv</value><!--Relative adverbial modifier.-->
+      <value>ricomp</value><!--Complement of a relative or interrogative pronoun/adverb.-->
+      <value>sc</value><!--Subordinating conjunction. Used with subordinating conjunctions other than “inna and her sisters.”-->
+      <value>subj</value><!--Subject. This may occur without a verb, as with equational sentences.-->
+      <value>tmz</value><!--Tamyiiz. (Ryding, 2005)-->
+      <value>tpc</value><!--Topicalized element (not including topicalized subjects).-->
+      <value>voc</value><!--Vocative.-->
+      <value>xrrcl</value><!--Relative clause with an explicit relativizer.-->
+      <value>zrrcl</value><!--Relative clause without an explicit relativizer (zero relativizer).-->
     </choice>
    </member>
    <member name="root">
