@@ -107,8 +107,8 @@ while (( $# )) ; do
         ((max-=13))
         # if there are no ARGS in the conll data, set max to 1
         if ((!max)) ; then max=1 ; fi
-        echo -n "$1\t=>\t"
-        out_prefix=`echo -n "${1%.txt}"| sed "s/[^\.-_0-9A-Za-z]/_/g"`
+        echo -ne "$1\t=>\t"
+        out_prefix=`echo -n "${1%.txt}"| sed "s/[^\.\-_0-9A-Za-z]/_/g"`
         echo "${out_prefix}_####.pml"
         if [ -n "$out_dir" ]; then
             out_prefix="$out_dir"/$(basename "$out_prefix")
