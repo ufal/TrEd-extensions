@@ -79,6 +79,7 @@
       <value>xrrcl</value><!--Relative clause with an explicit relativizer.-->
       <value>zrrcl</value><!--Relative clause without an explicit relativizer (zero relativizer).-->
       <value>ROOT</value>
+      <value>-</value>
     </choice>
    </member>
    <member name="root">
