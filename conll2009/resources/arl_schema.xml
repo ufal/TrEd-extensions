@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
+ <revision>1.0</revision>
+ <root name="arl" type="arl.type"/>
+ <type name="arl.type">
+  <structure>
+   <member name="body" required="1" type="body.type"/>
+  </structure>
+ </type>
+ <type name="body.type">
+  <list ordered="1" role="#TREES" type="root.type"/>
+ </type>
+ <type name="root.type">
+  <structure role="#NODE">
+   <member as_attribute="1" name="xml:id" required="1" role="#ID">
+    <cdata format="ID"/>
+   </member>
+   <member as_attribute="1" name="order" required="0" role="#ORDER">
+    <constant>0</constant>
+   </member>
+   <member name="childnodes" required="0" role="#CHILDNODES">
+    <list ordered="1" type="node.type"/>
+   </member>
+  </structure>
+ </type>
+ <type name="node.type">
+  <structure role="#NODE">
+   <member as_attribute="1" name="xml:id" required="1" role="#ID">
+    <cdata format="ID"/>
+   </member>     
+   <member name="ord" as_attribute="1" role="#ORDER">
+    <cdata format="positiveInteger"/>
+   </member>
+   <member name="type">
+    <choice>
+      <value>pref</value>
+      <value>core</value>
+      <value>suff</value>
+    </choice>
+   </member>
+   <member name="head">
+    <cdata format="any"/>
+   </member>
+   <member name="deprel">
+    <choice>
+      <value>acl</value><!-- clausal modifier of noun (adjectival clause) -->
+      <value>advcl</value><!-- adverbial clause modifier -->
+      <value>advmod</value><!-- adverbial modifier -->
+      <value>amod</value><!-- adjectival modifier -->
+      <value>appos</value><!-- appositional modifier -->
+      <value>aux</value><!-- auxiliary -->
+      <value>case</value><!-- case marking -->
+      <value>cc</value><!-- coordinating conjunction -->
+      <value>ccomp</value><!-- clausal complement -->
+      <value>clf</value><!-- classifier -->
+      <value>compound</value><!-- compound -->
+      <value>conj</value><!-- conjunct -->
+      <value>cop</value><!-- copula -->
+      <value>csubj</value><!-- clausal subject -->
+      <value>dep</value><!-- unspecified dependency -->
+      <value>det</value><!-- determiner -->
+      <value>discourse</value><!-- discourse element -->
+      <value>dislocated</value><!-- dislocated elements -->
+      <value>expl</value><!-- expletive -->
+      <value>fixed</value><!-- fixed multiword expression -->
+      <value>flat</value><!-- flat multiword expression -->
+      <value>goeswith</value><!-- goes with -->
+      <value>iobj</value><!-- indirect object -->
+      <value>list</value><!-- list -->
+      <value>mark</value><!-- marker -->
+      <value>nmod</value><!-- nominal modifier -->
+      <value>nsubj</value><!-- nominal subject -->
+      <value>nummod</value><!-- numeric modifier -->
+      <value>obj</value><!-- object -->
+      <value>obl</value><!-- oblique nominal -->
+      <value>orphan</value><!-- orphan -->
+      <value>parataxis</value><!-- parataxis -->
+      <value>punct</value><!-- punctuation -->
+      <value>reparandum</value><!-- overridden disfluency -->
+      <value>root</value><!-- root -->
+      <value>vocative</value><!-- vocative -->
+      <value>xcomp</value><!-- open clausal complement -->
+      <value>ROOT</value>
+      <value>idafa</value>
+      <value>fidafa</value>
+      <value>kccmp</value>
+    </choice>
+   </member>
+   <member name="root">
+    <cdata format="any"/>
+   </member>
+   <member name="lemma">
+    <cdata format="any"/>
+   </member>
+   <member name="form">
+    <cdata format="any"/>
+   </member>
+   <member name="form_transliterated">
+    <cdata format="any"/>
+   </member>
+   <member name="xpos">
+    <cdata format="any"/>
+   </member>
+   <member name="gloss">
+    <cdata format="any"/>
+   </member>
+   <member name="misk">
+    <cdata format="any"/>
+   </member>
+   <member name="childnodes" role="#CHILDNODES">
+    <list ordered="1" type="node.type"/>
+   </member>
+  </structure>
+ </type>
+</pml_schema>

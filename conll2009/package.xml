@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="58658">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="104137">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
@@ -7,7 +7,7 @@
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>CoNLL 2009 Shared Task</title>
   <version>1.39</version>
-  <copyright year="2009">Jan Štěpánek</copyright>
+  <copyright year="2018">Jan Štěpánek, Matyáš Kopp</copyright>
   <description>This package contains a stylesheet for visualization of
   CoNLL-2009-ST data in TrEd,
   scripts (for Linux and similar systems) for converting from the CoNLL-2009-ST format to PML,

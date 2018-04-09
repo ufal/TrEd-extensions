@@ -22,7 +22,8 @@ GetOptions(\%opts,
 	'quiet|q',
 	'max-sentences|m=i',
 	'out-prefix|o=s',
-	'id-prefix|I=s',
+  'set-schema|S=s',
+  'id-prefix|I=s',
 	'root-tag|R=s',
 	'node-ids|i',
 	'columns|c=s',
@@ -31,6 +32,7 @@ GetOptions(\%opts,
 	'order-attribute|O=s',
 	'feat-columns|f=s',
 	'struct-feats|F',
+  'fix-columns|x=s',
 	'technical-root|r',
 	'help',
 	'usage',
@@ -59,6 +61,7 @@ my $ORDER = $opts{'order-attribute'} || 'order';
 
 my $max_sentences = $opts{'max-sentences'} || 100;
 my $prefix = $opts{'out-prefix'} || 'out';
+my $schema_file = $opts{'set-schema'} || "${prefix}_schema.xml";
 my $id_prefix = $opts{'id-prefix'} || 's';
 
 my $prefix_dir = dirname($prefix);
@@ -123,8 +126,8 @@ exit 0;
 ######################
 
 sub dump_schema {
-  open(my $output, '>', $prefix.'_schema.xml') or die "Cannot open ${prefix}_schema.xml for writing: $!";
-  print STDERR "\nsaving PML schema to: ",$prefix.'_schema.xml',"\n" unless $opts{quiet};
+  open(my $output, '>', $schema_file) or die "Cannot open ${schema_file} for writing: $!";
+  print STDERR "\nsaving PML schema to: ",$schema_file,"\n" unless $opts{quiet};
   my $writer = new XML::Writer(OUTPUT => $output,
 			       DATA_MODE => 1,
 			       DATA_INDENT => 1);
@@ -234,7 +237,7 @@ sub dump_file {
   # PML HEADER
   $writer->startTag('head');
   # PML SCHEMA REF
-  $writer->emptyTag('schema',href => basename($prefix).'_schema.xml');
+  $writer->emptyTag('schema',href => basename($schema_file));
   $writer->endTag('head');
   
   # BODY
@@ -312,6 +315,9 @@ sub next_sentence {
   print STDERR "parsing sentence: ",$sentences,"\r" unless $opts{quiet};
   $sentences++;
   if (!$opts{'schema-only'} and @sent) {
+    if($opts{'fix-columns'}){
+        @sent = @{eval "$opts{'fix-columns'}->(\@sent)"};
+    }
     # (should not be necessary, but just for sure)
     my %sent = map { $_->{$ID} => $_ } @sent;
     if (keys(%sent) != @sent) {

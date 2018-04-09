@@ -1,0 +1,26 @@
+context: Arl
+rtl: 1
+rootstyle:#{NodeLabel-skipempty:1}#{skipHiddenLevels:1}#{skipHiddenParents:1}
+
+style:<? ($this==$root && !$root->{ord}) ? '#{Node-hide:1}' : '' ?>
+style:#{CurrentOval-width:2}#{CurrentOval-outline:red}
+  <? if ($this->{type} eq 'core') { '#{CurrentOval-fill:yellow}#{Oval-fill:yellow}' }
+     else { $this->{type} eq 'suff' ? '#{CurrentOval-fill:blue}#{Oval-fill:blue}' : '#{CurrentOval-fill:green}#{Oval-fill:green}' } 
+   ?>
+node:${form}<? $${pred} ? ' (#{purple(}${pred}#{)})' : ''?>
+node:#{darkblue}${deprel}<? $${xpos} ? ' ' : '' ?>#{violet}${xpos}
+node:#{gray}<? join("\n/",split( '/', $${gloss})) ?>
+node:
+
+text:<? $this->{type} eq 'core' ? '#{black}':'#{darkgreen}' ?>${form}
+
+style: <? $this == $Arl::markedNode ? '#{Node-addwidth:7}#{Node-addheight:7}#{Oval-fill:orange}' : '' ?>
+style: <?
+  my ($dash);
+  $dash.= '.&5,3' unless $this->{type} eq 'core';
+  # my ($coords,$fill,$main_fill,$hint,$arr,$smth,$dash,$ashape,$tag);
+  # $main_fill||='black';
+  # "#{Line-coords:n,n,p,p$coords}#{Line-tag:$tag}#{Line-fill:$main_fill$fill}#{Line-arrowshape:$ashape}#{Line-arrow:$arr}#{Line-smooth:$smth}#{Line-dash:$dash}#{Line-hint:$hint}"
+  "#{Line-dash:$dash}"
+?>
+
