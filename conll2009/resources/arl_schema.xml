@@ -15,7 +15,7 @@
    <member as_attribute="1" name="xml:id" required="1" role="#ID">
     <cdata format="ID"/>
    </member>
-   <member as_attribute="1" name="order" required="0" role="#ORDER">
+   <member as_attribute="1" name="ord" required="0" role="#ORDER">
     <constant>0</constant>
    </member>
    <member name="childnodes" required="0" role="#CHILDNODES">
