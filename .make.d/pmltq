@@ -1,0 +1,14 @@
+cd pmltq
+if [ -d .git ]; then
+  echo "updating pmltq extension, removing all local changes !!!"
+  git reset --hard
+  git pull
+else
+  echo "clonning pmltq extension from github"
+  git init
+  git remote add origin git@github.com:ufal/tred-extension-pmltq.git
+  git fetch
+  git checkout -t origin/master
+fi
+
+sleep 5
