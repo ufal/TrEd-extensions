@@ -10,5 +10,3 @@ else
   git fetch
   git checkout -t origin/master
 fi
-
-sleep 5
