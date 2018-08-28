@@ -100,7 +100,7 @@ dir=${dir%/}
 
 # Set default values
 : ${url:=http://ufal.mff.cuni.cz/tred/extensions/external}
-#: ${remote:=ufal:/var/www/html/project/tred/extensions/external}
+#: ${remote:=ufal:/usr/share/drupal7/legacy/tred/extensions/external}
 : ${validate:=pml_validate}
 : ${method:=l}
 if [[ -z $name ]] ; then
