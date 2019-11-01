@@ -5,7 +5,8 @@
 package TrEd::ValLex::LibXMLData;
 use strict;
 use base qw(TrEd::ValLex::Data);
-use IO;
+use IO::File;
+use IO::Pipe;
 use XML::LibXML;
 use XML::LibXML::Iterator;
 

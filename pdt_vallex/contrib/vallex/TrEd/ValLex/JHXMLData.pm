@@ -5,7 +5,6 @@
 package TrEd::ValLex::JHXMLData;
 use strict;
 use base qw(TrEd::ValLex::Data);
-use IO;
 use XML::JHXML;
 
 sub parser_start {
