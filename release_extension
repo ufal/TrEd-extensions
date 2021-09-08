@@ -269,8 +269,19 @@ case $method in
     (s) fusermount -u "$tmp"/remote ;;
     (l) cp -r "$tmp"/remote "$remote"/ ;;
     (r) echo 'Running rsync...' >&2
-        rsync -avr "$tmp"/remote/ "$remote" ;;
+        rsync -avr "$tmp"/remote/ "$remote" || echo Ignoring friendly errors ;;
 esac
 
 rm -rf "$tmp"
 echo "Package $zip successfully created!" >&2
+
+# Verify
+wget -q "$url/$name/package.xml" -O- | grep -F "<version>$pkg_ver</version>" || {
+    echo "$pkg_ver" not found in online package.xml >&2
+    exit_rm
+}
+size=$(wget -q -O- "$url/$name.zip" | wc -c)
+((size == zip_size)) || {
+    echo Uploaded zip has a different size >&2
+    exit_rm
+}
