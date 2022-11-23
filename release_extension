@@ -32,19 +32,24 @@ function exit_rm () {
 
 
 function version_newer () {
-    old=$1
-    new=$2
+    local old=$1
+    local new=$2
 
-    _IFS=$IFS
+    local _IFS=$IFS
     IFS=.
-    old_split=($old)
-    new_split=($new)
+    local old_split=($old)
+    local new_split=($new)
     IFS=$_IFS
 
+    local i
     for i in 0 1 2 ; do
-        if (( old_split[i] < new_split[i] )) ; then 
+        local o=${old_split[i]}
+        local n=${new_split[i]}
+        [[ $o = 0[1-9]* ]] && o=${o#0}
+        [[ $n = 0[1-9]* ]] && n=${n#0}
+        if (( o < n )) ; then 
             return 0
-        elif (( old_split[i] > new_split[i] )) ; then
+        elif (( o > n )) ; then
             return 1
         fi
     done
