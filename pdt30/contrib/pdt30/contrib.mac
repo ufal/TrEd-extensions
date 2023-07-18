@@ -1,0 +1,42 @@
+#ifndef pdt30
+#define pdt30
+
+#ifndef pdt20
+#include <contrib/pml/contrib.mac>
+#endif
+
+package PDT_30;
+
+#ifdef TRED
+#include "colors.inc"
+#endif TRED
+
+#binding-context PDT_30_T
+#include "PDT_30_T.mak"
+
+#binding-context PDT_30_A
+#include "PDT_30_A.mak"
+
+#binding-context PDT_30_M
+#include "PDT_30_M.mak"
+
+unshift @TredMacro::AUTO_CONTEXT_GUESSING,
+ sub {
+   my ($hook)=@_;
+   my $resuming = ($hook eq 'file_resumed_hook');
+
+   if (PDT_30_T::detect()) {
+     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
+     return 'PDT_30_T';
+   } elsif (PDT_30_A::detect()) {
+     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
+     return 'PDT_30_A';
+   } elsif (PDT_30_M::detect()) {
+     SetCurrentStylesheet(STYLESHEET_FROM_FILE()) if $resuming;
+     return 'PDT_30_M';
+   } else {
+     return undef;
+   }
+ };
+
+#endif pdt30

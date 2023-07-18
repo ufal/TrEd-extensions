@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="24335021">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>pdt35</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Prague Dependency Treebank 3.5</title>
+  <version>1.2</version>
+  <copyright year="2017">Jiří Mírovský, Petr Pajas, Jan Štěpánek, Zdeněk Žabokrtský</copyright>
+  <icon>icons/logo.png</icon>
+  <require>
+    <extension name="pdt20" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
+    <tred min_version="2.000"/>
+  </require>
+  <description>Provides support for PDT 3.5 files
+  </description>
+</tred_extension>

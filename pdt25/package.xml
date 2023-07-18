@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="96290">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>pdt25</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Prague Dependency Treebank 2.5</title>
+  <version>1.0</version>
+  <copyright year="2012">Jan Popelka, Josef Toman</copyright>
+  <description>Provides support for viewing the PDT 2.5 data</description>
+  <icon>icons/pdt25.png</icon>
+  <require>
+    <extension name="pdt20" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
+    <tred min_version="2.000"/>
+  </require>
+</tred_extension>
