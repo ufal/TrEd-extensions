@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/"
+	    version="1.1">
+  <revision>1.0.101</revision>
+  <description>PDT 2.0 tectogrammatical trees with bridging and discourse annotation</description>
+  <reference name="adata" readas="trees"/>
+
+  <import schema="tdata_schema.xml"/>
+
+  <derive type="t-meta.type">
+    <structure>
+      <member name="genre" type="genre.type" required="0"/>
+    </structure>
+  </derive>
+
+  <derive type="t-root.type">
+    <structure>
+      <member name="sentence"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="tree_ord"> <!-- only for searching in PMLTQ -->
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="directory"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="genre" type="genre.type" required="0"/> <!-- only for searching in PMLTQ -->
+    </structure>
+  </derive>
+
+  <type name="genre.type">
+    <choice>
+      <value>review</value>
+      <value>invitation</value>
+      <value>letter</value>
+      <value>advice</value>
+      <value>program</value>
+      <value>plot</value>
+      <value>sport</value>
+      <value>comment</value>
+      <value>news</value>
+      <value>essay</value>
+      <value>overview</value>
+      <value>description</value>
+      <value>weather</value>
+      <value>survey</value>
+      <value>topic_interv</value>
+      <value>person_interv</value>
+      <value>collection</value>
+      <value>caption</value>
+      <value>metatext</value>
+      <value>other</value>
+    </choice>
+  </type>
+
+  <type name="discourse-special.type"> <!-- obsolete, replaced by discourse_feature and discourse_macrostructure -->
+    <choice>
+      <value>caption</value>
+      <value>heading</value>
+      <value>metatext</value>
+    </choice>
+  </type>
+
+  <type name="discourse-feature.type">
+    <choice>
+      <value>caption</value>
+      <value>heading</value>
+      <value>metatext</value>
+      <value>question</value>
+      <value>author</value>
+      <value>location</value>
+    </choice>
+  </type>
+
+  <type name="discourse-macrostructure.type">
+    <choice>
+      <value>macrostructure</value>
+      <value>coherence_gap</value>
+      <value>topic_change</value> <!-- EVALD -->
+      <value>topic_change_signal</value> <!-- EVALD -->
+      <value>excessive_arg_implicitness</value> <!-- EVALD -->
+      <value>coherence_error</value> <!-- EVALD -->
+    </choice>
+  </type>
+
+  <derive type="t-node.type">
+    <structure>
+      <member name="bridging">
+        <list ordered="1" type="bridging-link.type"/>
+      </member>
+      <member name="coref_text">
+        <list ordered="0" type="coref_text-link.type">
+        </list>
+      </member>
+      <member name="anaph_str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="discourse">
+        <list ordered="1" type="discourse-link.type"/>
+      </member>
+      <member name="discourse_comment">
+        <cdata format="any"/>
+      </member>
+      <member name="discourse_groups">
+        <list ordered="0" type="discourse_groups.type"/>
+      </member>
+      <member name="is_heading" type="bool.type"/> <!-- obsolete after the introduction of attribute discourse_special (which also is now obsolete) -->
+      <member name="discourse_special" type="discourse-special.type" required="0"/> <!-- obsolete, replaced by discourse_feature and discourse_macrostructure -->
+      <member name="discourse_feature" type="discourse-feature.type" required="0"/>
+      <member name="discourse_macrostructure" type="discourse-macrostructure.type" required="0"/>
+      <member name="secondary_NP_type"  type="t-discourse-type.type" required="0"/> <!-- a provisional attribute for annotating disc. type of secondary connectives connecting a non-verbal argument -->
+    </structure>
+  </derive>
+
+  <type name="bridging-link.type">
+    <structure>
+      <member name="target-node.rf">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="informal-type">
+        <choice>
+          <value>CONTRAST</value>
+          <value>SUB_SET</value>
+          <value>SET_SUB</value>
+          <value>PART_WHOLE</value>
+          <value>WHOLE_PART</value>
+          <value>FUNCT_P</value>
+          <value>P_FUNCT</value>
+          <value>REST</value>
+          <value>ANAF</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="coref_text-link.type">
+    <structure>
+      <member name="target-node.rf">
+        <cdata format="PMLREF"/></member>
+      <member name="informal-type">
+        <choice>
+          <value>SPEC</value>
+          <value>GEN</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="discourse-link.type">
+    <structure>
+      <member name="target_node.rf">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="type">
+        <choice>
+          <value>discourse</value>
+          <value>list</value>
+          <value>entrel</value>
+          <value>question-answer</value>
+        </choice>
+      </member>
+      <member name="start_group_id">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="start_range">
+        <cdata format="any"/>
+      </member>
+      <member name="target_group_id">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="target_range">
+        <cdata format="any"/>
+      </member>
+      <member name="discourse_type">
+        <choice>
+          <value>conc</value>
+          <value>cond</value>
+          <value>confr</value>
+          <value>conj</value>
+          <value>conjalt</value>
+          <value>corr</value>
+          <value>disjalt</value>
+          <value>equiv</value>
+          <value>exempl</value>
+          <value>explicat</value>
+          <value>f_cond</value>
+          <value>f_opp</value>
+          <value>f_reason</value>
+          <value>gener</value>
+          <value>grad</value>
+          <value>opp</value>
+          <value>preced</value>
+          <value>purp</value>
+          <value>reason</value>
+          <value>restr</value>
+          <value>spec</value>
+          <value>synchr</value>
+          <value>other</value>
+        </choice>
+      </member>
+      <member name="is_negated" type="bool.type"/>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+      <member name="src">
+        <cdata format="any"/>
+      </member>
+      <member name="a-connectors.rf">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="t-connectors.rf">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="a-connectors_ext.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="t-connectors_ext.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="is_secondary" type="bool.type"/>
+      <member name="all_a-connectors.rf"> <!-- only for searching in PMLTQ -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="connective"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="connective_lc"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="all_a-connectors_ext.rf" required="0"> <!-- only for searching in PMLTQ -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="connective_ext" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="connective_ext_lc" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="discourse_groups.type">
+    <structure>
+      <member name="id">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="anaph_str_comment.type">
+    <structure>
+      <member name="name">
+        <choice>
+          <value>AMBIG</value>
+          <value>OTHER</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+</pml_schema>

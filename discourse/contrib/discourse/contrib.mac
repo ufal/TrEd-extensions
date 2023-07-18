@@ -1,0 +1,10 @@
+#ifndef discourse
+#define discourse
+
+## this is a pre-requisite
+#include <contrib/pml/contrib.mac> 
+#include <contrib/nondeprel_common/contrib.mac>
+
+#include "discourse.mac"
+
+#endif discourse
