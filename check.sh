@@ -38,6 +38,15 @@ for dir in core external ; do
 done
 
 echo
+echo % Missing files:
+for dir in core external ; do
+    for subdir in "$dir"/*/ ; do
+        [[ -f "$subdir"package.xml ]] || echo "$subdir"package.xml
+        [[ -f ${subdir%/}.zip ]] || echo ${subdir%/}.zip
+    done
+done
+
+echo
 echo % Package link broken:
 for dir in core external ; do
     grep -o '<repository[^>]*' "$dir"/*/package.xml | grep -v "<repository.*$dir"
