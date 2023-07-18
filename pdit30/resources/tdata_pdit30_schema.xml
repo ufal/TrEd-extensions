@@ -1,0 +1,1047 @@
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/"
+	    version="1.1">
+  <revision>1.0.0</revision>
+  <description>PDT tectogrammatical trees with anaphora and discourse annotation</description>
+  <reference name="adata" readas="trees"/>
+
+  <import schema="tdata_25_schema.xml"/>
+
+  <derive type="t-meta.type">
+    <structure>
+      <member name="genre" type="genre.type" required="0"/>
+      <member name="genre_ad" type="genre_ad.type" required="0"/> <!-- genre of a PDTB/PCEDT document according to ACL/DCI corpus -->
+      <member name="genre_bw" type="genre_bw.type" required="0"/> <!-- genre of a PDTB/PCEDT document according to Bonnie Webber's ACL 2009 paper -->
+    </structure>
+  </derive>
+
+  <derive type="t-root.type">
+    <structure>
+      <member name="sentence" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="tree_ord" required="0"> <!-- only for searching in PMLTQ (deprecated, tree_no() is a PML-TQ function) -->
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="directory" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="genre" type="genre.type" required="0"/> <!-- only for searching in PMLTQ -->
+      <member name="genre_ad" type="genre_ad.type" required="0"/> <!-- genre of a PDTB/PCEDT document according to ACL/DCI corpus -->
+      <member name="genre_bw" type="genre_bw.type" required="0"/> <!-- genre of a PDTB/PCEDT document according to Bonnie Webber's ACL 2009 paper -->
+
+      <member name="para_no" required="0"><cdata format="nonNegativeInteger"/></member> <!-- for searching in PML-TQ only (not in the distributed data) -->
+      <member name="cze_sentence" required="0"> <!-- for data from PCEDT-en TFA annotation project -->
+        <cdata format="any"/>
+      </member>
+      <member name="eng_sentence" required="0"> <!-- for data from PCEDT-cz TFA annotation project -->
+        <cdata format="any"/>
+      </member>
+      <member name="annot_comment"> <!-- for data from PCEDT-cz TFA annotation project -->
+        <list ordered="0" type="comment.type"/>
+      </member>
+      <member name="anot_error" type="t-anot_error.type" /><!-- for compatibility with PCEDT-en files -->
+    </structure>
+  </derive>
+
+  
+  <type name="t-node.type">
+    <structure role="#NODE" name="t-node">
+      <member as_attribute="1" name="id" role="#ID" required="1">
+        <cdata format="ID"/>
+      </member>
+      <member name="a" type="t-a.type"/>
+      <member name="nodetype" required="1" type="t-nodetype.type"/>
+      <member name="is_generated" type="bool.type"/>
+      <member name="t_lemma" required="1">
+        <cdata format="any"/>
+      </member>
+      <member name="t_lemma_trans" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="functor" required="1">
+        <alt type="func.type"/>
+      </member>
+      <member name="subfunctor" type="t-subfunctor.type"/>
+      <member name="sentmod" type="t-sentmod.type"/>
+      <member name="quot">
+        <list ordered="0">
+          <structure>
+            <member name="type" required="1" type="t-type.type"/>
+            <member name="set_id" required="1">
+              <cdata format="any"/>
+            </member>
+          </structure>
+        </list>
+      </member>
+      <member name="is_dsp_root" type="bool.type"/>
+      <member name="is_member" type="bool.type"/>
+      <member name="is_name_of_person" type="bool.type"/>
+      <member name="is_parenthesis" type="bool.type"/>
+      <member name="is_state" type="bool.type"/>
+      <member name="gram" type="t-gram.type"/>
+      <member name="tfa" type="t-tfa.type"/>
+      <member name="formeme"><cdata format="any"/></member> <!-- for the Czech part of the PCEDT-3.0 -->
+      <member name="deepord" role="#ORDER" required="1">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="is_heading" type="bool.type" required="0"/> <!-- obsolete after the introduction of attribute discourse_special (which also is now obsolete) -->
+      <member name="discourse_special" type="t-discourse-special.type" required="0"/>  <!-- obsolete, replaced by discourse_feature and discourse_macrostructure -->
+      <member name="discourse_feature" type="t-discourse-feature.type" required="0"/>
+      <member name="discourse_macrostructure" type="t-discourse-macrostructure.type" required="0"/>
+      <member name="secondary_NP_type" type="t-discourse-type.type" required="0"/> <!-- a provisional attribute for annotating disc. type of secondary connectives connecting a non-verbal argument -->
+      <member name="secondary_NP_negated" type="bool.type" required="0"/> <!-- a provisional attribute for marking a negated NP secondary connectives connecting a non-verbal argument -->
+      <member name="discourse" required="0">
+        <list ordered="0" type="t-discourse-link.type"/>
+      </member>
+      <member name="discourse_groups" required="0">
+        <list ordered="0" type="t-discourse-groups.type"/>
+      </member>
+      <member name="discourse_comment" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="bridging" required="0">
+        <list ordered="0" type="t-bridging-link.type"/>
+      </member>
+      <member name="coref_text" required="0">
+        <list ordered="0" type="t-coref_text-link.type"/>
+      </member>
+      <member name="anaph_str_comment" required="0">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="coref_gram.rf">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="coref_special" type="coref_special.type"/>
+      <member name="compl.rf">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="val_frame.rf">
+        <alt>
+          <cdata format="PMLREF"/>
+        </alt>
+      </member>
+      <member name="tree_ord" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="annot_comment"> <!-- for data from PCEDT-cz TFA annotation project -->
+        <list ordered="0" type="comment.type"/>
+      </member>
+      <member name="is_exception" type="bool.type"/> <!-- for data from PCEDT-cz TFA annotation project -->
+      <member name="tf_auto"><cdata format="any"/></member> <!-- for automatic division of the sentence into the Topic and Focus parts -->
+      <member name="discourse-pdtb2">
+        <list ordered="0" type="discourse-pdtb2.type"/> <!-- DISCOURSE - PDTB2 STYLE -->
+      </member>
+      <member name="discourse-pdtb3">
+        <list ordered="0" type="discourse-pdtb3.type"/> <!-- DISCOURSE - PDTB3 STYLE -->
+      </member>
+      <member name="formeme"><cdata format="any"/></member> <!-- for compatibility with PCEDT-en files -->
+      <member name="bbn_tag" type="bbn_tag.type"/> <!-- for compatibility with PCEDT-en files -->
+      <member name="nombank_data"><cdata format="any" /></member> <!-- for compatibility with PCEDT-en files -->
+      <member name="pcedt" type="t-pcedt.type"/> <!-- for compatibility with PCEDT-en files -->
+      <member name="compar.rf"> <!-- for compatibility with PCEDT-en files -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="functor_change"> <!-- for compatibility with PCEDT-en files -->
+        <list ordered="1">
+          <cdata format="any"/>
+        </list>
+      </member>
+      <member name="is_name" type="bool.type"/> <!-- for compatibility with PCEDT-en files -->
+      <member name="anot_error" type="t-anot_error.type" /><!-- for compatibility with PCEDT-en files -->
+      <member name="children" role="#CHILDNODES">
+        <list ordered="1" type="t-node.type"/>
+      </member>
+    </structure>
+  </type>
+  
+  <type name="genre_ad.type">
+    <choice>
+      <value>errata</value>
+      <value>essay</value>
+      <value>highlights</value>
+      <value>letter</value>
+      <value>news</value>
+      <value>notable</value>
+      <value>report</value>
+      <value>wit_verse</value>
+      <value>unset</value>
+    </choice>
+  </type>
+
+  <type name="genre_bw.type">
+    <choice>
+      <value>errata</value> <!-- originally in Bonnie's paper called "correction" -->
+      <value>essay</value>
+      <value>highlights</value> <!-- originally in Bonnie's paper called "summary" -->
+      <value>letter</value>
+      <value>news</value>
+      <value>notable</value>
+      <value>report</value>
+      <value>wit_verse</value>
+      <value>unset</value>
+    </choice>
+  </type>
+  
+  <type name="comment.type"> <!-- for data from PCEDT-cz TFA annotation project -->
+    <structure>
+      <member name="type" required="1" type="comment_type.type"/>
+      <member name="text"><cdata format="any" /></member>
+    </structure>
+  </type>
+
+  <type name="comment_type.type"> <!-- for data from PCEDT-cz TFA annotation project -->
+    <choice>
+      <value>Coref</value>
+      <value>Functor</value>
+      <value>M-lemma</value>
+      <value>M-tag</value>
+      <value>Sentence segmentation</value>
+      <value>Structure</value>
+      <value>T-lemma with underscore</value>
+      <value>T-lemma</value>
+      <value>Translation</value>
+      <value>Reconstruction</value>
+      <value>Typo</value>
+      <value>Vallex</value>
+      <value>New valency frame</value>
+      <value>Word segmentation</value>
+      <value>Re-generate</value>
+      <value>Not annotated</value>
+      <value>Secondary preposition</value>
+      <value>Document split</value>
+      <value>TFA</value>
+      <value>TFA_log</value>
+      <value>Hyphen_NP</value> <!-- for compatibility with PCEDT-en files -->
+      <value>Nominalisation</value> <!-- for compatibility with PCEDT-en files -->
+      <value>Wrong m-tag</value> <!-- for compatibility with PCEDT-en files -->
+      <value>Aux right</value> <!-- for compatibility with PCEDT-en files -->
+      <value>CPA</value> <!-- for compatibility with PCEDT-en files -->
+      <value>Coref structure</value> <!-- for compatibility with PCEDT-en files -->
+      <value>Other</value>
+    </choice>
+  </type>
+
+  <derive type="t-dispmod.type">
+    <choice> 
+      <value>disp3</value> <!-- for compatibility with PCEDT-en files -->
+    </choice>
+  </derive>
+
+  <derive type="t-gram.type">
+    <structure> 
+      <member name="diatgram" type="t-diatgram.type"/>
+      <member name="factmod" type="t-factmod.type"/>
+    </structure>
+  </derive>
+
+  <type name="t-diatgram.type">
+    <choice>
+      <value>act</value>
+      <value>deagent</value>
+      <value>disp</value>
+      <value>pas</value>
+      <value>recip</value>
+      <value>res1</value>
+      <value>res2.1</value>
+      <value>res2.2</value>
+    </choice>
+  </type>
+
+  <type name="t-factmod.type">
+    <choice>
+      <value>appeal</value>
+      <value>asserted</value>
+      <value>irreal</value>
+      <value>potential</value>
+      <value>nil</value>
+      <value>nr</value>
+    </choice>
+  </type>
+
+
+  <type name="genre.type">
+    <choice>
+      <value>review</value>
+      <value>invitation</value>
+      <value>letter</value>
+      <value>advice</value>
+      <value>program</value>
+      <value>plot</value>
+      <value>sport</value>
+      <value>comment</value>
+      <value>news</value>
+      <value>essay</value>
+      <value>overview</value>
+      <value>description</value>
+      <value>weather</value>
+      <value>survey</value>
+      <value>topic_interv</value>
+      <value>person_interv</value>
+      <value>collection</value>
+      <value>caption</value>
+      <value>metatext</value>
+      <value>other</value>
+    </choice>
+  </type>
+
+  <type name="CEFR_rating.type">
+    <choice>
+      <value>A1</value>
+      <value>A1+</value>
+      <value>A2</value>
+      <value>A2+</value>
+      <value>B1</value>
+      <value>B2</value>
+      <value>C1</value>
+      <value>C2</value>
+      <value>1</value>
+      <value>2</value>
+      <value>3</value>
+      <value>4</value>
+      <value>5</value>
+    </choice>
+  </type>
+
+  <type name="t-discourse-special.type"> <!-- obsolete, replaced by discourse_feature and discourse_macrostructure -->
+    <choice>
+      <value>caption</value>
+      <value>heading</value>
+      <value>metatext</value>
+      <value>topic_change</value> <!-- EVALD -->
+      <value>topic_change_signal</value> <!-- EVALD -->
+      <value>excessive_arg_implicitness</value> <!-- EVALD -->
+      <value>coherence_error</value> <!-- EVALD -->
+    </choice>
+  </type>
+
+  <type name="t-discourse-feature.type">
+    <choice>
+      <value>caption</value>
+      <value>heading</value>
+      <value>metatext</value>
+      <value>question</value>
+      <value>author</value>
+      <value>location</value>
+    </choice>
+  </type>
+
+  <type name="t-discourse-macrostructure.type">
+    <choice>
+      <value>macrostructure</value>
+      <value>coherence_gap</value>
+      <value>topic_change</value> <!-- EVALD -->
+      <value>topic_change_signal</value> <!-- EVALD -->
+      <value>excessive_arg_implicitness</value> <!-- EVALD -->
+      <value>coherence_error</value> <!-- EVALD -->
+    </choice>
+  </type>
+
+  <type name="t-bridging-link.type">
+    <structure>
+      <member name="target-node.rf" required="0">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="target_node.rf" required="0">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="informal-type" required="0">
+        <choice>
+          <value>CONTRAST</value>
+          <value>SUB_SET</value>
+          <value>SET_SUB</value>
+          <value>PART_WHOLE</value>
+          <value>WHOLE_PART</value>
+          <value>FUNCT_P</value>
+          <value>P_FUNCT</value>
+          <value>REST</value>
+          <value>ANAF</value>
+        </choice>
+      </member>
+      <member name="type" required="0">
+        <choice>
+          <value>CONTRAST</value>
+          <value>SUB_SET</value>
+          <value>SET_SUB</value>
+          <value>PART_WHOLE</value>
+          <value>WHOLE_PART</value>
+          <value>FUNCT_P</value>
+          <value>P_FUNCT</value>
+          <value>REST</value>
+          <value>ANAF</value>
+        </choice>
+      </member>
+      <member name="comment" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment" required="0">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src" required="0">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="t-coref_text-link.type">
+    <structure>
+      <member name="target-node.rf" required="0">
+        <cdata format="PMLREF"/></member>
+      <member name="target_node.rf" required="0">
+        <cdata format="PMLREF"/></member>
+      <member name="informal-type" required="0">
+        <choice>
+          <value>SPEC</value>
+          <value>GEN</value>
+        </choice>
+      </member>
+      <member name="type" required="0">
+        <choice>
+          <value>SPEC</value>
+          <value>GEN</value>
+        </choice>
+      </member>
+      <member name="comment" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment" required="0">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src" required="0">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="t-discourse-link.type">
+    <structure>
+      <member name="target_node.rf" required="0">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="type" required="1">
+        <choice>
+          <value>discourse</value>
+          <value>list</value>
+          <value>entrel</value>
+          <value>question-answer</value>
+        </choice>
+      </member>
+      <member name="start_group_id" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="start_range" required="1">
+        <cdata format="any"/>
+      </member>
+      <member name="target_group_id" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="target_range" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="discourse_type"  type="t-discourse-type.type" required="0"/>
+      <member name="sense_PDTB3"  type="semclass-pdtb3.type" required="0"/>
+      <member name="sense_PDTB3_manual"  type="semclass-pdtb3.type" required="0"/>
+      <member name="is_negated" type="bool.type" required="0"/>
+      <member name="missing_arg_appropriate" type="bool.type" required="0"/>
+      <member name="missing_arg_inappropriate" type="bool.type" required="0"/>
+      <member name="comment" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="src" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="a-connectors.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="t-connectors.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="a-connectors_ext.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="t-connectors_ext.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="is_secondary" type="bool.type" required="0"/>
+      <member name="is_compositional" type="bool.type" required="0"/> <!-- EVALD -->
+      <member name="all_a-connectors.rf" required="0"> <!-- only for searching in PMLTQ -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="connective" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="connective_lc" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="all_a-connectors_ext.rf" required="0"> <!-- only for searching in PMLTQ -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="connective_ext" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="connective_ext_lc" required="0"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="connective_inserted" required="0"> <!-- EVALD -->
+        <cdata format="any"/>
+      </member>
+      <member name="is_implicit" type="bool.type" required="0"/> <!-- EVALD -->
+      <member name="is_NP" type="bool.type" required="0"/> <!-- EVALD -->
+    </structure>
+  </type>
+
+  <type name="t-discourse-type.type">
+    <choice>
+      <value>conc</value>
+      <value>cond</value>
+      <value>confr</value>
+      <value>conj</value>
+      <value>conjalt</value>
+      <value>corr</value>
+      <value>disjalt</value>
+      <value>equiv</value>
+      <value>exempl</value>
+      <value>explicat</value>
+      <value>f_cond</value>
+      <value>f_opp</value>
+      <value>f_reason</value>
+      <value>gener</value>
+      <value>grad</value>
+      <value>opp</value>
+      <value>preced</value>
+      <value>purp</value>
+      <value>reason</value>
+      <value>restr</value>
+      <value>spec</value>
+      <value>synchr</value>
+      <value>other</value>
+      <value>question-answer</value> <!-- EVALD -->
+      <value>empty_relation</value> <!-- EVALD -->
+    </choice>
+  </type>
+
+  <type name="t-discourse-groups.type">
+    <structure>
+      <member name="id" required="1">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="anaph_str_comment.type">
+    <structure>
+      <member name="name">
+        <choice>
+          <value>AMBIG</value>
+          <value>OTHER</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+
+  
+<!-- == == == == == == == == == == DISCOURSE - PDTB2 & PDTB3 STYLE == == == == == == == == == == -->
+
+
+  <type name="discourse-pdtb2.type"> <!-- PDTB2 -->
+    <structure>
+      <member name="type" type="reltype-pdtb2.type"/>
+      <member name="arg1" type="group-attributed.type"/>
+      <member name="arg2" type="group-attributed.type"/>
+      <member name="sup1" type="group.type"/>
+      <member name="sup2" type="group.type"/>
+      <member name="sense" type="semclass-pdtb2.type"/> <!-- AltLex or Explicit -->
+      <member name="sense2" type="semclass-pdtb2.type"/> <!-- AltLex or Explicit -->
+      <member name="text"><cdata format="any"/></member>
+      <member name="head"><cdata format="any"/></member> <!-- Explicit -->
+      <member name="nodes.rf"> <!-- list of connective/altlex nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="terminals.rf"> <!-- only for PML-TQ; list of all connective/altlex terminal nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="imp1_sense" type="semclass-pdtb2.type"/> <!-- Implicit -->
+      <member name="imp1_sense2" type="semclass-pdtb2.type"/> <!-- Implicit -->
+      <member name="imp1_text"><cdata format="any"/></member> <!-- Implicit -->
+      <member name="imp2_sense" type="semclass-pdtb2.type"/> <!-- Implicit -->
+      <member name="imp2_sense2" type="semclass-pdtb2.type"/> <!-- Implicit -->
+      <member name="imp2_text"><cdata format="any"/></member> <!-- Implicit -->
+      <member name="attribution" type="attribution.type"/>
+      <member name="target_node.rf"><cdata format="PMLREF"/></member> <!-- only for PML-TQ; a single target node selected from the arg1 nodes -->
+      <member name="conn"> <!-- only for PML-TQ; structured version of the semantic information -->
+        <list ordered="0" type="conn-pdtb2.type"/>
+      </member>
+    </structure>
+  </type>
+
+
+  <type name="discourse-pdtb3.type"> <!-- PDTB3 -->
+    <structure>
+      <member name="id"><cdata format="any"/></member>
+      <member name="type" type="reltype-pdtb3.type"/>
+      <member name="arg1" type="group-attributed.type"/>
+      <member name="arg2" type="group-attributed.type"/>
+      <member name="sup1" type="group.type"/>
+      <member name="sup2" type="group.type"/>
+      <member name="sense1A" type="semclass-pdtb3.type"/>
+      <member name="sense1B" type="semclass-pdtb3.type"/>
+      <member name="sense2A" type="semclass-pdtb3.type"/>
+      <member name="sense2B" type="semclass-pdtb3.type"/>
+      <member name="conn1"><cdata format="any"/></member>
+      <member name="conn1_orig"><cdata format="any"/></member>
+      <member name="conn2"><cdata format="any"/></member>
+      <member name="pbrole" type="pb-role.type"/>
+      <member name="pbverb"><cdata format="any"/></member>
+      <member name="offset"><cdata format="any"/></member>
+      <member name="provenance"><cdata format="any"/></member>
+      <member name="link"><cdata format="any"/></member>
+      <member name="t-nodes.rf"> <!-- list of connective/altlex tectogrammatical nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="a-nodes.rf"> <!-- list of connective/altlex analytical nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="attribution" type="attribution.type"/>
+      <member name="target_node.rf"><cdata format="PMLREF"/></member>
+      <!--member name="conn"> only for PML-TQ; structured version of the semantic information -->
+        <!--list ordered="0" type="conn-pdtb3.type"/>
+      </member-->
+    </structure>
+  </type>
+
+  
+  <type name="group.type">
+    <structure>
+      <member name="text"><cdata format="any"/></member>
+      <member name="text_orig"><cdata format="any"/></member>
+      <member name="nodes.rf">
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="terminals.rf"> <!-- only for PML-TQ; list of all terminal nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+    </structure>
+  </type>
+
+  <type name="group-attributed.type">
+    <structure>
+      <member name="text"><cdata format="any"/></member>
+      <member name="text_orig"><cdata format="any"/></member>
+      <member name="nodes.rf">
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="terminals.rf"> <!-- only for PML-TQ; list of all terminal nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="attribution" type="attribution.type"/>
+    </structure>
+  </type>
+
+  <type name="attribution.type">
+    <structure>
+      <member name="source" type="source.type"/>
+      <member name="source_lit" type="source.type"/> <!-- only for PML-TQ; value 'Inh' is replaced with the literal inherited value -->
+      <member name="type" type="attrib_type.type"/>
+      <member name="polarity" type="polarity.type"/>
+      <member name="determinacy" type="determinacy.type"/>
+      <member name="text"><cdata format="any"/></member>
+      <member name="text_orig"><cdata format="any"/></member>
+      <member name="nodes.rf"> <!-- list of attribution nodes -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="terminals.rf"> <!-- only for PML-TQ; list of all terminal nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+
+    </structure>
+  </type>
+
+  <type name="polarity.type">
+    <choice>
+      <value>Neg</value>
+      <value>Null</value>
+    </choice>
+  </type>
+
+  <type name="determinacy.type">
+    <choice>
+      <value>Indet</value>
+      <value>Null</value>
+    </choice>
+  </type>
+
+  <type name="attrib_type.type">
+    <choice>
+      <value>Comm</value>
+      <value>PAtt</value>
+      <value>Ftv</value>
+      <value>Ctrl</value>
+      <value>Null</value>
+    </choice>
+  </type>
+
+  <type name="source.type">
+    <choice>
+      <value>Wr</value>
+      <value>Ot</value>
+      <value>Arb</value>
+      <value>Inh</value>
+    </choice>
+  </type>
+
+  <type name="reltype-pdtb2.type">
+    <choice>
+      <value>Explicit</value>
+      <value>AltLex</value>
+      <value>Implicit</value>
+      <value>EntRel</value>
+      <value>NoRel</value>
+    </choice>
+  </type>
+
+  <type name="reltype-pdtb3.type">
+    <choice>
+      <value>Explicit</value>
+      <value>AltLex</value>
+      <value>AltLexC</value>
+      <value>Hypophora</value>
+      <value>Implicit</value>
+      <value>EntRel</value>
+      <value>NoRel</value>
+    </choice>
+  </type>
+
+  <type name="semclass-pdtb2.type">
+    <choice>
+      <value>Expansion.Conjunction</value>
+      <value>Contingency.Cause.Reason</value>
+      <value>Comparison.Contrast</value>
+      <value>Expansion.Restatement.Specification</value>
+      <value>Contingency.Cause.Result</value>
+      <value>Comparison.Contrast.Juxtaposition</value>
+      <value>Temporal.Synchrony</value>
+      <value>Expansion.Instantiation</value>
+      <value>Temporal.Asynchronous.Precedence</value>
+      <value>Temporal.Asynchronous.Succession</value>
+      <value>Comparison.Concession.Contra-expectation</value>
+      <value>Contingency.Condition.Hypothetical</value>
+      <value>Expansion.List</value>
+      <value>Comparison</value>
+      <value>Comparison.Contrast.Opposition</value>
+      <value>Comparison.Concession.Expectation</value>
+      <value>Contingency.Condition.General</value>
+      <value>Expansion.Restatement.Equivalence</value>
+      <value>Expansion.Alternative.Chosen alternative</value>
+      <value>Expansion.Restatement</value>
+      <value>Expansion.Restatement.Generalization</value>
+      <value>Expansion.Alternative.Disjunctive</value>
+      <value>Expansion</value>
+      <value>Contingency.Condition.Unreal present</value>
+      <value>Contingency.Pragmatic cause.Justification</value>
+      <value>Contingency.Condition.Factual present</value>
+      <value>Expansion.Alternative.Conjunctive</value>
+      <value>Contingency.Condition.Unreal past</value>
+      <value>Expansion.Alternative</value>
+      <value>Contingency.Pragmatic condition.Implicit assertion</value>
+      <value>Comparison.Pragmatic contrast</value>
+      <value>Comparison.Concession</value>
+      <value>Contingency.Pragmatic condition.Relevance</value>
+      <value>Expansion.Exception</value>
+      <value>Comparison.Pragmatic concession</value>
+      <value>Temporal</value>
+      <value>Contingency</value>
+      <value>Contingency.Condition.Factual past</value>
+      <value>Temporal.Asynchronous</value>
+      <value>Contingency.Condition</value>
+      <value>Contingency.Cause</value>
+    </choice>
+  </type>
+
+  <type name="semclass-pdtb3.type">
+    <choice>
+      <value>Comparison.Concession.Arg1-as-denier</value>
+      <value>Comparison.Concession.Arg2-as-denier</value>
+      <value>Comparison.Concession+SpeechAct.Arg2-as-denier+SpeechAct</value>
+      <value>Comparison.Contrast</value>
+      <value>Comparison.Similarity</value>
+      <value>Contingency.Cause.Reason</value>
+      <value>Contingency.Cause.Result</value>
+      <value>Contingency.Cause+Belief.Reason+Belief</value>
+      <value>Contingency.Cause+Belief.Result+Belief</value>
+      <value>Contingency.Cause+SpeechAct.Reason+SpeechAct</value>
+      <value>Contingency.Cause+SpeechAct.Result+SpeechAct</value>
+      <value>Contingency.Negative-cause.NegResult</value>
+      <value>Contingency.Condition.Arg1-as-cond</value>
+      <value>Contingency.Condition.Arg2-as-cond</value>
+      <value>Contingency.Condition+SpeechAct</value>
+      <value>Contingency.Negative-condition.Arg1-as-negCond</value>
+      <value>Contingency.Negative-condition.Arg2-as-negCond</value>
+      <value>Contingency.Negative-condition+SpeechAct</value>
+      <value>Contingency.Purpose.Arg1-as-goal</value>
+      <value>Contingency.Purpose.Arg2-as-goal</value>
+      <value>Expansion.Conjunction</value>
+      <value>Expansion.Disjunction</value>
+      <value>Expansion.Equivalence</value>
+      <value>Expansion.Exception.Arg1-as-excpt</value>
+      <value>Expansion.Exception.Arg2-as-excpt</value>
+      <value>Expansion.Instantiation.Arg1-as-instance</value>
+      <value>Expansion.Instantiation.Arg2-as-instance</value>
+      <value>Expansion.Level-of-detail.Arg1-as-detail</value>
+      <value>Expansion.Level-of-detail.Arg2-as-detail</value>
+      <value>Expansion.Manner.Arg1-as-manner</value>
+      <value>Expansion.Manner.Arg2-as-manner</value>
+      <value>Expansion.Substitution.Arg1-as-subst</value>
+      <value>Expansion.Substitution.Arg2-as-subst</value>
+      <value>Temporal.Asynchronous.Precedence</value>
+      <value>Temporal.Asynchronous.Succession</value>
+      <value>Temporal.Synchronous</value>
+      <value>IGNORE</value>
+    </choice>
+  </type>
+
+  <type name="pb-role.type">
+    <choice>
+      <value>ARGM-ADV</value>
+      <value>ARGM-CAU</value>
+      <value>ARGM-EXT</value>
+      <value>ARGM-MNR</value>
+      <value>ARGM-PNC</value>
+      <value>ARGM-PRD</value>
+      <value>ARGM-PRP</value>
+      <value>ARGM-TMP</value>
+      <value>G</value>
+      <value>S-ADV</value>
+    </choice>
+  </type>
+
+  
+  <!-- from here only for PML-TQ; structured version of the semantic information -->
+  
+  <type name="conn-pdtb2.type">
+    <structure>
+      <member name="type" type="conn-type.type"></member>
+      <member name="sem">
+        <list ordered="1" type="sem.type"/>
+      </member>
+      <member name="text"><cdata format="any"/></member>
+      <member name="head"><cdata format="any"/></member> <!-- Explicit -->
+      <member name="nodes.rf"> <!-- list of connective/altlex nodes -->
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+      <member name="terminals.rf">
+        <list ordered="0"><cdata format="PMLREF"/></list>
+      </member>
+    </structure>
+  </type>
+
+  <type name="conn-type.type">
+      <choice>
+        <value>expalt</value>
+        <value>imp1</value>
+        <value>imp2</value>
+      </choice>
+  </type>
+   
+  <type name="sem.type">
+    <structure>
+      <member name="order" type="order.type"/>
+      <member name="sense" type="semclass-pdtb2.type"/>
+    </structure>
+  </type>
+
+  <type name="order.type">
+      <choice>
+        <value>1</value>
+        <value>2</value>
+      </choice>
+  </type>
+
+
+<!-- == == == == == == == == == == end of DISCOURSE - PDTB2 & PDTB3 STYLE == == == == == == == == == == -->
+
+  
+<!-- for compatibility with PCEDT-en files: -->
+
+  <type name="bbn_tag.type">
+    <choice>
+      <value>ANIMAL</value>
+      <value>CARDINAL</value>
+      <value>CONTACT_INFO:ADDRESS</value>
+      <value>CONTACT_INFO:OTHER</value>
+      <value>CONTACT_INFO:PHONE</value>
+      <value>DATE</value>
+      <value>DATE:AGE</value>
+      <value>DATE:DATE</value>
+      <value>DATE:DURATION</value>
+      <value>DATE:OTHER</value>
+      <value>DISEASE</value>
+      <value>EVENT:HURRICANE</value>
+      <value>EVENT:OTHER</value>
+      <value>EVENT:WAR</value>
+      <value>FAC:AIRPORT</value>
+      <value>FAC:ATTRACTION</value>
+      <value>FAC:BRIDGE</value>
+      <value>FAC:BUILDING</value>
+      <value>FAC:HIGHWAY_STREET</value>
+      <value>FAC:HOTEL</value>
+      <value>FAC:OTHER</value>
+      <value>FAC_DESC:AIRPORT</value>
+      <value>FAC_DESC:ATTRACTION</value>
+      <value>FAC_DESC:BRIDGE</value>
+      <value>FAC_DESC:BUILDING</value>
+      <value>FAC_DESC:HIGHWAY_STREET</value>
+      <value>FAC_DESC:OTHER</value>
+      <value>FAC_DESC:STREET_HIGHWAY</value>
+      <value>GAME</value>
+      <value>GPE:CITY</value>
+      <value>GPE:COUNTRY</value>
+      <value>GPE:OTHER</value>
+      <value>GPE:STATE_PROVINCE</value>
+      <value>GPE_DESC:CITY</value>
+      <value>GPE_DESC:COUNTRY</value>
+      <value>GPE_DESC:OTHER</value>
+      <value>GPE_DESC:STATE_PROVINCE</value>
+      <value>LANGUAGE</value>
+      <value>LAW</value>
+      <value>LOCATION</value>
+      <value>LOCATION:BORDER</value>
+      <value>LOCATION:CITY</value>
+      <value>LOCATION:CONTINENT</value>
+      <value>LOCATION:LAKE_SEA_OCEAN</value>
+      <value>LOCATION:OTHER</value>
+      <value>LOCATION:REGION</value>
+      <value>LOCATION:RIVER</value>
+      <value>MONEY</value>
+      <value>NORP:NATIONALITY</value>
+      <value>NORP:OTHER</value>
+      <value>NORP:POLITICAL</value>
+      <value>NORP:RELIGION</value>
+      <value>ORDINAL</value>
+      <value>ORGANIZATION:CITY</value>
+      <value>ORGANIZATION:CORPORATION</value>
+      <value>ORGANIZATION:EDUCATIONAL</value>
+      <value>ORGANIZATION:GOVERNMENT</value>
+      <value>ORGANIZATION:HOSPITAL</value>
+      <value>ORGANIZATION:HOTEL</value>
+      <value>ORGANIZATION:MUSEUM</value>
+      <value>ORGANIZATION:OTHER</value>
+      <value>ORGANIZATION:POLITICAL</value>
+      <value>ORGANIZATION:RELIGIOUS</value>
+      <value>ORGANIZATION:STATE_PROVINCE</value>
+      <value>ORG_DESC:CORPORATION</value>
+      <value>ORG_DESC:EDUCATIONAL</value>
+      <value>ORG_DESC:GOVERNMENT</value>
+      <value>ORG_DESC:HOSPITAL</value>
+      <value>ORG_DESC:HOTEL</value>
+      <value>ORG_DESC:MUSEUM</value>
+      <value>ORG_DESC:OTHER</value>
+      <value>ORG_DESC:POLITICAL</value>
+      <value>ORG_DESC:RELIGIOUS</value>
+      <value>PERCENT</value>
+      <value>PERSON</value>
+      <value>PER_DESC</value>
+      <value>PLANT</value>
+      <value>PRODCUT:OTHER</value>
+      <value>PRODUCT:DRUG</value>
+      <value>PRODUCT:FOOD</value>
+      <value>PRODUCT:OTHER</value>
+      <value>PRODUCT:VEHICLE</value>
+      <value>PRODUCT:WEAPON</value>
+      <value>PRODUCT_DESC:OTHER</value>
+      <value>PRODUCT_DESC:VEHICLE</value>
+      <value>PRODUCT_DESC:WEAPON</value>
+      <value>QUANTITY:1D</value>
+      <value>QUANTITY:2D</value>
+      <value>QUANTITY:3D</value>
+      <value>QUANTITY:ENERGY</value>
+      <value>QUANTITY:OTHER</value>
+      <value>QUANTITY:SPEED</value>
+      <value>QUANTITY:TEMPERATURE</value>
+      <value>QUANTITY:WEIGHT</value>
+      <value>SUBSTANCE:CHEMICAL</value>
+      <value>SUBSTANCE:DRUG</value>
+      <value>SUBSTANCE:FOOD</value>
+      <value>SUBSTANCE:NUCLEAR</value>
+      <value>SUBSTANCE:OTHER</value>
+      <value>TIME</value>
+      <value>WORK_OF_ART:BOOK</value>
+      <value>WORK_OF_ART:OTHER</value>
+      <value>WORK_OF_ART:PAINTING</value>
+      <value>WORK_OF_ART:PLAY</value>
+      <value>WORK_OF_ART:SONG</value>
+    </choice>
+  </type>
+
+  <type name="t-pcedt.type">
+    <structure>
+      <member name="cz_translation" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="translation_type" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="pattern" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="pattern_mode" required="0" type="pcedt-pattern_mode.type"/>
+      <member name="alt_pattern" required="0">
+        <list ordered="0" type="pcedt-alt_pattern.type"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="pcedt-pattern_mode.type">
+    <choice>
+      <value>f</value>
+      <value>a</value>
+      <value>u</value>
+      <value>x</value>
+    </choice>
+  </type>
+
+  <type name="pcedt-alt_pattern.type">
+    <structure>
+      <member name="pattern" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="pattern_mode" required="0" type="pcedt-pattern_mode.type"/>
+    </structure>
+  </type>
+
+  <type name="t-anot_error.type">
+    <list ordered="0">
+      <cdata format="any"/>
+    </list>
+  </type>
+
+<!-- end of compatibility with PCEDT-en files: -->
+  
+  
+</pml_schema>
