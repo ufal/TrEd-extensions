@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="33274768">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>czengvallex</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Czengvallex: PDT-Vallex and EngValLex alignment</title>
+  <version>1.30</version>
+  <copyright year="2009-2013">Josef Toman, Ondřej Bojar, Eva Fučíková</copyright>
+  <description>Provides annotation mode for vallency frames alignment
+	  between PDT-Vallex and EngValLex.
+  </description>
+  <require>
+    <extension name="pedt"/>
+    <extension name="pdt_vallex"/>
+    <tred min_version="2.4920"/>
+  </require>
+</tred_extension>

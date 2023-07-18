@@ -1,0 +1,32 @@
+# -*- cperl -*-
+
+#ifndef paralel_vallex
+#define paralel_vallex
+
+#binding-context czengvallex
+#include "czengvallex.mak"
+
+unshift @TredMacro::AUTO_CONTEXT_GUESSING,
+ sub {
+   my ($hook)=@_;
+   my $resuming = ($hook eq 'file_resumed_hook');
+
+   if (PML::SchemaDescription() =~ m{^Data for Treex}) {
+     SetCurrentStylesheet('czengvallex');
+     return 'czengvallex';
+	}
+	else{
+     return undef;
+   }
+ };
+
+{
+use lib TredMacro::CallerDir();
+package TrEd::FramesPairs::GUI;
+BEGIN {
+	require TrEd::FramesPairs::GUI;
+	}
+}
+
+#endif paralel_vallex
+

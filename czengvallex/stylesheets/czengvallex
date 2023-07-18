@@ -1,0 +1,10 @@
+context: czengvallex
+rootstyle:  <? czengvallex::get_root_style() ?>
+style: <? czengvallex::get_node_style($this) ?>
+node: <? czengvallex::display_line($this, 1) 
+	?><? '#{customerror}' . ('!' x scalar(ListV($this->attr('valalign/note')))) if defined $this->attr('valalign/note') ?>
+node: <? czengvallex::display_line($this, 2) ?>
+node: <? czengvallex::display_line($this, 3) ?>
+style:<? return '#{Node-hide:1}' if defined $this->{trees} and not $czengvallex::display_all ?>
+
+hint:<? return czengvallex::_get_frame($this) if defined $this->{'val_frame.rf'} ?>
