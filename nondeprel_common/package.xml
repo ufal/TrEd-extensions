@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="133790">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>nondeprel_common</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Non-Dependency Relations Annotation - common features</title>
+  <version>1.92</version>
+  <copyright year="2016">Jiří Mírovský, Petr Pajas, Zdeněk Žabokrtský</copyright>
+  <icon>icons/logo.png</icon>
+  <description>This is a supporting extension for other extensions for the annotation of non-dependency relations in PDT (bridging, discourse).
+  It does not provide any functionality on itself.
+  </description>
+  <require>
+    <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
+  </require>
+</tred_extension>
