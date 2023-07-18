@@ -1,0 +1,11 @@
+#ifndef bridging
+#define bridging
+
+## this is a pre-requisite
+#include <contrib/pml/contrib.mac> 
+
+#include <contrib/nondeprel_common/contrib.mac>
+
+#include "bridging.mac"
+
+#endif bridging

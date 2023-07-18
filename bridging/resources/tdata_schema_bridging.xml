@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
+  <revision>1.0.101</revision>
+  <description>PDT 2.0 tectogrammatic trees with anaphora/bridging</description>
+  <reference name="adata" readas="trees"/>
+
+  <import schema="tdata_schema.xml"/>
+
+  <derive type="t-root.type">
+    <structure>
+      <member name="sentence"> <!-- only for searching in PMLTQ -->
+        <cdata format="any"/>
+      </member>
+      <member name="tree_ord"> <!-- only for searching in PMLTQ -->
+        <cdata format="nonNegativeInteger"/>
+      </member>
+    </structure>
+  </derive>
+
+  <derive type="t-node.type">
+    <structure>
+      <member name="bridging">
+        <list ordered="1" type="bridging-link.type"/>
+      </member>
+<!--      <member name="coref_text.rf"><list ordered="0"><cdata format="PMLREF"/></list></member> -->
+      <member name="coref_text">
+        <list ordered="0" type="coref_text-link.type">
+        </list>
+      </member>
+      <member name="anaph_str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+    </structure>
+  </derive>
+
+  <type name="bridging-link.type">
+    <structure>
+      <member name="target-node.rf">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="informal-type">
+        <choice>
+          <value>CONTRAST</value>
+          <value>SUB_SET</value>
+          <value>SET_SUB</value>
+          <value>PART_WHOLE</value>
+          <value>WHOLE_PART</value>
+          <value>FUNCT_P</value>
+          <value>P_FUNCT</value>
+          <value>REST</value>
+          <value>ANAF</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="coref_text-link.type">
+    <structure>
+      <member name="target-node.rf">
+        <cdata format="PMLREF"/></member>
+      <member name="informal-type">
+        <choice>
+          <value>SYN</value> <!-- in old data only; replaced by SPEC -->
+          <value>ER</value> <!-- in old data only; replaced by SPEC -->
+          <value>NR</value> <!-- in old data only; replaced by GEN -->
+          <value>SPEC</value>
+          <value>GEN</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+      <member name="str_comment">
+        <list ordered="0" type="anaph_str_comment.type">
+        </list>
+      </member>
+      <member name="src">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="anaph_str_comment.type">
+    <structure>
+      <member name="name">
+        <choice>
+          <value>AMBIG</value>
+          <value>OTHER</value>
+        </choice>
+      </member>
+      <member name="comment">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+</pml_schema>

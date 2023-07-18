@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pml_schema xmlns="http://ufal.mff.cuni.cz/pdt/pml/schema/" version="1.1">
+  <revision>0.1.0</revision>
+  <description>Additions to PDT 2.0 annotation scheme</description>
+  <reference name="adata" readas="trees"/>
+
+  <import schema="tdata_schema.xml" maximal_revision="1.0.9999"/>
+
+  <derive type="t-meta.type">
+    <structure>
+      <member name="genre" type="t-genre.type" required="0"/>
+    </structure>
+  </derive>
+
+  <type name="t-genre.type">
+    <choice>
+      <value>review</value>
+      <value>invitation</value>
+      <value>letter</value>
+      <value>advice</value>
+      <value>program</value>
+      <value>plot</value>
+      <value>sport</value>
+      <value>comment</value>
+      <value>news</value>
+      <value>essay</value>
+      <value>overview</value>
+      <value>description</value>
+      <value>weather</value>
+      <value>survey</value>
+      <value>topic_interv</value>
+      <value>person_interv</value>
+      <value>collection</value>
+      <value>caption</value>
+      <value>metatext</value>
+      <value>other</value>
+    </choice>
+  </type>
+
+  <derive type="t-root.type">
+    <structure role="#NODE" name="t-root">
+      <member name="mwes" required="0">
+        <list ordered="0" type="st-node.type"/>
+      </member>
+      <!-- Member "children" is just copied from
+           imported tdata_schema.xml in PDT 2.0.
+           The reason is to keep MWE information above the whole tree
+           (in the data sorted according to this schema)
+           and to preserve the order of PDT 2.5 data
+           (which is the version introducing "mwes". -->
+      <member name="children" role="#CHILDNODES">
+        <list ordered="1" type="t-node.type"/>
+      </member>
+    </structure>
+  </derive>
+
+  <!-- senmod_new is no longer used, remove it -->
+  <derive type="t-node.type">
+    <structure>
+      <member name="sentmod_new" type="t-sentmod.type"/>
+      <member name="discourse" required="0">
+        <list ordered="0" type="t-discourse-link.type"/>
+      </member>
+      <member name="discourse_groups" required="0">
+        <list ordered="0" type="t-discourse-groups.type"/>
+      </member>
+      <member name="discourse_special" type="t-discourse-special.type" required="0"/>
+      <member name="bridging" required="0">
+        <list ordered="0" type="t-bridging-link.type"/>
+      </member>
+      <member name="coref_text" required="0">
+        <list ordered="0" type="t-coref_text-link.type"/>
+      </member>
+      <member name="coref_gram_new.rf"> <!-- just for the period of transition of Anja's annotation here -->
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+
+    </structure>
+  </derive>
+
+  <derive type="t-gram.type">
+    <structure>
+      <member name="typgroup" type="t-typgroup.type"/>
+      <!-- Member "negation" is just copied from
+           imported tdata_schema.xml in PDT 2.0.
+           The reason is the same as for "children" above".
+           Gramateme "negation" is the only one that apply to nouns. -->
+      <member name="negation" type="t-negation.type"/>
+      <!-- grammateme tense_new is no longer needed. Remove it -->
+      <member name="tense_new" type="t-tense.type"/>
+      <member name="diatgram" type="t-diatgram.type"/>
+       <!-- grammateme factmod replaces grammateme verbmod - it and its type shlould be removed from the schema -->
+      <member name="factmod" type="t-factmod.type"/>
+    </structure>
+  </derive>
+
+  <type name="t-typgroup.type">
+    <choice>
+      <value>single</value>
+      <value>group</value>
+      <value>nr</value>
+    </choice>
+  </type>
+
+  <type name="t-diatgram.type">
+    <choice>
+      <value>act</value>
+      <value>deagent</value>
+      <value>disp</value>
+      <value>pas</value>
+      <value>recip</value>
+      <value>res1</value>
+      <value>res2.1</value>
+      <value>res2.2</value>
+    </choice>
+  </type>
+
+  <type name="t-factmod.type">
+    <choice>
+      <value>appeal</value>
+      <value>asserted</value>
+      <value>irreal</value>
+      <value>potential</value>
+      <value>nil</value>
+      <value>nr</value>
+    </choice>
+  </type>
+
+  <type name="t-discourse-special.type">
+    <choice>
+      <value>caption</value>
+      <value>heading</value>
+      <value>metatext</value>
+    </choice>
+  </type>
+
+  <type name="t-discourse-groups.type">
+    <structure>
+      <member name="id" required="1">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="t-discourse-link.type">
+    <structure>
+      <member name="target_node.rf" required="0">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="type" required="1">
+        <choice>
+          <value>discourse</value>
+          <value>list</value>
+        </choice>
+      </member>
+      <member name="start_group_id" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="start_range" required="1">
+        <cdata format="any"/>
+      </member>
+      <member name="target_group_id" required="0">
+        <cdata format="nonNegativeInteger"/>
+      </member>
+      <member name="target_range" required="0">
+        <cdata format="any"/>
+      </member>
+      <member name="discourse_type"  type="t-discourse-type.type" required="0"/>
+      <member name="a-connectors.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+      <member name="t-connectors.rf" required="0">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member>
+    </structure>
+  </type>
+
+  <type name="t-discourse-type.type">
+    <choice>
+      <value>conc</value>
+      <value>cond</value>
+      <value>confr</value>
+      <value>conj</value>
+      <value>conjalt</value>
+      <value>corr</value>
+      <value>disjalt</value>
+      <value>equiv</value>
+      <value>exempl</value>
+      <value>explicat</value>
+      <value>f_cond</value>
+      <value>f_opp</value>
+      <value>f_reason</value>
+      <value>gener</value>
+      <value>grad</value>
+      <value>opp</value>
+      <value>preced</value>
+      <value>purp</value>
+      <value>reason</value>
+      <value>restr</value>
+      <value>spec</value>
+      <value>synchr</value>
+      <value>other</value>
+    </choice>
+  </type>
+
+  <type name="t-bridging-link.type">
+    <structure>
+      <member name="target_node.rf" required="1">
+        <cdata format="PMLREF"/>
+      </member>
+      <member name="type" type="t-bridging-type.type" required="1"/>
+    </structure>
+  </type>
+
+  <type name="t-bridging-type.type">
+    <choice>
+      <value>CONTRAST</value>
+      <value>SUB_SET</value>
+      <value>SET_SUB</value>
+      <value>PART_WHOLE</value>
+      <value>WHOLE_PART</value>
+      <value>FUNCT_P</value>
+      <value>P_FUNCT</value>
+      <value>REST</value>
+      <value>ANAF</value>
+    </choice>
+  </type>
+
+  <type name="t-coref_text-link.type">
+    <structure>
+      <member name="target_node.rf" required="1">
+        <cdata format="PMLREF"/></member>
+      <member name="type" required="1">
+        <choice>
+          <value>SPEC</value>
+          <value>GEN</value>
+        </choice>
+      </member>
+    </structure>
+  </type>
+
+  <type name="anaph_str_comment.type">
+    <structure>
+      <member name="name" required="1">
+        <choice>
+          <value>AMBIG</value>
+          <value>OTHER</value>
+        </choice>
+      </member>
+      <member name="comment" required="1">
+        <cdata format="any"/>
+      </member>
+    </structure>
+  </type>
+
+  <type name="st-node.type">
+    <structure name="st-node">
+      <member as_attribute="1" name="id" role="#ID" required="1"><cdata format="ID"/></member>
+      <member name="basic-form" required="0"><cdata format="any"/></member>
+      <member name="type" required="1"><cdata format="any"/></member>
+      <member name="tnode.rfs">
+        <list ordered="0">
+          <cdata format="PMLREF"/>
+        </list>
+      </member> 
+    </structure>
+  </type>
+
+</pml_schema>

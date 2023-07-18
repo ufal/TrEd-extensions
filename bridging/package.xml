@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="135361">
+  <head>
+    <schema href="tred_extension_schema.xml"/>
+  </head>
+  <pkgname>bridging</pkgname>
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
+  <title>Bridging Anaphora and Textual Coreference Annotation</title>
+  <version>1.94</version>
+  <copyright year="2013">Jiří Mírovský, Petr Pajas, Mirek Týnovský, Zdeněk Žabokrtský</copyright>
+  <icon>icons/logo.png</icon>
+  <description>Provides an annotation mode for the annotation of the bridging anaphora and the extended textual coreference in PDT.</description>
+  <require>
+    <extension name="nondeprel_common" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/nondeprel_common"/>
+  </require>
+</tred_extension>
