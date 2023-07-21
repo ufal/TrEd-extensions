@@ -149,6 +149,17 @@ if [[ $repository != href=[\'\"]${url%/} ]] ; then
     exit 1
 fi
 
+dependencies_ok=1
+while read dependency ; do
+    wget -q --max-redirect=0 --method=HEAD "$dependency"/package.xml || {
+        echo "Cannot GET $dependency" >&2
+        dependencies_ok=0
+    }
+done < <(
+    xmllint --shell "$meta" <<< 'cat //*[name() = "extension"]/@href' \
+    | grep href= | cut -f2 -d'"' )
+(( dependencies_ok )) || exit 1
+
 icon=$(perl -ne 'print $1 if m{<icon>([^<]+)</icon>}' "$meta" /dev/null)
 if [[ $icon ]] ; then
     echo "Icon $icon" >&2
