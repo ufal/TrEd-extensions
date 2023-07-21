@@ -9,7 +9,7 @@ set -eu
 
 echo % Common files:
 comm -12 <(ls core) <(ls external) \
-| grep -vE '^(extensions\.lst~?|index\.html)$'
+| grep -vE '^(extensions\.lst~?|index\.html)$' || :
 
 echo
 echo % Common extensions in lists:
@@ -49,5 +49,24 @@ done
 echo
 echo % Package link broken:
 for dir in core external ; do
-    grep -o '<repository[^>]*' "$dir"/*/package.xml | grep -v "<repository.*$dir"
+    grep -o '<repository[^>]*' "$dir"/*/package.xml | grep -v "<repository.*$dir" || :
 done
+
+echo
+echo % Dependency links broken:
+for dir in core external ; do
+    for p in "$dir"/*/package.xml ; do
+        grep '<extension' "$p" \
+        | grep -oE '/(core|external)/[^"]+' \
+        | sed 's=/==;s=$=.zip=' \
+        | xargs ls > /dev/null \
+        || echo "$p"
+    done
+done
+
+echo
+echo % Insufficient permissions:
+find core external \! -perm -g+w  -ls || :
+
+echo
+echo % Done.
