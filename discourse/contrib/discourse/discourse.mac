@@ -18,7 +18,7 @@ BEGIN { import NonDepRel_Common; import TredMacro; }
 #bind forget_all_remembered_nodes_and_groups to f menu Forget remembered nodes and groups
 #bind switch_remember_subtree to Ctrl+space menu Remember/forget subtree
 #bind select_discourse_source to s menu Select source
-#bind switch_hiding_src to S menu Switch hiding source
+#bind switch_hiding_src to H menu Switch hiding source
 
 use strict;
 use warnings;
@@ -1407,7 +1407,7 @@ sub add_discourse_arrow_without_target {
 
 
 sub add_defined_discourse_arrow {
-  my ($start_node, $target_node, $type, $discourse_type, $start_range, $target_range, $start_group_id, $target_group_id, $comment, $src, $pa_connectors_t_ids, $pa_connectors_a_ids, $pa_connectors_t_ext_ids, $pa_connectors_a_ext_ids, $is_secondary, $is_negated) = @_;
+  my ($start_node, $target_node, $type, $discourse_type, $start_range, $target_range, $start_group_id, $target_group_id, $comment, $src, $pa_connectors_t_ids, $pa_connectors_a_ids, $pa_connectors_t_ext_ids, $pa_connectors_a_ext_ids, $is_secondary, $is_negated, $sense_PDTB3, $sense_PDTB3_manual, $sense1B_PDTB3, $sense1B_PDTB3_manual) = @_;
 
   my $target_node_id;
   if ($target_node) {
@@ -1428,7 +1428,12 @@ sub add_defined_discourse_arrow {
                                  't-connectors_ext.rf' => $pa_connectors_t_ext_ids,
                                  'a-connectors_ext.rf' => $pa_connectors_a_ext_ids,
                                         'is_secondary' => $is_secondary,
-                                          'is_negated' => $is_negated});
+                                          'is_negated' => $is_negated,
+                                         'sense_PDTB3' => $sense_PDTB3,
+                                  'sense_PDTB3_manual' => $sense_PDTB3_manual,
+                                       'sense1B_PDTB3' => $sense1B_PDTB3,
+                                'sense1B_PDTB3_manual' => $sense1B_PDTB3_manual
+                                       });
   return;
 } # add_defined_discourse_arrow
 
@@ -1606,7 +1611,7 @@ sub reverse_a_discourse_arrow {
     my @a_aa = get_arrayed_discourse_arrow($this, $arrows_discourse[0]);
     my $new_start_node = PML::GetNodeByID($a_aa[1]);
     #add_defined_discourse_arrow($start_node, $target_node, $type, $discourse_type, $start_range, $target_range, $start_group_id, $target_group_id, $comment, $src, $pa_connectors_t_ids, $pa_connectors_a_ids);
-    add_defined_discourse_arrow($new_start_node, $a_aa[0], $a_aa[2], $a_aa[3], $a_aa[5], $a_aa[4], $a_aa[7], $a_aa[6], $a_aa[8], $a_aa[9], $a_aa[10], $a_aa[11], $a_aa[12], $a_aa[13], $a_aa[14], $a_aa[15]);
+    add_defined_discourse_arrow($new_start_node, $a_aa[0], $a_aa[2], $a_aa[3], $a_aa[5], $a_aa[4], $a_aa[7], $a_aa[6], $a_aa[8], $a_aa[9], $a_aa[10], $a_aa[11], $a_aa[12], $a_aa[13], $a_aa[14], $a_aa[15], $a_aa[16], $a_aa[17], $a_aa[18], $a_aa[19]);
     $this->{discourse}=List();
     $this=$new_start_node;
     ChangingFile(1);
@@ -1632,7 +1637,7 @@ sub reverse_a_given_arrow {
   my @a_aa = get_arrayed_discourse_arrow($node, $arrows_discourse[$position-1]);
   my $new_start_node = PML::GetNodeByID($a_aa[1]);
   #add_defined_discourse_arrow($start_node, $target_node, $type, $discourse_type, $start_range, $target_range, $start_group_id, $target_group_id, $comment, $src, $pa_connectors_t_ids, $pa_connectors_a_ids);
-  add_defined_discourse_arrow($new_start_node, $a_aa[0], $a_aa[2], $a_aa[3], $a_aa[5], $a_aa[4], $a_aa[7], $a_aa[6], $a_aa[8], $a_aa[9], $a_aa[10], $a_aa[11], $a_aa[12], $a_aa[13], $a_aa[14], $a_aa[15]);
+  add_defined_discourse_arrow($new_start_node, $a_aa[0], $a_aa[2], $a_aa[3], $a_aa[5], $a_aa[4], $a_aa[7], $a_aa[6], $a_aa[8], $a_aa[9], $a_aa[10], $a_aa[11], $a_aa[12], $a_aa[13], $a_aa[14], $a_aa[15], $a_aa[16], $a_aa[17], $a_aa[18], $a_aa[19]);
   @{$node->{discourse}} = map {$node->{discourse}->[$_]} grep {$_ ne $position-1} (0..$#{$node->{discourse}});
   return $new_start_node;
 }
@@ -1641,7 +1646,7 @@ sub get_arrayed_discourse_arrow {
   my ($start_node, $link) = @_;
   my @a_aa = ($start_node, $link->{'target_node.rf'}, $link->{'type'}, $link->{'discourse_type'},
               $link->{'start_range'}, $link->{'target_range'}, $link->{'start_group_id'}, $link->{'target_group_id'},
-              $link->{'comment'}, $link->{'src'}, $link->{'t-connectors.rf'}, $link->{'a-connectors.rf'}, $link->{'t-connectors_ext.rf'}, $link->{'a-connectors_ext.rf'}, $link->{'is_secondary'}, $link->{'is_negated'});
+              $link->{'comment'}, $link->{'src'}, $link->{'t-connectors.rf'}, $link->{'a-connectors.rf'}, $link->{'t-connectors_ext.rf'}, $link->{'a-connectors_ext.rf'}, $link->{'is_secondary'}, $link->{'is_negated'}, $link->{'sense_PDTB3'}, $link->{'sense_PDTB3_manual'}, $link->{'sense1B_PDTB3'}, $link->{'sense1B_PDTB3_manual'} );
   return @a_aa;
 } # get_arrayed_discourse_arrow
 
@@ -1889,7 +1894,7 @@ sub type_one_discourse_arrow {
 # returns the new PDTB3 sense of the arrow
 sub sense3_one_discourse_arrow {
   my ($node, $position) = @_;
-  my $prev_sense3 = $this->attr('discourse/['.($position).']/sense_PDTB3_manual');
+  my $prev_sense3 = $this->attr('discourse/['.($position).']/sense_PDTB3_manual') // $this->attr('discourse/['.($position).']/sense_PDTB3');
   my @selection = ($prev_sense3);
   ListQuery("PDTB3 sense of the link",'browse',[possible_sense3s_discourse()],\@selection,{dialog => {-popover=>'cursor',}}) || return 0;
   my $selected_sense3 = $selection[0];
@@ -2017,6 +2022,120 @@ sub sense3_a_discourse_arrow {
   }
 } # sense3_a_discourse_arrow
 
+
+# Re-sense a discourse arrow and store info about the change in comment starting with PHASE:3
+#bind phase3_resense_a_discourse_arrow to S menu Phase:3 Re-sense a discourse arrow
+sub phase3_resense_a_discourse_arrow {
+  # print STDERR "phase3_resense_a_discourse_arrow\n";
+
+  my @arrows_discourse = ListV($this->{discourse});
+
+  my $changed = 0;
+
+  if (@arrows_discourse == 0) {
+    # print STDERR "No discourse arrow to be re-sensed!\n";
+  }
+
+  elsif (@arrows_discourse == 1) {
+    $changed = phase3_resense_one_discourse_arrow($this, 1); # set the sense_manual and comment at the first (the only one) arrow
+    if ($changed) {
+      ChangingFile(1);
+      # print STDERR "The (only one) discourse arrow has been re-sensed and commented with PHASE:3 RESENSED.\n";
+    }
+  }
+  else {
+    my @selection;
+    ListQuery("Link to re-sense",'browse',[existing_links_discourse($this)],\@selection,{dialog => {-popover=>'cursor',}}) || return;
+    $selection[0]=~/\((\d+)\)/;
+    my $position = $1;
+    my $total = existing_links_discourse($this);
+    # print STDERR "Re-sensing and commenting the discourse arrow at position $position\n";
+    $changed = phase3_resense_one_discourse_arrow($this, $position); # re-sense and set the comment for the arrow given by $position
+    if ($changed) {
+      ChangingFile(1);
+      # print STDERR "A discourse arrow ($position) has been re-sensed and commented with PHASE:3 RESENSED\n";
+    }
+  }
+} # phase3_resense_a_discourse_arrow
+
+
+sub phase3_resense_one_discourse_arrow {
+  my ($node, $position) = @_;
+  # re-sense the arrow
+  my $old_sense = $this->attr('discourse/['.($position).']/sense_PDTB3_manual') // $this->attr('discourse/['.($position).']/sense_PDTB3');
+  my $new_sense = sense3_one_discourse_arrow($node, $position);
+  if ($new_sense and $old_sense ne $new_sense) {
+    # comment it with PHASE:3 RESENSED $old_sense->$new_sense
+    my $old_value = $this->attr('discourse/['.($position).']/comment');
+    #if ($old_value !~ /^PHASE:3 RESENSED/) {
+    $old_value =~ s/^PHASE:\d\s*//;
+    $old_value =~ s/^\s+//;
+    my $delimiter = $old_value ? '; ' : '';
+    my $new_value = "PHASE:3 RESENSED $old_sense" . '->' . "$new_sense$delimiter$old_value";
+    $node->set_attr('discourse/['.($position).']/comment', $new_value);
+    #}
+    return 1;
+  }
+  return 0;
+}
+
+
+
+# Re-type a discourse arrow and store info about the change in comment starting with PHASE:3
+#bind phase3_retype_a_discourse_arrow to R menu Phase:3 Re-type a discourse arrow
+sub phase3_retype_a_discourse_arrow {
+  # print STDERR "phase3_retype_a_discourse_arrow\n";
+
+  my @arrows_discourse = ListV($this->{discourse});
+
+  my $changed = 1; # never set later !!!
+
+  if (@arrows_discourse == 0) {
+    # print STDERR "No discourse arrow to be commented!\n";
+  }
+
+  elsif (@arrows_discourse == 1) {
+    $changed = phase3_retype_one_discourse_arrow($this, 1); # set the discourse type and comment at the first (the only one) arrow
+    if ($changed) {
+      ChangingFile(1);
+      # print STDERR "The (only one) discourse arrow has been re-typed commented with PHASE:3 RETYPED.\n";
+    }
+  }
+  else {
+    my @selection;
+    ListQuery("Link to comment",'browse',[existing_links_discourse($this)],\@selection,{dialog => {-popover=>'cursor',}}) || return;
+    $selection[0]=~/\((\d+)\)/;
+    my $position = $1;
+    my $total = existing_links_discourse($this);
+    # print STDERR "Re-typing and commenting the discourse arrow at position $position\n";
+    $changed = phase3_retype_one_discourse_arrow($this, $position); # re-type and set the comment for the arrow given by $position
+    if ($changed) {
+      ChangingFile(1);
+      # print STDERR "A discourse arrow ($position) has been re-typed and commented with PHASE:3 RETYPED\n";
+    }
+  }
+} # phase3_retype_a_discourse_arrow
+
+
+sub phase3_retype_one_discourse_arrow {
+  my ($node, $position) = @_;
+  # re-type the arrow
+  my $old_type = $this->attr('discourse/['.($position).']/discourse_type');
+  my $new_type = type_one_discourse_arrow($node, $position);
+  if ($new_type and $old_type ne $new_type) {
+    # comment it with PHASE:3 RETYPED $old_type->$new_type
+    my $old_value = $this->attr('discourse/['.($position).']/comment');
+    #if ($old_value !~ /^PHASE:3 RETYPED/) {
+    $old_value =~ s/^PHASE:\d\s*//;
+    $old_value =~ s/^\s+//;
+    my $delimiter = $old_value ? '; ' : '';
+    my $new_value = "PHASE:3 RETYPED $old_type" . '->' . "$new_type$delimiter$old_value";
+    $node->set_attr('discourse/['.($position).']/comment', $new_value);
+    #}
+    return 1;
+  }
+  return 0;
+}
 
 
 #bind phase2_manual_a_discourse_arrow to 2 menu Phase:2 MANUAL a discourse arrow
