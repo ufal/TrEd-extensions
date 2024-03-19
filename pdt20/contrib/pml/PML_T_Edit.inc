@@ -25,15 +25,21 @@ make the reference, else delete the reference.
 
 =cut
 
-sub AddCoref{
-  my($node,$target,$coref)=@_;
-  if (first{$target->{id}eq$_}ListV($node->{$coref})){
-    @{$node->{$coref}}
-      =grep{$_ ne$target->{id}}ListV($node->{$coref});
-  }else{
-    AddToList($node,$coref,$target->{id});
-  }
-}#AddCoref
+sub AddCoref {
+    my ($node, $target, $coref) = @_;
+    my $attr = 'coref_text' eq $coref
+             ? sub { $_[0]->{'target_node.rf'} }
+             : sub { $_[0] };
+    if (first { $target->{id} eq $attr->($_) } ListV($node->{$coref})) {
+        @{$node->{$coref}}
+            = grep { $attr->($_) ne $target->{id} } ListV($node->{$coref});
+    } elsif ('coref_text' eq $coref) {
+        AddToList($node, $coref, {'target_node.rf' => $target->{id},
+                                  type => 'SPEC'});
+    } else {
+        AddToList($node, $coref, $target->{id});
+    }
+} # AddCoref
 
 sub value_line_click_hook {
   MouseEditLinks(1,@_);
@@ -106,9 +112,9 @@ sub node_release_hook {
   my ($node,$target,$mod)=@_;
   return unless $target and $mod;
   return 'stop' unless $node->parent;
-  my%cortypes=(grammatical=>'coref_gram',
+  my%cortypes=(grammatical=>'coref_gram.rf',
               textual=>'coref_text',
-              compl=>'compl',
+              compl=>'compl.rf',
               );
   my $type;
   if ($mod eq 'Shift') {
@@ -121,7 +127,7 @@ sub node_release_hook {
     return;
   }
   return 'stop' unless $target->parent;
-  AddCoref($node,$target,$cortypes{$type}.'.rf');
+  AddCoref($node,$target,$cortypes{$type});
   TredMacro::Redraw_FSFile_Tree();
   $FileChanged=1;
 }#node_release_hook
@@ -192,7 +198,7 @@ sub RememberNode{
 sub TextArowToRemembered{
   ChangingFile(0);
   if($PML_T_Edit::remember and $PML_T_Edit::remember->parent and $this->parent){
-    AddCoref($this,$PML_T_Edit::remember,'coref_text.rf');
+    AddCoref($this,$PML_T_Edit::remember,'coref_text');
     ChangingFile(1);
   }
 }#TextArowToRemembered
