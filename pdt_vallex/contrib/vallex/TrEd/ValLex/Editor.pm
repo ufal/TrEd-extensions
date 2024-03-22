@@ -14,6 +14,7 @@ require Tk::Dialog;
 require Tk::Checkbutton;
 require Tk::Button;
 require Tk::Optionmenu;
+require TrEd::ValLex::Chooser;
 
 sub limit { 100 }
 
