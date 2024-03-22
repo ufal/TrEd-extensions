@@ -132,7 +132,7 @@ else
     echo "WARNING: will not validate package.xml (PML validator pml_validate not found in PATH or not working)" >&2
 fi
 
-pkgname=$(xmllint --shell "$meta" <<<'cat //*[name()="pkgname"]/text()' | sed -n 3p)
+pkgname=$(xmllint --shell "$meta" <<<'cat //*[name()="pkgname"]/text()' | grep -v '^/ >\|-----')
 if [[ $pkgname != $name ]] ; then
     echo "Invalid package name: $pkgname != $name." >&2
     exit 1
