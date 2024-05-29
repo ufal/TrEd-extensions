@@ -238,7 +238,7 @@ p {
 <h1>TrEd Extensions</h1>
 <p>
 	Please note that this list is only a preview. You can download and install extensions directly from
-	<a href="http://ufal.mff.cuni.cz/tred">TrEd application</a>.
+	<a href="https://ufal.mff.cuni.cz/tred/">TrEd application</a>.
 </p>
 
 <h2>Core Extensions</h2>
