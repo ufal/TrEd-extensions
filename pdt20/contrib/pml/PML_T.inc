@@ -291,7 +291,6 @@ sub get_value_line_hook {
 sub root_style_hook {
   my ($node,$styles)=@_;
   %PML_T::coreflemmas_hash=();
-  %PML_T::displayed_nodes;
   my @displayed = GetDisplayedNodes();
   @PML_T::displayed_nodes{ @displayed } = ( 0..$#displayed );
   DrawArrows_init();

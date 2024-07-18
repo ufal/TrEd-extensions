@@ -1002,7 +1002,7 @@ sub match_form {
     if ($pnode) {
       foreach my $p (PML_T::GetEParents($t_node)) {
 	unless (match_node(PML_T::GetALexNode($p),$p,$pnode,0,$flags,1)) {
-	  print "PARENT-CONSTRAINT MISMATCH: [".map { $p->attr($_) } qw(m/lemma m/form m/tag)."] ==> ",$V->serialize_form($pnode),"\n" if $V_verbose;
+	  print "PARENT-CONSTRAINT MISMATCH: [".map({ $p->attr($_) } qw(m/lemma m/form m/tag))."] ==> ",$V->serialize_form($pnode),"\n" if $V_verbose;
 	  return 0;
 	}
       }
