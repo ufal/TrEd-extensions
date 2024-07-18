@@ -73,7 +73,7 @@ sub get_line {
   if ($input_type eq 'file'){
     $line = <$fh>;
   } else { # folder
-    unless($line = <$fh>){
+    unless(defined($line = <$fh>)){
       if(++$folder_index < @{$folder_files}){
         open($fh, '<:utf8', $folder_files->[$folder_index]) or die "Cannot open $folder_files->[$folder_index]: $!";
         writeln('OPEN: ',$folder_files->[$folder_index]);
