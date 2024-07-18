@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="104793">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="271143">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>filelist_filter</pkgname>
   <icon>icons/view_filter.png</icon>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Create a file-list by filtering text file columns</title>
-  <version>1.9</version>
-  <copyright year="2009">Petr Pajas, Jan Stepanek</copyright>
+  <version>1.10</version>
+  <copyright year="2009-2024">Petr Pajas, Jan Stepanek</copyright>
   <description>
     Add a function Macros-&gt;TredMacro-&gt;File-list Filter (F10) that
     can be used to create a file list by filtering
