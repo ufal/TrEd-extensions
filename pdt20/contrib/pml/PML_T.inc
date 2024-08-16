@@ -146,7 +146,7 @@ sub GetANodesHash {
   my $fsfile = $_[0] || CurrentFile();
   return {} unless ref($fsfile);
   my $a_fs;
-  if ($fsfile->appData('struct') eq 'adata') {
+  if (($fsfile->appData('struct') // "") eq 'adata') {
     $a_fs = $fsfile;
   } else {
     $a_fs = AFile($fsfile);
