@@ -65,14 +65,15 @@ function get_size () {
 
 if ((! $# )) || [[ $1 =~ --?h.* ]]; then
     cat << '__HELP__'
-release_extension -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
-    URL :     URL of the extension repository.
-    REMOTE:   The target url or directory (depends on METHOD).
-    NAME:     Name of the extension. If not given, equals to DIR.
-    DIR:      The dir containing the extension to release.
-    VALIDATE: Full path to pml_validate (if not in $PATH).
-    METHOD:   How the REMOTE dir should be reached?
-              's' for sshfs, 'r' for rsync, 'l' for local (default).
+release_extension -t TRED_PATH -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
+    TRED_PATH: Path to the tred repository.
+    URL :      URL of the extension repository.
+    REMOTE:    The target url or directory (depends on METHOD).
+    NAME:      Name of the extension. If not given, equals to DIR.
+    DIR:       The dir containing the extension to release.
+    VALIDATE:  Full path to pml_validate (if not in $PATH).
+    METHOD:    How the REMOTE dir should be reached?
+               's' for sshfs, 'r' for rsync, 'l' for local (default).
 __HELP__
     exit
 fi
@@ -80,6 +81,7 @@ fi
 
 while getopts 'u:r:n:d:p:m:' option ; do
     case $option in
+        (t) tred_path=$OPTARG ;;
         (u) url=$OPTARG ;;
         (r) remote=$OPTARG ;;
         (n) name=$OPTARG ;;
@@ -104,6 +106,7 @@ fi
 dir=${dir%/}
 
 # Set default values
+: ${tred_path:=/net/work/people/$USER/tred/tred.git}
 : ${url:=http://ufal.mff.cuni.cz/tred/extensions/external}
 #: ${remote:=ufal:/usr/share/drupal7/legacy/tred/extensions/external}
 : ${validate:=pml_validate}
@@ -122,9 +125,9 @@ meta="$dir"/package.xml
 )
 
 if which $validate &>/dev/null && $validate -c &>/dev/null; then
-    if ! $validate -p "$bindir/../tred/resources" "$meta"; then
+    if ! $validate -p "$tred_path"/tred_refactored/resources "$meta"; then
 	which $validate
-	echo $validate -p "$bindir/../tred/resources" "$meta" >&2
+	echo $validate -p "$tred_path"/tred_refactored/resources "$meta" >&2
 	echo "Package meta file $meta is not a valid PML tred_package instance!" >&2
 	exit 1
     fi
