@@ -1,6 +1,7 @@
 # -*- cperl -*-
 
-{ my@CustomColors=qw/error red
+{ my@CustomColors=do { no warnings 'qw';
+                  qw/error red
                      mlemma blue
                      form black
                      tag darkgreen
@@ -33,7 +34,7 @@
                      line_member #a0a0a0
                      line_comm #6F11EA
                      lex darkgreen
-                     aux darkorange/;
+                     aux darkorange/ };
   while(@CustomColors){
     my$key=shift(@CustomColors);
     my$val=shift(@CustomColors);
