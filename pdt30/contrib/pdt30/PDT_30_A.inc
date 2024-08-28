@@ -8,7 +8,8 @@ BEGIN {
 }
 
 sub detect {
-  return (PML::SchemaDescription() =~ m/^PDT 3\.0/ and PML::SchemaName() eq 'adata') ? 1 : 0;
+  return ((PML::SchemaDescription() // "") =~ m/^PDT 3\.0/
+          and (PML::SchemaName() // "") eq 'adata') ? 1 : 0;
 }
 
 sub allow_switch_context_hook {

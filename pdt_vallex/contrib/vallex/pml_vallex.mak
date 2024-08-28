@@ -9,7 +9,7 @@ BEGIN { import TredMacro; }
 use strict;
 
 sub detect {
-  return ( (PML::SchemaName() eq 'valency_lexicon') ? 1 : 0 );
+  return ( ((PML::SchemaName() // "") eq 'valency_lexicon') ? 1 : 0 );
 }
 
 push @TredMacro::AUTO_CONTEXT_GUESSING, sub {

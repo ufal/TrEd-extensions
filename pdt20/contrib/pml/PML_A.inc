@@ -8,7 +8,7 @@
 BEGIN { import PML; }
 
 sub detect {
-  return ((SchemaName() =~ /^a(?:edit)?data$/) ? 1 : 0);
+  return (((SchemaName() // "") =~ /^a(?:edit)?data$/) ? 1 : 0);
 }
 
 sub allow_switch_context_hook {

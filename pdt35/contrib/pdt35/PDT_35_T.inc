@@ -51,7 +51,8 @@ our %annotator;
 # our %root_index;
 
 sub detect {
-  return (PML::SchemaDescription() =~ m/^PDT 3\.5/ and PML::SchemaName() eq 'tdata') ? 1 : 0;
+  return ((PML::SchemaDescription() // "") =~ m/^PDT 3\.5/
+          and (PML::SchemaName() // "") eq 'tdata') ? 1 : 0;
 }
 
 sub allow_switch_context_hook {

@@ -24,7 +24,7 @@ Dependency Treebank (PDT) 2.0.
 =cut
 
 sub detect {
-  return ((SchemaName() eq 'tdata') ? 1 : 0);
+  return (((SchemaName() // "") eq 'tdata') ? 1 : 0);
 }
 
 sub allow_switch_context_hook {
@@ -69,8 +69,9 @@ strip the file-ref part of the reference.
 
 sub GetANodeREFs {
   my $node = $_[0] || $this;
-  return $node->{'atree.rf'} if $node->{'atree.rf'} ne "";
-  my $lex = $node->attr('a/lex.rf');
+  return $node->{'atree.rf'}
+      if exists $node->{'atree.rf'} && $node->{'atree.rf'} ne "";
+  my $lex = $node->attr('a/lex.rf') // "";
   return (($lex ne "" ? $lex : ()), ListV($node->attr('a/aux.rf')));
 }
 
@@ -394,7 +395,7 @@ sub DrawCorefArrows {
     }
     push @edges,{%edge, %{$edge_style||{}}};
   }
-  if ($node->{coref_special} eq 'segm') { # pointer to an unspecified segment of preceeding sentences
+  if (($node->{coref_special} // "") eq 'segm') { # pointer to an unspecified segment of preceeding sentences
     print STDERR "ref-arrows: Segment - unaimed arrow\n" if $main::macroDebug; 
     push @edges, {
       -fill   => CustomColor('arrow_segment'),
@@ -404,7 +405,7 @@ sub DrawCorefArrows {
       %{$style_opts->{segm}||{}},
     };
   }
-  if ($node->{coref_special} eq 'exoph') {
+  if (($node->{coref_special} // "") eq 'exoph') {
     print STDERR "ref-arrows: Exophora\n" if $main::macroDebug;
     push @edges, {
       -fill   => CustomColor('arrow_exoph'),
@@ -579,7 +580,8 @@ functor (attribute C<functor>)
 sub IsCoord {
   my $node=$_[0] || $this;
   return 0 unless $node;
-  return $node->{functor} =~ /ADVS|APPS|CONFR|CONJ|CONTRA|CSQ|DISJ|GRAD|OPER|REAS/;
+  return ($node->{functor} // "")
+      =~ /ADVS|APPS|CONFR|CONJ|CONTRA|CSQ|DISJ|GRAD|OPER|REAS/;
 }
 
 =item ExpandCoord($node,$keep?)
