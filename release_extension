@@ -79,7 +79,7 @@ __HELP__
 fi
 
 
-while getopts 'u:r:n:d:p:m:' option ; do
+while getopts 't:u:r:n:d:p:m:' option ; do
     case $option in
         (t) tred_path=$OPTARG ;;
         (u) url=$OPTARG ;;
