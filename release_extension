@@ -65,7 +65,7 @@ function get_size () {
 
 if ((! $# )) || [[ $1 =~ --?h.* ]]; then
     cat << '__HELP__'
-release_extension -t TRED_PATH -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE
+release_extension -t TRED_PATH -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p VALIDATE [-1]
     TRED_PATH: Path to the tred repository.
     URL :      URL of the extension repository.
     REMOTE:    The target url or directory (depends on METHOD).
@@ -74,12 +74,13 @@ release_extension -t TRED_PATH -u URL -m METHOD -r REMOTE [ -n NAME ] -d DIR -p 
     VALIDATE:  Full path to pml_validate (if not in $PATH).
     METHOD:    How the REMOTE dir should be reached?
                's' for sshfs, 'r' for rsync, 'l' for local (default).
+    -1:        Use for the very first version of a package.
 __HELP__
     exit
 fi
 
 
-while getopts 't:u:r:n:d:p:m:' option ; do
+while getopts 't:u:r:n:d:p:m:1' option ; do
     case $option in
         (t) tred_path=$OPTARG ;;
         (u) url=$OPTARG ;;
@@ -88,6 +89,7 @@ while getopts 't:u:r:n:d:p:m:' option ; do
         (d) dir=$OPTARG ;;
         (p) validate=$OPTARG ;;
         (m) method=$OPTARG ;;
+        (1) first=1 ;;
         (*) exit 1 ;;
     esac
 done
@@ -190,45 +192,54 @@ done
 
 tmp=$(mktemp --tmpdir -d)
 found=1
-wget -qO "$tmp"/old.zip "$url/$name".zip || found=0
-if ((found)) ; then
-    mkdir "$tmp"/old
-    unzip -qd "$tmp"/old "$tmp"/old.zip
-    sed -i 's, install_size="[0-9]*",,g' "$tmp"/old/package.xml
-fi
 make_zip "$tmp"/new.zip "$dir" > /dev/null
 mkdir "$tmp"/new
 unzip -qd "$tmp"/new "$tmp"/new.zip
 sed -i.~size~ 's, install_size="[0-9]*",,g' "$tmp"/new/package.xml
+wget -qO "$tmp"/old.zip "$url/$name".zip || found=0
+if [[ ! $first ]] ; then
+    if ((found)) ; then
+        mkdir "$tmp"/old
+        unzip -qd "$tmp"/old "$tmp"/old.zip
+        sed -i 's, install_size="[0-9]*",,g' "$tmp"/old/package.xml
+    fi
 
-up_to_date=1
-if ((!found)) || diff -Nur "$tmp/old" "$tmp/new" | grep -q . ; then
-    up_to_date=0
-fi
-if ((up_to_date)) ; then
-    echo PACKAGE "$name" IS UP-TO-DATE >&2
-    exit_rm
+    up_to_date=1
+    if ((!found)) || diff -Nur "$tmp/old" "$tmp/new" | grep -q . ; then
+        up_to_date=0
+    fi
+    if ((up_to_date)) ; then
+        echo PACKAGE "$name" IS UP-TO-DATE >&2
+        exit_rm
+    fi
 fi
 mv "$tmp"/new/package.xml{.~size~,}
-script='print $1 if m{<version>([0-9.]+)</version>}'
-prev_ver=$(perl -ne "$script" "$tmp/old/package.xml" /dev/null)
-pkg_ver=$(perl -ne "$script" "$meta")
-rm -rf "$tmp"/old
-if [[ -n $prev_ver && -n $pkg_ver ]] ; then
-    if [[ $prev_ver == $pkg_ver ]]; then
-        echo Version $pkg_ver not changed. >&2
+if [[ ! $first ]] ; then
+    script='print $1 if m{<version>([0-9.]+)</version>}'
+    prev_ver=$(perl -ne "$script" "$tmp/old/package.xml" /dev/null)
+    pkg_ver=$(perl -ne "$script" "$meta")
+    rm -rf "$tmp"/old
+    if [[ -n $prev_ver && -n $pkg_ver ]] ; then
+        if [[ $prev_ver == $pkg_ver ]]; then
+            echo Version $pkg_ver not changed. >&2
+            exit_rm
+        elif version_newer $pkg_ver $prev_ver ; then
+            echo New version $pkg_ver precedes the old version $prev_ver. >&2
+            exit_rm
+        else
+            echo Version change: "$prev_ver -> $pkg_ver" >&2
+        fi
+    elif [[ -z $pkg_ver ]] ; then
+        echo No version specified. >&2
         exit_rm
-    elif version_newer $pkg_ver $prev_ver ; then
-        echo New version $pkg_ver precedes the old version $prev_ver. >&2
-        exit_rm
-    else
-        echo Version change: "$prev_ver -> $pkg_ver" >&2
     fi
-elif [[ -z $pkg_ver ]] ; then
-    echo No version specified. >&2
-    exit_rm
 fi
-
+if [[ $first ]] ; then
+    if file "$tmp"/old.zip | grep -q Zip.archive.data ; then
+        echo Old package exists >&2
+        exit_rm
+    fi
+fi
 zip_size=$(du -sb "$tmp/new.zip" | cut -f1)
 echo "Zip size: $zip_size" >&2
 perl -MXML::LibXML -e '
