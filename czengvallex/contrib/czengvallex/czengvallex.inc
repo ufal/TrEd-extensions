@@ -336,7 +336,7 @@ sub switch_context_hook
 	return;
 }
 
-my $colors = [qw(#CF9 #FDA #9FF #FAF #AFA #AAF #FAA)];
+my $colors = do { no warnings 'qw'; [qw(#CF9 #FDA #9FF #FAF #AFA #AAF #FAA)] };
 my %ne_type_colors = ( 'location' => "#FAA", 'person' => '#AAF', 'organization' => '#AFA');
 
 sub after_redraw_hook {
