@@ -114,7 +114,8 @@ applies to C<$this>.
 
 sub GetAAuxNodes {
   my $node = @_ ? $_[0] : $this;
-  return grep defined, map { GetANodeByID($_) } ListV($node->attr('a/aux.rf'));
+  my $aux_rf = $node->attr('a/aux.rf') or return;
+  return grep defined, map { GetANodeByID($_) } ListV($aux_rf);
 }
 
 =item GetANodeByID($id_or_ref,$fsfile?)
@@ -128,6 +129,7 @@ belongs to an analytical file associated with it.
 
 sub GetANodeByID {
   my ($arf,$fsfile)=@_;
+  return unless defined $arf;
   $arf =~ s/^.*?#//;
   return GetANodesHash($fsfile)->{$arf};
 }
