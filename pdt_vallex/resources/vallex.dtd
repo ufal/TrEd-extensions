@@ -8,7 +8,7 @@
 <!-- technical stuff --> 
 
 
-<!ELEMENT head (global_history, list_of_users)>
+<!ELEMENT head (global_history?, list_of_users)>
 
 <!-- 
   element forbid are for simply technical purposes and are used to
@@ -39,13 +39,15 @@
              id ID  #REQUIRED           
              annotator (YES|NO) "NO"
              reviewer (YES|NO) "NO"
+             can_edit (YES|NO) "NO"
            >
 <!-- ================================================== -->
 
 <!ELEMENT word (problems?, note?, valency_frames)>
 <!ATTLIST word lemma CDATA #REQUIRED   
                POS (V|A|N|D)  "V"
-               id ID  #REQUIRED           
+               id ID  #REQUIRED
+               rare CDATA "0"
        >
 
 <!-- annotator's notes -->
@@ -57,11 +59,16 @@
                solved (YES|NO) "NO"> 
 
 <!ELEMENT valency_frames (frame*)>
-<!ELEMENT frame (example, note?, problems?, frame_elements, local_history )>
+<!ELEMENT frame (example, note?, problems?, frame_elements, local_history? )>
 <!ATTLIST frame
              id ID #REQUIRED
              used CDATA "0"
              hereditary_used CDATA "0"
+             pdt_used CDATA "0"
+             pdtsc_used CDATA "0"
+             faust_used CDATA "0"
+             pcedt_used CDATA "0"
+             rare CDATA "0"
              status (active|reviewed|substituted|obsolete|deleted) "active"
              substituted_with IDREFS #IMPLIED
           >   
@@ -80,15 +87,17 @@
                  COMPL|CONTRD|COND|CPHR|CPR|CRIT|DIFF|DIR1|DIR2|DIR3|DPHR|
                  ETHD|EXT|HER|ID|INTF|INTT|LOC|MANN|MAT|MEANS|MOD|PARTL|REG|
                  RESL|RESTR|RSTR|SUBS|TFHL|TFRWH|THL|THO|TOWH|TPAR|TSIN|TTILL|
-                 TWHEN|TOWH|VOCAT) #REQUIRED  
+                 TWHEN|VOCAT) #REQUIRED
        type (oblig|non-oblig) "non-oblig"
        forms CDATA #IMPLIED
        orig_type CDATA #IMPLIED
+       rare CDATA "0"
      > 
 
 <!ELEMENT form (typical | elided | recip | state | (parent?, node*, (parentpos, node*)?))>  
 <!ATTLIST form 
-       abbrev         CDATA #IMPLIED
+       abbrev CDATA #IMPLIED
+       rare   CDATA "0"
 >
 
 <!ELEMENT typical EMPTY>
