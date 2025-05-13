@@ -10,6 +10,9 @@
   <version>1.2.1.2</version>
   <copyright year="2006-2013">Otakar Smrž</copyright>
   <description>Editing, browsing, and processing of the ElixirFM lexicon.</description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/elixir</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
     <perl_module name="perl" min_version="5.008"/>

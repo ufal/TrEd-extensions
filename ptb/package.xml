@@ -8,11 +8,13 @@
   <title>Penn Treebank</title>
   <version>1.40</version>
   <copyright year="2009">Petr Pajas</copyright>
-
   <description>This package contains 
     a conversion script for Penn Treebank merged data format to PML
     and a stylesheets for visualization of the resulting PML in TrEd.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/ptb</LM>
+  </otherinfo>
   <icon>icons/ptb.png</icon>
   <require>
     <tred min_version="2.4936"/>

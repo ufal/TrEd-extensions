@@ -9,6 +9,9 @@
   <version/>
   <copyright year="2006-2008">Josef Toman</copyright>
   <description>Provides main annotation mode for the Prague Czech-English Dependency Treebank.</description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pcedt</LM>
+  </otherinfo>
   <require>
     <tred min_version="1.4375"/>
   </require>

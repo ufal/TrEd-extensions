@@ -15,4 +15,7 @@
   </require>
   <description>Provides support for PDT 3.5 files
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdt35</LM>
+  </otherinfo>
 </tred_extension>

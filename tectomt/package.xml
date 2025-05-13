@@ -18,4 +18,7 @@
   </require>
   <description>Provides basic libraries for TectoMT-based applications for the TrEd environment.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/tectomt</LM>
+  </otherinfo>
 </tred_extension>

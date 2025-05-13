@@ -12,6 +12,9 @@
   <description>This is a supporting extension for other extensions for the annotation of non-dependency relations in PDT (bridging, discourse).
   It does not provide any functionality on itself.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/nondeprel_common</LM>
+  </otherinfo>
   <require>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
   </require>

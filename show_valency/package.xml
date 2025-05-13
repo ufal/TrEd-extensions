@@ -11,6 +11,9 @@
   <description>PDT 2.0-specific mode derived from PML_T_View. It
   highlights obligatory nodes according to assigned valency frames.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/show_valency</LM>
+  </otherinfo>
   <require>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>
     <tred min_version="2.4936"/>

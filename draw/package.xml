@@ -11,6 +11,9 @@
   <description>Provides a simple context in which node visualization can be
   freely manipulated by setting attributes of the nodes.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/draw</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
   </require>

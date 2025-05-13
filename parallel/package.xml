@@ -4,12 +4,15 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>parallel</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Extension for parallel treebank alignment</title>
   <version>1.8</version>
   <copyright year="2009">Petr Pajas</copyright>
   <description>Provides schema, annotation mode, and PML-TQ extensions for node-to-node stand-off parallel treebank alignment.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/parallel</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
   </require>

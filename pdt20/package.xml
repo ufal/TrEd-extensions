@@ -12,6 +12,9 @@
     and editing annotations of PDT 2.0 or similar data
     (analytical and tectogrammatical layer).
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdt20</LM>
+  </otherinfo>
   <icon>icons/tree.png</icon>
   <require>
     <extension name="pdt_vallex" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt_vallex"/>

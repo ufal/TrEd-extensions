@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>sinica</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Sinica Treebank</title>
   <version>1.32</version>
   <copyright year="2009">Petr Pajas</copyright>
@@ -12,6 +12,9 @@
     a conversion script for the Sinica Treebank 3.0 format to PML
     and provides a stylesheets for visualization of the resulting PML in TrEd.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/sinica</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
   </require>

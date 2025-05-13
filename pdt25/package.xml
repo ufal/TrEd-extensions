@@ -9,6 +9,9 @@
   <version>1.1</version>
   <copyright year="2012-2024">Jan Popelka, Josef Toman</copyright>
   <description>Provides support for viewing the PDT 2.5 data</description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdt25</LM>
+  </otherinfo>
   <icon>icons/pdt25.png</icon>
   <require>
     <extension name="pdt20" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>

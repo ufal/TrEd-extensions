@@ -13,6 +13,9 @@
   scripts (for Linux and similar systems) for converting from the CoNLL-2009-ST format to PML,
   and a TrEd annotation mode for predicate-argument annotation.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/conll2009</LM>
+  </otherinfo>
   <icon>icons/conll2009.png</icon>
   <require>
     <tred min_version="2.4936"/>

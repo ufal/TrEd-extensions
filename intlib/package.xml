@@ -10,6 +10,9 @@
   <version>1.00</version>
   <copyright year="2015">Vincent Kríž, Barbora Hladká</copyright>
   <description>Provides new features, macros and attributes for annotation of the Czech legal texts.</description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/intlib</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
     <extension name="pdt20" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt20"/>

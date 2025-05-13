@@ -4,13 +4,16 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pml_schema_tree</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Display and Edit PML Schemas as Trees in TrEd</title>
   <version>1.11</version>
   <copyright year="2009">Petr Pajas</copyright>
   <description>With this extension it is possible to display and edit PML schemas in TrEd as trees.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pml_schema_tree</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
-  </require>  
+  </require>
 </tred_extension>

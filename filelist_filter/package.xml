@@ -16,6 +16,9 @@
     the last of which is a filename, URL, or a node address.
     The selection is then based on the values in the other columns.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/filelist_filter</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
   </require>

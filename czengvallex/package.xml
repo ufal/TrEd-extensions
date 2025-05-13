@@ -11,6 +11,9 @@
   <description>Provides annotation mode for vallency frames alignment
 	  between PDT-Vallex and EngValLex.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/czengvallex</LM>
+  </otherinfo>
   <require>
     <extension name="pedt"/>
     <extension name="pdt_vallex"/>

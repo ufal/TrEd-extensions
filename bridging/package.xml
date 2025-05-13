@@ -10,6 +10,9 @@
   <copyright year="2013">Jiří Mírovský, Petr Pajas, Mirek Týnovský, Zdeněk Žabokrtský</copyright>
   <icon>icons/logo.png</icon>
   <description>Provides an annotation mode for the annotation of the bridging anaphora and the extended textual coreference in PDT.</description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/bridging</LM>
+  </otherinfo>
   <require>
     <extension name="nondeprel_common" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/nondeprel_common"/>
   </require>

@@ -4,7 +4,7 @@
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt_auto_afun</pkgname>
-  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/" />
+  <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Automatically Assign Analytical Functions</title>
   <version>1.20</version>
   <copyright year="2002">Zdeněk Žabokrtský</copyright>
@@ -12,6 +12,9 @@
     to analytical nodes (PDT 1.0 or PDT 2.0 a-layer), based on morphological information
     and tree structure (Czech only).
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdt_auto_afun</LM>
+  </otherinfo>
   <require>
     <tred min_version="2.4936"/>
   </require>

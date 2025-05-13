@@ -15,4 +15,7 @@
   </require>
   <description>Provides support for PDiT 2.0 files
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdit20</LM>
+  </otherinfo>
 </tred_extension>

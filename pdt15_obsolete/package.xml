@@ -12,6 +12,9 @@
     annotation over PDT 1.0 (used before PDT 2.0 introduced
     new PML-based system of annotation layers).
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdt15_obsolete</LM>
+  </otherinfo>
   <require>
     <extension name="pdt10" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt10"/>
     <extension name="pdt_vallex" min_version="1.0" href="http://ufal.mff.cuni.cz/tred/extensions/core/pdt_vallex"/>

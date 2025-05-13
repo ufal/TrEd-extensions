@@ -12,6 +12,9 @@
     It consists of an input backend which converts the AG-XML+SGML input to PML 
     and a stylesheets for visualization of the resulting PML in TrEd.
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/arabic_treebank</LM>
+  </otherinfo>
   <icon>icons/icon.png</icon>
   <require>
     <tred min_version="2.4936"/>

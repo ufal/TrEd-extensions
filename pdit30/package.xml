@@ -17,4 +17,7 @@
   </require>
   <description>Provides support for Prague Discourse Treebank 3.0 (PDiT 3.0) files
   </description>
+  <otherinfo>
+    <LM name="version-control">https://github.com/ufal/tred-extensions/tree/main/pdit30</LM>
+  </otherinfo>
 </tred_extension>
