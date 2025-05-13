@@ -312,10 +312,10 @@ CustomColor('arrow_textualSPEC', 'blue');
 sub node_style_hook {
   my ($node,$styles)=@_;
   if  ($node->{'coref_text'} or $node->{'coref_text.rf'} or $node->{'coref_gram.rf'} or $node->{'compl.rf'} or $node->{coref_special}) {
-    my @gram = grep {$_ ne "" } ListV($node->{'coref_gram.rf'});
-    my @text = grep {$_ ne "" } ListV($node->{'coref_text.rf'});
-    my @text_new = grep {$_ ne "" } ListV($node->{'coref_text'});
-    my @compl = grep {$_ ne "" } ListV($node->{'compl.rf'});
+    my @gram = grep defined, ListV($node->{'coref_gram.rf'});
+    my @text = grep defined, ListV($node->{'coref_text.rf'});
+    my @text_new = grep defined, ListV($node->{'coref_text'});
+    my @compl = grep defined, ListV($node->{'compl.rf'});
     DrawCorefArrows($node,$styles,undef,
 		      [@gram, @text, (map $_->{'target_node.rf'}, @text_new), @compl],
 		      [(map 'grammatical',@gram),
