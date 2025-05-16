@@ -1,7 +1,0 @@
-context: PDT_30_M
-
-node: #{customform}<? $${#name} eq "s" ? '${id}' : '${form}' ?>
-node: #{custommlemma}${lemma}
-node: #{customtag}${tag}
-
-style: #{Line-coords:n,n,n,n}
