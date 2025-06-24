@@ -218,7 +218,7 @@ sub AnalyticalTree {
   my $first =
     first {
       ref($a_ids->{$_}) and ($a_ids->{$_}->root == $root) ? 1 : 0
-    } GetANodeIDs($t_node);
+    } GetANodeIDs($t_node), $t_node->parent ? GetANodeIDs($t_node->parent) : ();
   $this = $a_ids->{$first};
   ChangingFile(0);
   return 1;
