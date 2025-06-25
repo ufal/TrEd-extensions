@@ -1248,9 +1248,14 @@ global variable $root is used. Returns the computed ID.
 sub NewID {
   shift unless ref($_[0]);
   my $top = ref($_[0]) ? $_[0]->root : $root;
-  my $id = $top->{id}.'a'.
-    ((sort {$b<=>$a} map{$_->{id}=~/a([0-9]+)$/;$1}$top->descendants)[0]+1);
-  return $id;
+  my $n = (sort { $b <=> $a }
+           grep defined,
+           map { ($_->{id} // "") =~ /a([0-9]+)$/;
+                 $1
+             } $top->descendants
+          )[0] // 0;
+  my $id = $top->{id} . 'a' . ($n + 1);
+  return $id
 }#NewNode
 
 sub FindVallex {
