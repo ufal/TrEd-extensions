@@ -1,6 +1,6 @@
 #!/usr/bin/perl -I.. -I../..
 use Getopt::Std;
-
+use open OUT => ':encoding(UTF-8)', ':std';
 getopts('m:pc:hMDP');
 
 if ($opt_h) {
@@ -171,12 +171,22 @@ while ($opt_c--) {
 			     },$top,$vallex]
 			   )->pack(qw/-side right -pady 10 -padx 10/);
 
-
     my $save_button=$bottom_frame->Button(-text => "Save",
 					  -command => sub {
 					    $vallex->save_data($top);
 					  })->pack(qw/-side right -pady 10 -padx 10/);
 
+    my $print_button=$bottom_frame->Button(
+        -text    => "Print",
+        -command => sub {
+            my $fl = $vallex->subwidget('framelist')->widget;
+            if (defined(my $item = $fl->infoAnchor)) {
+                print $fl->infoData($item)->{id}, "\n";
+                print $fl->itemCget($item, 0, '-text'), "\n";
+            } else {
+                warn "No frame selected\n";
+            }
+        })->pack(qw/-side right -pady 10 -padx 10/);
 
     my $save_button=$bottom_frame->Button(-text => "Quit",
                                           -command =>
