@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="655661">
+<tred_extension xmlns="http://ufal.mff.cuni.cz/pdt/pml/" install_size="256707">
   <head>
     <schema href="tred_extension_schema.xml"/>
   </head>
   <pkgname>pdt20</pkgname>
   <repository href="http://ufal.mff.cuni.cz/tred/extensions/core/"/>
   <title>Prague Dependency Treebank 2.0 Annotation</title>
-  <version>1.63</version>
+  <version>1.64</version>
   <copyright year="2008-2025">Petr Pajas, Jan Štěpánek</copyright>
   <description>Provides complete support for viewing
     and editing annotations of PDT 2.0 or similar data
