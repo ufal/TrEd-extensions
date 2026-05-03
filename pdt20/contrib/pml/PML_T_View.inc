@@ -26,10 +26,17 @@ sub status_line_doubleclick_hook {
   status_line_doubleclick(sub{ ShowAssignedValFrames($_[0]) },@_);
 } # status_line_doubleclick_hook
 
-
-sub switch_context_hook {
-  &PML_T::switch_context_hook;
-  disable_node_menu_items() if GUI();
+BEGIN {
+    # For some reason, this was called twice. Until we find out why, skip the
+    # second call.
+    if (! exists &switch_context_hook) {
+        eval << '__EVAL__';
+            sub switch_context_hook {
+              &PML_T::switch_context_hook;
+              disable_node_menu_items() if GUI();
+            }
+__EVAL__
+    }
 }
 
 sub pre_switch_context_hook {
