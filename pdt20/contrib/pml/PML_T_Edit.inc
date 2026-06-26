@@ -427,9 +427,7 @@ sub after_edit_node_hook {
 
     my %drop;
     for my $i (0 .. $this->{'subf-annot'}->count - 1) {
-        warn "I[$i]";
         my $annot = (AltV($this->{'subf-annot'}))[$i];
-        warn "A[$annot]";
         my $seq = $annot->value;
         if (! $seq->elements) {
             undef $drop{$i};
