@@ -417,6 +417,33 @@ sub MoveSTRight {
   NormalizeOrds($all);  # the ordering attributes are modified accordingly
 }
 
+# When removing subf annotation, sometimes an annotator remains with no
+# annotated values, which makes the file invalid against the schema. Remove
+# such emtpy annotators.
+sub after_edit_node_hook {
+    my ($node, $ok) = @_;
+    return unless $ok;
+    return unless $node->{'subf-annot'};
+
+    my %drop;
+    for my $i (0 .. $this->{'subf-annot'}->count - 1) {
+        warn "I[$i]";
+        my $annot = (AltV($this->{'subf-annot'}))[$i];
+        warn "A[$annot]";
+        my $seq = $annot->value;
+        if (! $seq->elements) {
+            undef $drop{$i};
+        }
+    }
+    return unless keys %drop;
+
+    my $i = 0;
+    $this->{'subf-annot'} = Alt(grep ! exists $drop{$i++},
+                                     AltV($this->{'subf-annot'}));
+    ChangingFile(1);
+    return
+}
+
 =back
 
 =cut
