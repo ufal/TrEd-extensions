@@ -5,6 +5,7 @@
 package TrEd::ValLex::LibXMLData;
 use strict;
 use base qw(TrEd::ValLex::Data);
+use File::Copy qw{ cp };
 use IO::File;
 use IO::Pipe;
 use XML::LibXML;
@@ -66,42 +67,50 @@ sub doc_reload {
 }
 
 sub save {
-  my ($self, $no_backup,$indent)=@_;
-  my $file=$self->file();
-  return unless ref($self);
-  my $backup=$file;
-  if ($^O eq "MSWin32") {
-    $backup=~s/(\.xml)?$/.bak/i;
+  my ($self, $no_backup, $indent)=@_;
+  my $file = $self->file;
+  return unless ref $self;
+
+  my $backup = $file;
+  if ($^O eq 'MSWin32') {
+    $backup =~ s/(\.xml)?$/.bak/i;
   } else {
-    $backup.="~";
+    $backup .= '~';
   }
 
-  unless ($no_backup || rename $file, $backup) {
-    warn "Couldn't create backup file, aborting save!\n";
-    return 0;
+  if (! $no_backup) {
+    if (-l $file) { # Respect symbolic links.
+      cp($file, $backup)
+          or warn "Couldn't create symlink's backup, aborting save!"),
+          return 0;
+
+    } elsif (! rename $file, $backup) {
+      warn "Couldn't create backup file, aborting save!\n";
+      return 0
+    }
   }
-  if ($self->doc()->can('toFile')) {
-    $self->doc()->toFile($file,$indent);
+  if ($self->doc->can('toFile')) {
+    $self->doc->toFile($file, $indent);
     $self->set_change_status(0);
-    return 1;
+    return 1
   }
   my $output;
-  if ($file=~/.gz$/) {
+  if ($file =~ /.gz$/) {
     eval {
-      $output = new IO::Pipe();
+      $output = IO::Pipe->new;
       $output && $output->writer("$ZBackend::gzip > \"$file\"");
     };
   } else {
-    $output = new IO::File(">$file");
+    $output = IO::File->new(">$file");
   }
   unless ($output) {
     print STDERR "ERROR: cannot write to file $file\n";
     return 0;
   }
   $output->print($self->doc()->toString($indent));
-  $output->close();
+  $output->close;
   $self->set_change_status(0);
-  return 1;
+  return 1
 }
 
 sub getNextWordNode {
