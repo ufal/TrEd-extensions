@@ -80,10 +80,10 @@ sub save {
 
   if (! $no_backup) {
     if (-l $file) { # Respect symbolic links.
-      cp($file, $backup)
-          or warn "Couldn't create symlink's backup, aborting save!"),
-          return 0;
-
+      if (! cp($file, $backup)) {
+        warn "Couldn't create symlink's backup, aborting save!";
+        return 0
+      }
     } elsif (! rename $file, $backup) {
       warn "Couldn't create backup file, aborting save!\n";
       return 0
